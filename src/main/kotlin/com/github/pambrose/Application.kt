@@ -20,10 +20,10 @@ fun Application.module(testing: Boolean = false) {
         static("/js") { resources("js") }
         static("/plugin") { resources("plugin") }
 
-        for (slidedeck in slidedecks.values)
-            get(slidedeck.path) {
+        for (slidedeck in slidedecks)
+            get(slidedeck.key) {
                 respondWith {
-                    generatePage(slidedeck)
+                    generatePage(slidedeck.value)
                 }
             }
     }
