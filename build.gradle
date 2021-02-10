@@ -1,0 +1,124 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'maven'  // Required for jitpack.io to do a ./gradlew install
+    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
+    id "com.github.ben-manes.versions" version '0.36.0'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+// These are for the uber target
+def mainName = "com.github.pambrose.TradingServer"
+def appName = 'server'
+
+// This is for ./gradlew run
+application {
+    mainClassName = mainName
+}
+
+group 'com.github.pambrose'
+version '1.0'
+
+repositories {
+    maven { url 'https://kotlin.bintray.com/ktor' }
+    maven { url 'https://kotlin.bintray.com/kotlinx' }
+    jcenter()
+    mavenCentral()
+    maven { url = 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
+    // These are required for the annotation args below
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}"
+
+    implementation "org.jetbrains:kotlin-css:$css_version"
+    implementation "org.jetbrains:kotlin-css-jvm:$css_version"
+
+    implementation "io.ktor:ktor-server-cio:$ktor_version"
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+
+    implementation "io.ktor:ktor-server-sessions:$ktor_version"
+    implementation "io.ktor:ktor-html-builder:$ktor_version"
+
+    implementation "com.github.pambrose.common-utils:core-utils:$utils_version"
+    implementation "com.github.pambrose.common-utils:ktor-server-utils:$utils_version"
+
+    implementation "io.github.microutils:kotlin-logging:$logging_version"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+
+    runtimeOnly "org.jetbrains.kotlin:kotlin-scripting-jsr223"
+}
+
+task stage(dependsOn: ['uberjar', 'build', 'clean'])
+build.mustRunAfter clean
+
+
+shadowJar {
+    zip64 true
+    mergeServiceFiles()
+    exclude "META-INF/*.SF"
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    exclude "LICENSE*"
+}
+
+task uberjar(type: Jar, dependsOn: shadowJar) {
+    zip64 true
+    archiveFileName = 'server.jar'
+    manifest {
+        attributes('Implementation-Title': appName)
+        attributes('Implementation-Version': version)
+        attributes('Built-Date': new Date())
+        attributes('Built-JDK': System.getProperty('java.version'))
+        attributes('Main-Class': mainName)
+    }
+    from zipTree(shadowJar.archiveFile)
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+
+compileKotlin {
+    kotlinOptions {
+        useIR = true
+        //languageVersion = "1.5"
+        //apiVersion = "1.5"
+        jvmTarget = '1.8'
+        freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
+                             '-Xuse-experimental=io.ktor.util.KtorExperimentalAPI',
+                             '-Xuse-experimental=io.ktor.locations.KtorExperimentalLocationsAPI',
+                             '-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi',
+                             '-Xuse-experimental=kotlin.ExperimentalStdlibApi',
+                             '-Xuse-experimental=kotlin.contracts.ExperimentalContracts',
+                             '-XXLanguage:+InlineClasses']
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        useIR = true
+        //languageVersion = "1.5"
+        //apiVersion = "1.5"
+        jvmTarget = '1.8'
+        freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
+                             '-Xuse-experimental=io.ktor.util.KtorExperimentalAPI',
+                             '-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi',
+                             '-Xuse-experimental=kotlin.ExperimentalStdlibApi',
+                             '-XXLanguage:+InlineClasses']
+    }
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        exceptionFormat "full"
+        showStandardStreams = true
+    }
+}
