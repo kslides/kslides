@@ -1,11 +1,9 @@
 package com.github.pambrose
 
+import com.github.pambrose.Page.generatePage
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import kotlinx.html.DIV
-import kotlinx.html.HtmlTagMarker
-import kotlinx.html.SECTION
-import kotlinx.html.section
+import kotlinx.html.*
 import mu.KLogging
 
 @HtmlTagMarker
@@ -25,12 +23,28 @@ class SlideDeck(path: String) {
     }
 
     @HtmlTagMarker
-    fun slide(content: SECTION.() -> Unit) {
+    fun htmlSlide(content: SECTION.() -> Unit) {
         slides += Slide({ section { content() } })
     }
 
     @HtmlTagMarker
-    fun section(content: SECTION.() -> Unit) = slide({ section { content() } })
+    fun section(content: SECTION.() -> Unit) = htmlSlide(content)
+
+    @HtmlTagMarker
+    fun markdownSlide(content: SECTION.() -> Unit) {
+        htmlSlide {
+            attributes["data-markdown"] = "true"
+            content()
+        }
+    }
+
+    @HtmlTagMarker
+    fun SECTION.markdown(content: SCRIPT.() -> Unit) {
+        script {
+            type = "text/template"
+            content()
+        }
+    }
 
     companion object : KLogging() {
         val slidedecks = mutableMapOf<String, SlideDeck>()
@@ -38,6 +52,13 @@ class SlideDeck(path: String) {
         fun presentSlides() {
             val environment = commandLineEnvironment(emptyArray())
             embeddedServer(CIO, environment).start(wait = true)
+        }
+
+        fun printSlides() {
+            for (slidedeck in slidedecks) {
+                println(slidedeck.key)
+                println(generatePage(slidedeck.value))
+            }
         }
     }
 }

@@ -6,16 +6,18 @@ import kotlinx.html.*
 fun main() {
 
     slidedeck {
-        slide {
+        htmlSlide {
             h3 { +"Examples" }
             h4 { a { href = "/demo.html"; +"Demo Deck" } }
         }
 
-        slide {
+        section {
             id = "embed-web-content"
             h2 { +"Embed Web Content" }
+
             iframe {
                 attributes["data-autoplay"] = "true"
+                attributes["frameborder"] = "0"
                 width = "700"
                 height = "540"
                 src = "https://slides.com/news/auto-animate/embed"
@@ -23,26 +25,37 @@ fun main() {
             }
         }
 
-        slide {
+        markdownSlide {
             id = "markdown-example"
-            attributes["data-markdown"] = "true"
-            script {
-                type = "text/template"
+
+            markdown {
                 +"""
                     # Markdown Example
+                    ```kotlin
+                    fun main() {
+                    }
+                    ```
                 """.trimIndent()
             }
         }
 
-        slide {
-            +"Slide 2"
+        htmlSlide {
+            section {
+                +"Slide 2"
+            }
+            section {
+                +"Sub 1"
+            }
+            section {
+                +"Sub 2"
+            }
         }
 
-        slide {
+        htmlSlide {
             +"Slide 3"
         }
 
-        slide {
+        htmlSlide {
             attributes["data-background-iframe"] = "https://athenian.org"
             attributes["data-background-interactive"] = "true"
             div {
@@ -58,11 +71,11 @@ fun main() {
     }
 
     slidedeck("/demo.html") {
-        slide {
+        htmlSlide {
             +"Demo Slide 1"
         }
 
-        slide {
+        htmlSlide {
             +"Demo Slide 2"
         }
     }
