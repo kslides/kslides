@@ -60,7 +60,7 @@ class Presentation(path: String, val title: String, val theme: String) {
             embeddedServer(CIO, environment).start(wait = true)
         }
 
-        fun print() {
+        fun output() {
             for (presentation in presentations) {
                 println(presentation.key)
                 println(generatePage(presentation.value))

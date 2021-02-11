@@ -1,5 +1,6 @@
 package com.github.pambrose
 
+import com.github.pambrose.Presentation.Companion.output
 import com.github.pambrose.Presentation.Companion.present
 import kotlinx.html.*
 
@@ -20,7 +21,7 @@ fun main() {
             img { src = "https://s3.amazonaws.com/static.slid.es/logo/v2/slides-symbol-512x512.png" }
         }
 
-        section("embed-web-content") {
+        htmlSlide("embed-web-content") {
             h2 { +"Embed Web Content" }
             h4 { a { href = "#/home"; +"Home" } }
 
@@ -30,7 +31,6 @@ fun main() {
                 width = "700"
                 height = "540"
                 src = "https://slides.com/news/auto-animate/embed"
-                //frameborder = "0"
             }
         }
 
@@ -38,19 +38,12 @@ fun main() {
             markdown {
                 +"""
                     # Markdown Example
-                    ```kotlin [1|3-5]
+                    ```kotlin [1|3-4]
                         fun main() {
                             println("Hello")
+                            println("World")
                         }
                     ```
-                    
-                    ```php [1|3-5]
-                        public function foo()
-                        {
-                            '$'foo = array('bar' => 'bar')
-                        }
-                     ```
-
                 """.trimIndent()
             }
         }
@@ -96,5 +89,6 @@ fun main() {
         }
     }
 
+    output()
     present()
 }

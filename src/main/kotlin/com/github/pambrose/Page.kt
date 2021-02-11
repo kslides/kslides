@@ -1,15 +1,72 @@
 package com.github.pambrose
 
 import kotlinx.html.*
-import kotlinx.html.stream.createHTML
+import kotlinx.html.consumers.filter
+import kotlinx.html.dom.append
+import kotlinx.html.dom.document
+import kotlinx.html.dom.serialize
 
 object Page {
-    fun generatePage(presentation: Presentation) =
-        createHTML()
-            .html {
+    fun generatePage(presentation: Presentation): String {
+        val doc = document {
+            append.html {
                 generateHead(presentation)
                 generateBody(presentation)
             }
+        }
+
+        val escapedChars =
+            listOf(
+                "\"" to "_*_quote_*_",
+                "<" to "_*_lt_*_",
+                ">" to "_*_gt_*_",
+                "&" to "_*_amp_*_"
+            )
+        val nodeList = doc.getElementsByTagName("*")
+        (0..nodeList.length).forEach { i ->
+            val node = nodeList.item(i)
+            if (node?.nodeName == "script") {
+                if (node.attributes.getNamedItem("type")?.nodeValue == "text/template") {
+                    escapedChars.forEach {
+                        node.firstChild.nodeValue = node.firstChild.nodeValue.replace(it.first, it.second)
+                    }
+                }
+            }
+        }
+
+        var str = doc.serialize()
+        escapedChars.forEach {
+            str = str.replace(it.second, it.first)
+        }
+        return str
+    }
+//        buildString {
+//            appendLine("<!DOCTYPE html>")
+//            appendHTML().html {
+//                generateHead(presentation)
+//                generateBody(presentation)
+//            }
+//            appendLine()
+//        }
+
+//        createHTML()
+//            .html {
+//                generateHead(presentation)
+//                generateBody(presentation)
+//            }
+
+    fun test() {
+        println(document {
+            append.filter { if (it.tagName == "div") SKIP else PASS }.html {
+                body {
+                    div {
+                        a { +"link1" }
+                    }
+                    a { +"link2" }
+                }
+            }
+        }.serialize())
+    }
 
     fun HTML.generateHead(presentation: Presentation) {
         head {
