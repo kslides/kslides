@@ -6,13 +6,10 @@ import io.ktor.server.engine.*
 import kotlinx.html.*
 import mu.KLogging
 
-@HtmlTagMarker
-fun presentation(path: String = "/", title: String = "", theme: Theme = Theme.Black, block: Presentation.() -> Unit) =
-    Presentation(path, title, "dist/theme/${theme.name.toLowerCase()}.css").apply { block(this) }
-
-internal inline class Slide(val content: DIV.() -> Unit)
-
 class Presentation(path: String, val title: String, val theme: String) {
+
+    internal inline class Slide(val content: DIV.() -> Unit)
+
     internal val slides = mutableListOf<Slide>()
 
     init {
@@ -21,7 +18,7 @@ class Presentation(path: String, val title: String, val theme: String) {
 
         val adjustedPath = if (path.startsWith("/")) path else "/$path"
         if (presentations.containsKey(adjustedPath))
-            throw IllegalArgumentException("Presentation path already defined: \"$adjustedPath \"")
+            throw IllegalArgumentException("Presentation path already defined: \"$adjustedPath\"")
         presentations[adjustedPath] = this
     }
 
@@ -56,7 +53,7 @@ class Presentation(path: String, val title: String, val theme: String) {
     }
 
     companion object : KLogging() {
-        val presentations = mutableMapOf<String, Presentation>()
+        internal val presentations = mutableMapOf<String, Presentation>()
 
         fun present() {
             val environment = commandLineEnvironment(emptyArray())
@@ -71,3 +68,8 @@ class Presentation(path: String, val title: String, val theme: String) {
         }
     }
 }
+
+// Keep this global to make it easier for users to be prompted for completion in it
+@HtmlTagMarker
+fun presentation(path: String = "/", title: String = "", theme: Theme = Theme.Black, block: Presentation.() -> Unit) =
+    Presentation(path, title, "dist/theme/${theme.name.toLowerCase()}.css").apply { block(this) }

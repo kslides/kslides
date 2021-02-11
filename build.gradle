@@ -48,7 +48,10 @@ dependencies {
     implementation "io.github.microutils:kotlin-logging:$logging_version"
     implementation "ch.qos.logback:logback-classic:$logback_version"
 
-    runtimeOnly "org.jetbrains.kotlin:kotlin-scripting-jsr223"
+    testImplementation "io.kotest:kotest-runner-junit5:$kotest_version"
+    testImplementation "io.kotest:kotest-assertions-core:$kotest_version"
+    testImplementation "io.kotest:kotest-assertions-ktor:$kotest_version"
+    testImplementation "io.kotest:kotest-property:$kotest_version"
 }
 
 task stage(dependsOn: ['uberjar', 'build', 'clean'])
@@ -87,11 +90,7 @@ compileKotlin {
         useIR = true
         jvmTarget = '1.8'
         freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
-                             '-Xuse-experimental=io.ktor.util.KtorExperimentalAPI',
-                             '-Xuse-experimental=io.ktor.locations.KtorExperimentalLocationsAPI',
-                             '-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi',
                              '-Xuse-experimental=kotlin.ExperimentalStdlibApi',
-                             '-Xuse-experimental=kotlin.contracts.ExperimentalContracts',
                              '-XXLanguage:+InlineClasses']
     }
 }
@@ -101,8 +100,6 @@ compileTestKotlin {
         useIR = true
         jvmTarget = '1.8'
         freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
-                             '-Xuse-experimental=io.ktor.util.KtorExperimentalAPI',
-                             '-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi',
                              '-Xuse-experimental=kotlin.ExperimentalStdlibApi',
                              '-XXLanguage:+InlineClasses']
     }
