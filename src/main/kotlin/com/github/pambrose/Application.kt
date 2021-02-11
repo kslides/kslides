@@ -2,31 +2,29 @@ package com.github.pambrose
 
 import com.github.pambrose.Installs.installs
 import com.github.pambrose.Page.generatePage
-import com.github.pambrose.SlideDeck.Companion.slidedecks
+import com.github.pambrose.Presentation.Companion.presentations
 import com.github.pambrose.common.response.respondWith
 import io.ktor.application.*
 import io.ktor.http.content.*
 import io.ktor.routing.*
-import kotlinx.html.HTMLTag
-import kotlinx.html.unsafe
+
+val staticContent = listOf("assets", "css", "dist", "js", "plugin")
 
 fun Application.module(testing: Boolean = false) {
     installs()
 
     routing {
-        static("/assets") { resources("assets") }
-        static("/css") { resources("css") }
-        static("/dist") { resources("dist") }
-        static("/js") { resources("js") }
-        static("/plugin") { resources("plugin") }
+        staticContent.forEach {
+            static("/$it") { resources(it) }
+        }
 
-        for (slidedeck in slidedecks.values)
-            get(slidedeck.path) {
+        presentations.forEach { presentation ->
+            get(presentation.key) {
                 respondWith {
-                    generatePage(slidedeck)
+                    generatePage(presentation.value)
                 }
             }
+        }
     }
 }
 
-fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }

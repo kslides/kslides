@@ -1,40 +1,93 @@
 package com.github.pambrose
 
-import com.github.pambrose.SlideDeck.Companion.showSlides
-import kotlinx.html.a
-import kotlinx.html.h3
-import kotlinx.html.h4
-import kotlinx.html.section
+import com.github.pambrose.Presentation.Companion.present
+import kotlinx.html.*
 
 fun main() {
 
-    slidedeck {
-        slide {
-            section {
-                h3 { +"Examples" }
-                h4 { a { href = "/demo.html"; +"Demo Deck" } }
+    presentation(title = "My Presentation", theme = Theme.Moon) {
+
+        htmlSlide("home") {
+            h3 { +"Examples" }
+            h4 { a { href = "/demo.html"; +"Demo Deck" } }
+        }
+
+        markdownSlide {
+            markdown { +"![Sample image](https://s3.amazonaws.com/static.slid.es/logo/v2/slides-symbol-512x512.png)" }
+        }
+
+        htmlSlide {
+            img { src = "https://s3.amazonaws.com/static.slid.es/logo/v2/slides-symbol-512x512.png" }
+        }
+
+        htmlSlide("embed-web-content") {
+            h2 { +"Embed Web Content" }
+            h4 { a { href = "#/home"; +"Home" } }
+
+            iframe {
+                attributes["data-autoplay"] = "true"
+                attributes["frameborder"] = "0"
+                width = "700"
+                height = "540"
+                src = "https://slides.com/news/auto-animate/embed"
             }
         }
 
-        section {
-            +"Slide 2"
+        markdownSlide("markdown-example") {
+            markdown {
+                +"""
+                    # Markdown Example
+                    ```kotlin [1|3-4]
+                        fun main() {
+                            println("Hello")
+                            println("World")
+                        }
+                    ```
+                """
+            }
         }
 
-        section {
+        htmlSlide {
+            section {
+                +"Slide 2"
+            }
+            section {
+                +"Sub 1"
+            }
+            section {
+                +"Sub 2"
+            }
+        }
+
+        htmlSlide {
             +"Slide 3"
+        }
+
+        htmlSlide {
+            attributes["data-background-iframe"] = "https://athenian.org"
+            attributes["data-background-interactive"] = "true"
+            div {
+                style =
+                    "position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;"
+                h2 { +"Iframe Backgrounds" }
+                p {
+                    +"""Since reveal.js runs on the web, you can easily embed other web content. Try interacting with the
+                    page in the background."""
+                }
+            }
         }
     }
 
-    slidedeck("/demo.html") {
-        section {
+    presentation("/demo.html") {
+        htmlSlide {
             +"Demo Slide 1"
         }
 
-        section {
+        htmlSlide {
             +"Demo Slide 2"
         }
     }
 
-    showSlides()
+    //output()
+    present()
 }
-
