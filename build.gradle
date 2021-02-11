@@ -8,8 +8,8 @@ plugins {
 }
 
 // These are for the uber target
-def mainName = "com.github.pambrose.TradingServer"
-def appName = 'server'
+def mainName = "com.github.pambrose.MainKt"
+def appName = 'kslides'
 
 // This is for ./gradlew run
 application {
@@ -54,7 +54,6 @@ dependencies {
 task stage(dependsOn: ['uberjar', 'build', 'clean'])
 build.mustRunAfter clean
 
-
 shadowJar {
     zip64 true
     mergeServiceFiles()
@@ -66,7 +65,7 @@ shadowJar {
 
 task uberjar(type: Jar, dependsOn: shadowJar) {
     zip64 true
-    archiveFileName = 'server.jar'
+    archiveFileName = 'kslides.jar'
     manifest {
         attributes('Implementation-Title': appName)
         attributes('Implementation-Version': version)
@@ -86,8 +85,6 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 compileKotlin {
     kotlinOptions {
         useIR = true
-        //languageVersion = "1.5"
-        //apiVersion = "1.5"
         jvmTarget = '1.8'
         freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
                              '-Xuse-experimental=io.ktor.util.KtorExperimentalAPI',
@@ -102,8 +99,6 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions {
         useIR = true
-        //languageVersion = "1.5"
-        //apiVersion = "1.5"
         jvmTarget = '1.8'
         freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
                              '-Xuse-experimental=io.ktor.util.KtorExperimentalAPI',

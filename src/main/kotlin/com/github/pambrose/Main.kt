@@ -1,6 +1,5 @@
 package com.github.pambrose
 
-import com.github.pambrose.Presentation.Companion.output
 import com.github.pambrose.Presentation.Companion.present
 import kotlinx.html.*
 
@@ -44,7 +43,7 @@ fun main() {
                             println("World")
                         }
                     ```
-                """.trimIndent()
+                """
             }
         }
 
@@ -89,6 +88,6 @@ fun main() {
         }
     }
 
-    output()
+    //output()
     present()
 }

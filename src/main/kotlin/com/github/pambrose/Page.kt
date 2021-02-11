@@ -8,12 +8,13 @@ import kotlinx.html.dom.serialize
 
 object Page {
     fun generatePage(presentation: Presentation): String {
-        val doc = document {
-            append.html {
-                generateHead(presentation)
-                generateBody(presentation)
+        val document =
+            document {
+                append.html {
+                    generateHead(presentation)
+                    generateBody(presentation)
+                }
             }
-        }
 
         val escapedChars =
             listOf(
@@ -22,7 +23,9 @@ object Page {
                 ">" to "_*_gt_*_",
                 "&" to "_*_amp_*_"
             )
-        val nodeList = doc.getElementsByTagName("*")
+
+        // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
+        val nodeList = document.getElementsByTagName("*")
         (0..nodeList.length).forEach { i ->
             val node = nodeList.item(i)
             if (node?.nodeName == "script") {
@@ -34,26 +37,12 @@ object Page {
             }
         }
 
-        var str = doc.serialize()
+        var str = document.serialize()
         escapedChars.forEach {
             str = str.replace(it.second, it.first)
         }
         return str
     }
-//        buildString {
-//            appendLine("<!DOCTYPE html>")
-//            appendHTML().html {
-//                generateHead(presentation)
-//                generateBody(presentation)
-//            }
-//            appendLine()
-//        }
-
-//        createHTML()
-//            .html {
-//                generateHead(presentation)
-//                generateBody(presentation)
-//            }
 
     fun test() {
         println(document {
@@ -105,6 +94,7 @@ object Page {
             script { src = "plugin/search/search.js" }
             script { src = "plugin/markdown/markdown.js" }
             script { src = "plugin/highlight/highlight.js" }
+
             script {
                 rawHtml(
                     """
@@ -117,4 +107,6 @@ object Page {
             }
         }
     }
+
+    fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
 }
