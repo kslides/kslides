@@ -13,16 +13,15 @@ fun main() {
         }
 
         markdownSlide {
-            markdown { +"![Sample image](https://s3.amazonaws.com/static.slid.es/logo/v2/slides-symbol-512x512.png)" }
+            markdown { +"![Sample image](https://picsum.photos/512/512)" }
         }
 
         htmlSlide {
-            img { src = "https://s3.amazonaws.com/static.slid.es/logo/v2/slides-symbol-512x512.png" }
+            img { src = "https://picsum.photos/512/512" }
         }
 
         htmlSlide("embed-web-content") {
             h2 { +"Embed Web Content" }
-            h4 { a { href = "#/home"; +"Home" } }
 
             iframe {
                 attributes["data-autoplay"] = "true"
@@ -61,6 +60,8 @@ fun main() {
 
         htmlSlide {
             +"Slide 3"
+
+            h4 { a { href = "#/home"; +"Home" } }
         }
 
         htmlSlide {

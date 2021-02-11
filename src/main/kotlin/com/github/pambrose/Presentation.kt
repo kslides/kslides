@@ -16,9 +16,12 @@ class Presentation(path: String, val title: String, val theme: String) {
     internal val slides = mutableListOf<Slide>()
 
     init {
+        if (path.removePrefix("/") in staticRoots)
+            throw IllegalArgumentException("Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"")
+
         val adjustedPath = if (path.startsWith("/")) path else "/$path"
         if (presentations.containsKey(adjustedPath))
-            throw IllegalArgumentException("Slide Deck path $adjustedPath already defined")
+            throw IllegalArgumentException("Presentation path already defined: \"$adjustedPath \"")
         presentations[adjustedPath] = this
     }
 

@@ -17,7 +17,7 @@ application {
 }
 
 group 'com.github.pambrose'
-version '1.0'
+version '0.1.0'
 
 repositories {
     maven { url 'https://kotlin.bintray.com/ktor' }
