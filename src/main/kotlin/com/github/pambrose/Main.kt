@@ -1,19 +1,28 @@
 package com.github.pambrose
 
-import com.github.pambrose.SlideDeck.Companion.presentSlides
+import com.github.pambrose.Presentation.Companion.present
 import kotlinx.html.*
 
 fun main() {
 
-    slidedeck {
-        htmlSlide {
+    presentation(title = "My Presentation", theme = Theme.Moon) {
+
+        htmlSlide("home") {
             h3 { +"Examples" }
             h4 { a { href = "/demo.html"; +"Demo Deck" } }
         }
 
-        section {
-            id = "embed-web-content"
+        markdownSlide {
+            markdown { +"![Sample image](https://s3.amazonaws.com/static.slid.es/logo/v2/slides-symbol-512x512.png)" }
+        }
+
+        htmlSlide {
+            img { src = "https://s3.amazonaws.com/static.slid.es/logo/v2/slides-symbol-512x512.png" }
+        }
+
+        section("embed-web-content") {
             h2 { +"Embed Web Content" }
+            h4 { a { href = "#/home"; +"Home" } }
 
             iframe {
                 attributes["data-autoplay"] = "true"
@@ -25,16 +34,23 @@ fun main() {
             }
         }
 
-        markdownSlide {
-            id = "markdown-example"
-
+        markdownSlide("markdown-example") {
             markdown {
                 +"""
                     # Markdown Example
-                    ```kotlin
-                    fun main() {
-                    }
+                    ```kotlin [1|3-5]
+                        fun main() {
+                            println("Hello")
+                        }
                     ```
+                    
+                    ```php [1|3-5]
+                        public function foo()
+                        {
+                            '$'foo = array('bar' => 'bar')
+                        }
+                     ```
+
                 """.trimIndent()
             }
         }
@@ -70,7 +86,7 @@ fun main() {
         }
     }
 
-    slidedeck("/demo.html") {
+    presentation("/demo.html") {
         htmlSlide {
             +"Demo Slide 1"
         }
@@ -80,6 +96,5 @@ fun main() {
         }
     }
 
-    presentSlides()
+    present()
 }
-

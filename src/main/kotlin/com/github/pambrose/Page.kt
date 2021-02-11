@@ -4,44 +4,39 @@ import kotlinx.html.*
 import kotlinx.html.stream.createHTML
 
 object Page {
-    fun generatePage(slidedeck: SlideDeck) =
+    fun generatePage(presentation: Presentation) =
         createHTML()
             .html {
-                generateHead()
-                generateBody(slidedeck)
-            }.replace("data-markdown=\"true\"", "data-markdown")
+                generateHead(presentation)
+                generateBody(presentation)
+            }
 
-    fun HTML.generateHead() {
+    fun HTML.generateHead(presentation: Presentation) {
         head {
             meta { charset = "utf-8" }
-            meta {
-                name = "apple-mobile-web-app-capable"
-                content = "yes"
-            }
-            meta {
-                name = "apple-mobile-web-app-status-bar-style"
-                content = "black-translucent"
-            }
+            meta { name = "apple-mobile-web-app-capable"; content = "yes" }
+            meta { name = "apple-mobile-web-app-status-bar-style"; content = "black-translucent" }
             meta {
                 name = "viewport"
                 content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
             }
 
-            title { +"kslides" }
+            if (presentation.title.isNotEmpty())
+                title { +presentation.title }
 
             link { rel = "stylesheet"; href = "dist/reset.css" }
             link { rel = "stylesheet"; href = "dist/reveal.css" }
-            link { rel = "stylesheet"; href = "dist/theme/black.css"; id = "theme" }
+            link { rel = "stylesheet"; href = presentation.theme; id = "theme" }
             link { rel = "stylesheet"; href = "plugin/highlight/monokai.css"; id = "highlight-theme" }
         }
     }
 
-    fun HTML.generateBody(slidedeck: SlideDeck) {
+    fun HTML.generateBody(presentation: Presentation) {
         body {
             div("reveal") {
                 div("slides") {
-                    slidedeck.slides
-                        .onEach { slide ->
+                    presentation.slides
+                        .forEach { slide ->
                             slide.content(this)
                         }
                 }

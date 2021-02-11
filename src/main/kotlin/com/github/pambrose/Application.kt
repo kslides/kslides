@@ -2,7 +2,7 @@ package com.github.pambrose
 
 import com.github.pambrose.Installs.installs
 import com.github.pambrose.Page.generatePage
-import com.github.pambrose.SlideDeck.Companion.slidedecks
+import com.github.pambrose.Presentation.Companion.presentations
 import com.github.pambrose.common.response.respondWith
 import io.ktor.application.*
 import io.ktor.http.content.*
@@ -20,12 +20,13 @@ fun Application.module(testing: Boolean = false) {
         static("/js") { resources("js") }
         static("/plugin") { resources("plugin") }
 
-        for (slidedeck in slidedecks)
-            get(slidedeck.key) {
+        presentations.forEach { presentation ->
+            get(presentation.key) {
                 respondWith {
-                    generatePage(slidedeck.value)
+                    generatePage(presentation.value)
                 }
             }
+        }
     }
 }
 
