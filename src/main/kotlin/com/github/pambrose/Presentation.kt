@@ -54,6 +54,16 @@ class Presentation(path: String, val title: String, val theme: String) {
     }
 
     @HtmlTagMarker
+    fun mulitMarkdownSlide(
+        id: String = "",
+        separator: String = "\\n---\\n",
+        vertical_separator: String = "\\n--\\n",
+        content: SECTION.() -> Unit
+    ) {
+        markdownSlide(id, separator, vertical_separator, content)
+    }
+
+    @HtmlTagMarker
     fun SECTION.markdown(content: SCRIPT.() -> Unit) {
         script {
             type = "text/template"

@@ -49,7 +49,7 @@ fun main() {
         }
 
         // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
-        markdownSlide(separator = "\n---\n", vertical_separator = "\n--\n") {
+        mulitMarkdownSlide {
             markdown {
                 +"""
                     ## Demo 2
@@ -68,7 +68,7 @@ fun main() {
             }
         }
 
-        markdownSlide(separator = "") {
+        markdownSlide {
             markdown {
                 +"""
                         A
