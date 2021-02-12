@@ -28,7 +28,7 @@ fun main() {
             }
         }
 
-        markdownSlide(filename = "/public/markdown.md", separator = "^\n\n\n", vertical_separator = "^\n\n")
+        markdownSlide(filename = "/public/markdown.md", separator = "^---", vertical_separator = "^--")
 
         // Slides are separated by three dashes
         markdownSlide(separator = "---") {
