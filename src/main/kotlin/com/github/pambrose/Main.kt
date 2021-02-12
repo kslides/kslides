@@ -12,10 +12,6 @@ fun main() {
             h4 { a { href = "/demo.html"; +"Demo Deck" } }
         }
 
-        markdownSlide {
-            markdown { +"![Sample image](https://picsum.photos/512/512)" }
-        }
-
         htmlSlide {
             img { src = "https://picsum.photos/512/512" }
         }
@@ -31,6 +27,8 @@ fun main() {
                 src = "https://slides.com/news/auto-animate/embed"
             }
         }
+
+        markdownSlide(filename = "/public/markdown.md", separator = "^\n\n\n", vertical_separator = "^\n\n")
 
         // Slides are separated by three dashes
         markdownSlide(separator = "---") {
@@ -88,9 +86,20 @@ fun main() {
         markdownSlide {
             markdown {
                 +"""
-                <!-- .slide: data-background="#FFFF00" -->
-                ## Slide attributes
-                """.trimIndent()
+                    ${slideBackground("#FFFF00")}
+                    ## Slide attributes
+                """
+            }
+        }
+
+        markdownSlide {
+            markdown {
+                +"""
+                    ## Element attributes
+                    - Item 1 ${fragmentIndex(1)} 
+                    - Item 2 ${fragmentIndex(2)}
+                    - Item 3 ${fragmentIndex(2)}
+                """
             }
         }
 
@@ -138,6 +147,11 @@ fun main() {
                     page in the background."""
                 }
             }
+        }
+
+        // Images
+        markdownSlide {
+            markdown { +"![Sample image](https://picsum.photos/512/512)" }
         }
     }
 

@@ -39,16 +39,22 @@ class Presentation(path: String, val title: String, val theme: String) {
     @HtmlTagMarker
     fun markdownSlide(
         id: String = "",
-        separator: String = "",//""\\n---\\n",
-        vertical_separator: String = "", //""\\n--\\n",
-        content: SECTION.() -> Unit
+        filename: String = "",
+        separator: String = "",
+        vertical_separator: String = "",
+        notes: String = "^Note:",
+        content: SECTION.() -> Unit = {}
     ) {
         htmlSlide(id) {
-            attributes["data-markdown"] = ""
+            attributes["data-markdown"] = filename
             if (separator.isNotEmpty())
                 attributes["data-separator"] = separator
             if (vertical_separator.isNotEmpty())
                 attributes["data-separator-vertical"] = vertical_separator
+            // If any of the data-separator values are defined, then plain --- in markdown will not work
+            // So do not define data-separator-notes unless using other data-separator values
+            if (notes.isNotEmpty() && separator.isNotEmpty() && vertical_separator.isNotEmpty())
+                attributes["data-separator-notes"] = notes
             content()
         }
     }
@@ -56,12 +62,18 @@ class Presentation(path: String, val title: String, val theme: String) {
     @HtmlTagMarker
     fun mulitMarkdownSlide(
         id: String = "",
-        separator: String = "\\n---\\n",
-        vertical_separator: String = "\\n--\\n",
-        content: SECTION.() -> Unit
-    ) {
-        markdownSlide(id, separator, vertical_separator, content)
-    }
+        filename: String = "",
+        notes: String = "^Note:",
+        content: SECTION.() -> Unit = {}
+    ) =
+        markdownSlide(
+            id = id,
+            filename = filename,
+            separator = "\r?\\n---\r?\\n",
+            vertical_separator = "\r?\\n--\r?\\n",
+            notes = notes,
+            content = content
+        )
 
     @HtmlTagMarker
     fun SECTION.markdown(content: SCRIPT.() -> Unit) {
@@ -70,6 +82,11 @@ class Presentation(path: String, val title: String, val theme: String) {
             content()
         }
     }
+
+    fun SCRIPT.slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
+
+    fun SCRIPT.fragmentIndex(index: Int) =
+        "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
 
     companion object : KLogging() {
         internal val presentations = mutableMapOf<String, Presentation>()

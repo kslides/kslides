@@ -33,10 +33,12 @@ object Page {
 
                     node.attributes.getNamedItem("data-separator")?.apply {
                         nodeValue = nodeValue.replace("\n", "\\n")
+                        nodeValue = nodeValue.replace("\r", "\\r")
                     }
 
                     node.attributes.getNamedItem("data-separator-vertical")?.apply {
                         nodeValue = nodeValue.replace("\n", "\\n")
+                        nodeValue = nodeValue.replace("\r", "\\r")
                     }
                 }
 
