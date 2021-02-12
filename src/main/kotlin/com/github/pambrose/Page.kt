@@ -76,6 +76,13 @@ object Page {
             link { rel = "stylesheet"; href = "dist/reveal.css" }
             link { rel = "stylesheet"; href = presentation.theme; id = "theme" }
             link { rel = "stylesheet"; href = "plugin/highlight/monokai.css"; id = "highlight-theme" }
+
+            if (presentation.css.isNotEmpty()) {
+                style {
+                    type = "text/css"; media = "screen"
+                    +presentation.css
+                }
+            }
         }
     }
 

@@ -5,14 +5,23 @@ import kotlinx.html.*
 
 fun main() {
 
-    presentation(title = "My Presentation", theme = Theme.Moon) {
+    presentation(title = "markdown Demo", theme = Theme.Moon) {
+        css =
+            """
+			.slides section h3 {
+				color: green;
+			}
+			.slides section h4 {
+				color: red;
+			}
+            """
 
         htmlSlide("home") {
             h3 { +"Examples" }
             h4 { a { href = "/demo.html"; +"Demo Deck" } }
         }
 
-        htmlSlide {
+        htmlSlide(transition = Transition.Zoom, speed = Speed.Slow, background = "#bb00bb") {
             img { src = "https://picsum.photos/512/512" }
         }
 

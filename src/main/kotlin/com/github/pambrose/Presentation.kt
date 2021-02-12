@@ -8,6 +8,8 @@ import mu.KLogging
 
 class Presentation(path: String, val title: String, val theme: String) {
 
+    var css = ""
+
     internal inline class Slide(val content: DIV.() -> Unit)
 
     internal val slides = mutableListOf<Slide>()
@@ -23,38 +25,86 @@ class Presentation(path: String, val title: String, val theme: String) {
     }
 
     @HtmlTagMarker
-    fun htmlSlide(id: String = "", content: SECTION.() -> Unit) {
+    fun htmlSlide(
+        id: String = "",
+        transition: Transition = Transition.Slide,
+        transitionIn: Transition = Transition.Slide,
+        transitionOut: Transition = Transition.Slide,
+        speed: Speed = Speed.Default,
+        background: String = "",
+        content: SECTION.() -> Unit
+    ) {
         slides += Slide {
             section {
                 if (id.isNotEmpty())
                     this.id = id
+
+                if (transition != Transition.Slide)
+                    attributes["data-transition"] = transition.asInOut()
+                else {
+                    if (transitionIn != Transition.Slide || transitionOut != Transition.Slide)
+                        attributes["data-transition"] = "${transitionIn.asIn()} ${transitionOut.asOut()}"
+                }
+
+                if (speed != Speed.Default)
+                    attributes["data-transition-speed"] = speed.name.toLowerCase()
+
+                if (background.isNotEmpty())
+                    attributes["data-background"] = background
+
                 content()
             }
         }
     }
 
     @HtmlTagMarker
-    fun section(id: String = "", content: SECTION.() -> Unit) = htmlSlide(id, content)
+    fun section(
+        id: String = "",
+        transition: Transition = Transition.Slide,
+        transitionIn: Transition = Transition.Slide,
+        transitionOut: Transition = Transition.Slide,
+        speed: Speed = Speed.Default,
+        background: String = "",
+        content: SECTION.() -> Unit
+    ) =
+        htmlSlide(
+            id = id,
+            transition = transition,
+            transitionIn = transitionIn,
+            transitionOut = transitionOut,
+            speed = speed,
+            background = background,
+            content = content
+        )
 
     @HtmlTagMarker
     fun markdownSlide(
         id: String = "",
+        transition: Transition = Transition.Slide,
+        transitionIn: Transition = Transition.Slide,
+        transitionOut: Transition = Transition.Slide,
+        speed: Speed = Speed.Default,
+        background: String = "",
         filename: String = "",
         separator: String = "",
         vertical_separator: String = "",
         notes: String = "^Note:",
         content: SECTION.() -> Unit = {}
     ) {
-        htmlSlide(id) {
-            attributes["data-markdown"] = filename
+        htmlSlide(id, transition, transitionIn, transitionOut, speed, background) {
+            attributes["data-markdown"] = filename  // It is okay of this is == ""
+
             if (separator.isNotEmpty())
                 attributes["data-separator"] = separator
+
             if (vertical_separator.isNotEmpty())
                 attributes["data-separator-vertical"] = vertical_separator
+
             // If any of the data-separator values are defined, then plain --- in markdown will not work
             // So do not define data-separator-notes unless using other data-separator values
             if (notes.isNotEmpty() && separator.isNotEmpty() && vertical_separator.isNotEmpty())
                 attributes["data-separator-notes"] = notes
+
             content()
         }
     }
@@ -62,12 +112,22 @@ class Presentation(path: String, val title: String, val theme: String) {
     @HtmlTagMarker
     fun mulitMarkdownSlide(
         id: String = "",
+        transition: Transition = Transition.Slide,
+        transitionIn: Transition = Transition.Slide,
+        transitionOut: Transition = Transition.Slide,
+        speed: Speed = Speed.Default,
+        background: String = "",
         filename: String = "",
         notes: String = "^Note:",
         content: SECTION.() -> Unit = {}
     ) =
         markdownSlide(
             id = id,
+            transition = transition,
+            transitionIn = transitionIn,
+            transitionOut = transitionOut,
+            speed = speed,
+            background = background,
             filename = filename,
             separator = "\r?\\n---\r?\\n",
             vertical_separator = "\r?\\n--\r?\\n",
@@ -79,6 +139,7 @@ class Presentation(path: String, val title: String, val theme: String) {
     fun SECTION.markdown(content: SCRIPT.() -> Unit) {
         script {
             type = "text/template"
+
             content()
         }
     }
