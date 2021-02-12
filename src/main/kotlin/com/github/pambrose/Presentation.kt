@@ -37,9 +37,18 @@ class Presentation(path: String, val title: String, val theme: String) {
     fun section(id: String = "", content: SECTION.() -> Unit) = htmlSlide(id, content)
 
     @HtmlTagMarker
-    fun markdownSlide(id: String = "", content: SECTION.() -> Unit) {
-        htmlSlide {
+    fun markdownSlide(
+        id: String = "",
+        separator: String = "",//""\\n---\\n",
+        vertical_separator: String = "", //""\\n--\\n",
+        content: SECTION.() -> Unit
+    ) {
+        htmlSlide(id) {
             attributes["data-markdown"] = ""
+            if (separator.isNotEmpty())
+                attributes["data-separator"] = separator
+            if (vertical_separator.isNotEmpty())
+                attributes["data-separator-vertical"] = vertical_separator
             content()
         }
     }

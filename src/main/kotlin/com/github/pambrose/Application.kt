@@ -9,7 +9,7 @@ import io.ktor.http.content.*
 import io.ktor.routing.*
 import org.slf4j.event.Level
 
-val staticRoots = listOf("assets", "css", "dist", "js", "plugin")
+internal val staticRoots = listOf("assets", "css", "dist", "js", "plugin")
 
 fun Application.module(testing: Boolean = false) {
 

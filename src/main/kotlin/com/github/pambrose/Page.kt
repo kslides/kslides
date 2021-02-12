@@ -1,7 +1,7 @@
 package com.github.pambrose
 
+import com.github.pambrose.common.util.isNotNull
 import kotlinx.html.*
-import kotlinx.html.consumers.filter
 import kotlinx.html.dom.append
 import kotlinx.html.dom.document
 import kotlinx.html.dom.serialize
@@ -28,10 +28,23 @@ object Page {
         val nodeList = document.getElementsByTagName("*")
         (0..nodeList.length).forEach { i ->
             val node = nodeList.item(i)
-            if (node?.nodeName == "script") {
-                if (node.attributes.getNamedItem("type")?.nodeValue == "text/template") {
-                    escapedChars.forEach {
-                        node.firstChild.nodeValue = node.firstChild.nodeValue.replace(it.first, it.second)
+            if (node.isNotNull()) {
+                if (node.nodeName == "section") {
+
+                    node.attributes.getNamedItem("data-separator")?.apply {
+                        nodeValue = nodeValue.replace("\n", "\\n")
+                    }
+
+                    node.attributes.getNamedItem("data-separator-vertical")?.apply {
+                        nodeValue = nodeValue.replace("\n", "\\n")
+                    }
+                }
+
+                if (node.nodeName == "script") {
+                    if (node.attributes.getNamedItem("type")?.nodeValue == "text/template") {
+                        escapedChars.forEach {
+                            node.firstChild.nodeValue = node.firstChild.nodeValue.replace(it.first, it.second)
+                        }
                     }
                 }
             }
@@ -42,19 +55,6 @@ object Page {
             str = str.replace(it.second, it.first)
         }
         return str
-    }
-
-    fun test() {
-        println(document {
-            append.filter { if (it.tagName == "div") SKIP else PASS }.html {
-                body {
-                    div {
-                        a { +"link1" }
-                    }
-                    a { +"link2" }
-                }
-            }
-        }.serialize())
     }
 
     fun HTML.generateHead(presentation: Presentation) {

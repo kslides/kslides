@@ -19,9 +19,10 @@ package com.github.readingbat
 
 import com.github.pambrose.Presentation.Companion.presentations
 import com.github.pambrose.presentation
-import io.kotest.assertions.throwables.shouldThrow
+import com.github.pambrose.staticRoots
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.ints.shouldBeExactly
+import io.kotest.matchers.shouldBe
 
 class PresentationTest : StringSpec(
     {
@@ -29,23 +30,32 @@ class PresentationTest : StringSpec(
             presentation {
             }
 
-            presentations.size shouldBeExactly 1
+            presentations.size shouldBe 1
 
-            shouldThrow<IllegalArgumentException> {
+            shouldThrowExactly<IllegalArgumentException> {
                 presentation { }
             }
 
             presentation("test") { }
 
-            presentations.size shouldBeExactly 2
+            presentations.size shouldBe 2
 
-            shouldThrow<IllegalArgumentException> {
+            shouldThrowExactly<IllegalArgumentException> {
                 presentation("test") { }
             }
 
-            shouldThrow<IllegalArgumentException> {
+            shouldThrowExactly<IllegalArgumentException> {
                 presentation("/test") { }
             }
-        }
 
+            staticRoots.forEach {
+                shouldThrowExactly<IllegalArgumentException> {
+                    presentation(it) { }
+                }
+
+                shouldThrowExactly<IllegalArgumentException> {
+                    presentation("/$it") { }
+                }
+            }
+        }
     })

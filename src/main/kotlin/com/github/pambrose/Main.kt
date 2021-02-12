@@ -32,6 +32,68 @@ fun main() {
             }
         }
 
+        // Slides are separated by three dashes
+        markdownSlide(separator = "---") {
+            markdown {
+                +"""
+                    ## Demo 1
+                    Slide 1
+                    ---
+                    ## Demo 1
+                    Slide 2
+                    ---
+                    ## Demo 1
+                    Slide 3
+                """
+            }
+        }
+
+        // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
+        markdownSlide(separator = "\n---\n", vertical_separator = "\n--\n") {
+            markdown {
+                +"""
+                    ## Demo 2
+                    Slide 1.1
+    
+                    --
+    
+                    ## Demo 2
+                    Slide 1.2
+    
+                    ---
+    
+                    ## Demo 2
+                    Slide 2
+                """
+            }
+        }
+
+        markdownSlide(separator = "") {
+            markdown {
+                +"""
+                        A
+
+                        ---
+
+                        B
+
+                        ---
+
+                        C
+                """
+            }
+        }
+
+        // Slide attributes
+        markdownSlide {
+            markdown {
+                +"""
+                <!-- .slide: data-background="#FFFF00" -->
+                ## Slide attributes
+                """.trimIndent()
+            }
+        }
+
         markdownSlide("markdown-example") {
             markdown {
                 +"""
