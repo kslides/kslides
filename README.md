@@ -11,39 +11,41 @@ kslides wraps [reveal.js](https://revealjs.com).
 ## Presentation Structure
 
 ```kotlin
-fun main() {
-    presentation {
-        htmlSlide(id = "start") {
-            h1 { +"HTML Slide 🐦" }
-            p { +"Press ESC to see presentation overview" }
-        }
+presentation {
+  htmlSlide(id = "start") {
+    h1 { +"HTML Slide 🐦" }
+    p { +"Press ESC to see presentation overview" }
+  }
 
-        markdownSlide {
-            +"""
-               # Markdown Slide 🍒 
-               
-               Use the arrow keys to navigate.
-            """
-        }
+  markdownSlide {
+    +"""
+           # Markdown Slide 🍒 
+           
+           Use the arrow keys to navigate.
+        """
+  }
 
-        verticalSlides {
-            htmlSlide {
-                h1 { +"Vertical HTML Slide 👇" }
-            }
-
-            markdownSlide {
-                +"""
-                    # Vertical Markdown Slide 🦊 
-                    
-                    [Go back to the 1st slide](#/start)
-                """
-            }
-        }
+  verticalSlides {
+    htmlSlide {
+      h1 { +"Vertical HTML Slide 👇" }
     }
 
-    // Run the web server
-    present()
+    markdownSlide {
+      +"""
+                # Vertical Markdown Slide 🦊 
+                
+                [Go back to the 1st slide](#/start)
+            """
+    }
+  }
 }
 ```
 
+Click [here](https://kslides-simple.herokuapp.com) to see how this presentation appears when run as
+a [kotlin program](src/main/kotlin/Simple.kt).
+
 ## Odd Behavior
+
+* When a `markdownSlide` references an external file and is in a `verticalSlides` section, the string "---"
+  is interpreted as a vertical page separator and "--- " (with a space suffix) is rendered as a markdown horizontal
+  line. 
