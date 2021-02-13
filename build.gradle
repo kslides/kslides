@@ -8,7 +8,7 @@ plugins {
 }
 
 // These are for the uber target
-def mainName = "com.github.pambrose.SimpleKt"
+def mainName = "SimpleKt"
 def appName = 'kslides'
 
 // This is for ./gradlew run
