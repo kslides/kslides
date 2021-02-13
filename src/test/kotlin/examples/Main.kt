@@ -6,7 +6,6 @@ import kotlinx.css.color
 import kotlinx.html.*
 
 fun main() {
-
     presentation(title = "markdown Demo", theme = Theme.Moon) {
         css =
             """
