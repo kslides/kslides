@@ -1,6 +1,7 @@
 package com.github.pambrose
 
 import com.github.pambrose.Page.generatePage
+import com.github.pambrose.Page.rawHtml
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import kotlinx.css.CSSBuilder
@@ -29,6 +30,65 @@ class Presentation(path: String, val title: String, val theme: String) {
         css += CSSBuilder().apply(content).toString()
     }
 
+    class VerticalContext {
+        val vertSlides = mutableListOf<SECTION.() -> Unit>()
+    }
+
+    @HtmlTagMarker
+    fun verticalSlides(content: VerticalContext.() -> Unit) {
+        val vertContext = VerticalContext()
+        content.invoke(vertContext)
+        slides += {
+            section {
+                vertContext.vertSlides.forEach {
+                    section { it.invoke(this) }
+                    rawHtml("\n\t")
+                }
+            }
+            rawHtml("\n\t")
+        }
+    }
+
+    @HtmlTagMarker
+    fun VerticalContext.htmlSlide(
+        id: String = "",
+        transition: Transition = Transition.Slide,
+        transitionIn: Transition = Transition.Slide,
+        transitionOut: Transition = Transition.Slide,
+        speed: Speed = Speed.Default,
+        backgroundColor: String = "",
+        backgroundIframe: String = "",
+        backgroundInteractive: Boolean = false,
+        content: SECTION.() -> Unit
+    ) {
+        vertSlides += {
+            if (id.isNotEmpty())
+                this.id = id
+
+            if (transition != Transition.Slide)
+                attributes["data-transition"] = transition.asInOut()
+            else {
+                if (transitionIn != Transition.Slide || transitionOut != Transition.Slide)
+                    attributes["data-transition"] = "${transitionIn.asIn()} ${transitionOut.asOut()}"
+            }
+
+            if (speed != Speed.Default)
+                attributes["data-transition-speed"] = speed.name.toLowerCase()
+
+            if (backgroundColor.isNotEmpty())
+                attributes["data-background"] = backgroundColor
+
+            if (backgroundIframe.isNotEmpty()) {
+                attributes["data-background-iframe"] = backgroundIframe
+
+                if (backgroundInteractive)
+                    attributes["data-background-interactive"] = ""
+            }
+
+            content.invoke(this)
+        }
+    }
+
     @HtmlTagMarker
     fun htmlSlide(
         id: String = "",
@@ -36,7 +96,7 @@ class Presentation(path: String, val title: String, val theme: String) {
         transitionIn: Transition = Transition.Slide,
         transitionOut: Transition = Transition.Slide,
         speed: Speed = Speed.Default,
-        background: String = "",
+        backgroundColor: String = "",
         backgroundIframe: String = "",
         backgroundInteractive: Boolean = false,
         content: SECTION.() -> Unit
@@ -56,8 +116,8 @@ class Presentation(path: String, val title: String, val theme: String) {
                 if (speed != Speed.Default)
                     attributes["data-transition-speed"] = speed.name.toLowerCase()
 
-                if (background.isNotEmpty())
-                    attributes["data-background"] = background
+                if (backgroundColor.isNotEmpty())
+                    attributes["data-background"] = backgroundColor
 
                 if (backgroundIframe.isNotEmpty()) {
                     attributes["data-background-iframe"] = backgroundIframe
@@ -66,30 +126,51 @@ class Presentation(path: String, val title: String, val theme: String) {
                         attributes["data-background-interactive"] = ""
                 }
 
-                content()
+                content.invoke(this)
             }
+            rawHtml("\n\t")
         }
     }
 
     @HtmlTagMarker
-    fun section(
+    fun VerticalContext.markdownSlide(
         id: String = "",
         transition: Transition = Transition.Slide,
         transitionIn: Transition = Transition.Slide,
         transitionOut: Transition = Transition.Slide,
         speed: Speed = Speed.Default,
-        background: String = "",
-        content: SECTION.() -> Unit
-    ) =
+        backgroundColor: String = "",
+        backgroundIframe: String = "",
+        backgroundInteractive: Boolean = false,
+        filename: String = "",
+        content: SCRIPT.() -> Unit = {}
+    ) {
         htmlSlide(
-            id = id,
-            transition = transition,
-            transitionIn = transitionIn,
-            transitionOut = transitionOut,
-            speed = speed,
-            background = background,
-            content = content
-        )
+            id,
+            transition,
+            transitionIn,
+            transitionOut,
+            speed,
+            backgroundColor,
+            backgroundIframe,
+            backgroundInteractive
+        ) {
+            // If this value is == "" it means read content inline
+            attributes["data-markdown"] = filename
+
+            attributes["data-separator"] = ""
+            attributes["data-separator-vertical"] = ""
+
+            //if (notes.isNotEmpty())
+            //    attributes["data-separator-notes"] = notes
+
+            if (filename.isEmpty())
+                script {
+                    type = "text/template"
+                    content()
+                }
+        }
+    }
 
     @HtmlTagMarker
     fun markdownSlide(
@@ -98,15 +179,27 @@ class Presentation(path: String, val title: String, val theme: String) {
         transitionIn: Transition = Transition.Slide,
         transitionOut: Transition = Transition.Slide,
         speed: Speed = Speed.Default,
-        background: String = "",
-        filename: String = "",
+        backgroundColor: String = "",
+        backgroundIframe: String = "",
+        backgroundInteractive: Boolean = false,
         separator: String = "",
         vertical_separator: String = "",
         notes: String = "^Note:",
+        filename: String = "",
         content: SCRIPT.() -> Unit = {}
     ) {
-        htmlSlide(id, transition, transitionIn, transitionOut, speed, background) {
-            attributes["data-markdown"] = filename  // It is okay of this is == ""
+        htmlSlide(
+            id,
+            transition,
+            transitionIn,
+            transitionOut,
+            speed,
+            backgroundColor,
+            backgroundIframe,
+            backgroundInteractive
+        ) {
+            // If this value is == "" it means read content inline
+            attributes["data-markdown"] = filename
 
             if (separator.isNotEmpty())
                 attributes["data-separator"] = separator
@@ -119,38 +212,13 @@ class Presentation(path: String, val title: String, val theme: String) {
             if (notes.isNotEmpty() && separator.isNotEmpty() && vertical_separator.isNotEmpty())
                 attributes["data-separator-notes"] = notes
 
-            script {
-                type = "text/template"
-                content()
-            }
+            if (filename.isEmpty())
+                script {
+                    type = "text/template"
+                    content()
+                }
         }
     }
-
-    @HtmlTagMarker
-    fun mulitMarkdownSlide(
-        id: String = "",
-        transition: Transition = Transition.Slide,
-        transitionIn: Transition = Transition.Slide,
-        transitionOut: Transition = Transition.Slide,
-        speed: Speed = Speed.Default,
-        background: String = "",
-        filename: String = "",
-        notes: String = "^Note:",
-        content: SCRIPT.() -> Unit = {}
-    ) =
-        markdownSlide(
-            id = id,
-            transition = transition,
-            transitionIn = transitionIn,
-            transitionOut = transitionOut,
-            speed = speed,
-            background = background,
-            filename = filename,
-            separator = "\r?\\n---\r?\\n",
-            vertical_separator = "\r?\\n--\r?\\n",
-            notes = notes,
-            content = content
-        )
 
     fun SCRIPT.slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
 
