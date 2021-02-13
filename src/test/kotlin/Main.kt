@@ -49,8 +49,7 @@ fun main() {
 
         // Slides are separated by three dashes
         markdownSlide(separator = "---") {
-            markdown {
-                +"""
+            +"""
                     ## Demo 1
                     Slide 1
                     ---
@@ -60,13 +59,11 @@ fun main() {
                     ## Demo 1
                     Slide 3
                 """
-            }
         }
 
         // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
         mulitMarkdownSlide {
-            markdown {
-                +"""
+            +"""
                     ## Demo 2
                     Slide 1.1
     
@@ -80,12 +77,10 @@ fun main() {
                     ## Demo 2
                     Slide 2
                 """
-            }
         }
 
         markdownSlide {
-            markdown {
-                +"""
+            +"""
                         A
 
                         ---
@@ -96,42 +91,34 @@ fun main() {
 
                         C
                 """
-            }
         }
 
         // Slide attributes
-        markdownSlide {
-            markdown {
-                +"""
-                    ${slideBackground("#FFFF00")}
-                    ## Slide attributes
-                """
-            }
+        markdownSlide(background = "#FFFF00") {
+            +"""
+                ## Slide attributes
+             """
         }
 
         markdownSlide {
-            markdown {
-                +"""
-                    ## Element attributes
-                    - Item 1 ${fragmentIndex(1)} 
-                    - Item 2 ${fragmentIndex(2)}
-                    - Item 3 ${fragmentIndex(2)}
+            +"""
+                ## Element attributes
+                - Item 1 ${fragmentIndex(1)} 
+                - Item 2 ${fragmentIndex(2)}
+                - Item 3 ${fragmentIndex(2)}
                 """
-            }
         }
 
         markdownSlide("markdown-example") {
-            markdown {
-                +"""
-                    # Markdown Example
-                    ```kotlin [1|3-4]
-                        fun main() {
-                            println("Hello")
-                            println("World")
-                        }
-                    ```
+            +"""
+                # Markdown Example
+                ```kotlin [1|3-4]
+                    fun main() {
+                        println("Hello")
+                        println("World")
+                    }
+                ```
                 """
-            }
         }
 
         htmlSlide {
@@ -148,13 +135,21 @@ fun main() {
 
         htmlSlide {
             +"Slide 3"
-
             h4 { a { href = "#/home"; +"Home" } }
         }
 
         htmlSlide {
-            attributes["data-background-iframe"] = "https://athenian.org"
-            attributes["data-background-interactive"] = "true"
+            section {
+                attributes["data-background-color"] = "aquamarine"
+                h2 { +"🐟" }
+            }
+            section {
+                attributes["data-background-color"] = "rgb(70, 70, 255)"
+                h2 { +"🐳" }
+            }
+        }
+        htmlSlide(backgroundIframe = "https://revealjs.com") {
+            //attributes["data-background-interactive"] = "false"
             div {
                 style =
                     "position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;"
@@ -168,7 +163,7 @@ fun main() {
 
         // Images
         markdownSlide {
-            markdown { +"![Sample image](https://picsum.photos/512/512)" }
+            +"![Sample image](https://picsum.photos/512/512)"
         }
     }
 

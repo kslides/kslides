@@ -30,7 +30,6 @@ object Page {
             val node = nodeList.item(i)
             if (node.isNotNull()) {
                 if (node.nodeName == "section") {
-
                     node.attributes.getNamedItem("data-separator")?.apply {
                         nodeValue = nodeValue.replace("\n", "\\n")
                         nodeValue = nodeValue.replace("\r", "\\r")
@@ -42,20 +41,21 @@ object Page {
                     }
                 }
 
-                if (node.nodeName == "script") {
-                    if (node.attributes.getNamedItem("type")?.nodeValue == "text/template") {
-                        escapedChars.forEach {
-                            node.firstChild.nodeValue = node.firstChild.nodeValue.replace(it.first, it.second)
-                        }
-                    }
-                }
+//                if (node.nodeName == "script") {
+//                    if (node.attributes.getNamedItem("type")?.nodeValue == "text/template") {
+//                        if (node.firstChild.isNotNull())
+//                            escapedChars.forEach {
+//                                node.firstChild.nodeValue = node.firstChild.nodeValue.replace(it.first, it.second)
+//                            }
+//                    }
+//                }
             }
         }
 
         var str = document.serialize()
-        escapedChars.forEach {
-            str = str.replace(it.second, it.first)
-        }
+//        escapedChars.forEach {
+//            str = str.replace(it.second, it.first)
+//        }
         return str
     }
 
@@ -98,12 +98,17 @@ object Page {
             }
 
             script { src = "dist/reveal.js" }
+            rawHtml("\n\t")
             script { src = "plugin/zoom/zoom.js" }
+            rawHtml("\n\t")
             script { src = "plugin/notes/notes.js" }
+            rawHtml("\n\t")
             script { src = "plugin/search/search.js" }
+            rawHtml("\n\t")
             script { src = "plugin/markdown/markdown.js" }
+            rawHtml("\n\t")
             script { src = "plugin/highlight/highlight.js" }
-
+            rawHtml("\n\t")
             script {
                 rawHtml(
                     """

@@ -37,6 +37,8 @@ class Presentation(path: String, val title: String, val theme: String) {
         transitionOut: Transition = Transition.Slide,
         speed: Speed = Speed.Default,
         background: String = "",
+        backgroundIframe: String = "",
+        backgroundInteractive: Boolean = false,
         content: SECTION.() -> Unit
     ) {
         slides += {
@@ -56,6 +58,13 @@ class Presentation(path: String, val title: String, val theme: String) {
 
                 if (background.isNotEmpty())
                     attributes["data-background"] = background
+
+                if (backgroundIframe.isNotEmpty()) {
+                    attributes["data-background-iframe"] = backgroundIframe
+
+                    if (backgroundInteractive)
+                        attributes["data-background-interactive"] = ""
+                }
 
                 content()
             }
@@ -94,7 +103,7 @@ class Presentation(path: String, val title: String, val theme: String) {
         separator: String = "",
         vertical_separator: String = "",
         notes: String = "^Note:",
-        content: SECTION.() -> Unit = {}
+        content: SCRIPT.() -> Unit = {}
     ) {
         htmlSlide(id, transition, transitionIn, transitionOut, speed, background) {
             attributes["data-markdown"] = filename  // It is okay of this is == ""
@@ -110,7 +119,10 @@ class Presentation(path: String, val title: String, val theme: String) {
             if (notes.isNotEmpty() && separator.isNotEmpty() && vertical_separator.isNotEmpty())
                 attributes["data-separator-notes"] = notes
 
-            content()
+            script {
+                type = "text/template"
+                content()
+            }
         }
     }
 
@@ -124,7 +136,7 @@ class Presentation(path: String, val title: String, val theme: String) {
         background: String = "",
         filename: String = "",
         notes: String = "^Note:",
-        content: SECTION.() -> Unit = {}
+        content: SCRIPT.() -> Unit = {}
     ) =
         markdownSlide(
             id = id,
@@ -139,15 +151,6 @@ class Presentation(path: String, val title: String, val theme: String) {
             notes = notes,
             content = content
         )
-
-    @HtmlTagMarker
-    fun SECTION.markdown(content: SCRIPT.() -> Unit) {
-        script {
-            type = "text/template"
-
-            content()
-        }
-    }
 
     fun SCRIPT.slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
 
