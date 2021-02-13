@@ -19,10 +19,10 @@ presentation {
 
   markdownSlide {
     +"""
-           # Markdown Slide 🍒 
-           
-           Use the arrow keys to navigate.
-        """
+      # Markdown Slide 🍒 
+      
+      Use the arrow keys to navigate.
+    """
   }
 
   verticalSlides {
@@ -32,10 +32,10 @@ presentation {
 
     markdownSlide {
       +"""
-                # Vertical Markdown Slide 🦊 
-                
-                [Go back to the 1st slide](#/start)
-            """
+        # Vertical Markdown Slide 🦊 
+        
+        [Go back to the 1st slide](#/start)
+      """
     }
   }
 }

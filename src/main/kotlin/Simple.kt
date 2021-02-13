@@ -12,9 +12,9 @@ fun main() {
 
         markdownSlide {
             +"""
-               # Markdown Slide 🍒 
-               
-               Use the arrow keys to navigate.
+                # Markdown Slide 🍒 
+                
+                Use the arrow keys to navigate.
             """
         }
 
