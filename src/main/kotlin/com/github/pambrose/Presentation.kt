@@ -3,16 +3,16 @@ package com.github.pambrose
 import com.github.pambrose.Page.generatePage
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import kotlinx.css.CSSBuilder
 import kotlinx.html.*
 import mu.KLogging
 
 class Presentation(path: String, val title: String, val theme: String) {
 
     var css = ""
+    val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
 
-    internal inline class Slide(val content: DIV.() -> Unit)
-
-    internal val slides = mutableListOf<Slide>()
+    internal val slides = mutableListOf<DIV.() -> Unit>()
 
     init {
         if (path.removePrefix("/") in staticRoots)
@@ -25,6 +25,11 @@ class Presentation(path: String, val title: String, val theme: String) {
     }
 
     @HtmlTagMarker
+    fun css(content: CSSBuilder.() -> Unit) {
+        css += CSSBuilder().apply(content).toString()
+    }
+
+    @HtmlTagMarker
     fun htmlSlide(
         id: String = "",
         transition: Transition = Transition.Slide,
@@ -34,7 +39,7 @@ class Presentation(path: String, val title: String, val theme: String) {
         background: String = "",
         content: SECTION.() -> Unit
     ) {
-        slides += Slide {
+        slides += {
             section {
                 if (id.isNotEmpty())
                     this.id = id

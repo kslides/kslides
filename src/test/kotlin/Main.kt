@@ -1,6 +1,8 @@
 package com.github.pambrose
 
 import com.github.pambrose.Presentation.Companion.present
+import kotlinx.css.Color
+import kotlinx.css.color
 import kotlinx.html.*
 
 fun main() {
@@ -11,10 +13,16 @@ fun main() {
 			.slides section h3 {
 				color: green;
 			}
-			.slides section h4 {
+			.slides section h4 a {
 				color: red;
 			}
             """
+
+        css {
+            rule(".slides section h3") {
+                color = Color.green
+            }
+        }
 
         htmlSlide("home") {
             h3 { +"Examples" }

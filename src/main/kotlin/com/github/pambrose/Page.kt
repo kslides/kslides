@@ -92,7 +92,7 @@ object Page {
                 div("slides") {
                     presentation.slides
                         .forEach { slide ->
-                            slide.content(this)
+                            slide(this)
                         }
                 }
             }
@@ -109,7 +109,7 @@ object Page {
                     """
                         Reveal.initialize({
                             hash: true,
-                            plugins: [RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight]
+                            plugins: [${presentation.plugins.joinToString(", ")}]
                         });
                     """.trimIndent()
                 )
