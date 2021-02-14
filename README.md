@@ -10,7 +10,7 @@ build presentations with IntelliJ than Powerpoint.
 
 ## Example
 
-Click [here](https://kslides-simple.herokuapp.com) to see [this presentation](src/main/kotlin/Simple.kt) running.
+Click [here](https://kslides-readme.herokuapp.com) to see [this presentation](src/main/kotlin/Simple.kt) running.
 
 ```kotlin
 presentation {
@@ -39,6 +39,7 @@ presentation {
       }
     """
   }
+
   verticalSlides {
     htmlSlide(backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4") {
       h1 {
