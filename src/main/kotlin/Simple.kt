@@ -42,16 +42,16 @@ fun main() {
                     +"Vertical HTML Slide 👇"
                 }
             }
-        }
 
-        markdownSlide {
-            +"""
+            markdownSlide {
+                +"""
                     # Vertical Markdown Slide 🦊 
                     
                     [Go back to the 1st slide](#/start) ${fragmentIndex(1)}
                  
                     [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
                  """
+            }
         }
     }
 
