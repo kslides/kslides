@@ -23,12 +23,6 @@ fun main() {
             }
         }
 
-        // START
-        // This is a test 1
-        // This is a test 2
-        // This is a test 3
-        // END
-
         markdownSlide {
             +"""
                 # Markdown Example
@@ -36,6 +30,15 @@ fun main() {
                 ${includeFile("src/test/kotlin/examples/Test.kt")}
                 ```
              """
+        }
+
+        markdownSlide {
+            +"""
+                # Markdown Example
+                ```kotlin [1|3-4|20,24-25]
+                ${includeFile(path = "src/main/kotlin/Simple.kt")}
+                ```
+             """.trimIndent()
         }
 
         htmlSlide("home") {
