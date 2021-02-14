@@ -35,7 +35,7 @@ class Presentation(path: String, val title: String, val theme: String) {
     }
 
     @HtmlTagMarker
-    fun verticalSlides(content: VerticalContext.() -> Unit) {
+    fun Presentation.verticalSlides(content: VerticalContext.() -> Unit) {
         val vertContext = VerticalContext()
         content.invoke(vertContext)
         slides += {
@@ -90,7 +90,7 @@ class Presentation(path: String, val title: String, val theme: String) {
     }
 
     @HtmlTagMarker
-    fun htmlSlide(
+    fun Presentation.htmlSlide(
         id: String = "",
         transition: Transition = Transition.Slide,
         transitionIn: Transition = Transition.Slide,
@@ -173,7 +173,7 @@ class Presentation(path: String, val title: String, val theme: String) {
     }
 
     @HtmlTagMarker
-    fun markdownSlide(
+    fun Presentation.markdownSlide(
         id: String = "",
         transition: Transition = Transition.Slide,
         transitionIn: Transition = Transition.Slide,
