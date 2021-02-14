@@ -23,6 +23,21 @@ fun main() {
             }
         }
 
+        // START
+        // This is a test 1
+        // This is a test 2
+        // This is a test 3
+        // END
+
+        markdownSlide {
+            +"""
+                # Markdown Example
+                ```kotlin [1|3-4|2,4-5]
+                ${includeFile("src/test/kotlin/examples/Test.kt")}
+                ```
+             """
+        }
+
         htmlSlide("home") {
             h3 { +"Examples" }
             h4 { a { href = "/demo.html"; +"Demo Deck" } }

@@ -7,6 +7,7 @@ import io.ktor.server.engine.*
 import kotlinx.css.CSSBuilder
 import kotlinx.html.*
 import mu.KLogging
+import java.io.File
 
 class Presentation(path: String, val title: String, val theme: String) {
 
@@ -230,6 +231,37 @@ class Presentation(path: String, val title: String, val theme: String) {
                     content()
                 }
         }
+    }
+
+    fun SCRIPT.includeFile(
+        path: String,
+        beginToken: String = "",
+        endToken: String = "",
+        commentPrefix: String = "//"
+    ): String {
+        val lines = File("${System.getProperty("user.dir")}/$path").readLines(Charsets.UTF_8)
+        val startIndex =
+            if (beginToken.isEmpty())
+                0
+            else
+                (lines
+                    .asSequence()
+                    .mapIndexed { i, s -> i to s }
+                    .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$beginToken")) }?.first
+                    ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
+
+
+        val endIndex =
+            if (endToken.isEmpty())
+                lines.size
+            else
+                (lines.reversed()
+                    .asSequence()
+                    .mapIndexed { i, s -> (lines.size - i - 1) to s }
+                    .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$endToken")) }?.first
+                    ?: throw IllegalArgumentException("endToken not found: $endToken"))
+
+        return lines.subList(startIndex, endIndex).joinToString("\n")
     }
 
     fun SCRIPT.slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"

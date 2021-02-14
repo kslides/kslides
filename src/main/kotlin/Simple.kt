@@ -55,6 +55,6 @@ fun main() {
         }
     }
 
-    // Run web server
+    // Run the web server
     present()
 }
