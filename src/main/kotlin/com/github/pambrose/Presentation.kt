@@ -290,7 +290,3 @@ fun includeFile(
 @HtmlTagMarker
 fun presentation(path: String = "/", title: String = "", theme: Theme = Theme.Black, block: Presentation.() -> Unit) =
     Presentation(path, title, "dist/theme/${theme.name.toLowerCase()}.css").apply { block(this) }
-
-operator fun SCRIPT.unaryPlus(): Unit {
-
-}

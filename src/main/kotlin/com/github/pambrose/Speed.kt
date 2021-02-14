@@ -1,6 +1,6 @@
 package com.github.pambrose
 
-enum class Speed() {
+enum class Speed {
     Default,
     Fast,
     Slow

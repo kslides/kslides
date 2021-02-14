@@ -1,6 +1,6 @@
 package com.github.pambrose
 
-enum class Transition() {
+enum class Transition {
     None,
     Fade,
     Slide,
