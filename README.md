@@ -38,7 +38,10 @@ presentation {
   }
   verticalSlides {
     htmlSlide(backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4") {
-      h1 { +"Vertical HTML Slide 👇" }
+      h1 {
+        style = "color: red;"
+        +"Vertical HTML Slide 👇"
+      }
     }
 
     markdownSlide {

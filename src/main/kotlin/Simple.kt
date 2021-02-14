@@ -4,9 +4,11 @@ import com.github.pambrose.Transition.Zoom
 import com.github.pambrose.presentation
 import kotlinx.html.h1
 import kotlinx.html.p
+import kotlinx.html.style
 
 fun main() {
     presentation {
+
         htmlSlide(id = "start") {
             h1 { +"HTML Slide 🐦" }
             p { +"Use the arrow keys to navigate" }
@@ -35,18 +37,21 @@ fun main() {
 
         verticalSlides {
             htmlSlide(backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4") {
-                h1 { +"Vertical HTML Slide 👇" }
+                h1 {
+                    style = "color: red;"
+                    +"Vertical HTML Slide 👇"
+                }
             }
+        }
 
-            markdownSlide {
-                +"""
+        markdownSlide {
+            +"""
                     # Vertical Markdown Slide 🦊 
                     
                     [Go back to the 1st slide](#/start) ${fragmentIndex(1)}
                  
                     [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
                  """
-            }
         }
     }
 
