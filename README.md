@@ -1,13 +1,13 @@
 # kslides
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/pambrose/kslides)
-[![Deploy on Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/pambrose/kslides)
-[![Run on Repl.it](https://repl.it/badge/github/pambrose/kslides)](https://repl.it/github/pambrose/kslides)
+[![Build Status](https://travis-ci.org/pambrose/kslides.svg?branch=master)](https://travis-ci.org/pambrose/kslides)
 
 **kslides** is a Kotlin DSL wrapper for [reveal.js](https://revealjs.com). It is meant for people who would prefer to
 build presentations with IntelliJ than Powerpoint.
 
-## Presentation Structure
+## Example
+
+Click [here](https://kslides-simple.herokuapp.com) to see [this presentation](src/main/kotlin/Simple.kt) running.
 
 ```kotlin
 presentation {
@@ -53,8 +53,6 @@ presentation {
   }
 }
 ```
-
-Click [here](https://kslides-simple.herokuapp.com) to see [this presentation](src/main/kotlin/Simple.kt) running.
 
 ## Notes
 
