@@ -3,13 +3,14 @@ package com.github.pambrose
 import com.github.pambrose.Presentation.Companion.present
 import com.github.pambrose.SlideConfig.Companion.slideConfig
 import com.github.pambrose.Speed.Slow
+import com.github.pambrose.Theme.Moon
 import com.github.pambrose.Transition.Concave
 import kotlinx.css.Color
 import kotlinx.css.color
 import kotlinx.html.*
 
 fun main() {
-    presentation(title = "markdown Demo", theme = Theme.Moon) {
+    presentation(title = "markdown Demo", theme = Moon) {
         css =
             """
 			.slides section h3 {
@@ -32,7 +33,7 @@ fun main() {
                 ```kotlin [1|3-4|20,24-25]
                 ${includeFile(path = "src/main/kotlin/Simple.kt")}
                 ```
-             """.trimIndent()
+             """
         )
 
         markdownSlide(
@@ -41,7 +42,7 @@ fun main() {
                 ```kotlin [1|3-4|20,24-25]
                 ${includeUrl(source = "https://raw.githubusercontent.com/pambrose/kslides/master/src/main/kotlin/Simple.kt")}
                 ```
-             """.trimIndent()
+             """
         )
 
         htmlSlide(id = "home") {
