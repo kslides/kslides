@@ -59,6 +59,7 @@ class Presentation(path: String, val title: String, val theme: String) {
         backgroundColor: String = "",
         backgroundIframe: String = "",
         backgroundInteractive: Boolean = false,
+        backgroundVideo: String = "",
         content: SECTION.() -> Unit
     ) {
         vertSlides += {
@@ -85,6 +86,9 @@ class Presentation(path: String, val title: String, val theme: String) {
                     attributes["data-background-interactive"] = ""
             }
 
+            if (backgroundVideo.isNotEmpty())
+                attributes["data-background-video"] = backgroundVideo
+
             content.invoke(this)
         }
     }
@@ -99,6 +103,7 @@ class Presentation(path: String, val title: String, val theme: String) {
         backgroundColor: String = "",
         backgroundIframe: String = "",
         backgroundInteractive: Boolean = false,
+        backgroundVideo: String = "",
         content: SECTION.() -> Unit
     ) {
         slides += {
@@ -126,6 +131,9 @@ class Presentation(path: String, val title: String, val theme: String) {
                         attributes["data-background-interactive"] = ""
                 }
 
+                if (backgroundVideo.isNotEmpty())
+                    attributes["data-background-video"] = backgroundVideo
+
                 content.invoke(this)
             }
             rawHtml("\n\t")
@@ -142,18 +150,20 @@ class Presentation(path: String, val title: String, val theme: String) {
         backgroundColor: String = "",
         backgroundIframe: String = "",
         backgroundInteractive: Boolean = false,
+        backgroundVideo: String = "",
         filename: String = "",
         content: SCRIPT.() -> Unit = {}
     ) {
         htmlSlide(
-            id,
-            transition,
-            transitionIn,
-            transitionOut,
-            speed,
-            backgroundColor,
-            backgroundIframe,
-            backgroundInteractive
+            id = id,
+            transition = transition,
+            transitionIn = transitionIn,
+            transitionOut = transitionOut,
+            speed = speed,
+            backgroundColor = backgroundColor,
+            backgroundIframe = backgroundIframe,
+            backgroundInteractive = backgroundInteractive,
+            backgroundVideo = backgroundVideo
         ) {
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = filename
@@ -182,6 +192,7 @@ class Presentation(path: String, val title: String, val theme: String) {
         backgroundColor: String = "",
         backgroundIframe: String = "",
         backgroundInteractive: Boolean = false,
+        backgroundVideo: String = "",
         separator: String = "",
         vertical_separator: String = "",
         notes: String = "^Note:",
@@ -189,14 +200,15 @@ class Presentation(path: String, val title: String, val theme: String) {
         content: SCRIPT.() -> Unit = {}
     ) {
         htmlSlide(
-            id,
-            transition,
-            transitionIn,
-            transitionOut,
-            speed,
-            backgroundColor,
-            backgroundIframe,
-            backgroundInteractive
+            id = id,
+            transition = transition,
+            transitionIn = transitionIn,
+            transitionOut = transitionOut,
+            speed = speed,
+            backgroundColor = backgroundColor,
+            backgroundIframe = backgroundIframe,
+            backgroundInteractive = backgroundInteractive,
+            backgroundVideo = backgroundVideo
         ) {
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = filename

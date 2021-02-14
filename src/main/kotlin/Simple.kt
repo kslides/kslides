@@ -34,7 +34,7 @@ fun main() {
         }
 
         verticalSlides {
-            htmlSlide {
+            htmlSlide(backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4") {
                 h1 { +"Vertical HTML Slide 👇" }
             }
 
