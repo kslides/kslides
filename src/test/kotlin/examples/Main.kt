@@ -23,23 +23,25 @@ fun main() {
             }
         }
 
-        markdownSlide {
-            +"""
+        markdownSlide(
+            content =
+            """
                 # Markdown Example
                 ```kotlin [1|3-4|2,4-5]
                 ${includeFile("src/test/kotlin/examples/Test.kt")}
                 ```
              """
-        }
+        )
 
-        markdownSlide {
-            +"""
+        markdownSlide(
+            content =
+            """
                 # Markdown Example
                 ```kotlin [1|3-4|20,24-25]
                 ${includeFile(path = "src/main/kotlin/Simple.kt")}
                 ```
              """.trimIndent()
-        }
+        )
 
         htmlSlide("home") {
             h3 { +"Examples" }
@@ -59,14 +61,16 @@ fun main() {
                 h2 { +"🐳" }
             }
 
-            markdownSlide {
-                +"""
+            markdownSlide(
+                content =
+                """
                 # Markdown Slide
-                """.trimIndent()
-            }
+                """
+            )
 
-            markdownSlide(backgroundColor = "red") {
-                +"""
+            markdownSlide(
+                backgroundColor = "red", content =
+                """
                 ## Demo 1
                 Slide 1
                 
@@ -80,7 +84,7 @@ fun main() {
                 ## Demo 1
                 Slide 3
                 """
-            }
+            )
 
             markdownSlide(filename = "public/markdown2.md")
         }
@@ -100,8 +104,9 @@ fun main() {
         markdownSlide(filename = "/public/markdown.md", separator = "^---", vertical_separator = "^--")
 
         // Slides are separated by three dashes
-        markdownSlide(separator = "---") {
-            +"""
+        markdownSlide(
+            separator = "---", content =
+            """
             ## Demo 1
             Slide 1
             ---
@@ -111,11 +116,12 @@ fun main() {
             ## Demo 1
             Slide 3
             """
-        }
+        )
 
         // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
-        markdownSlide(separator = "\r?\\n---\r?\\n", vertical_separator = "\r?\\n--\r?\\n") {
-            +"""
+        markdownSlide(
+            separator = "\r?\\n---\r?\\n", vertical_separator = "\r?\\n--\r?\\n", content =
+            """
             ## Demo 2
             Slide 1.1
 
@@ -129,10 +135,10 @@ fun main() {
             ## Demo 2
             Slide 2
             """
-        }
+        )
 
-        markdownSlide {
-            +"""
+        markdownSlide(
+            """
             A
 
             ---
@@ -143,26 +149,28 @@ fun main() {
 
             C
             """
-        }
+        )
 
         // Slide attributes
-        markdownSlide(backgroundColor = "#FFFF00") {
-            +"""
+        markdownSlide(
+            backgroundColor = "#FFFF00", content =
+            """
                 ## Slide attributes
              """
-        }
+        )
 
-        markdownSlide {
-            +"""
+        markdownSlide(
+            """
                 ## Element attributes
                 - Item 1 ${fragmentIndex(1)}
                 - Item 2 ${fragmentIndex(2)}
                 - Item 3 ${fragmentIndex(2)}
                 """
-        }
+        )
 
-        markdownSlide(id = "markdown-example") {
-            +"""
+        markdownSlide(
+            id = "markdown-example", content =
+            """
                 # Markdown Example
                 ```kotlin [1|3-4]
                     fun main() {
@@ -171,7 +179,7 @@ fun main() {
                     }
                 ```
                 """
-        }
+        )
 
         htmlSlide {
             section {
@@ -204,9 +212,9 @@ fun main() {
         }
 
         // Images
-        markdownSlide {
-            +"![Sample image](https://picsum.photos/512/512)"
-        }
+        markdownSlide(
+            "![Sample image](https://picsum.photos/512/512)"
+        )
     }
 
     presentation("/demo.html") {

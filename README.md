@@ -14,21 +14,25 @@ Click [here](https://kslides-readme.herokuapp.com) to see [this presentation](sr
 
 ```kotlin
 presentation {
+
   htmlSlide(id = "start") {
     h1 { +"HTML Slide 🐦" }
     p { +"Use the arrow keys to navigate" }
   }
 
-  markdownSlide(transition = Zoom, speed = Slow) {
-    +"""
+  markdownSlide(
+    transition = Zoom,
+    speed = Slow,
+    content = """
       # Markdown Slide 🍒 
       
       Press ESC to see presentation overview.
     """
-  }
+  )
 
-  markdownSlide(backgroundColor = "#4370A5") {
-    +"""
+  markdownSlide(
+    backgroundColor = "#4370A5",
+    content = """
       # Code Highlights    
       ```kotlin [1|2,5|3-4]
       fun main() {
@@ -38,7 +42,7 @@ presentation {
           }
       }
     """
-  }
+  )
 
   verticalSlides {
     htmlSlide(backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4") {
@@ -48,15 +52,15 @@ presentation {
       }
     }
 
-    markdownSlide {
-      +"""
+    markdownSlide(
+      """
         # Vertical Markdown Slide 🦊 
         
         [Go back to the 1st slide](#/start) ${fragmentIndex(1)}
       
         [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
       """
-    }
+    )
   }
 }
 ```

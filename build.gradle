@@ -30,9 +30,6 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
-    // These are required for the annotation args below
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}"
-
     implementation "org.jetbrains:kotlin-css:$css_version"
     implementation "org.jetbrains:kotlin-css-jvm:$css_version"
 

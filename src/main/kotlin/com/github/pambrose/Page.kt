@@ -80,7 +80,7 @@ object Page {
             if (presentation.css.isNotEmpty()) {
                 style {
                     type = "text/css"; media = "screen"
-                    +presentation.css
+                    rawHtml(presentation.css)
                 }
             }
         }

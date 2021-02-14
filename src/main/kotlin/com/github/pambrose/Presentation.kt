@@ -143,7 +143,9 @@ class Presentation(path: String, val title: String, val theme: String) {
 
     @HtmlTagMarker
     fun VerticalContext.markdownSlide(
+        content: String = "",
         id: String = "",
+        filename: String = "",
         transition: Transition = Transition.Slide,
         transitionIn: Transition = Transition.Slide,
         transitionOut: Transition = Transition.Slide,
@@ -152,8 +154,6 @@ class Presentation(path: String, val title: String, val theme: String) {
         backgroundIframe: String = "",
         backgroundInteractive: Boolean = false,
         backgroundVideo: String = "",
-        filename: String = "",
-        content: SCRIPT.() -> Unit = {}
     ) {
         htmlSlide(
             id = id,
@@ -178,14 +178,16 @@ class Presentation(path: String, val title: String, val theme: String) {
             if (filename.isEmpty())
                 script {
                     type = "text/template"
-                    content()
+                    rawHtml(content)
                 }
         }
     }
 
     @HtmlTagMarker
     fun Presentation.markdownSlide(
+        content: String = "",
         id: String = "",
+        filename: String = "",
         transition: Transition = Transition.Slide,
         transitionIn: Transition = Transition.Slide,
         transitionOut: Transition = Transition.Slide,
@@ -197,8 +199,6 @@ class Presentation(path: String, val title: String, val theme: String) {
         separator: String = "",
         vertical_separator: String = "",
         notes: String = "^Note:",
-        filename: String = "",
-        content: SCRIPT.() -> Unit = {}
     ) {
         htmlSlide(
             id = id,
@@ -228,46 +228,10 @@ class Presentation(path: String, val title: String, val theme: String) {
             if (filename.isEmpty())
                 script {
                     type = "text/template"
-                    content()
+                    rawHtml(content)
                 }
         }
     }
-
-    fun SCRIPT.includeFile(
-        path: String,
-        beginToken: String = "",
-        endToken: String = "",
-        commentPrefix: String = "//"
-    ): String {
-        val lines = File("${System.getProperty("user.dir")}/$path").readLines(Charsets.UTF_8)
-        val startIndex =
-            if (beginToken.isEmpty())
-                0
-            else
-                (lines
-                    .asSequence()
-                    .mapIndexed { i, s -> i to s }
-                    .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$beginToken")) }?.first
-                    ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
-
-
-        val endIndex =
-            if (endToken.isEmpty())
-                lines.size
-            else
-                (lines.reversed()
-                    .asSequence()
-                    .mapIndexed { i, s -> (lines.size - i - 1) to s }
-                    .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$endToken")) }?.first
-                    ?: throw IllegalArgumentException("endToken not found: $endToken"))
-
-        return lines.subList(startIndex, endIndex).joinToString("\n")
-    }
-
-    fun SCRIPT.slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
-
-    fun SCRIPT.fragmentIndex(index: Int) =
-        "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
 
     companion object : KLogging() {
         internal val presentations = mutableMapOf<String, Presentation>()
@@ -286,7 +250,47 @@ class Presentation(path: String, val title: String, val theme: String) {
     }
 }
 
+fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
+
+fun fragmentIndex(index: Int) =
+    "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
+
+fun includeFile(
+    path: String,
+    beginToken: String = "",
+    endToken: String = "",
+    commentPrefix: String = "//"
+): String {
+    val lines = File("${System.getProperty("user.dir")}/$path").readLines(Charsets.UTF_8)
+    val startIndex =
+        if (beginToken.isEmpty())
+            0
+        else
+            (lines
+                .asSequence()
+                .mapIndexed { i, s -> i to s }
+                .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$beginToken")) }?.first
+                ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
+
+
+    val endIndex =
+        if (endToken.isEmpty())
+            lines.size
+        else
+            (lines.reversed()
+                .asSequence()
+                .mapIndexed { i, s -> (lines.size - i - 1) to s }
+                .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$endToken")) }?.first
+                ?: throw IllegalArgumentException("endToken not found: $endToken"))
+
+    return lines.subList(startIndex, endIndex).joinToString("\n")
+}
+
 // Keep this global to make it easier for users to be prompted for completion in it
 @HtmlTagMarker
 fun presentation(path: String = "/", title: String = "", theme: Theme = Theme.Black, block: Presentation.() -> Unit) =
     Presentation(path, title, "dist/theme/${theme.name.toLowerCase()}.css").apply { block(this) }
+
+operator fun SCRIPT.unaryPlus(): Unit {
+
+}
