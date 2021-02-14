@@ -2,14 +2,15 @@ package com.github.pambrose
 
 import com.github.pambrose.Page.generatePage
 import com.github.pambrose.Page.rawHtml
+import com.github.pambrose.SlideConfig.Companion.applyConfig
+import com.github.pambrose.SlideConfig.Companion.slideConfig
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import kotlinx.css.CSSBuilder
 import kotlinx.html.*
 import mu.KLogging
-import java.io.File
 
-class Presentation(path: String, val title: String, val theme: String) {
+class Presentation internal constructor(path: String, val title: String, val theme: String) {
 
     var css = ""
     val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
@@ -27,8 +28,8 @@ class Presentation(path: String, val title: String, val theme: String) {
     }
 
     @HtmlTagMarker
-    fun css(content: CSSBuilder.() -> Unit) {
-        css += CSSBuilder().apply(content).toString()
+    fun css(block: CSSBuilder.() -> Unit) {
+        css += CSSBuilder().apply(block).toString()
     }
 
     class VerticalContext {
@@ -36,9 +37,9 @@ class Presentation(path: String, val title: String, val theme: String) {
     }
 
     @HtmlTagMarker
-    fun Presentation.verticalSlides(content: VerticalContext.() -> Unit) {
+    fun Presentation.verticalSlides(block: VerticalContext.() -> Unit) {
         val vertContext = VerticalContext()
-        content.invoke(vertContext)
+        block.invoke(vertContext)
         slides += {
             section {
                 vertContext.vertSlides.forEach {
@@ -52,90 +53,34 @@ class Presentation(path: String, val title: String, val theme: String) {
 
     @HtmlTagMarker
     fun VerticalContext.htmlSlide(
+        config: SlideConfig = slideConfig {},
         id: String = "",
-        transition: Transition = Transition.Slide,
-        transitionIn: Transition = Transition.Slide,
-        transitionOut: Transition = Transition.Slide,
-        speed: Speed = Speed.Default,
-        backgroundColor: String = "",
-        backgroundIframe: String = "",
-        backgroundInteractive: Boolean = false,
-        backgroundVideo: String = "",
-        content: SECTION.() -> Unit
+        block: SECTION.() -> Unit
     ) {
         vertSlides += {
             if (id.isNotEmpty())
                 this.id = id
 
-            if (transition != Transition.Slide)
-                attributes["data-transition"] = transition.asInOut()
-            else {
-                if (transitionIn != Transition.Slide || transitionOut != Transition.Slide)
-                    attributes["data-transition"] = "${transitionIn.asIn()} ${transitionOut.asOut()}"
-            }
+            applyConfig(config)
 
-            if (speed != Speed.Default)
-                attributes["data-transition-speed"] = speed.name.toLowerCase()
-
-            if (backgroundColor.isNotEmpty())
-                attributes["data-background"] = backgroundColor
-
-            if (backgroundIframe.isNotEmpty()) {
-                attributes["data-background-iframe"] = backgroundIframe
-
-                if (backgroundInteractive)
-                    attributes["data-background-interactive"] = ""
-            }
-
-            if (backgroundVideo.isNotEmpty())
-                attributes["data-background-video"] = backgroundVideo
-
-            content.invoke(this)
+            block.invoke(this)
         }
     }
 
     @HtmlTagMarker
     fun Presentation.htmlSlide(
+        config: SlideConfig = slideConfig {},
         id: String = "",
-        transition: Transition = Transition.Slide,
-        transitionIn: Transition = Transition.Slide,
-        transitionOut: Transition = Transition.Slide,
-        speed: Speed = Speed.Default,
-        backgroundColor: String = "",
-        backgroundIframe: String = "",
-        backgroundInteractive: Boolean = false,
-        backgroundVideo: String = "",
-        content: SECTION.() -> Unit
+        block: SECTION.() -> Unit
     ) {
         slides += {
             section {
                 if (id.isNotEmpty())
                     this.id = id
 
-                if (transition != Transition.Slide)
-                    attributes["data-transition"] = transition.asInOut()
-                else {
-                    if (transitionIn != Transition.Slide || transitionOut != Transition.Slide)
-                        attributes["data-transition"] = "${transitionIn.asIn()} ${transitionOut.asOut()}"
-                }
+                applyConfig(config)
 
-                if (speed != Speed.Default)
-                    attributes["data-transition-speed"] = speed.name.toLowerCase()
-
-                if (backgroundColor.isNotEmpty())
-                    attributes["data-background"] = backgroundColor
-
-                if (backgroundIframe.isNotEmpty()) {
-                    attributes["data-background-iframe"] = backgroundIframe
-
-                    if (backgroundInteractive)
-                        attributes["data-background-interactive"] = ""
-                }
-
-                if (backgroundVideo.isNotEmpty())
-                    attributes["data-background-video"] = backgroundVideo
-
-                content.invoke(this)
+                block.invoke(this)
             }
             rawHtml("\n\t")
         }
@@ -144,28 +89,11 @@ class Presentation(path: String, val title: String, val theme: String) {
     @HtmlTagMarker
     fun VerticalContext.markdownSlide(
         content: String = "",
+        config: SlideConfig = slideConfig {},
         id: String = "",
         filename: String = "",
-        transition: Transition = Transition.Slide,
-        transitionIn: Transition = Transition.Slide,
-        transitionOut: Transition = Transition.Slide,
-        speed: Speed = Speed.Default,
-        backgroundColor: String = "",
-        backgroundIframe: String = "",
-        backgroundInteractive: Boolean = false,
-        backgroundVideo: String = "",
     ) {
-        htmlSlide(
-            id = id,
-            transition = transition,
-            transitionIn = transitionIn,
-            transitionOut = transitionOut,
-            speed = speed,
-            backgroundColor = backgroundColor,
-            backgroundIframe = backgroundIframe,
-            backgroundInteractive = backgroundInteractive,
-            backgroundVideo = backgroundVideo
-        ) {
+        htmlSlide(config = config, id = id) {
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = filename
 
@@ -186,31 +114,14 @@ class Presentation(path: String, val title: String, val theme: String) {
     @HtmlTagMarker
     fun Presentation.markdownSlide(
         content: String = "",
+        config: SlideConfig = slideConfig {},
         id: String = "",
         filename: String = "",
-        transition: Transition = Transition.Slide,
-        transitionIn: Transition = Transition.Slide,
-        transitionOut: Transition = Transition.Slide,
-        speed: Speed = Speed.Default,
-        backgroundColor: String = "",
-        backgroundIframe: String = "",
-        backgroundInteractive: Boolean = false,
-        backgroundVideo: String = "",
         separator: String = "",
         vertical_separator: String = "",
         notes: String = "^Note:",
     ) {
-        htmlSlide(
-            id = id,
-            transition = transition,
-            transitionIn = transitionIn,
-            transitionOut = transitionOut,
-            speed = speed,
-            backgroundColor = backgroundColor,
-            backgroundIframe = backgroundIframe,
-            backgroundInteractive = backgroundInteractive,
-            backgroundVideo = backgroundVideo
-        ) {
+        htmlSlide(config = config, id = id) {
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = filename
 
@@ -249,44 +160,3 @@ class Presentation(path: String, val title: String, val theme: String) {
         }
     }
 }
-
-fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
-
-fun fragmentIndex(index: Int) =
-    "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
-
-fun includeFile(
-    path: String,
-    beginToken: String = "",
-    endToken: String = "",
-    commentPrefix: String = "//"
-): String {
-    val lines = File("${System.getProperty("user.dir")}/$path").readLines(Charsets.UTF_8)
-    val startIndex =
-        if (beginToken.isEmpty())
-            0
-        else
-            (lines
-                .asSequence()
-                .mapIndexed { i, s -> i to s }
-                .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$beginToken")) }?.first
-                ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
-
-
-    val endIndex =
-        if (endToken.isEmpty())
-            lines.size
-        else
-            (lines.reversed()
-                .asSequence()
-                .mapIndexed { i, s -> (lines.size - i - 1) to s }
-                .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$endToken")) }?.first
-                ?: throw IllegalArgumentException("endToken not found: $endToken"))
-
-    return lines.subList(startIndex, endIndex).joinToString("\n")
-}
-
-// Keep this global to make it easier for users to be prompted for completion in it
-@HtmlTagMarker
-fun presentation(path: String = "/", title: String = "", theme: Theme = Theme.Black, block: Presentation.() -> Unit) =
-    Presentation(path, title, "dist/theme/${theme.name.toLowerCase()}.css").apply { block(this) }

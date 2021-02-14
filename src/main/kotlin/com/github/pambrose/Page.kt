@@ -6,7 +6,7 @@ import kotlinx.html.dom.append
 import kotlinx.html.dom.document
 import kotlinx.html.dom.serialize
 
-object Page {
+internal object Page {
     fun generatePage(presentation: Presentation): String {
         val document =
             document {

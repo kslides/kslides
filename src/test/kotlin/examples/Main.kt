@@ -1,6 +1,9 @@
 package com.github.pambrose
 
 import com.github.pambrose.Presentation.Companion.present
+import com.github.pambrose.SlideConfig.Companion.slideConfig
+import com.github.pambrose.Speed.Slow
+import com.github.pambrose.Transition.Concave
 import kotlinx.css.Color
 import kotlinx.css.color
 import kotlinx.html.*
@@ -24,17 +27,6 @@ fun main() {
         }
 
         markdownSlide(
-            content =
-            """
-                # Markdown Example
-                ```kotlin [1|3-4|2,4-5]
-                ${includeFile("src/test/kotlin/examples/Test.kt")}
-                ```
-             """
-        )
-
-        markdownSlide(
-            content =
             """
                 # Markdown Example
                 ```kotlin [1|3-4|20,24-25]
@@ -43,33 +35,42 @@ fun main() {
              """.trimIndent()
         )
 
-        htmlSlide("home") {
+        markdownSlide(
+            """
+                # Markdown Example
+                ```kotlin [1|3-4|20,24-25]
+                ${includeUrl(source = "https://raw.githubusercontent.com/pambrose/kslides/master/src/main/kotlin/Simple.kt")}
+                ```
+             """.trimIndent()
+        )
+
+        htmlSlide(id = "home") {
             h3 { +"Examples" }
             h4 { a { href = "/demo.html"; +"Demo Deck" } }
         }
 
-        htmlSlide(transition = Transition.Zoom, speed = Speed.Slow, backgroundColor = "#bb00bb") {
+        htmlSlide(slideConfig { transition(Transition.Zoom, Slow); backgroundColor = "#bb00bb" }) {
             img { src = "https://picsum.photos/512/512" }
         }
 
         verticalSlides {
-            htmlSlide(backgroundColor = "aquamarine") {
+            htmlSlide(slideConfig { backgroundColor = "aquamarine" }) {
                 h2 { +"🐟" }
             }
 
-            htmlSlide(transition = Transition.Concave, speed = Speed.Slow, backgroundColor = "rgb(70, 70, 255)") {
+            htmlSlide(slideConfig { transition(Concave, speed = Slow); backgroundColor = "rgb(70, 70, 255)" }) {
                 h2 { +"🐳" }
             }
 
             markdownSlide(
-                content =
                 """
                 # Markdown Slide
                 """
             )
 
             markdownSlide(
-                backgroundColor = "red", content =
+                config = slideConfig { backgroundColor = "red" },
+                content =
                 """
                 ## Demo 1
                 Slide 1
@@ -89,7 +90,7 @@ fun main() {
             markdownSlide(filename = "public/markdown2.md")
         }
 
-        htmlSlide("embed-web-content") {
+        htmlSlide(id = "embed-web-content") {
             h2 { +"Embed Web Content" }
 
             iframe {
@@ -153,7 +154,8 @@ fun main() {
 
         // Slide attributes
         markdownSlide(
-            backgroundColor = "#FFFF00", content =
+            config = slideConfig { backgroundColor = "#FFFF00" },
+            content =
             """
                 ## Slide attributes
              """
@@ -169,7 +171,8 @@ fun main() {
         )
 
         markdownSlide(
-            id = "markdown-example", content =
+            id = "markdown-example",
+            content =
             """
                 # Markdown Example
                 ```kotlin [1|3-4]
@@ -198,7 +201,7 @@ fun main() {
             h4 { a { href = "#/home"; +"Home" } }
         }
 
-        htmlSlide(backgroundIframe = "https://revealjs.com") {
+        htmlSlide(slideConfig { backgroundIframe = "https://revealjs.com" }) {
             //attributes["data-background-interactive"] = "false"
             div {
                 style =

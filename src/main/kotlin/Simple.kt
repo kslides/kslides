@@ -1,4 +1,5 @@
 import com.github.pambrose.Presentation.Companion.present
+import com.github.pambrose.SlideConfig.Companion.slideConfig
 import com.github.pambrose.Speed.Slow
 import com.github.pambrose.Transition.Zoom
 import com.github.pambrose.fragmentIndex
@@ -10,14 +11,13 @@ import kotlinx.html.style
 fun main() {
     presentation {
 
-        htmlSlide(id = "start") {
+        htmlSlide {
             h1 { +"HTML Slide 🐦" }
             p { +"Use the arrow keys to navigate" }
         }
 
         markdownSlide(
-            transition = Zoom,
-            speed = Slow,
+            config = slideConfig { transition(Zoom, Slow) },
             content = """
                 # Markdown Slide 🍒 
                 
@@ -26,7 +26,7 @@ fun main() {
         )
 
         markdownSlide(
-            backgroundColor = "#4370A5",
+            config = slideConfig { backgroundColor = "#4370A5" },
             content = """
                 # Code Highlights    
                 ```kotlin [1|2,5|3-4]
@@ -40,7 +40,7 @@ fun main() {
         )
 
         verticalSlides {
-            htmlSlide(backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4") {
+            htmlSlide(slideConfig { backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4" }) {
                 h1 {
                     style = "color: red;"
                     +"Vertical HTML Slide 👇"
@@ -51,7 +51,7 @@ fun main() {
                 """
                     # Vertical Markdown Slide 🦊 
                     
-                    [Go back to the 1st slide](#/start) ${fragmentIndex(1)}
+                    [Go back to the 1st slide](#/0) ${fragmentIndex(1)}
                  
                     [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
                  """
