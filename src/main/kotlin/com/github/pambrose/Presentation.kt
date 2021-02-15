@@ -36,7 +36,7 @@ class Presentation internal constructor(path: String, val title: String, val the
     }
 
     @HtmlTagMarker
-    fun Presentation.verticalSlides(block: VerticalContext.() -> Unit) {
+    fun verticalSlides(block: VerticalContext.() -> Unit) {
         val vertContext = VerticalContext()
         block.invoke(vertContext)
         slides += {
@@ -67,7 +67,7 @@ class Presentation internal constructor(path: String, val title: String, val the
     }
 
     @HtmlTagMarker
-    fun Presentation.htmlSlide(
+    fun htmlSlide(
         config: SlideConfig = slideConfig {},
         id: String = "",
         block: SECTION.() -> Unit
@@ -111,7 +111,7 @@ class Presentation internal constructor(path: String, val title: String, val the
     }
 
     @HtmlTagMarker
-    fun Presentation.markdownSlide(
+    fun markdownSlide(
         content: String = "",
         config: SlideConfig = slideConfig {},
         id: String = "",
