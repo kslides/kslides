@@ -14,7 +14,6 @@ Click [here](https://kslides-readme.herokuapp.com) to see [this presentation](sr
 
 ```kotlin
 presentation {
-
   htmlSlide(id = "start") {
     h1 { +"HTML Slide 🐦" }
     p { +"Use the arrow keys to navigate" }
@@ -64,6 +63,15 @@ presentation {
   }
 }
 ```
+
+## Getting Started
+
+<a href="https://github.com/pambrose/kslides-template/generate">
+  <img alt="kslides template" src="https://img.shields.io/badge/kslides-template-blue?logo=github">
+</a>
+
+[Create a presentation repo](https://github.com/pambrose/kslides-template/generate) using
+the [kslides-template](https://github.com/pambrose/kslides-template) repo.
 
 ## Notes
 

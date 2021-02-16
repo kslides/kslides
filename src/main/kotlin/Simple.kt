@@ -10,7 +10,6 @@ import kotlinx.html.style
 
 fun main() {
     presentation {
-
         htmlSlide {
             h1 { +"HTML Slide 🐦" }
             p { +"Use the arrow keys to navigate" }
@@ -56,6 +55,11 @@ fun main() {
                     [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
                  """
             )
+        }
+
+        config {
+            hash = true
+
         }
     }
 

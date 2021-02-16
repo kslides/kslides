@@ -97,27 +97,13 @@ internal object Page {
                 }
             }
 
-            script { src = "dist/reveal.js" }
-            rawHtml("\n\t")
-            script { src = "plugin/zoom/zoom.js" }
-            rawHtml("\n\t")
-            script { src = "plugin/notes/notes.js" }
-            rawHtml("\n\t")
-            script { src = "plugin/search/search.js" }
-            rawHtml("\n\t")
-            script { src = "plugin/markdown/markdown.js" }
-            rawHtml("\n\t")
-            script { src = "plugin/highlight/highlight.js" }
-            rawHtml("\n\t")
+            presentation.jsFiles.forEach {
+                script { src = it }
+                rawHtml("\n\t")
+            }
+
             script {
-                rawHtml(
-                    """
-                        Reveal.initialize({
-                            hash: true,
-                            plugins: [${presentation.plugins.joinToString(", ")}]
-                        });
-                    """.trimIndent()
-                )
+                rawHtml(presentation.config.toJS())
             }
         }
     }

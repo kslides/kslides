@@ -12,7 +12,17 @@ import mu.KLogging
 class Presentation internal constructor(path: String, val title: String, val theme: String) {
 
     var css = ""
-    val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
+    val jsFiles =
+        mutableListOf(
+            "dist/reveal.js",
+            "plugin/zoom/zoom.js",
+            "plugin/notes/notes.js",
+            "plugin/search/search.js",
+            "plugin/markdown/markdown.js",
+            "plugin/highlight/highlight.js"
+        )
+
+    val config = ConfigOptions()
 
     internal val slides = mutableListOf<DIV.() -> Unit>()
 
@@ -142,6 +152,9 @@ class Presentation internal constructor(path: String, val title: String, val the
                 }
         }
     }
+
+    @HtmlTagMarker
+    fun config(block: ConfigOptions.() -> Unit) = block.invoke(config)
 
     companion object : KLogging() {
         internal val presentations = mutableMapOf<String, Presentation>()

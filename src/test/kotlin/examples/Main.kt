@@ -219,6 +219,11 @@ fun main() {
         markdownSlide(
             "![Sample image](https://picsum.photos/512/512)"
         )
+
+        config {
+            hash = true
+        }
+
     }
 
     presentation("/demo.html") {
