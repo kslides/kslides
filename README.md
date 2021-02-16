@@ -5,6 +5,11 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/pambrose/kslides/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pambrose/kslides&amp;utm_campaign=Badge_Grade)
 [![Kotlin](https://img.shields.io/badge/%20language-Kotlin-red.svg)](https://kotlinlang.org/)
 
+
+<a href="https://github.com/pambrose/kslides-template/generate">
+  <img alt="kslides template" src="https://img.shields.io/badge/kslides-template-blue?logo=github">
+</a>
+
 **kslides** is a Kotlin DSL wrapper for [reveal.js](https://revealjs.com). It is meant for people who would prefer to
 build presentations with IntelliJ than Powerpoint.
 
@@ -14,6 +19,7 @@ Click [here](https://kslides-readme.herokuapp.com) to see [this presentation](sr
 
 ```kotlin
 presentation {
+
   htmlSlide(id = "start") {
     h1 { +"HTML Slide 🐦" }
     p { +"Use the arrow keys to navigate" }
@@ -44,6 +50,7 @@ presentation {
   )
 
   verticalSlides {
+    
     htmlSlide(backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4") {
       h1 {
         style = "color: red;"
@@ -65,10 +72,6 @@ presentation {
 ```
 
 ## Getting Started
-
-<a href="https://github.com/pambrose/kslides-template/generate">
-  <img alt="kslides template" src="https://img.shields.io/badge/kslides-template-blue?logo=github">
-</a>
 
 [Create a presentation repo](https://github.com/pambrose/kslides-template/generate) using
 the [kslides-template](https://github.com/pambrose/kslides-template) repo.
