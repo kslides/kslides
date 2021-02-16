@@ -6,10 +6,6 @@
 [![Kotlin](https://img.shields.io/badge/%20language-Kotlin-red.svg)](https://kotlinlang.org/)
 
 
-<a href="https://github.com/pambrose/kslides-template/generate">
-  <img alt="kslides template" src="https://img.shields.io/badge/kslides-template-blue?logo=github">
-</a>
-
 **kslides** is a Kotlin DSL wrapper for [reveal.js](https://revealjs.com). It is meant for people who would prefer to
 build presentations with IntelliJ than Powerpoint.
 
@@ -72,6 +68,10 @@ presentation {
 ```
 
 ## Getting Started
+
+<a href="https://github.com/pambrose/kslides-template/generate">
+  <img alt="kslides template" src="https://img.shields.io/badge/kslides-template-blue?logo=github">
+</a>
 
 [Create a presentation repo](https://github.com/pambrose/kslides-template/generate) using
 the [kslides-template](https://github.com/pambrose/kslides-template) repo.
