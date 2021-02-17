@@ -69,9 +69,7 @@ presentation {
 
 ## Getting Started
 
-<a href="https://github.com/pambrose/kslides-template/generate">
-  <img alt="kslides template" src="https://img.shields.io/badge/kslides-template-blue?logo=github">
-</a>
+[![Template](https://img.shields.io/badge/kslides-template-blue?logo=github)](https://github.com/pambrose/kslides-template/generate)
 
 [Create a presentation repo](https://github.com/pambrose/kslides-template/generate) using
 the [kslides-template](https://github.com/pambrose/kslides-template) repo.

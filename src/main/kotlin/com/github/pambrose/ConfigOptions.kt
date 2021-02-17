@@ -280,19 +280,18 @@ class ConfigOptions {
 class ConfigProperty<T>(val configMap: MutableMap<String, Any>) {
     var configName = ""
 
-    val isAssigned get() = configName.isNotEmpty()
-
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        return if (isAssigned) (configMap[configName] as T) else throw IllegalStateException()
+        return if (configName.isNotEmpty() && configMap.containsKey(configName))
+            (configMap[configName] as T)
+        else
+            throw IllegalStateException("Config property ${property.name} has not been set")
     }
 
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         configName = property.name
         configMap[configName] = value as Any
-        println("$value has been assigned to '${property.name}' in $thisRef.")
+        //println("$value has been assigned to '${property.name}' in $thisRef.")
     }
 
-    override fun toString(): String {
-        return "$configName: ${configMap[configName]}"
-    }
+    override fun toString() = "$configName: ${configMap[configName]}"
 }
