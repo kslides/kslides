@@ -64,6 +64,12 @@ presentation {
       """
     )
   }
+
+  config {
+    history = true
+    transition = Slide
+    transitionSpeed = Slow
+  }
 }
 ```
 

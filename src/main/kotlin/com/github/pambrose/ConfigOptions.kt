@@ -166,6 +166,7 @@ class ConfigOptions {
     // CSS properties that can be auto-animated. Position & scale
     // is matched separately so there's no need to include styles
     // like top/right/bottom/left, width/height or margin.
+    var autoAnimateStyles by ConfigProperty<List<String>>(configMap)
 //    var autoAnimateStyles: [
 //    'opacity',
 //    'color',
@@ -179,7 +180,7 @@ class ConfigOptions {
 //    'border-radius',
 //    'outline',
 //    'outline-offset'
-//    ], // TODO
+//    ],
 
     // Controls automatic progression to the next slide
     // - 0:      Auto-sliding only happens if the data-autoslide HTML attribute
@@ -259,20 +260,22 @@ class ConfigOptions {
     fun toJS() =
         buildString {
             appendLine()
-            appendLine("Reveal.initialize({")
+            appendLine("\tReveal.initialize({")
             configMap.forEach { k, v ->
                 when {
-                    v is Boolean || v is Number -> appendLine("\t$k: $v")
-                    v is String -> appendLine("\t$k: '$v'")
-                    v is Transition -> appendLine("\t$k: '${v.name.toLowerCase()}'")
-                    v is Speed -> appendLine("\t$k: '${v.name.toLowerCase()}'")
+                    v is Boolean || v is Number -> append("\t\t$k: $v")
+                    v is String -> append("\t\t$k: '$v'")
+                    v is Transition -> append("\t\t$k: '${v.name.toLowerCase()}'")
+                    v is Speed -> append("\t\t$k: '${v.name.toLowerCase()}'")
+                    v is List<*> -> append("\t\t$k: [${v.map { "'$it'" }.joinToString(", ")}]")
                     else -> throw IllegalArgumentException("Invalid value for $k: $v")
                 }
+                appendLine(",")
             }
             if (configMap.isNotEmpty())
                 appendLine()
-            appendLine("\tplugins: [${plugins.joinToString(", ")}]")
-            appendLine("});")
+            appendLine("\t\tplugins: [${plugins.joinToString(", ")}]")
+            appendLine("\t});")
             appendLine()
         }
 }
@@ -282,7 +285,7 @@ class ConfigProperty<T>(val configMap: MutableMap<String, Any>) {
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
         return if (configName.isNotEmpty() && configMap.containsKey(configName))
-            (configMap[configName] as T)
+            configMap[configName] as T
         else
             throw IllegalStateException("Config property ${property.name} has not been set")
     }
@@ -290,7 +293,6 @@ class ConfigProperty<T>(val configMap: MutableMap<String, Any>) {
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         configName = property.name
         configMap[configName] = value as Any
-        //println("$value has been assigned to '${property.name}' in $thisRef.")
     }
 
     override fun toString() = "$configName: ${configMap[configName]}"

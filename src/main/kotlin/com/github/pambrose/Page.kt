@@ -16,13 +16,13 @@ internal object Page {
                 }
             }
 
-        val escapedChars =
-            listOf(
-                "\"" to "_*_quote_*_",
-                "<" to "_*_lt_*_",
-                ">" to "_*_gt_*_",
-                "&" to "_*_amp_*_"
-            )
+//        val escapedChars =
+//            listOf(
+//                "\"" to "_*_quote_*_",
+//                "<" to "_*_lt_*_",
+//                ">" to "_*_gt_*_",
+//                "&" to "_*_amp_*_"
+//            )
 
         // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
         val nodeList = document.getElementsByTagName("*")
@@ -52,7 +52,7 @@ internal object Page {
             }
         }
 
-        var str = document.serialize()
+        val str = document.serialize()
 //        escapedChars.forEach {
 //            str = str.replace(it.second, it.first)
 //        }
@@ -97,11 +97,12 @@ internal object Page {
                 }
             }
 
+            rawHtml("\n")
             presentation.jsFiles.forEach {
                 script { src = it }
                 rawHtml("\n\t")
             }
-
+            rawHtml("\n\t")
             script {
                 rawHtml(presentation.config.toJS())
             }
