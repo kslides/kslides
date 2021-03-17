@@ -165,9 +165,12 @@ fun main() {
         markdownSlide(
             """
                 ## Element attributes
-                - Item 1 ${fragmentIndex(1)}
-                - Item 2 ${fragmentIndex(2)}
-                - Item 3 ${fragmentIndex(2)}
+                
+                Item 1 ${fragmentIndex(1)}
+                
+                Item 2 ${fragmentIndex(2)}
+                
+                Item 3 ${fragmentIndex(3)}
                 """
         )
 
