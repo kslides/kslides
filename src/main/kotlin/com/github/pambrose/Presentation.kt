@@ -5,9 +5,9 @@ import com.github.pambrose.Page.rawHtml
 import com.github.pambrose.SlideConfig.Companion.slideConfig
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import kotlinx.css.CSSBuilder
+import kotlinx.css.*
 import kotlinx.html.*
-import mu.KLogging
+import mu.*
 
 class Presentation internal constructor(path: String, val title: String, val theme: String) {
 
@@ -180,7 +180,7 @@ class Presentation internal constructor(path: String, val title: String, val the
             }
 
             if (config.speed != Speed.Default)
-                attributes["data-transition-speed"] = config.speed.name.toLowerCase()
+                attributes["data-transition-speed"] = config.speed.name.toLower()
 
             if (config.backgroundColor.isNotEmpty())
                 attributes["data-background"] = config.backgroundColor

@@ -1,8 +1,9 @@
 package com.github.pambrose
 
-import kotlinx.html.HtmlTagMarker
-import java.io.File
-import java.net.URL
+import kotlinx.html.*
+import java.io.*
+import java.net.*
+import java.util.*
 
 fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
 
@@ -14,26 +15,30 @@ fun includeFile(
     beginToken: String = "",
     endToken: String = "",
     commentPrefix: String = "//"
-) =
-    processCode(
-        File("${System.getProperty("user.dir")}/$path").readLines(),
+): String {
+    val text = File("${System.getProperty("user.dir")}/$path").readLines()
+    return processCode(
+        text,
         beginToken,
         endToken,
         commentPrefix
     )
+}
 
 fun includeUrl(
     source: String,
     beginToken: String = "",
     endToken: String = "",
     commentPrefix: String = "//"
-) =
-    processCode(
-        URL(source).readText().split("\n"),
+): String {
+    val text = URL(source).readText().split("\n")
+    return processCode(
+        text,
         beginToken,
         endToken,
         commentPrefix
     )
+}
 
 private fun processCode(
     lines: List<String>,
@@ -69,4 +74,6 @@ private fun processCode(
 // Keep this global to make it easier for users to be prompted for completion in it
 @HtmlTagMarker
 fun presentation(path: String = "/", title: String = "", theme: Theme = Theme.Black, block: Presentation.() -> Unit) =
-    Presentation(path, title, "dist/theme/${theme.name.toLowerCase()}.css").apply { block(this) }
+    Presentation(path, title, "dist/theme/${theme.name.toLower()}.css").apply { block(this) }
+
+fun String.toLower(locale: Locale = Locale.getDefault()) = lowercase(locale)
