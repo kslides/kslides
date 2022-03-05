@@ -1,10 +1,10 @@
 plugins {
     id 'java'
     id 'application'
-    id 'maven'  // Required for jitpack.io to do a ./gradlew install
-    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
-    id "com.github.ben-manes.versions" version '0.38.0'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+//    id 'maven'  // Required for jitpack.io to do a ./gradlew install
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20-RC'
+    id "com.github.ben-manes.versions" version '0.42.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 // These are for the uber target
@@ -20,24 +20,24 @@ group 'com.github.pambrose'
 version '0.1.0'
 
 repositories {
-    maven { url = 'https://kotlin.bintray.com/ktor' }
-    maven { url = 'https://kotlin.bintray.com/kotlinx' }
-    jcenter()
+    maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers" }
+    maven { url "https://maven.pkg.jetbrains.space/public/p/ktor/eap" }
+    google()
     mavenCentral()
     maven { url = 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
 
     implementation "org.jetbrains:kotlin-css:$css_version"
     implementation "org.jetbrains:kotlin-css-jvm:$css_version"
 
+    implementation "io.ktor:ktor-server:$ktor_version"
     implementation "io.ktor:ktor-server-cio:$ktor_version"
-    implementation "io.ktor:ktor-server-core:$ktor_version"
-
     implementation "io.ktor:ktor-server-sessions:$ktor_version"
-    implementation "io.ktor:ktor-html-builder:$ktor_version"
+    implementation "io.ktor:ktor-server-html-builder:$ktor_version"
 
     implementation "com.github.pambrose.common-utils:core-utils:$utils_version"
     implementation "com.github.pambrose.common-utils:ktor-server-utils:$utils_version"
