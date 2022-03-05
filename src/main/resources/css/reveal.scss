@@ -1,3 +1,5 @@
+@use "sass:math";
+
 /**
  * reveal.js
  * http://revealjs.com
@@ -21,14 +23,24 @@ html.reveal-full-page {
 }
 
 .reveal-viewport {
-	height: 100%;
-	overflow: hidden;
-	position: relative;
-	line-height: 1;
-	margin: 0;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  line-height: 1;
+  margin: 0;
 
-	background-color: #fff;
-	color: #000;
+  background-color: #fff;
+  color: #000;
+}
+
+// Force the presentation to cover the full viewport when we
+// enter fullscreen mode. Fixes sizing issues in Safari.
+.reveal-viewport:fullscreen {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
 }
 
 
@@ -37,9 +49,9 @@ html.reveal-full-page {
  *********************************************/
 
 .reveal .slides section .fragment {
-	opacity: 0;
-	visibility: hidden;
-	transition: all .2s ease;
+  opacity: 0;
+  visibility: hidden;
+  transition: all .2s ease;
 	will-change: opacity;
 
 	&.visible {
@@ -247,12 +259,12 @@ $controlsArrowAngleActive: 36deg;
 
 @mixin controlsArrowTransform( $angle ) {
 	&:before {
-		transform: translateX(($controlArrowSize - $controlArrowLength)/2) translateY(($controlArrowSize - $controlArrowThickness)/2) rotate( $angle );
-	}
+      transform: translateX(($controlArrowSize - $controlArrowLength)*0.5) translateY(($controlArrowSize - $controlArrowThickness)*0.5) rotate($angle);
+    }
 
 	&:after {
-		transform: translateX(($controlArrowSize - $controlArrowLength)/2) translateY(($controlArrowSize - $controlArrowThickness)/2) rotate( -$angle );
-	}
+      transform: translateX(($controlArrowSize - $controlArrowLength)*0.5) translateY(($controlArrowSize - $controlArrowThickness)*0.5) rotate(-$angle);
+    }
 }
 
 .reveal .controls {
@@ -294,19 +306,19 @@ $controlsArrowAngleActive: 36deg;
 
 	.controls-arrow:before,
 	.controls-arrow:after {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: $controlArrowLength;
-		height: $controlArrowThickness;
-		border-radius: $controlArrowThickness/2;
-		background-color: currentColor;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: $controlArrowLength;
+      height: $controlArrowThickness;
+      border-radius: $controlArrowThickness*0.5;
+      background-color: currentColor;
 
-		transition: all 0.15s ease, background-color 0.8s ease;
-		transform-origin: floor(($controlArrowThickness/2)*10)/10 50%;
-		will-change: transform;
-	}
+      transition: all 0.15s ease, background-color 0.8s ease;
+      transform-origin: math.div(floor(($controlArrowThickness*0.5)*10), 10) 50%;
+      will-change: transform;
+    }
 
 	.controls-arrow {
 		position: relative;
@@ -325,51 +337,51 @@ $controlsArrowAngleActive: 36deg;
 	}
 
 	.navigate-left {
-		right: $controlArrowSize + $controlArrowSpacing*2;
-		bottom: $controlArrowSpacing + $controlArrowSize/2;
-		transform: translateX( -10px );
+      right: $controlArrowSize + $controlArrowSpacing*2;
+      bottom: $controlArrowSpacing + $controlArrowSize*0.5;
+      transform: translateX(-10px);
 
-		&.highlight {
-			animation: bounce-left 2s 50 both ease-out;
-		}
-	}
+      &.highlight {
+        animation: bounce-left 2s 50 both ease-out;
+      }
+    }
 
 	.navigate-right {
-		right: 0;
-		bottom: $controlArrowSpacing + $controlArrowSize/2;
-		transform: translateX( 10px );
+      right: 0;
+      bottom: $controlArrowSpacing + $controlArrowSize*0.5;
+      transform: translateX(10px);
 
-		.controls-arrow {
-			transform: rotate( 180deg );
-		}
+      .controls-arrow {
+        transform: rotate(180deg);
+      }
 
-		&.highlight {
-			animation: bounce-right 2s 50 both ease-out;
-		}
-	}
+      &.highlight {
+        animation: bounce-right 2s 50 both ease-out;
+      }
+    }
 
 	.navigate-up {
-		right: $controlArrowSpacing + $controlArrowSize/2;
-		bottom: $controlArrowSpacing*2 + $controlArrowSize;
-		transform: translateY( -10px );
+      right: $controlArrowSpacing + $controlArrowSize*0.5;
+      bottom: $controlArrowSpacing*2 + $controlArrowSize;
+      transform: translateY(-10px);
 
-		.controls-arrow {
-			transform: rotate( 90deg );
-		}
-	}
+      .controls-arrow {
+        transform: rotate(90deg);
+      }
+    }
 
 	.navigate-down {
-		right: $controlArrowSpacing + $controlArrowSize/2;
-		bottom: -$controlArrowSpacing;
-		padding-bottom: $controlArrowSpacing;
-		transform: translateY( 10px );
+      right: $controlArrowSpacing + $controlArrowSize*0.5;
+      bottom: -$controlArrowSpacing;
+      padding-bottom: $controlArrowSpacing;
+      transform: translateY(10px);
 
-		.controls-arrow {
-			transform: rotate( -90deg );
-		}
+      .controls-arrow {
+        transform: rotate(-90deg);
+      }
 
-		&.highlight {
-			animation: bounce-down 2s 50 both ease-out;
+      &.highlight {
+        animation: bounce-down 2s 50 both ease-out;
 		}
 	}
 
@@ -513,28 +525,28 @@ $controlsArrowAngleActive: 36deg;
 		}
 
 		.navigate-left {
-			top: 50%;
-			left: $spacing;
-			margin-top: -$controlArrowSize/2;
-		}
+          top: 50%;
+          left: $spacing;
+          margin-top: -$controlArrowSize*0.5;
+        }
 
 		.navigate-right {
-			top: 50%;
-			right: $spacing;
-			margin-top: -$controlArrowSize/2;
-		}
+          top: 50%;
+          right: $spacing;
+          margin-top: -$controlArrowSize*0.5;
+        }
 
 		.navigate-up {
-			top: $spacing;
-			left: 50%;
-			margin-left: -$controlArrowSize/2;
-		}
+          top: $spacing;
+          left: 50%;
+          margin-left: -$controlArrowSize*0.5;
+        }
 
 		.navigate-down {
-			bottom: $spacing - $controlArrowSpacing + 0.3em;
-			left: 50%;
-			margin-left: -$controlArrowSize/2;
-		}
+          bottom: $spacing - $controlArrowSpacing + 0.3em;
+          left: 50%;
+          margin-left: -$controlArrowSize*0.5;
+        }
 	}
 
 }
@@ -769,9 +781,6 @@ $controlsArrowAngleActive: 36deg;
  *********************************************/
 
 @each $stylename in slide, linear {
-	.reveal.#{$stylename} section {
-		backface-visibility: hidden;
-	}
 	@include transition-horizontal-past(#{$stylename}) {
 		transform: translate(-150%, 0);
 	}
@@ -1158,110 +1167,118 @@ $controlsArrowAngleActive: 36deg;
 	}
 
 /* Immediate transition style */
-.reveal[data-background-transition=none]>.backgrounds .slide-background,
-.reveal>.backgrounds .slide-background[data-background-transition=none] {
+.reveal[data-background-transition=none] > .backgrounds .slide-background:not([data-background-transition]),
+.reveal > .backgrounds .slide-background[data-background-transition=none] {
 	transition: none;
 }
 
 /* Slide */
-.reveal[data-background-transition=slide]>.backgrounds .slide-background,
-.reveal>.backgrounds .slide-background[data-background-transition=slide] {
+.reveal[data-background-transition=slide] > .backgrounds .slide-background:not([data-background-transition]),
+.reveal > .backgrounds .slide-background[data-background-transition=slide] {
 	opacity: 1;
-	backface-visibility: hidden;
 }
-	.reveal[data-background-transition=slide]>.backgrounds .slide-background.past,
-	.reveal>.backgrounds .slide-background.past[data-background-transition=slide] {
+
+.reveal[data-background-transition=slide] > .backgrounds .slide-background.past:not([data-background-transition]),
+.reveal > .backgrounds .slide-background.past[data-background-transition=slide] {
 		transform: translate(-100%, 0);
 	}
-	.reveal[data-background-transition=slide]>.backgrounds .slide-background.future,
-	.reveal>.backgrounds .slide-background.future[data-background-transition=slide] {
+
+.reveal[data-background-transition=slide] > .backgrounds .slide-background.future:not([data-background-transition]),
+.reveal > .backgrounds .slide-background.future[data-background-transition=slide] {
 		transform: translate(100%, 0);
 	}
 
-	.reveal[data-background-transition=slide]>.backgrounds .slide-background>.slide-background.past,
-	.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=slide] {
+.reveal[data-background-transition=slide] > .backgrounds .slide-background > .slide-background.past:not([data-background-transition]),
+.reveal > .backgrounds .slide-background > .slide-background.past[data-background-transition=slide] {
 		transform: translate(0, -100%);
 	}
-	.reveal[data-background-transition=slide]>.backgrounds .slide-background>.slide-background.future,
-	.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=slide] {
+
+.reveal[data-background-transition=slide] > .backgrounds .slide-background > .slide-background.future:not([data-background-transition]),
+.reveal > .backgrounds .slide-background > .slide-background.future[data-background-transition=slide] {
 		transform: translate(0, 100%);
 	}
 
 
 /* Convex */
-.reveal[data-background-transition=convex]>.backgrounds .slide-background.past,
-.reveal>.backgrounds .slide-background.past[data-background-transition=convex] {
+.reveal[data-background-transition=convex] > .backgrounds .slide-background.past:not([data-background-transition]),
+.reveal > .backgrounds .slide-background.past[data-background-transition=convex] {
 	opacity: 0;
 	transform: translate3d(-100%, 0, 0) rotateY(-90deg) translate3d(-100%, 0, 0);
 }
-.reveal[data-background-transition=convex]>.backgrounds .slide-background.future,
-.reveal>.backgrounds .slide-background.future[data-background-transition=convex] {
+
+.reveal[data-background-transition=convex] > .backgrounds .slide-background.future:not([data-background-transition]),
+.reveal > .backgrounds .slide-background.future[data-background-transition=convex] {
 	opacity: 0;
 	transform: translate3d(100%, 0, 0) rotateY(90deg) translate3d(100%, 0, 0);
 }
 
-.reveal[data-background-transition=convex]>.backgrounds .slide-background>.slide-background.past,
-.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=convex] {
+.reveal[data-background-transition=convex] > .backgrounds .slide-background > .slide-background.past:not([data-background-transition]),
+.reveal > .backgrounds .slide-background > .slide-background.past[data-background-transition=convex] {
 	opacity: 0;
 	transform: translate3d(0, -100%, 0) rotateX(90deg) translate3d(0, -100%, 0);
 }
-.reveal[data-background-transition=convex]>.backgrounds .slide-background>.slide-background.future,
-.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=convex] {
+
+.reveal[data-background-transition=convex] > .backgrounds .slide-background > .slide-background.future:not([data-background-transition]),
+.reveal > .backgrounds .slide-background > .slide-background.future[data-background-transition=convex] {
 	opacity: 0;
 	transform: translate3d(0, 100%, 0) rotateX(-90deg) translate3d(0, 100%, 0);
 }
 
 
 /* Concave */
-.reveal[data-background-transition=concave]>.backgrounds .slide-background.past,
-.reveal>.backgrounds .slide-background.past[data-background-transition=concave] {
+.reveal[data-background-transition=concave] > .backgrounds .slide-background.past:not([data-background-transition]),
+.reveal > .backgrounds .slide-background.past[data-background-transition=concave] {
 	opacity: 0;
 	transform: translate3d(-100%, 0, 0) rotateY(90deg) translate3d(-100%, 0, 0);
 }
-.reveal[data-background-transition=concave]>.backgrounds .slide-background.future,
-.reveal>.backgrounds .slide-background.future[data-background-transition=concave] {
+
+.reveal[data-background-transition=concave] > .backgrounds .slide-background.future:not([data-background-transition]),
+.reveal > .backgrounds .slide-background.future[data-background-transition=concave] {
 	opacity: 0;
 	transform: translate3d(100%, 0, 0) rotateY(-90deg) translate3d(100%, 0, 0);
 }
 
-.reveal[data-background-transition=concave]>.backgrounds .slide-background>.slide-background.past,
-.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=concave] {
+.reveal[data-background-transition=concave] > .backgrounds .slide-background > .slide-background.past:not([data-background-transition]),
+.reveal > .backgrounds .slide-background > .slide-background.past[data-background-transition=concave] {
 	opacity: 0;
 	transform: translate3d(0, -100%, 0) rotateX(-90deg) translate3d(0, -100%, 0);
 }
-.reveal[data-background-transition=concave]>.backgrounds .slide-background>.slide-background.future,
-.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=concave] {
+
+.reveal[data-background-transition=concave] > .backgrounds .slide-background > .slide-background.future:not([data-background-transition]),
+.reveal > .backgrounds .slide-background > .slide-background.future[data-background-transition=concave] {
 	opacity: 0;
 	transform: translate3d(0, 100%, 0) rotateX(90deg) translate3d(0, 100%, 0);
 }
 
 /* Zoom */
-.reveal[data-background-transition=zoom]>.backgrounds .slide-background,
-.reveal>.backgrounds .slide-background[data-background-transition=zoom] {
+.reveal[data-background-transition=zoom] > .backgrounds .slide-background:not([data-background-transition]),
+.reveal > .backgrounds .slide-background[data-background-transition=zoom] {
 	transition-timing-function: ease;
 }
 
-.reveal[data-background-transition=zoom]>.backgrounds .slide-background.past,
-.reveal>.backgrounds .slide-background.past[data-background-transition=zoom] {
+.reveal[data-background-transition=zoom] > .backgrounds .slide-background.past:not([data-background-transition]),
+.reveal > .backgrounds .slide-background.past[data-background-transition=zoom] {
 	opacity: 0;
 	visibility: hidden;
 	transform: scale(16);
 }
-.reveal[data-background-transition=zoom]>.backgrounds .slide-background.future,
-.reveal>.backgrounds .slide-background.future[data-background-transition=zoom] {
+
+.reveal[data-background-transition=zoom] > .backgrounds .slide-background.future:not([data-background-transition]),
+.reveal > .backgrounds .slide-background.future[data-background-transition=zoom] {
 	opacity: 0;
 	visibility: hidden;
 	transform: scale(0.2);
 }
 
-.reveal[data-background-transition=zoom]>.backgrounds .slide-background>.slide-background.past,
-.reveal>.backgrounds .slide-background>.slide-background.past[data-background-transition=zoom] {
+.reveal[data-background-transition=zoom] > .backgrounds .slide-background > .slide-background.past:not([data-background-transition]),
+.reveal > .backgrounds .slide-background > .slide-background.past[data-background-transition=zoom] {
 	opacity: 0;
 		visibility: hidden;
 		transform: scale(16);
 }
-.reveal[data-background-transition=zoom]>.backgrounds .slide-background>.slide-background.future,
-.reveal>.backgrounds .slide-background>.slide-background.future[data-background-transition=zoom] {
+
+.reveal[data-background-transition=zoom] > .backgrounds .slide-background > .slide-background.future:not([data-background-transition]),
+.reveal > .backgrounds .slide-background > .slide-background.future[data-background-transition=zoom] {
 	opacity: 0;
 	visibility: hidden;
 	transform: scale(0.2);
@@ -1699,19 +1716,19 @@ $notesWidthPercent: 25%;
 // An interface element that can optionally be used to show the
 // speaker notes to all viewers, on top of the presentation
 .reveal .speaker-notes {
-	display: none;
-	position: absolute;
-	width: $notesWidthPercent / (1-$notesWidthPercent/100) * 1%;
-	height: 100%;
-	top: 0;
-	left: 100%;
-	padding: 14px 18px 14px 18px;
-	z-index: 1;
-	font-size: 18px;
-	line-height: 1.4;
-	border: 1px solid rgba( 0, 0, 0, 0.05 );
-	color: #222;
-	background-color: #f5f5f5;
+  display: none;
+  position: absolute;
+  width: math.div($notesWidthPercent, (1 - math.div($notesWidthPercent,100))) * 1%;
+  height: 100%;
+  top: 0;
+  left: 100%;
+  padding: 14px 18px 14px 18px;
+  z-index: 1;
+  font-size: 18px;
+  line-height: 1.4;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  color: #222;
+  background-color: #f5f5f5;
 	overflow: auto;
 	box-sizing: border-box;
 	text-align: left;
@@ -1764,7 +1781,6 @@ $notesWidthPercent: 25%;
 		top: 100%;
 		left: 0;
 		width: 100%;
-		height: (30/0.7)*1%;
 		height: 30vh;
 		border: 0;
 	}
@@ -1778,7 +1794,6 @@ $notesWidthPercent: 25%;
 
 	.reveal.show-notes .speaker-notes {
 		top: 100%;
-		height: (40/0.6)*1%;
 		height: 40vh;
 	}
 

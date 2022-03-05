@@ -3,204 +3,214 @@
  */
 export default class Location {
 
-    constructor(Reveal) {
+	constructor(Reveal) {
 
-        this.Reveal = Reveal;
+		this.Reveal = Reveal;
 
-        // Delays updates to the URL due to a Chrome thumbnailer bug
-        this.writeURLTimeout = 0;
+		// Delays updates to the URL due to a Chrome thumbnailer bug
+		this.writeURLTimeout = 0;
 
-        this.onWindowHashChange = this.onWindowHashChange.bind(this);
+		this.onWindowHashChange = this.onWindowHashChange.bind(this);
 
-    }
+	}
 
-    bind() {
+	bind() {
 
-        window.addEventListener('hashchange', this.onWindowHashChange, false);
+		window.addEventListener('hashchange', this.onWindowHashChange, false);
 
-    }
+	}
 
-    unbind() {
+	unbind() {
 
-        window.removeEventListener('hashchange', this.onWindowHashChange, false);
+		window.removeEventListener('hashchange', this.onWindowHashChange, false);
 
-    }
+	}
 
-    /**
-     * Reads the current URL (hash) and navigates accordingly.
-     */
-    readURL() {
+	/**
+	 * Returns the slide indices for the given hash link.
+	 *
+	 * @param {string} [hash] the hash string that we want to
+	 * find the indices for
+	 *
+	 * @returns slide indices or null
+	 */
+	getIndicesFromHash(hash = window.location.hash) {
 
-        let config = this.Reveal.getConfig();
-        let indices = this.Reveal.getIndices();
-        let currentSlide = this.Reveal.getCurrentSlide();
+		// Attempt to parse the hash as either an index or name
+		let name = hash.replace(/^#\/?/, '');
+		let bits = name.split('/');
 
-        let hash = window.location.hash;
+		// If the first bit is not fully numeric and there is a name we
+		// can assume that this is a named link
+		if (!/^[0-9]*$/.test(bits[0]) && name.length) {
+			let element;
 
-        // Attempt to parse the hash as either an index or name
-        let bits = hash.slice(2).split('/'),
-            name = hash.replace(/#\/?/gi, '');
+			let f;
 
-        // If the first bit is not fully numeric and there is a name we
-        // can assume that this is a named link
-        if (!/^[0-9]*$/.test(bits[0]) && name.length) {
-            let element;
+			// Parse named links with fragments (#/named-link/2)
+			if (/\/[-\d]+$/g.test(name)) {
+				f = parseInt(name.split('/').pop(), 10);
+				f = isNaN(f) ? undefined : f;
+				name = name.split('/').shift();
+			}
 
-            let f;
+			// Ensure the named link is a valid HTML ID attribute
+			try {
+				element = document.getElementById(decodeURIComponent(name));
+			} catch (error) {
+			}
 
-            // Parse named links with fragments (#/named-link/2)
-            if (/\/[-\d]+$/g.test(name)) {
-                f = parseInt(name.split('/').pop(), 10);
-                f = isNaN(f) ? undefined : f;
-                name = name.split('/').shift();
-            }
+			if (element) {
+				return {...this.Reveal.getIndices(element), f};
+			}
+		} else {
+			const config = this.Reveal.getConfig();
+			let hashIndexBase = config.hashOneBasedIndex ? 1 : 0;
 
-            // Ensure the named link is a valid HTML ID attribute
-            try {
-                element = document.getElementById(decodeURIComponent(name));
-            } catch (error) {
-            }
+			// Read the index components of the hash
+			let h = (parseInt(bits[0], 10) - hashIndexBase) || 0,
+				v = (parseInt(bits[1], 10) - hashIndexBase) || 0,
+				f;
 
-            // Ensure that we're not already on a slide with the same name
-            let isSameNameAsCurrentSlide = currentSlide ? currentSlide.getAttribute('id') === name : false;
+			if (config.fragmentInURL) {
+				f = parseInt(bits[2], 10);
+				if (isNaN(f)) {
+					f = undefined;
+				}
+			}
 
-            if (element) {
-                // If the slide exists and is not the current slide...
-                if (!isSameNameAsCurrentSlide || typeof f !== 'undefined') {
-                    // ...find the position of the named slide and navigate to it
-                    let slideIndices = this.Reveal.getIndices(element);
-                    this.Reveal.slide(slideIndices.h, slideIndices.v, f);
-                }
-            }
-            // If the slide doesn't exist, navigate to the current slide
-            else {
-                this.Reveal.slide(indices.h || 0, indices.v || 0);
-            }
-        } else {
-            let hashIndexBase = config.hashOneBasedIndex ? 1 : 0;
+			return {h, v, f};
+		}
 
-            // Read the index components of the hash
-            let h = (parseInt(bits[0], 10) - hashIndexBase) || 0,
-                v = (parseInt(bits[1], 10) - hashIndexBase) || 0,
-                f;
+		// The hash couldn't be parsed or no matching named link was found
+		return null
 
-            if (config.fragmentInURL) {
-                f = parseInt(bits[2], 10);
-                if (isNaN(f)) {
-                    f = undefined;
-                }
-            }
+	}
 
-            if (h !== indices.h || v !== indices.v || f !== undefined) {
-                this.Reveal.slide(h, v, f);
-            }
-        }
+	/**
+	 * Reads the current URL (hash) and navigates accordingly.
+	 */
+	readURL() {
 
-    }
+		const currentIndices = this.Reveal.getIndices();
+		const newIndices = this.getIndicesFromHash();
 
-    /**
-     * Updates the page URL (hash) to reflect the current
-     * state.
-     *
-     * @param {number} delay The time in ms to wait before
-     * writing the hash
-     */
-    writeURL(delay) {
+		if (newIndices) {
+			if ((newIndices.h !== currentIndices.h || newIndices.v !== currentIndices.v || newIndices.f !== undefined)) {
+				this.Reveal.slide(newIndices.h, newIndices.v, newIndices.f);
+			}
+		}
+			// If no new indices are available, we're trying to navigate to
+		// a slide hash that does not exist
+		else {
+			this.Reveal.slide(currentIndices.h || 0, currentIndices.v || 0);
+		}
 
-        let config = this.Reveal.getConfig();
-        let currentSlide = this.Reveal.getCurrentSlide();
+	}
 
-        // Make sure there's never more than one timeout running
-        clearTimeout(this.writeURLTimeout);
+	/**
+	 * Updates the page URL (hash) to reflect the current
+	 * state.
+	 *
+	 * @param {number} delay The time in ms to wait before
+	 * writing the hash
+	 */
+	writeURL(delay) {
 
-        // If a delay is specified, timeout this call
-        if (typeof delay === 'number') {
-            this.writeURLTimeout = setTimeout(this.writeURL, delay);
-        } else if (currentSlide) {
+		let config = this.Reveal.getConfig();
+		let currentSlide = this.Reveal.getCurrentSlide();
 
-            let hash = this.getHash();
+		// Make sure there's never more than one timeout running
+		clearTimeout(this.writeURLTimeout);
 
-            // If we're configured to push to history OR the history
-            // API is not avaialble.
-            if (config.history) {
-                window.location.hash = hash;
-            }
-                // If we're configured to reflect the current slide in the
-            // URL without pushing to history.
-            else if (config.hash) {
-                // If the hash is empty, don't add it to the URL
-                if (hash === '/') {
-                    window.history.replaceState(null, null, window.location.pathname + window.location.search);
-                } else {
-                    window.history.replaceState(null, null, '#' + hash);
-                }
-            }
-            // UPDATE: The below nuking of all hash changes breaks
-            // anchors on pages where reveal.js is running. Removed
-            // in 4.0. Why was it here in the first place? ¯\_(ツ)_/¯
-            //
-            // If history and hash are both disabled, a hash may still
-            // be added to the URL by clicking on a href with a hash
-            // target. Counter this by always removing the hash.
-            // else {
-            // 	window.history.replaceState( null, null, window.location.pathname + window.location.search );
-            // }
+		// If a delay is specified, timeout this call
+		if (typeof delay === 'number') {
+			this.writeURLTimeout = setTimeout(this.writeURL, delay);
+		} else if (currentSlide) {
 
-        }
+			let hash = this.getHash();
 
-    }
+			// If we're configured to push to history OR the history
+			// API is not avaialble.
+			if (config.history) {
+				window.location.hash = hash;
+			}
+				// If we're configured to reflect the current slide in the
+			// URL without pushing to history.
+			else if (config.hash) {
+				// If the hash is empty, don't add it to the URL
+				if (hash === '/') {
+					window.history.replaceState(null, null, window.location.pathname + window.location.search);
+				} else {
+					window.history.replaceState(null, null, '#' + hash);
+				}
+			}
+			// UPDATE: The below nuking of all hash changes breaks
+			// anchors on pages where reveal.js is running. Removed
+			// in 4.0. Why was it here in the first place? ¯\_(ツ)_/¯
+			//
+			// If history and hash are both disabled, a hash may still
+			// be added to the URL by clicking on a href with a hash
+			// target. Counter this by always removing the hash.
+			// else {
+			// 	window.history.replaceState( null, null, window.location.pathname + window.location.search );
+			// }
 
-    /**
-     * Return a hash URL that will resolve to the given slide location.
-     *
-     * @param {HTMLElement} [slide=currentSlide] The slide to link to
-     */
-    getHash(slide) {
+		}
 
-        let url = '/';
+	}
 
-        // Attempt to create a named link based on the slide's ID
-        let s = slide || this.Reveal.getCurrentSlide();
-        let id = s ? s.getAttribute('id') : null;
-        if (id) {
-            id = encodeURIComponent(id);
-        }
+	/**
+	 * Return a hash URL that will resolve to the given slide location.
+	 *
+	 * @param {HTMLElement} [slide=currentSlide] The slide to link to
+	 */
+	getHash(slide) {
 
-        let index = this.Reveal.getIndices(slide);
-        if (!this.Reveal.getConfig().fragmentInURL) {
-            index.f = undefined;
-        }
+		let url = '/';
 
-        // If the current slide has an ID, use that as a named link,
-        // but we don't support named links with a fragment index
-        if (typeof id === 'string' && id.length) {
-            url = '/' + id;
+		// Attempt to create a named link based on the slide's ID
+		let s = slide || this.Reveal.getCurrentSlide();
+		let id = s ? s.getAttribute('id') : null;
+		if (id) {
+			id = encodeURIComponent(id);
+		}
 
-            // If there is also a fragment, append that at the end
-            // of the named link, like: #/named-link/2
-            if (index.f >= 0) url += '/' + index.f;
-        }
-        // Otherwise use the /h/v index
-        else {
-            let hashIndexBase = this.Reveal.getConfig().hashOneBasedIndex ? 1 : 0;
-            if (index.h > 0 || index.v > 0 || index.f >= 0) url += index.h + hashIndexBase;
-            if (index.v > 0 || index.f >= 0) url += '/' + (index.v + hashIndexBase);
-            if (index.f >= 0) url += '/' + index.f;
-        }
+		let index = this.Reveal.getIndices(slide);
+		if (!this.Reveal.getConfig().fragmentInURL) {
+			index.f = undefined;
+		}
 
-        return url;
+		// If the current slide has an ID, use that as a named link,
+		// but we don't support named links with a fragment index
+		if (typeof id === 'string' && id.length) {
+			url = '/' + id;
 
-    }
+			// If there is also a fragment, append that at the end
+			// of the named link, like: #/named-link/2
+			if (index.f >= 0) url += '/' + index.f;
+		}
+		// Otherwise use the /h/v index
+		else {
+			let hashIndexBase = this.Reveal.getConfig().hashOneBasedIndex ? 1 : 0;
+			if (index.h > 0 || index.v > 0 || index.f >= 0) url += index.h + hashIndexBase;
+			if (index.v > 0 || index.f >= 0) url += '/' + (index.v + hashIndexBase);
+			if (index.f >= 0) url += '/' + index.f;
+		}
 
-    /**
-     * Handler for the window level 'hashchange' event.
-     *
-     * @param {object} [event]
-     */
-    onWindowHashChange(event) {
+		return url;
 
-        this.readURL();
+	}
 
-    }
+	/**
+	 * Handler for the window level 'hashchange' event.
+	 *
+	 * @param {object} [event]
+	 */
+	onWindowHashChange(event) {
+
+		this.readURL();
+
+	}
 
 }
