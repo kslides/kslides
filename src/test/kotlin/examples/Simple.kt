@@ -1,3 +1,5 @@
+package examples
+
 import com.github.pambrose.*
 import com.github.pambrose.Presentation.Companion.present
 import com.github.pambrose.SlideConfig.Companion.slideConfig
@@ -13,29 +15,27 @@ fun main() {
             p { +"Use the arrow keys to navigate" }
         }
 
-        markdownSlide(
-            config = slideConfig { transition(Zoom, Slow) },
-            content = """
-                # Markdown Slide 🍒 
-                
-                Press ESC to see presentation overview.
+        markdownSlide(slideConfig { transition(Zoom, Slow) }) {
             """
-        )
+            # Markdown Slide 🍒 
+            
+            Press ESC to see presentation overview.
+            """
+        }
 
-        markdownSlide(
-            config = slideConfig { backgroundColor = "#4370A5" },
-            content = """
-                # Code Highlights    
-                ```kotlin [1|2,5|3-4]
-                fun main() {
-                    repeat(10) {
-                        println("Hello")
-                        println("World")
-                    }
-                }
-                ```
+        markdownSlide(config = slideConfig { backgroundColor = "#4370A5" }) {
             """
-        )
+            # Code Highlights    
+            ```kotlin [1|2,5|3-4]
+            fun main() {
+                repeat(10) {
+                    println("Hello")
+                    println("World")
+                }
+            }
+            ```
+            """
+        }
 
         verticalSlides {
             htmlSlide(slideConfig { backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4" }) {
@@ -45,15 +45,15 @@ fun main() {
                 }
             }
 
-            markdownSlide(
+            markdownSlide {
                 """
-                    # Vertical Markdown Slide 🦊 
-                    
-                    [Go back to the 1st slide](#/0) ${fragmentIndex(1)}
-                 
-                    [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
-                 """
-            )
+                # Vertical Markdown Slide 🦊 
+                
+                [Go back to the 1st slide](#/0) ${fragmentIndex(1)}
+             
+                [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
+                """
+            }
         }
 
         config {

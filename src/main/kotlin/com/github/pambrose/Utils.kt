@@ -17,12 +17,17 @@ fun includeFile(
     endToken: String = "",
     commentPrefix: String = "//"
 ) =
-    processCode(
-        File("${System.getProperty("user.dir")}/$path").readLines(),
-        beginToken,
-        endToken,
-        commentPrefix
-    )
+    try {
+        processCode(
+            File("${System.getProperty("user.dir")}/$path").readLines(),
+            beginToken,
+            endToken,
+            commentPrefix
+        )
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
 
 fun includeUrl(
     source: String,
@@ -30,12 +35,17 @@ fun includeUrl(
     endToken: String = "",
     commentPrefix: String = "//"
 ) =
-    processCode(
-        URL(source).readText().split("\n"),
-        beginToken,
-        endToken,
-        commentPrefix
-    )
+    try {
+        processCode(
+            URL(source).readText().split("\n"),
+            beginToken,
+            endToken,
+            commentPrefix
+        )
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
 
 private fun processCode(
     lines: List<String>,

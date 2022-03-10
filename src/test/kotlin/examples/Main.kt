@@ -1,4 +1,4 @@
-package com.github.readingbat.examples
+package examples
 
 import com.github.pambrose.*
 import com.github.pambrose.Presentation.Companion.present
@@ -27,23 +27,23 @@ fun main() {
             }
         }
 
-        markdownSlide(
+        markdownSlide {
             """
-                # Markdown Example
-                ````kotlin [1|3-4|20,24-25]
-                ${includeFile(path = "src/main/kotlin/Simple.kt")}
-                ````
-             """
-        )
+            # Markdown Example
+            ````kotlin [1|3-4|20,24-25]
+            ${includeFile(path = "src/test/kotlin/examples/Simple.kt")}
+            ````
+            """
+        }
 
-        markdownSlide(
+        markdownSlide {
             """
-                # Markdown Example
-                ```kotlin [1|3-4|20,24-25]
-                ${includeUrl(source = "https://raw.githubusercontent.com/pambrose/kslides/master/src/main/kotlin/Simple.kt")}
-                ```
-             """
-        )
+            # Markdown Example
+            ```kotlin [1|3-4|20,24-25]
+            ${includeUrl(source = "https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/exaples/Simple.kt")}
+            ```
+            """
+        }
 
         rawHtmlSlide {
             """
@@ -72,15 +72,13 @@ fun main() {
                 h2 { +"🐳" }
             }
 
-            markdownSlide(
+            markdownSlide {
                 """
                 # Markdown Slide
                 """
-            )
+            }
 
-            markdownSlide(
-                config = slideConfig { backgroundColor = "red" },
-                content =
+            markdownSlide(slideConfig { backgroundColor = "red" }) {
                 """
                 ## Demo 1
                 Slide 1
@@ -95,7 +93,7 @@ fun main() {
                 ## Demo 1
                 Slide 3
                 """
-            )
+            }
 
             markdownSlide(filename = "public/markdown2.md")
         }
@@ -115,8 +113,7 @@ fun main() {
         markdownSlide(filename = "/public/markdown.md", separator = "^---", vertical_separator = "^--")
 
         // Slides are separated by three dashes
-        markdownSlide(
-            separator = "---", content =
+        markdownSlide(separator = "---") {
             """
             ## Demo 1
             Slide 1
@@ -127,11 +124,10 @@ fun main() {
             ## Demo 1
             Slide 3
             """
-        )
+        }
 
         // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
-        markdownSlide(
-            separator = "\r?\\n---\r?\\n", vertical_separator = "\r?\\n--\r?\\n", content =
+        markdownSlide(separator = "\r?\\n---\r?\\n", vertical_separator = "\r?\\n--\r?\\n") {
             """
             ## Demo 2
             Slide 1.1
@@ -146,9 +142,9 @@ fun main() {
             ## Demo 2
             Slide 2
             """
-        )
+        }
 
-        markdownSlide(
+        markdownSlide {
             """
             A
 
@@ -160,42 +156,38 @@ fun main() {
 
             C
             """
-        )
+        }
 
         // Slide attributes
-        markdownSlide(
-            config = slideConfig { backgroundColor = "#FFFF00" },
-            content =
+        markdownSlide(slideConfig { backgroundColor = "#FFFF00" }) {
             """
                 ## Slide attributes
              """
-        )
+        }
 
-        markdownSlide(
+        markdownSlide {
             """
-                ## Element attributes
-                
-                Item 1 ${fragmentIndex(1)}
-                
-                Item 2 ${fragmentIndex(2)}
-                
-                Item 3 ${fragmentIndex(3)}
-                """
-        )
+            ## Element attributes
+            
+            Item 1 ${fragmentIndex(1)}
+            
+            Item 2 ${fragmentIndex(2)}
+            
+            Item 3 ${fragmentIndex(3)}
+            """
+        }
 
-        markdownSlide(
-            id = "markdown-example",
-            content =
+        markdownSlide(id = "markdown-example") {
             """
-                # Markdown Example
-                ```kotlin [1|3-4]
-                    fun main() {
-                        println("Hello")
-                        println("World")
-                    }
-                ```
-                """
-        )
+            # Markdown Example
+            ```kotlin [1|3-4]
+                fun main() {
+                    println("Hello")
+                    println("World")
+                }
+            ```
+            """
+        }
 
         htmlSlide {
             section {
@@ -228,9 +220,9 @@ fun main() {
         }
 
         // Images
-        markdownSlide(
+        markdownSlide {
             "![Sample image](https://picsum.photos/512/512)"
-        )
+        }
 
         config {
             hash = true

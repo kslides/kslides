@@ -61,16 +61,30 @@ class Presentation internal constructor(path: String, val title: String, val the
     }
 
     @HtmlTagMarker
-    fun VerticalContext.htmlSlide(
+    fun VerticalContext.rawHtmlSlide(
         config: SlideConfig = slideConfig {},
         id: String = "",
-        block: SECTION.() -> Unit
+        content: () -> String
     ) {
         vertSlides += {
             if (id.isNotEmpty())
                 this.id = id
             applyConfig(config)
-            block.invoke(this)
+            rawHtml(content.invoke())
+        }
+    }
+
+    @HtmlTagMarker
+    fun VerticalContext.htmlSlide(
+        config: SlideConfig = slideConfig {},
+        id: String = "",
+        content: SECTION.() -> Unit
+    ) {
+        vertSlides += {
+            if (id.isNotEmpty())
+                this.id = id
+            applyConfig(config)
+            content.invoke(this)
         }
     }
 
@@ -78,14 +92,14 @@ class Presentation internal constructor(path: String, val title: String, val the
     fun rawHtmlSlide(
         config: SlideConfig = slideConfig {},
         id: String = "",
-        block: () -> String
+        content: () -> String
     ) {
         slides += {
             section {
                 if (id.isNotEmpty())
                     this.id = id
                 applyConfig(config)
-                rawHtml(block.invoke())
+                rawHtml(content.invoke())
             }
             rawHtml("\n\t")
         }
@@ -95,14 +109,14 @@ class Presentation internal constructor(path: String, val title: String, val the
     fun htmlSlide(
         config: SlideConfig = slideConfig {},
         id: String = "",
-        block: SECTION.() -> Unit
+        content: SECTION.() -> Unit
     ) {
         slides += {
             section {
                 if (id.isNotEmpty())
                     this.id = id
                 applyConfig(config)
-                block.invoke(this)
+                content.invoke(this)
             }
             rawHtml("\n\t")
         }
@@ -110,10 +124,10 @@ class Presentation internal constructor(path: String, val title: String, val the
 
     @HtmlTagMarker
     fun VerticalContext.markdownSlide(
-        content: String = "",
         config: SlideConfig = slideConfig {},
         id: String = "",
         filename: String = "",
+        content: () -> String = { "" },
     ) {
         htmlSlide(config = config, id = id) {
             // If this value is == "" it means read content inline
@@ -127,20 +141,20 @@ class Presentation internal constructor(path: String, val title: String, val the
             if (filename.isEmpty())
                 script {
                     type = "text/template"
-                    rawHtml(content)
+                    rawHtml(content.invoke())
                 }
         }
     }
 
     @HtmlTagMarker
     fun markdownSlide(
-        content: String = "",
         config: SlideConfig = slideConfig {},
         id: String = "",
         filename: String = "",
         separator: String = "",
         vertical_separator: String = "",
         notes: String = "^Note:",
+        content: () -> String = { "" },
     ) {
         htmlSlide(config = config, id = id) {
             // If this value is == "" it means read content inline
@@ -160,7 +174,7 @@ class Presentation internal constructor(path: String, val title: String, val the
             if (filename.isEmpty())
                 script {
                     type = "text/template"
-                    rawHtml(content)
+                    rawHtml(content.invoke())
                 }
         }
     }
