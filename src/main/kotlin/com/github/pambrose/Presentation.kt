@@ -69,10 +69,25 @@ class Presentation internal constructor(path: String, val title: String, val the
         vertSlides += {
             if (id.isNotEmpty())
                 this.id = id
-
             applyConfig(config)
-
             block.invoke(this)
+        }
+    }
+
+    @HtmlTagMarker
+    fun rawHtmlSlide(
+        config: SlideConfig = slideConfig {},
+        id: String = "",
+        block: () -> String
+    ) {
+        slides += {
+            section {
+                if (id.isNotEmpty())
+                    this.id = id
+                applyConfig(config)
+                rawHtml(block.invoke())
+            }
+            rawHtml("\n\t")
         }
     }
 
@@ -86,9 +101,7 @@ class Presentation internal constructor(path: String, val title: String, val the
             section {
                 if (id.isNotEmpty())
                     this.id = id
-
                 applyConfig(config)
-
                 block.invoke(this)
             }
             rawHtml("\n\t")
@@ -105,7 +118,6 @@ class Presentation internal constructor(path: String, val title: String, val the
         htmlSlide(config = config, id = id) {
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = filename
-
             attributes["data-separator"] = ""
             attributes["data-separator-vertical"] = ""
 
@@ -174,10 +186,9 @@ class Presentation internal constructor(path: String, val title: String, val the
         private fun SECTION.applyConfig(config: SlideConfig) {
             if (config.transition != Transition.Slide)
                 attributes["data-transition"] = config.transition.asInOut()
-            else {
+            else
                 if (config.transitionIn != Transition.Slide || config.transitionOut != Transition.Slide)
                     attributes["data-transition"] = "${config.transitionIn.asIn()} ${config.transitionOut.asOut()}"
-            }
 
             if (config.speed != Speed.Default)
                 attributes["data-transition-speed"] = config.speed.name.toLower()

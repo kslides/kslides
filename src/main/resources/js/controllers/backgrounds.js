@@ -6,7 +6,7 @@ import {colorBrightness, colorToRgb} from '../utils/color.js'
  */
 export default class Backgrounds {
 
-	constructor(Reveal) {
+    constructor(Reveal) {
 
         this.Reveal = Reveal;
 

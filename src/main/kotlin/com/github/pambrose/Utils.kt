@@ -1,6 +1,7 @@
 package com.github.pambrose
 
 import kotlinx.html.*
+import org.apache.commons.text.*
 import java.io.*
 import java.net.*
 import java.util.*
@@ -15,30 +16,26 @@ fun includeFile(
     beginToken: String = "",
     endToken: String = "",
     commentPrefix: String = "//"
-): String {
-    val text = File("${System.getProperty("user.dir")}/$path").readLines()
-    return processCode(
-        text,
+) =
+    processCode(
+        File("${System.getProperty("user.dir")}/$path").readLines(),
         beginToken,
         endToken,
         commentPrefix
     )
-}
 
 fun includeUrl(
     source: String,
     beginToken: String = "",
     endToken: String = "",
     commentPrefix: String = "//"
-): String {
-    val text = URL(source).readText().split("\n")
-    return processCode(
-        text,
+) =
+    processCode(
+        URL(source).readText().split("\n"),
         beginToken,
         endToken,
         commentPrefix
     )
-}
 
 private fun processCode(
     lines: List<String>,
@@ -67,8 +64,8 @@ private fun processCode(
                 .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$endToken")) }?.first
                 ?: throw IllegalArgumentException("endToken not found: $endToken"))
 
-    return lines.subList(startIndex, endIndex).joinToString("\n")
-
+    return lines.subList(startIndex, endIndex)
+        .joinToString("\n") { StringEscapeUtils.escapeHtml4(it) }
 }
 
 // Keep this global to make it easier for users to be prompted for completion in it

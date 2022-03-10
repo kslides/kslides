@@ -17,12 +17,11 @@
 
 package com.github.readingbat
 
+import com.github.pambrose.*
 import com.github.pambrose.Presentation.Companion.presentations
-import com.github.pambrose.presentation
-import com.github.pambrose.staticRoots
-import io.kotest.assertions.throwables.shouldThrowExactly
-import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.shouldBe
+import io.kotest.assertions.throwables.*
+import io.kotest.core.spec.style.*
+import io.kotest.matchers.*
 
 class PresentationTest : StringSpec(
     {

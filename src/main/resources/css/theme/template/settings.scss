@@ -32,7 +32,7 @@ $codeFont: monospace;
 
 // Links and actions
 $linkColor: #13DAEC;
-$linkColorHover: lighten( $linkColor, 20% );
+$linkColorHover: lighten($linkColor, 20%);
 
 // Text selection
 $selectionBackgroundColor: #FF5E99;
@@ -41,5 +41,5 @@ $selectionColor: #fff;
 // Generates the presentation background, can be overridden
 // to return a background image or gradient
 @mixin bodyBackground() {
-	background: $backgroundColor;
+    background: $backgroundColor;
 }
