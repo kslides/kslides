@@ -229,4 +229,17 @@ export default class Plugins {
 
     }
 
+    destroy() {
+
+        Object.values(this.registeredPlugins).forEach(plugin => {
+            if (typeof plugin.destroy === 'function') {
+                plugin.destroy();
+            }
+        });
+
+        this.registeredPlugins = {};
+        this.asyncDependencies = [];
+
+    }
+
 }

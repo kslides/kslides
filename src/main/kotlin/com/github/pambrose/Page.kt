@@ -1,10 +1,8 @@
 package com.github.pambrose
 
-import com.github.pambrose.common.util.isNotNull
+import com.github.pambrose.common.util.*
 import kotlinx.html.*
-import kotlinx.html.dom.append
-import kotlinx.html.dom.document
-import kotlinx.html.dom.serialize
+import kotlinx.html.dom.*
 
 internal object Page {
     fun generatePage(presentation: Presentation): String {

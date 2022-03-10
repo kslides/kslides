@@ -1,5 +1,6 @@
-package com.github.pambrose
+package com.github.readingbat.examples
 
+import com.github.pambrose.*
 import com.github.pambrose.Presentation.Companion.present
 import com.github.pambrose.SlideConfig.Companion.slideConfig
 import com.github.pambrose.Speed.Slow
@@ -11,15 +12,14 @@ import kotlinx.html.*
 
 fun main() {
     presentation(title = "markdown Demo", theme = Moon) {
-        css =
-            """
+        css = """
 			.slides section h3 {
 				color: green;
 			}
 			.slides section h4 a {
 				color: red;
 			}
-            """
+    """
 
         css {
             rule(".slides section h3") {
@@ -30,9 +30,9 @@ fun main() {
         markdownSlide(
             """
                 # Markdown Example
-                ```kotlin [1|3-4|20,24-25]
+                ````kotlin [1|3-4|20,24-25]
                 ${includeFile(path = "src/main/kotlin/Simple.kt")}
-                ```
+                ````
              """
         )
 
@@ -44,6 +44,15 @@ fun main() {
                 ```
              """
         )
+
+        rawHtmlSlide {
+            """
+        <h1>Raw Slide</h1>
+        <h2>This is a raw slide</h2>
+        <h3>This is a raw slide</h3>
+        <p>This is a raw slide</p>
+      """
+        }
 
         htmlSlide(id = "home") {
             h3 { +"Examples" }
@@ -226,7 +235,6 @@ fun main() {
         config {
             hash = true
         }
-
     }
 
     presentation("/demo.html") {

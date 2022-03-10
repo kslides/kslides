@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'application'
-//    id 'maven'  // Required for jitpack.io to do a ./gradlew install
     id 'org.jetbrains.kotlin.jvm' version '1.6.20-RC'
+    id 'org.jmailen.kotlinter' version "3.9.0"
     id "com.github.ben-manes.versions" version '0.42.0'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
@@ -17,7 +17,7 @@ application {
 }
 
 group 'com.github.pambrose'
-version '0.1.0'
+version '0.2.0'
 
 repositories {
     maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers" }
@@ -41,6 +41,8 @@ dependencies {
 
     implementation "com.github.pambrose.common-utils:core-utils:$utils_version"
     implementation "com.github.pambrose.common-utils:ktor-server-utils:$utils_version"
+
+    implementation 'org.apache.commons:commons-text:1.9'
 
     implementation "io.github.microutils:kotlin-logging:$logging_version"
     implementation "ch.qos.logback:logback-classic:$logback_version"
@@ -78,6 +80,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
+
 compileKotlin {
     kotlinOptions {
         useIR = true
@@ -100,4 +103,12 @@ test {
         exceptionFormat "full"
         showStandardStreams = true
     }
+}
+
+kotlinter {
+    ignoreFailures = false
+    indentSize = 2
+    reporters = ['checkstyle', 'plain']
+    experimentalRules = false
+    disabledRules = ["no-wildcard-imports", "indent", "final-newline", "comment-spacing", "max-line-length", "no-multi-spaces"]
 }

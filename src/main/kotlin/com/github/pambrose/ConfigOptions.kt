@@ -1,6 +1,6 @@
 package com.github.pambrose
 
-import kotlin.reflect.KProperty
+import kotlin.reflect.*
 
 class ConfigOptions {
     val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
@@ -261,13 +261,13 @@ class ConfigOptions {
         buildString {
             appendLine()
             appendLine("\tReveal.initialize({")
-            configMap.forEach { k, v ->
-                when {
-                    v is Boolean || v is Number -> append("\t\t$k: $v")
-                    v is String -> append("\t\t$k: '$v'")
-                    v is Transition -> append("\t\t$k: '${v.name.toLowerCase()}'")
-                    v is Speed -> append("\t\t$k: '${v.name.toLowerCase()}'")
-                    v is List<*> -> append("\t\t$k: [${v.map { "'$it'" }.joinToString(", ")}]")
+            configMap.forEach { (k, v) ->
+                when (v) {
+                    is Boolean, is Number -> append("\t\t$k: $v")
+                    is String -> append("\t\t$k: '$v'")
+                    is Transition -> append("\t\t$k: '${v.name.toLower()}'")
+                    is Speed -> append("\t\t$k: '${v.name.toLower()}'")
+                    is List<*> -> append("\t\t$k: [${v.joinToString(", ") { "'$it'" }}]")
                     else -> throw IllegalArgumentException("Invalid value for $k: $v")
                 }
                 appendLine(",")

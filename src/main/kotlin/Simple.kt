@@ -1,13 +1,10 @@
+import com.github.pambrose.*
 import com.github.pambrose.Presentation.Companion.present
 import com.github.pambrose.SlideConfig.Companion.slideConfig
 import com.github.pambrose.Speed.Slow
 import com.github.pambrose.Transition.Slide
 import com.github.pambrose.Transition.Zoom
-import com.github.pambrose.fragmentIndex
-import com.github.pambrose.presentation
-import kotlinx.html.h1
-import kotlinx.html.p
-import kotlinx.html.style
+import kotlinx.html.*
 
 fun main() {
     presentation {
@@ -36,6 +33,7 @@ fun main() {
                         println("World")
                     }
                 }
+                ```
             """
         )
 

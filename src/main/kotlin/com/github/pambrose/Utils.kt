@@ -1,8 +1,10 @@
 package com.github.pambrose
 
-import kotlinx.html.HtmlTagMarker
-import java.io.File
-import java.net.URL
+import kotlinx.html.*
+import org.apache.commons.text.*
+import java.io.*
+import java.net.*
+import java.util.*
 
 fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
 
@@ -51,7 +53,6 @@ private fun processCode(
                 .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$beginToken")) }?.first
                 ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
 
-
     val endIndex =
         if (endToken.isEmpty())
             lines.size
@@ -62,11 +63,13 @@ private fun processCode(
                 .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$endToken")) }?.first
                 ?: throw IllegalArgumentException("endToken not found: $endToken"))
 
-    return lines.subList(startIndex, endIndex).joinToString("\n")
-
+    return lines.subList(startIndex, endIndex)
+        .joinToString("\n") { StringEscapeUtils.escapeHtml4(it) }
 }
 
 // Keep this global to make it easier for users to be prompted for completion in it
 @HtmlTagMarker
 fun presentation(path: String = "/", title: String = "", theme: Theme = Theme.Black, block: Presentation.() -> Unit) =
-    Presentation(path, title, "dist/theme/${theme.name.toLowerCase()}.css").apply { block(this) }
+    Presentation(path, title, "dist/theme/${theme.name.toLower()}.css").apply { block(this) }
+
+fun String.toLower(locale: Locale = Locale.getDefault()) = lowercase(locale)

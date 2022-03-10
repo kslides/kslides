@@ -110,4 +110,10 @@ export default class Notes {
 
     }
 
+    destroy() {
+
+        this.element.remove();
+
+    }
+
 }

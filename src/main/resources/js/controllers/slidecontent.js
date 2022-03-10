@@ -1,4 +1,4 @@
-import {closest, extend, queryAll} from '../utils/util.js'
+import {closest, extend, getMimeTypeFromFile, queryAll} from '../utils/util.js'
 import {isMobile} from '../utils/device.js'
 
 import fitty from 'fitty';
@@ -101,7 +101,16 @@ export default class SlideContent {
 
                 // Images
                 if (backgroundImage) {
-                    backgroundContent.style.backgroundImage = 'url(' + encodeURI(backgroundImage) + ')';
+                    // base64
+                    if (/^data:/.test(backgroundImage.trim())) {
+                        backgroundContent.style.backgroundImage = `url(${backgroundImage.trim()})`;
+                    }
+                    // URL(s)
+                    else {
+                        backgroundContent.style.backgroundImage = backgroundImage.split(',').map(background => {
+                            return `url(${encodeURI(background.trim())})`;
+                        }).join(',');
+                    }
                 }
                 // Videos
                 else if (backgroundVideo && !this.Reveal.isSpeakerNotes()) {
@@ -127,7 +136,12 @@ export default class SlideContent {
 
                     // Support comma separated lists of video sources
                     backgroundVideo.split(',').forEach(source => {
-                        video.innerHTML += '<source src="' + source + '">';
+                        let type = getMimeTypeFromFile(source);
+                        if (type) {
+                            video.innerHTML += `<source src="${source}" type="${type}">`;
+                        } else {
+                            video.innerHTML += `<source src="${source}">`;
+                        }
                     });
 
                     backgroundContent.appendChild(video);
@@ -166,11 +180,20 @@ export default class SlideContent {
 
         }
 
+        this.layout(slide);
+
+    }
+
+    /**
+     * Applies JS-dependent layout helpers for the given slide,
+     * if there are any.
+     */
+    layout(slide) {
+
         // Autosize text with the r-fit-text class based on the
         // size of its container. This needs to happen after the
         // slide is visible in order to measure the text.
-        Array.from(slide.querySelectorAll('.r-fit-text:not([data-fitted])')).forEach(element => {
-            element.dataset.fitted = '';
+        Array.from(slide.querySelectorAll('.r-fit-text')).forEach(element => {
             fitty(element, {
                 minSize: 24,
                 maxSize: this.Reveal.getConfig().height * 0.8,

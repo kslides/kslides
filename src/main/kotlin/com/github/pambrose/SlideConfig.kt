@@ -38,4 +38,3 @@ class SlideConfig private constructor() {
         fun slideConfig(block: SlideConfig.() -> Unit) = SlideConfig().apply(block)
     }
 }
-

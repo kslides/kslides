@@ -78,6 +78,12 @@ export default class Focus {
 
     }
 
+    destroy() {
+
+        this.Reveal.getRevealElement().classList.remove('focused');
+
+    }
+
     onRevealPointerDown(event) {
 
         this.focus();
