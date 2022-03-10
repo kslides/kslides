@@ -19,7 +19,7 @@ fun main() {
 			.slides section h4 a {
 				color: red;
 			}
-    """
+        """
 
         css {
             rule(".slides section h3") {
@@ -47,11 +47,11 @@ fun main() {
 
         rawHtmlSlide {
             """
-        <h1>Raw Slide</h1>
-        <h2>This is a raw slide</h2>
-        <h3>This is a raw slide</h3>
-        <p>This is a raw slide</p>
-      """
+            <h1>Raw Slide</h1>
+            <h2>This is a raw slide</h2>
+            <h3>This is a raw slide</h3>
+            <p>This is a raw slide</p>
+            """
         }
 
         htmlSlide(id = "home") {
