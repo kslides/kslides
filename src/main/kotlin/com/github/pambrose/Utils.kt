@@ -53,7 +53,6 @@ private fun processCode(
                 .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$beginToken")) }?.first
                 ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
 
-
     val endIndex =
         if (endToken.isEmpty())
             lines.size

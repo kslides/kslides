@@ -235,7 +235,6 @@ fun main() {
         config {
             hash = true
         }
-
     }
 
     presentation("/demo.html") {
