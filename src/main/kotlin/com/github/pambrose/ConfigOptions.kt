@@ -4,6 +4,9 @@ import kotlin.reflect.*
 
 class ConfigOptions {
     val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
+
+    var copyCode = true
+
     val configMap = mutableMapOf<String, Any>()
 
     // Display presentation control arrows
@@ -274,6 +277,8 @@ class ConfigOptions {
             }
             if (configMap.isNotEmpty())
                 appendLine()
+            if (copyCode)
+                plugins += "CopyCode"
             appendLine("\t\tplugins: [${plugins.joinToString(", ")}]")
             appendLine("\t});")
             appendLine()
