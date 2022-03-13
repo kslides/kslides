@@ -55,7 +55,7 @@ internal object Page {
 
       p.cssFiles.forEach {
         link {
-          rel = "stylesheet";
+          rel = "stylesheet"
           href = if (it.first.startsWith("http")) it.first else "$srcPrefix${it.first}"
           if (it.second.isNotEmpty())
             id = it.second

@@ -1,7 +1,7 @@
 package examples
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.output
+import com.kslides.Presentation.Companion.outputPresentations
 import com.kslides.SlideConfig.Companion.slideConfig
 import com.kslides.Speed.Slow
 import com.kslides.Transition.Concave
@@ -252,7 +252,7 @@ fun main() {
     }
   }
 
-  presentation("demo2.html") {
+  presentation("demo1/demo2") {
     htmlSlide {
       +"Demo2 Slide 1"
     }
@@ -262,5 +262,16 @@ fun main() {
     }
   }
 
-  output()
+  presentation("demo3.html") {
+    htmlSlide {
+      +"Demo3 Slide 1"
+    }
+
+    htmlSlide {
+      +"Demo3 Slide 2"
+    }
+  }
+
+  //servePresentations()
+  outputPresentations()
 }

@@ -205,13 +205,13 @@ class Presentation internal constructor(path: String, val title: String, val the
   companion object : KLogging() {
     internal val presentations = mutableMapOf<String, Presentation>()
 
-    fun present() {
+    fun servePresentations() {
       val environment = commandLineEnvironment(emptyArray())
       embeddedServer(CIO, environment).start(wait = true)
     }
 
-    fun output(dir: String = "docs", srcPrefix: String = "revealjs/") {
-      require(dir.isNotEmpty()) { "dir must not be empty" }
+    fun outputPresentations(dir: String = "docs", srcPrefix: String = "revealjs/") {
+      require(dir.isNotEmpty()) { "dir value must not be empty" }
 
       File(dir).mkdir()
       presentations.forEach { (key, p) ->
@@ -224,8 +224,11 @@ class Presentation internal constructor(path: String, val title: String, val the
               File("$dir/$key") to srcPrefix
             }
             else -> {
-              File("$dir/$key").mkdir()
-              File("$dir/$key/index.html") to "../$srcPrefix"
+              val pathElems = "$dir/$key".split("/").filter { it.isNotEmpty() }
+              val path = pathElems.joinToString("/")
+              val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
+              File(path).mkdir()
+              File("$path/index.html") to "$dotDot$srcPrefix"
             }
           }
         file.writeText(generatePage(p, prefix))

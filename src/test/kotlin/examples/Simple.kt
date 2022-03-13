@@ -1,7 +1,7 @@
 package examples
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.present
+import com.kslides.Presentation.Companion.servePresentations
 import com.kslides.SlideConfig.Companion.slideConfig
 import com.kslides.Speed.Slow
 import com.kslides.Transition.Slide
@@ -59,5 +59,5 @@ fun main() {
   }
 
   // Run the web server
-  present()
+  servePresentations()
 }
