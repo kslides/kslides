@@ -1,14 +1,19 @@
-package com.github.pambrose
+package com.kslides
 
-import com.github.pambrose.Page.generatePage
-import com.github.pambrose.Page.rawHtml
-import com.github.pambrose.SlideConfig.Companion.slideConfig
+import com.kslides.Page.generatePage
+import com.kslides.Page.rawHtml
+import com.kslides.SlideConfig.Companion.slideConfig
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
 import java.io.*
+
+// Keep this global to make it easier for users to be prompted for completion in it
+@HtmlTagMarker
+fun presentation(path: String = "/", title: String = "", theme: Theme = Theme.Black, block: Presentation.() -> Unit) =
+  Presentation(path, title, "dist/theme/${theme.name.toLower()}.css").apply { block(this) }
 
 class Presentation internal constructor(path: String, val title: String, val theme: String) {
 
@@ -76,20 +81,6 @@ class Presentation internal constructor(path: String, val title: String, val the
   }
 
   @HtmlTagMarker
-  fun VerticalContext.htmlSlide(
-    config: SlideConfig = slideConfig {},
-    id: String = "",
-    content: SECTION.() -> Unit
-  ) {
-    vertSlides += {
-      if (id.isNotEmpty())
-        this.id = id
-      applyConfig(config)
-      content.invoke(this)
-    }
-  }
-
-  @HtmlTagMarker
   fun rawHtmlSlide(
     config: SlideConfig = slideConfig {},
     id: String = "",
@@ -103,6 +94,20 @@ class Presentation internal constructor(path: String, val title: String, val the
         rawHtml("\n" + content.invoke())
       }
       rawHtml("\n")
+    }
+  }
+
+  @HtmlTagMarker
+  fun VerticalContext.htmlSlide(
+    config: SlideConfig = slideConfig {},
+    id: String = "",
+    content: SECTION.() -> Unit
+  ) {
+    vertSlides += {
+      if (id.isNotEmpty())
+        this.id = id
+      applyConfig(config)
+      content.invoke(this)
     }
   }
 

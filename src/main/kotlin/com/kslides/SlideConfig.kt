@@ -1,4 +1,4 @@
-package com.github.pambrose
+package com.kslides
 
 class SlideConfig private constructor() {
 

@@ -1,6 +1,6 @@
 package com.github.readingbat
 
-import com.github.pambrose.*
+import com.kslides.*
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
 

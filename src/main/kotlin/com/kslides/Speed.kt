@@ -1,4 +1,4 @@
-package com.github.pambrose
+package com.kslides
 
 enum class Speed {
     Default,

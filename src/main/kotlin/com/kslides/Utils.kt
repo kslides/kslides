@@ -1,6 +1,5 @@
-package com.github.pambrose
+package com.kslides
 
-import kotlinx.html.*
 import org.apache.commons.text.*
 import java.io.*
 import java.net.*
@@ -53,6 +52,9 @@ private fun processCode(
   endToken: String,
   commentPrefix: String
 ): String {
+  val beginRegex = "$commentPrefix\\s*$beginToken".toRegex()
+  val endRegex = "$commentPrefix\\s*$endToken".toRegex()
+
   val startIndex =
     if (beginToken.isEmpty())
       0
@@ -60,7 +62,7 @@ private fun processCode(
       (lines
         .asSequence()
         .mapIndexed { i, s -> i to s }
-        .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$beginToken")) }?.first
+        .firstOrNull { it.second.contains(beginRegex) }?.first
         ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
 
   val endIndex =
@@ -70,7 +72,7 @@ private fun processCode(
       (lines.reversed()
         .asSequence()
         .mapIndexed { i, s -> (lines.size - i - 1) to s }
-        .firstOrNull { it.second.contains(Regex("$commentPrefix\\s*$endToken")) }?.first
+        .firstOrNull { it.second.contains(endRegex) }?.first
         ?: throw IllegalArgumentException("endToken not found: $endToken"))
 
   return lines
@@ -78,11 +80,6 @@ private fun processCode(
     .map { StringEscapeUtils.escapeHtml4(it) }
     .joinToString("\n")
 }
-
-// Keep this global to make it easier for users to be prompted for completion in it
-@HtmlTagMarker
-fun presentation(path: String = "/", title: String = "", theme: Theme = Theme.Black, block: Presentation.() -> Unit) =
-  Presentation(path, title, "dist/theme/${theme.name.toLower()}.css").apply { block(this) }
 
 fun String.toLower(locale: Locale = Locale.getDefault()) = lowercase(locale)
 
@@ -119,16 +116,4 @@ fun String.trimIndentWithInclude(): String {
       }
     }
     .joinToString("\n")
-}
-
-fun main() {
-  val s =
-    """
-      <h1>Raw Slide</h1>
-      <h2>This is a raw slide</h2>
-      <h3>This is a raw slide</h3>
-      <p>This is a raw slide</p>
-      """
-
-  println(s)
 }

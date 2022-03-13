@@ -1,17 +1,16 @@
 package examples
 
-import com.github.pambrose.*
-import com.github.pambrose.Presentation.Companion.output
-import com.github.pambrose.SlideConfig.Companion.slideConfig
-import com.github.pambrose.Speed.Slow
-import com.github.pambrose.Theme.Moon
-import com.github.pambrose.Transition.Concave
+import com.kslides.*
+import com.kslides.Presentation.Companion.present
+import com.kslides.SlideConfig.Companion.slideConfig
+import com.kslides.Speed.Slow
+import com.kslides.Transition.Concave
 import kotlinx.css.Color
 import kotlinx.css.color
 import kotlinx.html.*
 
 fun main() {
-  presentation(title = "markdown Demo", theme = Moon) {
+  presentation(title = "markdown Demo", theme = Theme.Moon) {
     css = """
 			.slides section h3 {
 				color: green;
@@ -253,5 +252,5 @@ fun main() {
     }
   }
 
-  output()
+  present()
 }

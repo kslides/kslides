@@ -1,8 +1,8 @@
-package com.github.pambrose
+package com.kslides
 
-import com.github.pambrose.Page.generatePage
-import com.github.pambrose.Presentation.Companion.presentations
 import com.github.pambrose.common.response.*
+import com.kslides.Page.generatePage
+import com.kslides.Presentation.Companion.presentations
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.plugins.*

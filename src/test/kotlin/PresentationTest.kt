@@ -17,44 +17,44 @@
 
 package com.github.readingbat
 
-import com.github.pambrose.*
-import com.github.pambrose.Presentation.Companion.presentations
+import com.kslides.*
+import com.kslides.Presentation.Companion.presentations
 import io.kotest.assertions.throwables.*
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
 
 class PresentationTest : StringSpec(
-    {
-        "Simple presentation tests" {
-            presentation {
-            }
+  {
+    "Simple presentation tests" {
+      presentation {
+      }
 
-            presentations.size shouldBe 1
+      presentations.size shouldBe 1
 
-            shouldThrowExactly<IllegalArgumentException> {
-                presentation { }
-            }
+      shouldThrowExactly<IllegalArgumentException> {
+        presentation { }
+      }
 
-            presentation("test") { }
+      presentation("test") { }
 
-            presentations.size shouldBe 2
+      presentations.size shouldBe 2
 
-            shouldThrowExactly<IllegalArgumentException> {
-                presentation("test") { }
-            }
+      shouldThrowExactly<IllegalArgumentException> {
+        presentation("test") { }
+      }
 
-            shouldThrowExactly<IllegalArgumentException> {
-                presentation("/test") { }
-            }
+      shouldThrowExactly<IllegalArgumentException> {
+        presentation("/test") { }
+      }
 
-            staticRoots.forEach {
-                shouldThrowExactly<IllegalArgumentException> {
-                    presentation(it) { }
-                }
-
-                shouldThrowExactly<IllegalArgumentException> {
-                    presentation("/$it") { }
-                }
-            }
+      staticRoots.forEach {
+        shouldThrowExactly<IllegalArgumentException> {
+          presentation(it) { }
         }
-    })
+
+        shouldThrowExactly<IllegalArgumentException> {
+          presentation("/$it") { }
+        }
+      }
+    }
+  })

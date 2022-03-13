@@ -1,11 +1,11 @@
 package examples
 
-import com.github.pambrose.*
-import com.github.pambrose.Presentation.Companion.present
-import com.github.pambrose.SlideConfig.Companion.slideConfig
-import com.github.pambrose.Speed.Slow
-import com.github.pambrose.Transition.Slide
-import com.github.pambrose.Transition.Zoom
+import com.kslides.*
+import com.kslides.Presentation.Companion.present
+import com.kslides.SlideConfig.Companion.slideConfig
+import com.kslides.Speed.Slow
+import com.kslides.Transition.Slide
+import com.kslides.Transition.Zoom
 import kotlinx.html.*
 
 fun main() {
