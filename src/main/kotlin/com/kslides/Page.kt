@@ -15,14 +15,6 @@ internal object Page {
                 }
             }
 
-//        val escapedChars =
-//            listOf(
-//                "\"" to "_*_quote_*_",
-//                "<" to "_*_lt_*_",
-//                ">" to "_*_gt_*_",
-//                "&" to "_*_amp_*_"
-//            )
-
         // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
         val nodeList = document.getElementsByTagName("*")
         (0..nodeList.length).forEach { i ->
@@ -39,23 +31,10 @@ internal object Page {
                         nodeValue = nodeValue.replace("\r", "\\r")
                     }
                 }
-
-//                if (node.nodeName == "script") {
-//                    if (node.attributes.getNamedItem("type")?.nodeValue == "text/template") {
-//                        if (node.firstChild.isNotNull())
-//                            escapedChars.forEach {
-//                                node.firstChild.nodeValue = node.firstChild.nodeValue.replace(it.first, it.second)
-//                            }
-//                    }
-//                }
             }
         }
 
-        val str = document.serialize()
-//        escapedChars.forEach {
-//            str = str.replace(it.second, it.first)
-//        }
-        return str
+        return document.serialize()
     }
 
     fun HTML.generateHead(presentation: Presentation, srcPrefix: String) {

@@ -4,7 +4,6 @@ import com.kslides.*
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
 
-
 class TrimIncludeTest : StringSpec(
   {
     "Code fence test" {
@@ -42,11 +41,12 @@ val y = 1              // NO TAB
       s.trimIndentWithInclude()
         .lines()
         .forEach {
-          if (it.contains("NO TAB"))
+          if (it.contains("NO TAB")) {
             it.trimStart().length shouldBe it.length
-          else
+          } else {
             if (it.isNotEmpty())
               it.trimStart().length shouldNotBe it.length
+          }
         }
     }
   }

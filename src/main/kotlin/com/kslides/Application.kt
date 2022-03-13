@@ -13,26 +13,26 @@ internal val staticRoots = listOf("public", "assets", "css", "dist", "js", "plug
 
 fun Application.module(testing: Boolean = false) {
 
-    install(CallLogging) { level = Level.INFO }
+  install(CallLogging) { level = Level.INFO }
 
-    install(DefaultHeaders) { header("X-Engine", "Ktor") }
+  install(DefaultHeaders) { header("X-Engine", "Ktor") }
 
-    install(Compression) {
-        gzip { priority = 1.0 }
-        deflate { priority = 10.0; minimumSize(1024) /* condition*/ }
+  install(Compression) {
+    gzip { priority = 1.0 }
+    deflate { priority = 10.0; minimumSize(1024) /* condition*/ }
+  }
+
+  routing {
+    staticRoots.forEach {
+      static("/$it") { resources(it) }
     }
 
-    routing {
-        staticRoots.forEach {
-            static("/$it") { resources(it) }
+    presentations.forEach { presentation ->
+      get(presentation.key) {
+        respondWith {
+          generatePage(presentation.value, "")
         }
-
-        presentations.forEach { presentation ->
-            get(presentation.key) {
-                respondWith {
-                    generatePage(presentation.value, "")
-                }
-            }
-        }
+      }
     }
+  }
 }

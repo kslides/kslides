@@ -75,10 +75,7 @@ private fun processCode(
         .firstOrNull { it.second.contains(endRegex) }?.first
         ?: throw IllegalArgumentException("endToken not found: $endToken"))
 
-  return lines
-    .subList(startIndex, endIndex)
-    .map { StringEscapeUtils.escapeHtml4(it) }
-    .joinToString("\n")
+  return lines.subList(startIndex, endIndex).joinToString("\n") { StringEscapeUtils.escapeHtml4(it) }
 }
 
 fun String.toLower(locale: Locale = Locale.getDefault()) = lowercase(locale)
