@@ -62,9 +62,6 @@ internal object Page {
           id = it.second.toDoubleQuoted()
       }
 
-      //link { rel = "stylesheet"; href = "${srcPrefix}${p.theme}"; id = "theme" }
-      link { rel = "stylesheet"; href = "${srcPrefix}plugin/highlight/monokai.css"; id = "highlight-theme" }
-
       if (p.css.isNotEmpty()) {
         style {
           type = "text/css"; media = "screen"
