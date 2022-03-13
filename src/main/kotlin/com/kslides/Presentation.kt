@@ -43,8 +43,8 @@ class Presentation internal constructor(path: String, val title: String, val the
   }
 
   @HtmlTagMarker
-  fun css(block: CSSBuilder.() -> Unit) {
-    css += CSSBuilder().apply(block).toString()
+  fun css(block: CssBuilder.() -> Unit) {
+    css += CssBuilder().apply(block).toString()
   }
 
   class VerticalContext {
