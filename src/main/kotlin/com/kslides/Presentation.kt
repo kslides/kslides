@@ -12,10 +12,16 @@ import java.io.*
 
 // Keep this global to make it easier for users to be prompted for completion in it
 @HtmlTagMarker
-fun presentation(path: String = "/", title: String = "", theme: Theme = Theme.Black, block: Presentation.() -> Unit) =
-  Presentation(path, title, "dist/theme/${theme.name.toLower()}.css").apply { block(this) }
+fun presentation(
+  path: String = "/",
+  title: String = "",
+  theme: Theme = Theme.Black,
+  highlight: Highlight = Highlight.Monokai,
+  block: Presentation.() -> Unit
+) =
+  Presentation(path, title, theme.name.toLower(), highlight.name.toLower()).apply { block(this) }
 
-class Presentation internal constructor(path: String, val title: String, val theme: String) {
+class Presentation internal constructor(path: String, val title: String, val theme: String, val highlight: String) {
 
   var css = ""
   val jsFiles =
@@ -26,6 +32,14 @@ class Presentation internal constructor(path: String, val title: String, val the
       "plugin/search/search.js",
       "plugin/markdown/markdown.js",
       "plugin/highlight/highlight.js",
+    )
+
+  val cssFiles =
+    mutableListOf(
+      "dist/reset.css" to "",
+      "dist/reveal.css" to "",
+      "dist/theme/${theme}.css" to "theme",
+      "plugin/highlight/${highlight}.css" to "highlight-theme",
     )
 
   val config = ConfigOptions()
@@ -196,32 +210,25 @@ class Presentation internal constructor(path: String, val title: String, val the
       embeddedServer(CIO, environment).start(wait = true)
     }
 
-    fun print() {
-      presentations.forEach { presentation ->
-        println(presentation.key)
-        println(generatePage(presentation.value, ""))
-      }
-    }
-
-    fun output(dir: String = "site", srcPrefix: String = "/../revealjs/") {
+    fun output(dir: String = "docs/", srcPrefix: String = "revealjs/") {
       require(dir.isNotEmpty()) { "dir must not be empty" }
 
       File(dir).mkdir()
-      presentations.forEach { (key, value) ->
-        val file =
+      presentations.forEach { (key, p) ->
+        val (file, prefix) =
           when {
             key == "/" -> {
-              File("$dir/index.html")
+              File("$dir/index.html") to srcPrefix
             }
             key.endsWith(".html") -> {
-              File("$dir/$key")
+              File("$dir/$key") to srcPrefix
             }
             else -> {
               File("$dir/$key").mkdir()
-              File("$dir$key/index.html")
+              File("$dir$key/index.html") to "../$srcPrefix"
             }
           }
-        file.writeText(generatePage(value, srcPrefix))
+        file.writeText(generatePage(p, prefix))
       }
     }
 

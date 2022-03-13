@@ -1,7 +1,7 @@
 package examples
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.present
+import com.kslides.Presentation.Companion.output
 import com.kslides.SlideConfig.Companion.slideConfig
 import com.kslides.Speed.Slow
 import com.kslides.Transition.Concave
@@ -88,7 +88,7 @@ fun main() {
       markdownSlide {
         """
         # Markdown Slide
-        """
+        """.trimIndent()
       }
 
       markdownSlide(slideConfig { backgroundColor = "red" }) {
@@ -154,7 +154,7 @@ fun main() {
 
       ## Demo 2
       Slide 2
-      """
+      """.trimIndent()
     }
 
     markdownSlide {
@@ -168,14 +168,14 @@ fun main() {
       ---
 
       C
-      """
+      """.trimIndent()
     }
 
     // Slide attributes
     markdownSlide(slideConfig { backgroundColor = "#FFFF00" }) {
       """
       ## Slide attributes
-      """
+      """.trimIndent()
     }
 
     markdownSlide {
@@ -187,7 +187,7 @@ fun main() {
       Item 2 ${fragmentIndex(2)}
 
       Item 3 ${fragmentIndex(3)}
-      """
+      """.trimIndent()
     }
 
     markdownSlide(id = "markdown-example") {
@@ -199,7 +199,7 @@ fun main() {
               println("World")
           }
       ```
-      """
+      """.trimIndent()
     }
 
     htmlSlide {
@@ -242,15 +242,25 @@ fun main() {
     }
   }
 
-  presentation("/demo") {
+  presentation("demo1") {
     htmlSlide {
-      +"Demo Slide 1"
+      +"Demo1 Slide 1"
     }
 
     htmlSlide {
-      +"Demo Slide 2"
+      +"Demo1 Slide 2"
     }
   }
 
-  present()
+  presentation("demo2.html") {
+    htmlSlide {
+      +"Demo2 Slide 1"
+    }
+
+    htmlSlide {
+      +"Demo2 Slide 2"
+    }
+  }
+
+  output()
 }

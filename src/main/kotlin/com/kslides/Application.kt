@@ -30,7 +30,7 @@ fun Application.module(testing: Boolean = false) {
     presentations.forEach { presentation ->
       get(presentation.key) {
         respondWith {
-          generatePage(presentation.value, "")
+          generatePage(presentation.value)
         }
       }
     }

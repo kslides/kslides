@@ -6,95 +6,105 @@ import kotlinx.html.dom.*
 
 internal object Page {
 
-    fun generatePage(presentation: Presentation, srcPrefix: String): String {
-        val document =
-            document {
-                append.html {
-                    generateHead(presentation, srcPrefix)
-                    generateBody(presentation, srcPrefix)
-                }
-            }
-
-        // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
-        val nodeList = document.getElementsByTagName("*")
-        (0..nodeList.length).forEach { i ->
-            val node = nodeList.item(i)
-            if (node.isNotNull()) {
-                if (node.nodeName == "section") {
-                    node.attributes.getNamedItem("data-separator")?.apply {
-                        nodeValue = nodeValue.replace("\n", "\\n")
-                        nodeValue = nodeValue.replace("\r", "\\r")
-                    }
-
-                    node.attributes.getNamedItem("data-separator-vertical")?.apply {
-                        nodeValue = nodeValue.replace("\n", "\\n")
-                        nodeValue = nodeValue.replace("\r", "\\r")
-                    }
-                }
-            }
+  fun generatePage(p: Presentation, srcPrefix: String = "/"): String {
+    val document =
+      document {
+        append.html {
+          generateHead(p, srcPrefix)
+          generateBody(p, srcPrefix)
         }
+      }
 
-        return document.serialize()
+    // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
+    val nodeList = document.getElementsByTagName("*")
+    (0..nodeList.length).forEach { i ->
+      val node = nodeList.item(i)
+      if (node.isNotNull()) {
+        if (node.nodeName == "section") {
+          node.attributes.getNamedItem("data-separator")?.apply {
+            nodeValue = nodeValue.replace("\n", "\\n")
+            nodeValue = nodeValue.replace("\r", "\\r")
+          }
+
+          node.attributes.getNamedItem("data-separator-vertical")?.apply {
+            nodeValue = nodeValue.replace("\n", "\\n")
+            nodeValue = nodeValue.replace("\r", "\\r")
+          }
+        }
+      }
     }
 
-    fun HTML.generateHead(presentation: Presentation, srcPrefix: String) {
-        head {
-            meta { charset = "utf-8" }
-            meta { name = "apple-mobile-web-app-capable"; content = "yes" }
-            meta { name = "apple-mobile-web-app-status-bar-style"; content = "black-translucent" }
-            meta {
-                name = "viewport"
-                content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-            }
+    return document.serialize()
+  }
 
-            if (presentation.title.isNotEmpty())
-                title { +presentation.title }
+  fun HTML.generateHead(p: Presentation, srcPrefix: String) {
+    head {
+      meta { charset = "utf-8" }
+      meta { name = "apple-mobile-web-app-capable"; content = "yes" }
+      meta { name = "apple-mobile-web-app-status-bar-style"; content = "black-translucent" }
+      meta {
+        name = "viewport"
+        content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      }
 
-            link { rel = "stylesheet"; href = "${srcPrefix}dist/reset.css" }
-            link { rel = "stylesheet"; href = "${srcPrefix}dist/reveal.css" }
-            link { rel = "stylesheet"; href = "${srcPrefix}${presentation.theme}"; id = "theme" }
-            link { rel = "stylesheet"; href = "${srcPrefix}plugin/highlight/monokai.css"; id = "highlight-theme" }
+      if (p.title.isNotEmpty())
+        title { +p.title }
 
-            if (presentation.config.copyCode)
-                link { rel = "stylesheet"; href = "${srcPrefix}plugin/copycode/copycode.css" }
+      if (p.config.copyCode)
+        p.cssFiles += "plugin/copycode/copycode.css" to ""
 
-            if (presentation.css.isNotEmpty()) {
-                style {
-                    type = "text/css"; media = "screen"
-                    rawHtml(presentation.css)
-                }
+      p.cssFiles.forEach {
+        link {
+          rel = "stylesheet";
+          href = if (it.first.startsWith("http")) it.first else "$srcPrefix${it.first}"
+        }
+        if (it.second.isNotEmpty())
+          id = it.second.toDoubleQuoted()
+      }
+
+      //link { rel = "stylesheet"; href = "${srcPrefix}${p.theme}"; id = "theme" }
+      link { rel = "stylesheet"; href = "${srcPrefix}plugin/highlight/monokai.css"; id = "highlight-theme" }
+
+      if (p.css.isNotEmpty()) {
+        style {
+          type = "text/css"; media = "screen"
+          rawHtml(p.css)
+        }
+      }
+    }
+  }
+
+  fun HTML.generateBody(p: Presentation, srcPrefix: String) {
+    body {
+      div("reveal") {
+        div("slides") {
+          p.slides
+            .forEach { slide ->
+              slide(this)
             }
         }
+      }
+
+      rawHtml("\n")
+
+      if (p.config.copyCode) {
+        p.jsFiles += "plugin/copycode/copycode.js"
+        // Required for copycode.js
+        p.jsFiles += "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"
+      }
+
+      p.jsFiles.forEach {
+        script { src = if (it.startsWith("http")) it else "$srcPrefix$it" }
+        rawHtml("\n")
+      }
+
+      rawHtml("\n")
+
+      script {
+        rawHtml(p.config.toJS())
+      }
     }
+  }
 
-    fun HTML.generateBody(presentation: Presentation, srcPrefix: String) {
-        body {
-            div("reveal") {
-                div("slides") {
-                    presentation.slides
-                        .forEach { slide ->
-                            slide(this)
-                        }
-                }
-            }
-
-            rawHtml("\n")
-
-            if (presentation.config.copyCode) {
-                presentation.jsFiles += "plugin/copycode/copycode.js"
-                presentation.jsFiles += "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"
-            }
-
-            presentation.jsFiles.forEach {
-                script { src = if (it.startsWith("http")) it else "$srcPrefix$it" }
-                rawHtml("\n")
-            }
-            rawHtml("\n")
-            script {
-                rawHtml(presentation.config.toJS())
-            }
-        }
-    }
-
-    fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
+  fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
 }
