@@ -10,8 +10,8 @@ internal object Page {
     val document =
       document {
         append.html {
-          generateHead(p, srcPrefix)
-          generateBody(p, srcPrefix)
+          generateHead(p, srcPrefix.ensureSuffix("/"))
+          generateBody(p, srcPrefix.ensureSuffix("/"))
         }
       }
 
@@ -57,9 +57,9 @@ internal object Page {
         link {
           rel = "stylesheet";
           href = if (it.first.startsWith("http")) it.first else "$srcPrefix${it.first}"
+          if (it.second.isNotEmpty())
+            id = it.second
         }
-        if (it.second.isNotEmpty())
-          id = it.second.toDoubleQuoted()
       }
 
       if (p.css.isNotEmpty()) {

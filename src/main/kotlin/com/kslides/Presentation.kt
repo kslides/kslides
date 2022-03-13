@@ -210,7 +210,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       embeddedServer(CIO, environment).start(wait = true)
     }
 
-    fun output(dir: String = "docs/", srcPrefix: String = "revealjs/") {
+    fun output(dir: String = "docs", srcPrefix: String = "revealjs/") {
       require(dir.isNotEmpty()) { "dir must not be empty" }
 
       File(dir).mkdir()
@@ -225,7 +225,7 @@ class Presentation internal constructor(path: String, val title: String, val the
             }
             else -> {
               File("$dir/$key").mkdir()
-              File("$dir$key/index.html") to "../$srcPrefix"
+              File("$dir/$key/index.html") to "../$srcPrefix"
             }
           }
         file.writeText(generatePage(p, prefix))
