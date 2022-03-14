@@ -82,23 +82,30 @@ internal object Page {
         }
       }
 
-      rawHtml("\n")
-
       if (p.config.copyCode) {
         p.jsFiles += "plugin/copycode/copycode.js"
         // Required for copycode.js
         p.jsFiles += "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"
       }
 
+      if (p.config.menuEnabled) {
+        p.jsFiles += "plugin/menu/menu.js"
+      }
+
+//      if (p.config.toolbar) {
+//        p.jsFiles += "plugin/toolbar/toolbar.js"
+//      }
+
+      rawHtml("\n\t\n")
       p.jsFiles.forEach {
+        rawHtml("\t")
         script { src = if (it.startsWith("http")) it else "$srcPrefix$it" }
         rawHtml("\n")
       }
 
-      rawHtml("\n")
-
+      rawHtml("\n\t")
       script {
-        rawHtml(p.config.toJS())
+        rawHtml("\n\t\tReveal.initialize({\n${p.config.toJs(srcPrefix)}\t\t});\n\n")
       }
     }
   }

@@ -73,6 +73,16 @@ presentation {
 }
 ```
 
+## Third Party Plugins
+
+* https://github.com/Martinomagnifico/reveal.js-copycode
+* https://github.com/denehyg/reveal.js-menu
+* https://github.com/denehyg/reveal.js-toolbar
+
+## FAQ
+
+* https://stackoverflow.com/questions/49267811/how-can-i-escape-3-backticks-code-block-in-3-backticks-code-block
+
 ## Getting Started
 
 [![Template](https://img.shields.io/badge/kslides-template-blue?logo=github)](https://github.com/pambrose/kslides-template/generate)

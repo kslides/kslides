@@ -43,7 +43,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       "plugin/highlight/$highlight.css" to "highlight-theme",
     )
 
-  val config = ConfigOptions()
+  val config = RevealJsConfig()
 
   internal val slides = mutableListOf<DIV.() -> Unit>()
 
@@ -202,7 +202,7 @@ class Presentation internal constructor(path: String, val title: String, val the
   }
 
   @HtmlTagMarker
-  fun config(block: ConfigOptions.() -> Unit) = block.invoke(config)
+  fun config(block: RevealJsConfig.() -> Unit) = block.invoke(config)
 
   companion object : KLogging() {
     internal val presentations = mutableMapOf<String, Presentation>()

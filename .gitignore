@@ -1,6 +1,7 @@
 .gradle
 .idea
 build
+docs
 
 ### Java template
 # Compiled class file

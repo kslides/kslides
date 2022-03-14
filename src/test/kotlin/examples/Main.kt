@@ -1,7 +1,7 @@
 package examples
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.servePresentations
+import com.kslides.Presentation.Companion.outputPresentations
 import com.kslides.SlideConfig.Companion.slideConfig
 import com.kslides.Transition.Concave
 import kotlinx.css.Color
@@ -12,10 +12,18 @@ fun main() {
   presentation(title = "markdown Demo", theme = Theme.Moon) {
 
     config {
+      hash = true
       history = true
       transition = Transition.Slide
       transitionSpeed = Speed.Slow
-      slideNumber = true
+      slideNumber = "c/t"
+      menuEnabled = false
+
+      menu {
+        numbers = true
+        markers = false
+        openOnInit = true
+      }
     }
 
     css += """
@@ -118,7 +126,7 @@ fun main() {
         """
       }
 
-      markdownSlide(filename = "public/markdown.md")
+      //markdownSlide(filename = "public/markdown.md")
     }
 
     htmlSlide(id = "embed-web-content") {
@@ -133,7 +141,7 @@ fun main() {
       }
     }
 
-    markdownSlide(filename = "/public/markdown.md", separator = "^---", vertical_separator = "^--")
+    //markdownSlide(filename = "/public/markdown.md", separator = "^---", vertical_separator = "^--")
 
     // Slides are separated by three dashes
     markdownSlide(separator = "---") {
@@ -246,10 +254,6 @@ fun main() {
     markdownSlide {
       "![Sample image](https://picsum.photos/512/512)"
     }
-
-    config {
-      hash = true
-    }
   }
 
   presentation("demo1") {
@@ -282,6 +286,6 @@ fun main() {
     }
   }
 
-  servePresentations()
-  //outputPresentations()
+  //servePresentations()
+  outputPresentations()
 }
