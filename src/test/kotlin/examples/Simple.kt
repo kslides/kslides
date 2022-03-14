@@ -10,6 +10,13 @@ import kotlinx.html.*
 
 fun main() {
   presentation {
+
+    config {
+      history = true
+      transition = Slide
+      transitionSpeed = Slow
+    }
+
     htmlSlide {
       h1 { +"HTML Slide 🐦" }
       p { +"Use the arrow keys to navigate" }
@@ -29,7 +36,7 @@ fun main() {
       # Markdown Slide 🍒 
       
       Press ESC to see presentation overview.
-      """.trimIndent()
+      """
     }
 
     verticalSlides {
@@ -49,12 +56,6 @@ fun main() {
         [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
         """
       }
-    }
-
-    config {
-      history = true
-      transition = Slide
-      transitionSpeed = Slow
     }
   }
 

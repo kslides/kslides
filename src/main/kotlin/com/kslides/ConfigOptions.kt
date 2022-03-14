@@ -6,6 +6,7 @@ class ConfigOptions {
   val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
 
   var copyCode = true
+  var markdownTrimIndent = true
 
   val configMap = mutableMapOf<String, Any>()
 

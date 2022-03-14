@@ -24,6 +24,7 @@ fun presentation(
 class Presentation internal constructor(path: String, val title: String, val theme: String, val highlight: String) {
 
   var css = ""
+
   val jsFiles =
     mutableListOf(
       "dist/reveal.js",
@@ -38,8 +39,8 @@ class Presentation internal constructor(path: String, val title: String, val the
     mutableListOf(
       "dist/reset.css" to "",
       "dist/reveal.css" to "",
-      "dist/theme/${theme}.css" to "theme",
-      "plugin/highlight/${highlight}.css" to "highlight-theme",
+      "dist/theme/$theme.css" to "theme",
+      "plugin/highlight/$highlight.css" to "highlight-theme",
     )
 
   val config = ConfigOptions()
@@ -69,6 +70,7 @@ class Presentation internal constructor(path: String, val title: String, val the
   fun verticalSlides(block: VerticalContext.() -> Unit) {
     val vertContext = VerticalContext()
     block.invoke(vertContext)
+
     slides += {
       section {
         vertContext.vertSlides.forEach {
@@ -82,21 +84,21 @@ class Presentation internal constructor(path: String, val title: String, val the
 
   @HtmlTagMarker
   fun VerticalContext.rawHtmlSlide(
-    config: SlideConfig = slideConfig {},
+    slideConfig: SlideConfig = slideConfig {},
     id: String = "",
     content: () -> String
   ) {
     vertSlides += {
       if (id.isNotEmpty())
         this.id = id
-      applyConfig(config)
+      applyConfig(slideConfig)
       rawHtml(content.invoke())
     }
   }
 
   @HtmlTagMarker
   fun rawHtmlSlide(
-    config: SlideConfig = slideConfig {},
+    slideConfig: SlideConfig = slideConfig {},
     id: String = "",
     content: () -> String
   ) {
@@ -104,7 +106,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       section {
         if (id.isNotEmpty())
           this.id = id
-        applyConfig(config)
+        applyConfig(slideConfig)
         rawHtml("\n" + content.invoke())
       }
       rawHtml("\n")
@@ -113,21 +115,21 @@ class Presentation internal constructor(path: String, val title: String, val the
 
   @HtmlTagMarker
   fun VerticalContext.htmlSlide(
-    config: SlideConfig = slideConfig {},
+    slideConfig: SlideConfig = slideConfig {},
     id: String = "",
     content: SECTION.() -> Unit
   ) {
     vertSlides += {
       if (id.isNotEmpty())
         this.id = id
-      applyConfig(config)
+      applyConfig(slideConfig)
       content.invoke(this)
     }
   }
 
   @HtmlTagMarker
   fun htmlSlide(
-    config: SlideConfig = slideConfig {},
+    slideConfig: SlideConfig = slideConfig {},
     id: String = "",
     content: SECTION.() -> Unit
   ) {
@@ -135,7 +137,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       section {
         if (id.isNotEmpty())
           this.id = id
-        applyConfig(config)
+        applyConfig(slideConfig)
         content.invoke(this)
       }
       rawHtml("\n")
@@ -144,12 +146,12 @@ class Presentation internal constructor(path: String, val title: String, val the
 
   @HtmlTagMarker
   fun VerticalContext.markdownSlide(
-    config: SlideConfig = slideConfig {},
+    slideConfig: SlideConfig = slideConfig {},
     id: String = "",
     filename: String = "",
     content: () -> String = { "" },
   ) {
-    htmlSlide(config = config, id = id) {
+    htmlSlide(slideConfig = slideConfig, id = id) {
       // If this value is == "" it means read content inline
       attributes["data-markdown"] = filename
       attributes["data-separator"] = ""
@@ -161,14 +163,14 @@ class Presentation internal constructor(path: String, val title: String, val the
       if (filename.isEmpty())
         script {
           type = "text/template"
-          rawHtml("\n" + content.invoke())
+          rawHtml("\n" + content.invoke().let { if (config.markdownTrimIndent) it.trimIndent() else it })
         }
     }
   }
 
   @HtmlTagMarker
   fun markdownSlide(
-    config: SlideConfig = slideConfig {},
+    slideConfig: SlideConfig = slideConfig {},
     id: String = "",
     filename: String = "",
     separator: String = "",
@@ -176,7 +178,7 @@ class Presentation internal constructor(path: String, val title: String, val the
     notes: String = "^Note:",
     content: () -> String = { "" },
   ) {
-    htmlSlide(config = config, id = id) {
+    htmlSlide(slideConfig = slideConfig, id = id) {
       // If this value is == "" it means read content inline
       attributes["data-markdown"] = filename
 
@@ -194,7 +196,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       if (filename.isEmpty())
         script {
           type = "text/template"
-          rawHtml("\n" + content.invoke())
+          rawHtml("\n" + content.invoke().let { if (config.markdownTrimIndent) it.trimIndent() else it })
         }
     }
   }
@@ -235,29 +237,29 @@ class Presentation internal constructor(path: String, val title: String, val the
       }
     }
 
-    private fun SECTION.applyConfig(config: SlideConfig) {
-      if (config.transition != Transition.Slide) {
-        attributes["data-transition"] = config.transition.asInOut()
+    private fun SECTION.applyConfig(slideConfig: SlideConfig) {
+      if (slideConfig.transition != Transition.Slide) {
+        attributes["data-transition"] = slideConfig.transition.asInOut()
       } else {
-        if (config.transitionIn != Transition.Slide || config.transitionOut != Transition.Slide)
-          attributes["data-transition"] = "${config.transitionIn.asIn()} ${config.transitionOut.asOut()}"
+        if (slideConfig.transitionIn != Transition.Slide || slideConfig.transitionOut != Transition.Slide)
+          attributes["data-transition"] = "${slideConfig.transitionIn.asIn()} ${slideConfig.transitionOut.asOut()}"
       }
 
-      if (config.speed != Speed.Default)
-        attributes["data-transition-speed"] = config.speed.name.toLower()
+      if (slideConfig.speed != Speed.Default)
+        attributes["data-transition-speed"] = slideConfig.speed.name.toLower()
 
-      if (config.backgroundColor.isNotEmpty())
-        attributes["data-background"] = config.backgroundColor
+      if (slideConfig.backgroundColor.isNotEmpty())
+        attributes["data-background"] = slideConfig.backgroundColor
 
-      if (config.backgroundIframe.isNotEmpty()) {
-        attributes["data-background-iframe"] = config.backgroundIframe
+      if (slideConfig.backgroundIframe.isNotEmpty()) {
+        attributes["data-background-iframe"] = slideConfig.backgroundIframe
 
-        if (config.backgroundInteractive)
+        if (slideConfig.backgroundInteractive)
           attributes["data-background-interactive"] = ""
       }
 
-      if (config.backgroundVideo.isNotEmpty())
-        attributes["data-background-video"] = config.backgroundVideo
+      if (slideConfig.backgroundVideo.isNotEmpty())
+        attributes["data-background-video"] = slideConfig.backgroundVideo
     }
   }
 }

@@ -31,9 +31,8 @@ presentation {
     """
   )
 
-  markdownSlide(
-    backgroundColor = "#4370A5",
-    content = """
+  markdownSlide(backgroundColor = "#4370A5") {
+    """
       # Code Highlights    
       ```kotlin [1|2,5|3-4]
       fun main() {
@@ -44,7 +43,7 @@ presentation {
       }
       ```
     """
-  )
+  }
 
   verticalSlides {
     

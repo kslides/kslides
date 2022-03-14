@@ -1,9 +1,8 @@
 package examples
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.outputPresentations
+import com.kslides.Presentation.Companion.servePresentations
 import com.kslides.SlideConfig.Companion.slideConfig
-import com.kslides.Speed.Slow
 import com.kslides.Transition.Concave
 import kotlinx.css.Color
 import kotlinx.css.color
@@ -11,18 +10,29 @@ import kotlinx.html.*
 
 fun main() {
   presentation(title = "markdown Demo", theme = Theme.Moon) {
-    css = """
+
+    config {
+      history = true
+      transition = Transition.Slide
+      transitionSpeed = Speed.Slow
+      slideNumber = true
+    }
+
+    css += """
 			.slides section h3 {
 				color: green;
 			}
 			.slides section h4 a {
 				color: red;
 			}
-        """
+    """
 
     css {
       rule(".slides section h3") {
         color = Color.green
+      }
+      rule(".slides section h4 a") {
+        color = Color.red
       }
     }
 
@@ -31,32 +41,32 @@ fun main() {
       # Code Highlights    
       ```kotlin [1,6|2,5|3-4]
       fun main() {
-          repeat(10) {
-              println("Hello")
-              println("World")
-          }
+        repeat(10) {
+          println("Hello")
+          println("World")
+        }
       }
       ```
-      """.trimIndent()
+      """
     }
 
     markdownSlide {
       """
       # Markdown Example
-      ~~~kotlin [1|3-4|20,24-25]
+      ````kotlin [1|3-4|20,24-25]
       ${includeFile("src/test/kotlin/examples/Simple.kt")}
-      ~~~
+      ````
       """.trimIndentWithInclude()
     }
 
-//    markdownSlide {
-//      """
-//      # Markdown Example
-//      ````kotlin [1|3-4|20,24-25]
-//      ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/Simple.kt")}
-//      ````
-//      """
-//    }
+    markdownSlide {
+      """
+      # Markdown Example
+      ````kotlin [1|3-4|20,24-25]
+      ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/Simple.kt")}
+      ````
+      """.trimIndentWithInclude()
+    }
 
     rawHtmlSlide {
       """
@@ -72,7 +82,7 @@ fun main() {
       h4 { a { href = "/demo.html"; +"Demo Deck" } }
     }
 
-    htmlSlide(slideConfig { transition(Transition.Zoom, Slow); backgroundColor = "#bb00bb" }) {
+    htmlSlide(slideConfig { transition(Transition.Zoom, Speed.Slow); backgroundColor = "#bb00bb" }) {
       img { src = "https://picsum.photos/512/512" }
     }
 
@@ -81,14 +91,14 @@ fun main() {
         h2 { +"🐟" }
       }
 
-      htmlSlide(slideConfig { transition(Concave, speed = Slow); backgroundColor = "rgb(70, 70, 255)" }) {
+      htmlSlide(slideConfig { transition(Concave, speed = Speed.Slow); backgroundColor = "rgb(70, 70, 255)" }) {
         h2 { +"🐳" }
       }
 
       markdownSlide {
         """
         # Markdown Slide
-        """.trimIndent()
+        """
       }
 
       markdownSlide(slideConfig { backgroundColor = "red" }) {
@@ -105,7 +115,7 @@ fun main() {
 
         ## Demo 1
         Slide 3
-        """.trimIndent()
+        """
       }
 
       markdownSlide(filename = "public/markdown.md")
@@ -136,7 +146,7 @@ fun main() {
       ---
       ## Demo 1
       Slide 3
-      """.trimIndent()
+      """
     }
 
     // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
@@ -154,7 +164,7 @@ fun main() {
 
       ## Demo 2
       Slide 2
-      """.trimIndent()
+      """
     }
 
     markdownSlide {
@@ -168,14 +178,14 @@ fun main() {
       ---
 
       C
-      """.trimIndent()
+      """
     }
 
     // Slide attributes
     markdownSlide(slideConfig { backgroundColor = "#FFFF00" }) {
       """
       ## Slide attributes
-      """.trimIndent()
+      """
     }
 
     markdownSlide {
@@ -187,7 +197,7 @@ fun main() {
       Item 2 ${fragmentIndex(2)}
 
       Item 3 ${fragmentIndex(3)}
-      """.trimIndent()
+      """
     }
 
     markdownSlide(id = "markdown-example") {
@@ -199,7 +209,7 @@ fun main() {
               println("World")
           }
       ```
-      """.trimIndent()
+      """
     }
 
     htmlSlide {
@@ -272,6 +282,6 @@ fun main() {
     }
   }
 
-  //servePresentations()
-  outputPresentations()
+  servePresentations()
+  //outputPresentations()
 }
