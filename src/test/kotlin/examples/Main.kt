@@ -17,13 +17,14 @@ fun main() {
       transition = Transition.Slide
       transitionSpeed = Speed.Slow
       slideNumber = "c/t"
-      menuEnabled = false
+      enableMenu = false
 
       menu {
         numbers = true
         markers = false
         openOnInit = true
       }
+
     }
 
     css += """
@@ -33,7 +34,11 @@ fun main() {
 			.slides section h4 a {
 				color: red;
 			}
-    """
+
+      .code-output {
+        text-align: left;  
+      }
+     """
 
     css {
       rule(".slides section h3") {
@@ -42,6 +47,29 @@ fun main() {
       rule(".slides section h4 a") {
         color = Color.red
       }
+    }
+
+    markdownSlide(slideConfig { backgroundColor = "#4DD0A5" }) {
+      """
+      # Kotlin Playground   
+      ${playground(includeFile("src/test/kotlin/examples/HelloWorldK.kt"))}
+      """.trimIndentWithPlayground()
+    }
+
+    markdownSlide(slideConfig { backgroundColor = "#4DD0A5" }) {
+      """
+      # Java Code   
+      ${playground(includeFile("src/test/kotlin/examples/HelloWorldJ.java"), PlaygroundLanguage.Java)}
+      """.trimIndentWithPlayground()
+    }
+
+    markdownSlide(slideConfig { backgroundColor = "#4DD0A5" }) {
+      """
+      # Java Code  
+      ```java [1|3]
+      ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
+      ```
+      """.trimIndentWithInclude()
     }
 
     markdownSlide(slideConfig { backgroundColor = "#4370A5" }) {

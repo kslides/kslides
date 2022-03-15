@@ -8,6 +8,7 @@ import io.ktor.server.engine.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
+import org.apache.commons.lang3.StringEscapeUtils.escapeHtml4
 import java.io.*
 
 // Keep this global to make it easier for users to be prompted for completion in it
@@ -43,9 +44,12 @@ class Presentation internal constructor(path: String, val title: String, val the
       "plugin/highlight/$highlight.css" to "highlight-theme",
     )
 
-  val config = RevealJsConfig()
+  private val baseConfigMap = mutableMapOf<String, Any>()
+  private val menuConfigMap = mutableMapOf<String, Any>()
+  private val menuConfig = MenuConfig(menuConfigMap)
 
-  internal val slides = mutableListOf<DIV.() -> Unit>()
+  val baseConfig = BaseConfig(baseConfigMap, menuConfig)
+  val slides = mutableListOf<DIV.() -> Unit>()
 
   init {
     if (path.removePrefix("/") in staticRoots)
@@ -163,7 +167,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       if (filename.isEmpty())
         script {
           type = "text/template"
-          rawHtml("\n" + content.invoke().let { if (config.markdownTrimIndent) it.trimIndent() else it })
+          rawHtml("\n" + content.invoke().let { if (baseConfig.markdownTrimIndent) it.trimIndent() else it })
         }
     }
   }
@@ -196,13 +200,76 @@ class Presentation internal constructor(path: String, val title: String, val the
       if (filename.isEmpty())
         script {
           type = "text/template"
-          rawHtml("\n" + content.invoke().let { if (config.markdownTrimIndent) it.trimIndent() else it })
+          rawHtml(
+            "\n" + content.invoke().let { escapeHtml4(if (baseConfig.markdownTrimIndent) it.trimIndent() else it) })
         }
     }
   }
 
   @HtmlTagMarker
-  fun config(block: RevealJsConfig.() -> Unit) = block.invoke(config)
+  fun config(block: BaseConfig.() -> Unit) = block.invoke(baseConfig)
+
+  fun playground(code: String, language: PlaygroundLanguage = PlaygroundLanguage.Kotlin): String {
+    val options =
+      """
+      mode="${language.name.toLower()}" theme="idea" indent="4" auto-indent="true" lines="true" highlight-on-fly="true" data-autocomplete="true" match-brackets="true" 
+      """.trimIndent()
+    return "<div class=\"kotlin-code\" $options>\n${code.trimIndent()}\n</div>\n"
+  }
+
+  private fun toJsValue(key: String, value: Any) =
+    when (value) {
+      is Boolean, is Number -> "$key: $value"
+      is String -> "$key: '$value'"
+      is Transition -> "$key: '${value.name.toLower()}'"
+      is Speed -> "$key: '${value.name.toLower()}'"
+      is List<*> -> "$key: [${value.joinToString(", ") { "'$it'" }}]"
+      else -> throw IllegalArgumentException("Invalid value for $key: $value")
+    }
+
+  fun toJs(srcPrefix: String) =
+    buildString {
+      if (baseConfigMap.isNotEmpty()) {
+        baseConfigMap.forEach { (k, v) ->
+          append("\t\t\t${toJsValue(k, v)},\n")
+        }
+        appendLine()
+      }
+
+      if (menuConfigMap.isNotEmpty()) {
+        appendLine(
+          buildString {
+            appendLine("menu: {")
+            appendLine(menuConfigMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
+            appendLine("},")
+          }.prependIndent("\t\t\t")
+        )
+      }
+
+      // Dependencies
+      // if (toolbar)
+      //   dependencies += "plugin/toolbar/toolbar.js"
+
+      if (baseConfig.dependencies.isNotEmpty()) {
+        appendLine(
+          buildString {
+            appendLine("dependencies: [")
+            appendLine(baseConfig.dependencies.map { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" }
+                         .joinToString(",\n"))
+            appendLine("],")
+          }.prependIndent("\t\t\t")
+        )
+      }
+
+      // Plugins
+      if (baseConfig.copyCode)
+        baseConfig.plugins += "CopyCode"
+
+      if (baseConfig.enableMenu)
+        baseConfig.plugins += "RevealMenu"
+
+      appendLine("\t\t\tplugins: [ ${baseConfig.plugins.joinToString(", ")} ]")
+    }
 
   companion object : KLogging() {
     internal val presentations = mutableMapOf<String, Presentation>()

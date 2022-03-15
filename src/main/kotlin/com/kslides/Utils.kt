@@ -114,3 +114,36 @@ fun String.trimIndentWithInclude(): String {
     }
     .joinToString("\n")
 }
+
+fun String.trimIndentWithPlayground(): String {
+  var insideDiv = false
+  var divLine = -1
+
+  return lines()
+    .asSequence()
+    .mapIndexed { i, str ->
+      val trimmed = str.trimStart()
+      if (insideDiv) {
+        when {
+          trimmed.contains("</div>") -> {
+            insideDiv = false
+            divLine = -1
+            trimmed
+          }
+          divLine != -1 && str.isNotBlank() -> {
+            divLine = -1
+            trimmed
+          }
+          else -> str
+        }
+      } else {
+        val fenceLength = trimmed.length - trimmed.trimStart('`', '~').length
+        if (trimmed.contains("""div class="kotlin-code"""")) {
+          insideDiv = true
+          divLine = i
+        }
+        trimmed
+      }
+    }
+    .joinToString("\n")
+}
