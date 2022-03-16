@@ -3,19 +3,19 @@ package examples
 import com.kslides.*
 import com.kslides.Presentation.Companion.outputPresentations
 import com.kslides.SlideConfig.Companion.slideConfig
-import com.kslides.Transition.Concave
+import com.kslides.Transition.CONCAVE
 import kotlinx.css.Color
 import kotlinx.css.color
 import kotlinx.html.*
 
 fun main() {
-  presentation(title = "markdown Demo", theme = Theme.Moon) {
+  presentation(title = "markdown Demo", theme = Theme.MOON) {
 
     config {
       hash = true
       history = true
-      transition = Transition.Slide
-      transitionSpeed = Speed.Slow
+      transition = Transition.SLIDE
+      transitionSpeed = Speed.SLOW
       slideNumber = "c/t"
       enableMenu = false
 
@@ -52,14 +52,14 @@ fun main() {
     markdownSlide(slideConfig { backgroundColor = "#4DD0A5" }) {
       """
       # Kotlin Playground   
-      ${playground(includeFile("src/test/kotlin/examples/HelloWorldK.kt"))}
+      ${playgroundFile(includeFile("src/test/kotlin/examples/HelloWorldK.kt"))}
       """.trimIndentWithPlayground()
     }
 
     markdownSlide(slideConfig { backgroundColor = "#4DD0A5" }) {
       """
       # Java Code   
-      ${playground(includeFile("src/test/kotlin/examples/HelloWorldJ.java"), PlaygroundLanguage.Java)}
+      ${playgroundFile("src/test/kotlin/examples/HelloWorldJ.java", PlaygroundLanguage.JAVA)}
       """.trimIndentWithPlayground()
     }
 
@@ -118,7 +118,7 @@ fun main() {
       h4 { a { href = "/demo.html"; +"Demo Deck" } }
     }
 
-    htmlSlide(slideConfig { transition(Transition.Zoom, Speed.Slow); backgroundColor = "#bb00bb" }) {
+    htmlSlide(slideConfig { transition(Transition.ZOOM, Speed.SLOW); backgroundColor = "#bb00bb" }) {
       img { src = "https://picsum.photos/512/512" }
     }
 
@@ -127,7 +127,7 @@ fun main() {
         h2 { +"🐟" }
       }
 
-      htmlSlide(slideConfig { transition(Concave, speed = Speed.Slow); backgroundColor = "rgb(70, 70, 255)" }) {
+      htmlSlide(slideConfig { transition(CONCAVE, speed = Speed.SLOW); backgroundColor = "rgb(70, 70, 255)" }) {
         h2 { +"🐳" }
       }
 
@@ -313,6 +313,7 @@ fun main() {
       +"Demo3 Slide 2"
     }
   }
+
 
   //servePresentations()
   outputPresentations()

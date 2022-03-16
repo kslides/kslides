@@ -3,9 +3,9 @@ package examples
 import com.kslides.*
 import com.kslides.Presentation.Companion.servePresentations
 import com.kslides.SlideConfig.Companion.slideConfig
-import com.kslides.Speed.Slow
-import com.kslides.Transition.Slide
-import com.kslides.Transition.Zoom
+import com.kslides.Speed.SLOW
+import com.kslides.Transition.SLIDE
+import com.kslides.Transition.ZOOM
 import kotlinx.html.*
 
 fun main() {
@@ -13,8 +13,8 @@ fun main() {
 
     config {
       history = true
-      transition = Slide
-      transitionSpeed = Slow
+      transition = SLIDE
+      transitionSpeed = SLOW
     }
 
     htmlSlide {
@@ -31,7 +31,7 @@ fun main() {
       """
     }
 
-    markdownSlide(slideConfig { transition(Zoom, Slow) }) {
+    markdownSlide(slideConfig { transition(ZOOM, SLOW) }) {
       """
       # Markdown Slide 🍒 
       

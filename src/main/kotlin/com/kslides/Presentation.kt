@@ -16,8 +16,8 @@ import java.io.*
 fun presentation(
   path: String = "/",
   title: String = "",
-  theme: Theme = Theme.Black,
-  highlight: Highlight = Highlight.Monokai,
+  theme: Theme = Theme.BLACK,
+  highlight: Highlight = Highlight.MONOKAI,
   block: Presentation.() -> Unit
 ) =
   Presentation(path, title, theme.name.toLower(), highlight.name.toLower()).apply { block(this) }
@@ -209,12 +209,17 @@ class Presentation internal constructor(path: String, val title: String, val the
   @HtmlTagMarker
   fun config(block: BaseConfig.() -> Unit) = block.invoke(baseConfig)
 
-  fun playground(code: String, language: PlaygroundLanguage = PlaygroundLanguage.Kotlin): String {
-    val options =
-      """
+  private fun options(language: PlaygroundLanguage) =
+    """
       mode="${language.name.toLower()}" theme="idea" indent="4" auto-indent="true" lines="true" highlight-on-fly="true" data-autocomplete="true" match-brackets="true" 
       """.trimIndent()
-    return "<div class=\"kotlin-code\" $options>\n${code.trimIndent()}\n</div>\n"
+
+  fun playgroundFile(filename: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN): String {
+    return "<div class=\"kotlin-code\" ${options(language)}>\n${includeFile(filename).trimIndent()}\n</div>\n"
+  }
+
+  fun playgroundUrl(url: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN): String {
+    return "<div class=\"kotlin-code\" ${options(language)}>\n${includeUrl(url).trimIndent()}\n</div>\n"
   }
 
   private fun toJsValue(key: String, value: Any) =
@@ -305,14 +310,14 @@ class Presentation internal constructor(path: String, val title: String, val the
     }
 
     private fun SECTION.applyConfig(slideConfig: SlideConfig) {
-      if (slideConfig.transition != Transition.Slide) {
+      if (slideConfig.transition != Transition.SLIDE) {
         attributes["data-transition"] = slideConfig.transition.asInOut()
       } else {
-        if (slideConfig.transitionIn != Transition.Slide || slideConfig.transitionOut != Transition.Slide)
+        if (slideConfig.transitionIn != Transition.SLIDE || slideConfig.transitionOut != Transition.SLIDE)
           attributes["data-transition"] = "${slideConfig.transitionIn.asIn()} ${slideConfig.transitionOut.asOut()}"
       }
 
-      if (slideConfig.speed != Speed.Default)
+      if (slideConfig.speed != Speed.DEFAULT)
         attributes["data-transition-speed"] = slideConfig.speed.name.toLower()
 
       if (slideConfig.backgroundColor.isNotEmpty())
