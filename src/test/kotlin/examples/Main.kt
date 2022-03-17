@@ -9,6 +9,10 @@ import kotlinx.css.color
 import kotlinx.html.*
 
 fun main() {
+
+  config {
+  }
+
   presentation(title = "markdown Demo", theme = Theme.MOON) {
 
     config {

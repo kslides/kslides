@@ -50,7 +50,7 @@ internal object Page {
       if (p.title.isNotEmpty())
         title { +p.title }
 
-      if (p.baseConfig.copyCode)
+      if (p.config.copyCode)
         p.cssFiles += "plugin/copycode/copycode.css" to ""
 
       p.cssFiles.forEach {
@@ -62,7 +62,7 @@ internal object Page {
         }
       }
 
-      if (p.baseConfig.enablePlayground)
+      if (p.config.enablePlayground)
         p.css += """
           .code-output {
           text-align: left;  
@@ -107,13 +107,13 @@ internal object Page {
         }
       }
 
-      if (p.baseConfig.copyCode) {
+      if (p.config.copyCode) {
         p.jsFiles += "plugin/copycode/copycode.js"
         // Required for copycode.js
         p.jsFiles += "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"
       }
 
-      if (p.baseConfig.enableMenu) {
+      if (p.config.enableMenu) {
         p.jsFiles += "plugin/menu/menu.js"
       }
 
@@ -132,7 +132,7 @@ internal object Page {
 
       rawHtml("\n\t")
       script {
-        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(srcPrefix)}\t\t});\n\n")
+        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(p.config, srcPrefix)}\t\t});\n\n")
       }
     }
   }

@@ -2,6 +2,7 @@ package com.kslides
 
 import com.kslides.Page.generatePage
 import com.kslides.Page.rawHtml
+import com.kslides.Presentation.Companion.globalConfig
 import com.kslides.SlideConfig.Companion.slideConfig
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -10,6 +11,9 @@ import kotlinx.html.*
 import mu.*
 import org.apache.commons.lang3.StringEscapeUtils.escapeHtml4
 import java.io.*
+
+@HtmlTagMarker
+fun config(block: PresentationConfig.() -> Unit) = block.invoke(globalConfig)
 
 // Keep this global to make it easier for users to be prompted for completion in it
 @HtmlTagMarker
@@ -44,11 +48,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       "plugin/highlight/$highlight.css" to "highlight-theme",
     )
 
-  private val baseConfigMap = mutableMapOf<String, Any>()
-  private val menuConfigMap = mutableMapOf<String, Any>()
-  private val menuConfig = MenuConfig(menuConfigMap)
-
-  val baseConfig = BaseConfig(baseConfigMap, menuConfig)
+  val config = PresentationConfig()
   val slides = mutableListOf<DIV.() -> Unit>()
 
   init {
@@ -167,7 +167,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       if (filename.isEmpty())
         script {
           type = "text/template"
-          rawHtml("\n" + content.invoke().let { if (baseConfig.markdownTrimIndent) it.trimIndent() else it })
+          rawHtml("\n" + content.invoke().let { if (config.markdownTrimIndent) it.trimIndent() else it })
         }
     }
   }
@@ -201,13 +201,13 @@ class Presentation internal constructor(path: String, val title: String, val the
         script {
           type = "text/template"
           rawHtml(
-            "\n" + content.invoke().let { escapeHtml4(if (baseConfig.markdownTrimIndent) it.trimIndent() else it) })
+            "\n" + content.invoke().let { escapeHtml4(if (config.markdownTrimIndent) it.trimIndent() else it) })
         }
     }
   }
 
   @HtmlTagMarker
-  fun config(block: BaseConfig.() -> Unit) = block.invoke(baseConfig)
+  fun config(block: PresentationConfig.() -> Unit) = block.invoke(config)
 
   private fun options(language: PlaygroundLanguage) =
     """
@@ -232,20 +232,20 @@ class Presentation internal constructor(path: String, val title: String, val the
       else -> throw IllegalArgumentException("Invalid value for $key: $value")
     }
 
-  fun toJs(srcPrefix: String) =
+  fun toJs(config: PresentationConfig, srcPrefix: String) =
     buildString {
-      if (baseConfigMap.isNotEmpty()) {
-        baseConfigMap.forEach { (k, v) ->
+      if (config.valueMap.isNotEmpty()) {
+        config.valueMap.forEach { (k, v) ->
           append("\t\t\t${toJsValue(k, v)},\n")
         }
         appendLine()
       }
 
-      if (menuConfigMap.isNotEmpty()) {
+      if (config.menuConfig.valueMap.isNotEmpty()) {
         appendLine(
           buildString {
             appendLine("menu: {")
-            appendLine(menuConfigMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
+            appendLine(config.menuConfig.valueMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
             appendLine("},")
           }.prependIndent("\t\t\t")
         )
@@ -255,11 +255,11 @@ class Presentation internal constructor(path: String, val title: String, val the
       // if (toolbar)
       //   dependencies += "plugin/toolbar/toolbar.js"
 
-      if (baseConfig.dependencies.isNotEmpty()) {
+      if (config.dependencies.isNotEmpty()) {
         appendLine(
           buildString {
             appendLine("dependencies: [")
-            appendLine(baseConfig.dependencies.map { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" }
+            appendLine(config.dependencies.map { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" }
                          .joinToString(",\n"))
             appendLine("],")
           }.prependIndent("\t\t\t")
@@ -267,17 +267,18 @@ class Presentation internal constructor(path: String, val title: String, val the
       }
 
       // Plugins
-      if (baseConfig.copyCode)
-        baseConfig.plugins += "CopyCode"
+      if (config.copyCode)
+        config.plugins += "CopyCode"
 
-      if (baseConfig.enableMenu)
-        baseConfig.plugins += "RevealMenu"
+      if (config.enableMenu)
+        config.plugins += "RevealMenu"
 
-      appendLine("\t\t\tplugins: [ ${baseConfig.plugins.joinToString(", ")} ]")
+      appendLine("\t\t\tplugins: [ ${config.plugins.joinToString(", ")} ]")
     }
 
   companion object : KLogging() {
     internal val presentations = mutableMapOf<String, Presentation>()
+    internal val globalConfig = PresentationConfig()
 
     fun servePresentations() {
       val environment = commandLineEnvironment(emptyArray())
