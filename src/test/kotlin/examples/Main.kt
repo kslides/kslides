@@ -8,7 +8,8 @@ import kotlinx.html.*
 
 fun main() {
 
-  config {
+  defaultConfig {
+    transition = Transition.FADE
   }
 
   presentation(title = "markdown Demo", theme = Theme.MOON) {
@@ -20,10 +21,6 @@ fun main() {
 			.slides section h4 a {
 				color: red;
 			}
-
-      .code-output {
-        text-align: left;  
-      }
      """
 
     css {
@@ -37,32 +34,18 @@ fun main() {
 
     markdownSlide {
       """
-      # Kotlin Playground   
-      ${playgroundFile("src/test/kotlin/examples/HelloWorldK.kt")}
-      """.trimIndentWithPlayground()
-    }.config {
-      backgroundColor = "#8DD0A5"
-      transition = Transition.CONCAVE
-    }
-
-    markdownSlide {
-      """
-      # Java Code   
-      ${playgroundFile("src/test/kotlin/examples/HelloWorldJ.java", PlaygroundLanguage.JAVA)}
-      """.trimIndentWithPlayground()
-    }.config {
-      backgroundColor = "#4D20A1"
-    }
-
-    markdownSlide {
-      """
       # Java Code  
-      ```java [1|3]
+      ```java [3|4|5]
       ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
       ```
       """.trimIndentWithInclude()
     }.config {
       backgroundColor = "#4DD0A5"
+    }
+
+    htmlSlide {
+    }.config {
+      backgroundIframe = "https://www.readingbat.com"
     }
 
     markdownSlide {
@@ -84,9 +67,9 @@ fun main() {
     markdownSlide {
       """
       # Markdown Example
-      ````kotlin [1|3-4|20,24-25]
-      ${includeFile("src/test/kotlin/examples/Simple.kt")}
-      ````
+      ```kotlin [3|4|5]
+      ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
+      ```
       """.trimIndentWithInclude()
     }
 
@@ -94,10 +77,24 @@ fun main() {
       """
       # Markdown Example
       ````kotlin [1|3-4|20,24-25]
-      ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/Simple.kt")}
+      ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
       ````
       """.trimIndentWithInclude()
     }
+
+    markdownSlide {
+      """
+        # Markdown List Items 
+        * Item 1
+        * Item 2
+        * Item 3
+      """
+    }.config {
+      backgroundColor = "#000433"
+      transition = Transition.CONCAVE
+      transitionSpeed = Speed.SLOW
+    }
+
 
     rawHtmlSlide {
       """
@@ -112,7 +109,7 @@ fun main() {
       h3 { +"Examples" }
       h4 { a { href = "/demo.html"; +"Demo Deck" } }
     }.config {
-
+      backgroundColor = "#4DDFA1"
     }
 
     htmlSlide {
@@ -122,7 +119,6 @@ fun main() {
       transitionSpeed = Speed.SLOW
       backgroundColor = "#bb00bb"
     }
-
 
     verticalSlides {
       htmlSlide {
@@ -137,12 +133,6 @@ fun main() {
         transition = Transition.CONCAVE
         transitionSpeed = Speed.SLOW
         backgroundColor = "rgb(70, 70, 255)"
-      }
-
-      markdownSlide {
-        """
-        # Markdown Slide
-        """
       }
 
       markdownSlide {
@@ -248,18 +238,6 @@ fun main() {
       """
     }
 
-    markdownSlide(id = "markdown-example") {
-      """
-      # Markdown Example
-      ```kotlin [1|3-4]
-          fun main() {
-              println("Hello")
-              println("World")
-          }
-      ```
-      """
-    }
-
     htmlSlide {
       section {
         +"Slide 2"
@@ -311,7 +289,6 @@ fun main() {
     }
   }
 
-
   presentation("demo1") {
     htmlSlide {
       +"Demo1 Slide 1"
@@ -341,7 +318,6 @@ fun main() {
       +"Demo3 Slide 2"
     }
   }
-
 
   //servePresentations()
   outputPresentations()

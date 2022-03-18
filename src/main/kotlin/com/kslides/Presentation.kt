@@ -8,11 +8,10 @@ import io.ktor.server.engine.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
-import org.apache.commons.text.StringEscapeUtils.escapeHtml4
 import java.io.*
 
 @HtmlTagMarker
-fun config(block: PresentationConfig.() -> Unit) = block.invoke(globalConfig)
+fun defaultConfig(block: PresentationConfig.() -> Unit) = block.invoke(globalConfig)
 
 // Keep this global to make it easier for users to be prompted for completion in it
 @HtmlTagMarker
@@ -51,7 +50,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       CssFile("plugin/highlight/$highlight.css", "highlight-theme"),
     )
 
-  val config = PresentationConfig()
+  val presentationConfig = PresentationConfig()
   val slides = mutableListOf<Slide>()
 
   init {
@@ -115,7 +114,6 @@ class Presentation internal constructor(path: String, val title: String, val the
       content.invoke(this)
     }.also { vertSlides += it }
 
-
   @HtmlTagMarker
   fun htmlSlide(id: String = "", content: SECTION.() -> Unit) =
     Slide { slideConfig ->
@@ -146,10 +144,9 @@ class Presentation internal constructor(path: String, val title: String, val the
       if (filename.isEmpty())
         script {
           type = "text/template"
-          rawHtml("\n" + content.invoke().let { if (config.markdownTrimIndent) it.trimIndent() else it })
+          rawHtml("\n" + content.invoke().let { if (presentationConfig.trimIndentMarkdown) it.trimIndent() else it })
         }
     }
-
 
   @HtmlTagMarker
   fun markdownSlide(
@@ -179,24 +176,22 @@ class Presentation internal constructor(path: String, val title: String, val the
         script {
           type = "text/template"
           rawHtml(
-            "\n" + content.invoke().let { escapeHtml4(if (config.markdownTrimIndent) it.trimIndent() else it) })
+            "\n" + content.invoke().let { if (presentationConfig.trimIndentMarkdown) it.trimIndent() else it })
         }
     }
 
-  private fun options(language: PlaygroundLanguage) =
-    """
-      mode="${language.name.toLower()}" theme="idea" indent="4" auto-indent="true" lines="true" highlight-on-fly="true" data-autocomplete="true" match-brackets="true" 
-      """.trimIndent()
+//  private fun options(language: PlaygroundLanguage) =
+//    """
+//      mode="${language.name.toLower()}" theme="idea" indent="4" auto-indent="true" lines="true" highlight-on-fly="true" data-autocomplete="true" match-brackets="true"
+//      """.trimIndent()
+//
+//  fun playgroundFile(filename: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN) =
+//    "<div class=\"kotlin-code\" ${options(language)}>\n${includeFile(filename).trimIndent()}\n</div>\n"
+//
+//  fun playgroundUrl(url: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN) =
+//    "<div class=\"kotlin-code\" ${options(language)}>\n${includeUrl(url).trimIndent()}\n</div>\n"
 
-  fun playgroundFile(filename: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN): String {
-    return "<div class=\"kotlin-code\" ${options(language)}>\n${includeFile(filename).trimIndent()}\n</div>\n"
-  }
-
-  fun playgroundUrl(url: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN): String {
-    return "<div class=\"kotlin-code\" ${options(language)}>\n${includeUrl(url).trimIndent()}\n</div>\n"
-  }
-
-  fun config(block: PresentationConfig.() -> Unit) = block.invoke(config)
+  fun config(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
 
   private fun toJsValue(key: String, value: Any) =
     when (value) {
@@ -210,18 +205,18 @@ class Presentation internal constructor(path: String, val title: String, val the
 
   fun toJs(config: PresentationConfig, srcPrefix: String) =
     buildString {
-      if (config.valueMap.isNotEmpty()) {
-        config.valueMap.forEach { (k, v) ->
+      if (config.revealVals.isNotEmpty()) {
+        config.revealVals.forEach { (k, v) ->
           append("\t\t\t${toJsValue(k, v)},\n")
         }
         appendLine()
       }
 
-      if (config.menuConfig.valueMap.isNotEmpty()) {
+      if (config.menuConfig.revealVals.isNotEmpty()) {
         appendLine(
           buildString {
             appendLine("menu: {")
-            appendLine(config.menuConfig.valueMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
+            appendLine(config.menuConfig.revealVals.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
             appendLine("},")
           }.prependIndent("\t\t\t")
         )

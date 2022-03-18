@@ -1,6 +1,6 @@
 package com.kslides
 
-import org.apache.commons.text.*
+import org.apache.commons.text.StringEscapeUtils.escapeHtml4
 import java.io.*
 import java.net.*
 import java.util.*
@@ -75,10 +75,17 @@ private fun processCode(
         .firstOrNull { it.second.contains(endRegex) }?.first
         ?: throw IllegalArgumentException("endToken not found: $endToken"))
 
-  return lines.subList(startIndex, endIndex).joinToString("\n") { StringEscapeUtils.escapeHtml4(it) }
+  return lines.subList(startIndex, endIndex).joinToString("\n") { escapeHtml4(it) }
 }
 
 fun String.toLower(locale: Locale = Locale.getDefault()) = lowercase(locale)
+
+fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
+  mutableMapOf<K, V>()
+    .also { result ->
+      result.putAll(this)
+      other.forEach { (key, value) -> result[key] = value }
+    }
 
 fun String.trimIndentWithInclude(): String {
   var insideFence = false
@@ -137,7 +144,6 @@ fun String.trimIndentWithPlayground(): String {
           else -> str
         }
       } else {
-        val fenceLength = trimmed.length - trimmed.trimStart('`', '~').length
         if (trimmed.contains("""div class="kotlin-code"""")) {
           insideDiv = true
           divLine = i

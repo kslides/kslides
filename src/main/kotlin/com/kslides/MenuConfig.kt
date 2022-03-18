@@ -4,17 +4,17 @@ class MenuConfig() : AbstractConfig() {
 
   // Specifies which side of the presentation the menu will
   // be shown. Use 'left' or 'right'.
-  var side by ConfigProperty<String>(valueMap) // 'left'
+  var side by ConfigProperty<String>(revealVals) // 'left'
 
   // Specifies the width of the menu.
   // Can be one of the following:
   // 'normal', 'wide', 'third', 'half', 'full', or
   // any valid css length value
-  var width by ConfigProperty<String>(valueMap) // 'normal',
+  var width by ConfigProperty<String>(revealVals) // 'normal',
 
   // Add slide numbers to the titles in the slide list.
   // Use 'true' or format string (same as reveal.js slide numbers)
-  var numbers by ConfigProperty<Boolean>(valueMap) // false,
+  var numbers by ConfigProperty<Boolean>(revealVals) // false,
 
   // Specifies which slide elements will be used for generating
   // the slide titles in the menu. The default selects the first
@@ -23,25 +23,25 @@ class MenuConfig() : AbstractConfig() {
   // element will be used.
   // Note: that a section data-menu-title attribute or an element
   // with a menu-title class will take precedence over this option
-  var titleSelector by ConfigProperty<String>(valueMap) // 'h1, h2, h3, h4, h5, h6',
+  var titleSelector by ConfigProperty<String>(revealVals) // 'h1, h2, h3, h4, h5, h6',
 
   // If slides do not have a matching title, attempt to use the
   // start of the text content as the title instead
-  var useTextContentForMissingTitles by ConfigProperty<Boolean>(valueMap) // false,
+  var useTextContentForMissingTitles by ConfigProperty<Boolean>(revealVals) // false,
 
   // Hide slides from the menu that do not have a title.
   // Set to 'true' to only list slides with titles.
-  var hideMissingTitles by ConfigProperty<Boolean>(valueMap) // false,
+  var hideMissingTitles by ConfigProperty<Boolean>(revealVals) // false,
 
   // Adds markers to the slide titles to indicate the
   // progress through the presentation. Set to 'false'
   // to hide the markers.
-  var markers by ConfigProperty<Boolean>(valueMap) // true,
+  var markers by ConfigProperty<Boolean>(revealVals) // true,
 
   // Specify custom panels to be included in the menu, by
   // providing an array of objects with 'title', 'icon'
   // properties, and either a 'src' or 'content' property.
-  var custom by ConfigProperty<Boolean>(valueMap) // false,
+  var custom by ConfigProperty<Boolean>(revealVals) // false,
 
   // Specifies the themes that will be available in the themes
   // menu panel. Set to 'true' to show the themes menu panel
@@ -67,7 +67,7 @@ class MenuConfig() : AbstractConfig() {
   // Note: specifying highlightTheme without a theme will
   // change the code highlight theme while leaving the
   // presentation theme unchanged.
-  var themes by ConfigProperty<Boolean>(valueMap) // true,
+  var themes by ConfigProperty<Boolean>(revealVals) // true,
 
   // Specifies the path to the default theme files. If your
   // presentation uses a different path to the standard reveal
@@ -75,7 +75,7 @@ class MenuConfig() : AbstractConfig() {
   // when 'themes' is set to 'true'. If you provide your own
   // list of themes or 'themes' is set to 'false' the
   // 'themesPath' option is ignored.
-  var themesPath by ConfigProperty<String>(valueMap) // 'dist/theme/',
+  var themesPath by ConfigProperty<String>(revealVals) // 'dist/theme/',
 
   // Specifies if the transitions menu panel will be shown.
   // Set to 'true' to show the transitions menu panel with
@@ -83,21 +83,21 @@ class MenuConfig() : AbstractConfig() {
   // array to specify the transitions to make available in
   // the transitions panel, for example...
   // ['None', 'Fade', 'Slide']
-  var transitions by ConfigProperty<Boolean>(valueMap) // false,
+  var transitions by ConfigProperty<Boolean>(revealVals) // false,
 
   // Adds a menu button to the slides to open the menu panel.
 // Set to 'false' to hide the button.
-  var openButton by ConfigProperty<Boolean>(valueMap) // true,
+  var openButton by ConfigProperty<Boolean>(revealVals) // true,
 
   // If 'true' allows the slide number in the presentation to
   // open the menu panel. The reveal.js slideNumber option must
   // be displayed for this to take effect
-  var openSlideNumber by ConfigProperty<Boolean>(valueMap) // false,
+  var openSlideNumber by ConfigProperty<Boolean>(revealVals) // false,
 
   // If true allows the user to open and navigate the menu using
   // the keyboard. Standard keyboard interaction with reveal
   // will be disabled while the menu is open.
-  var keyboard by ConfigProperty<Boolean>(valueMap) // true,
+  var keyboard by ConfigProperty<Boolean>(revealVals) // true,
 
   // Normally the menu will close on user actions such as
   // selecting a menu item, or clicking the presentation area.
@@ -105,25 +105,25 @@ class MenuConfig() : AbstractConfig() {
   // until it is explicitly closed, that is, using the close
   // button or pressing the ESC or m key (when the keyboard
   // interaction option is enabled).
-  var sticky by ConfigProperty<Boolean>(valueMap) // false,
+  var sticky by ConfigProperty<Boolean>(revealVals) // false,
 
   // If 'true' standard menu items will be automatically opened
   // when navigating using the keyboard. Note: this only takes
   // effect when both the 'keyboard' and 'sticky' options are enabled.
-  var autoOpen by ConfigProperty<Boolean>(valueMap) // true,
+  var autoOpen by ConfigProperty<Boolean>(revealVals) // true,
 
   // If 'true' the menu will not be created until it is explicitly
   // requested by calling RevealMenu.init(). Note this will delay
   // the creation of all menu panels, including custom panels, and
   // the menu button.
-  var delayInit by ConfigProperty<Boolean>(valueMap) // false,
+  var delayInit by ConfigProperty<Boolean>(revealVals) // false,
 
   // If 'true' the menu will be shown when the menu is initialised.
-  var openOnInit by ConfigProperty<Boolean>(valueMap) // false,
+  var openOnInit by ConfigProperty<Boolean>(revealVals) // false,
 
   // By default the menu will load it's own font-awesome library
   // icons. If your presentation needs to load a different
   // font-awesome library the 'loadIcons' option can be set to false
   // and the menu will not attempt to load the font-awesome library.
-  var loadIcons by ConfigProperty<Boolean>(valueMap) // true
+  var loadIcons by ConfigProperty<Boolean>(revealVals) // true
 }
