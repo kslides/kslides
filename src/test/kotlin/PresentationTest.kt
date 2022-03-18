@@ -18,7 +18,7 @@
 package com.github.readingbat
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.decks
+import com.kslides.Presentation.Companion.presentations
 import io.kotest.assertions.throwables.*
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
@@ -29,7 +29,7 @@ class PresentationTest : StringSpec(
       presentation {
       }
 
-      decks.size shouldBe 1
+      presentations.size shouldBe 1
 
       shouldThrowExactly<IllegalArgumentException> {
         presentation { }
@@ -37,7 +37,7 @@ class PresentationTest : StringSpec(
 
       presentation("test") { }
 
-      decks.size shouldBe 2
+      presentations.size shouldBe 2
 
       shouldThrowExactly<IllegalArgumentException> {
         presentation("test") { }

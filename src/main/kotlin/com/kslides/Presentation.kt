@@ -59,9 +59,9 @@ class Presentation internal constructor(path: String, val title: String, val the
       throw IllegalArgumentException("Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"")
 
     val adjustedPath = if (path.startsWith("/")) path else "/$path"
-    if (decks.containsKey(adjustedPath))
+    if (presentations.containsKey(adjustedPath))
       throw IllegalArgumentException("Presentation path already defined: \"$adjustedPath\"")
-    decks[adjustedPath] = this
+    presentations[adjustedPath] = this
   }
 
   @HtmlTagMarker
@@ -253,7 +253,7 @@ class Presentation internal constructor(path: String, val title: String, val the
     }
 
   companion object : KLogging() {
-    internal val decks = mutableMapOf<String, Presentation>()
+    internal val presentations = mutableMapOf<String, Presentation>()
     internal val globalConfig = PresentationConfig()
 
     fun servePresentations() {
@@ -265,7 +265,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       require(dir.isNotEmpty()) { "dir value must not be empty" }
 
       File(dir).mkdir()
-      decks.forEach { (key, p) ->
+      presentations.forEach { (key, p) ->
         val (file, prefix) =
           when {
             key == "/" -> {
