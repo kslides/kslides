@@ -2,7 +2,7 @@ package com.kslides
 
 import com.github.pambrose.common.response.*
 import com.kslides.Page.generatePage
-import com.kslides.Presentation.Companion.presentations
+import com.kslides.Presentation.Companion.decks
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.plugins.*
@@ -27,7 +27,7 @@ fun Application.module(testing: Boolean = false) {
       static("/$it") { resources(it) }
     }
 
-    presentations.forEach { (key, value) ->
+    decks.forEach { (key, value) ->
       get(key) {
         respondWith {
           generatePage(value)

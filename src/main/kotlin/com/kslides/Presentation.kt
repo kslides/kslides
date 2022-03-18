@@ -3,13 +3,12 @@ package com.kslides
 import com.kslides.Page.generatePage
 import com.kslides.Page.rawHtml
 import com.kslides.Presentation.Companion.globalConfig
-import com.kslides.SlideConfig.Companion.slideConfig
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
-import org.apache.commons.lang3.StringEscapeUtils.escapeHtml4
+import org.apache.commons.text.StringEscapeUtils.escapeHtml4
 import java.io.*
 
 @HtmlTagMarker
@@ -26,39 +25,43 @@ fun presentation(
 ) =
   Presentation(path, title, theme.name.toLower(), highlight.name.toLower()).apply { block(this) }
 
+class JsFile(val filename: String)
+
+class CssFile(val filename: String, val id: String = "")
+
 class Presentation internal constructor(path: String, val title: String, val theme: String, val highlight: String) {
 
   var css = ""
 
   val jsFiles =
     mutableListOf(
-      "dist/reveal.js",
-      "plugin/zoom/zoom.js",
-      "plugin/notes/notes.js",
-      "plugin/search/search.js",
-      "plugin/markdown/markdown.js",
-      "plugin/highlight/highlight.js",
+      JsFile("dist/reveal.js"),
+      JsFile("plugin/zoom/zoom.js"),
+      JsFile("plugin/notes/notes.js"),
+      JsFile("plugin/search/search.js"),
+      JsFile("plugin/markdown/markdown.js"),
+      JsFile("plugin/highlight/highlight.js"),
     )
 
   val cssFiles =
     mutableListOf(
-      "dist/reset.css" to "",
-      "dist/reveal.css" to "",
-      "dist/theme/$theme.css" to "theme",
-      "plugin/highlight/$highlight.css" to "highlight-theme",
+      CssFile("dist/reset.css"),
+      CssFile("dist/reveal.css"),
+      CssFile("dist/theme/$theme.css", "theme"),
+      CssFile("plugin/highlight/$highlight.css", "highlight-theme"),
     )
 
   val config = PresentationConfig()
-  val slides = mutableListOf<DIV.() -> Unit>()
+  val slides = mutableListOf<Slide>()
 
   init {
     if (path.removePrefix("/") in staticRoots)
       throw IllegalArgumentException("Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"")
 
     val adjustedPath = if (path.startsWith("/")) path else "/$path"
-    if (presentations.containsKey(adjustedPath))
+    if (decks.containsKey(adjustedPath))
       throw IllegalArgumentException("Presentation path already defined: \"$adjustedPath\"")
-    presentations[adjustedPath] = this
+    decks[adjustedPath] = this
   }
 
   @HtmlTagMarker
@@ -67,77 +70,55 @@ class Presentation internal constructor(path: String, val title: String, val the
   }
 
   class VerticalContext {
-    val vertSlides = mutableListOf<SECTION.() -> Unit>()
+    val vertSlides = mutableListOf<VerticalSlide>()
   }
 
   @HtmlTagMarker
-  fun verticalSlides(block: VerticalContext.() -> Unit) {
-    val vertContext = VerticalContext()
-    block.invoke(vertContext)
-
-    slides += {
+  fun verticalSlides(block: VerticalContext.() -> Unit) =
+    Slide {
+      val vertContext = VerticalContext()
+      block.invoke(vertContext)
       section {
         vertContext.vertSlides.forEach {
-          section { it.invoke(this) }
+          section { it.content.invoke(this, it.slideConfig) }
           rawHtml("\n")
         }
-      }
-      rawHtml("\n")
-    }
-  }
+      }.also { rawHtml("\n") }
+    }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.rawHtmlSlide(
-    slideConfig: SlideConfig = slideConfig {},
-    id: String = "",
-    content: () -> String
-  ) {
-    vertSlides += {
+  fun VerticalContext.rawHtmlSlide(id: String = "", content: () -> String) =
+    VerticalSlide { slideConfig ->
       if (id.isNotEmpty())
         this.id = id
       applyConfig(slideConfig)
       rawHtml(content.invoke())
-    }
-  }
+    }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun rawHtmlSlide(
-    slideConfig: SlideConfig = slideConfig {},
-    id: String = "",
-    content: () -> String
-  ) {
-    slides += {
+  fun rawHtmlSlide(id: String = "", content: () -> String) =
+    Slide { slideConfig ->
       section {
         if (id.isNotEmpty())
           this.id = id
         applyConfig(slideConfig)
         rawHtml("\n" + content.invoke())
-      }
-      rawHtml("\n")
-    }
-  }
+      }.also { rawHtml("\n") }
+    }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.htmlSlide(
-    slideConfig: SlideConfig = slideConfig {},
-    id: String = "",
-    content: SECTION.() -> Unit
-  ) {
-    vertSlides += {
+  fun Presentation.VerticalContext.htmlSlide(id: String = "", content: SECTION.() -> Unit) =
+    VerticalSlide { slideConfig ->
       if (id.isNotEmpty())
         this.id = id
       applyConfig(slideConfig)
       content.invoke(this)
-    }
-  }
+    }.also { vertSlides += it }
+
 
   @HtmlTagMarker
-  fun htmlSlide(
-    slideConfig: SlideConfig = slideConfig {},
-    id: String = "",
-    content: SECTION.() -> Unit
-  ) {
-    slides += {
+  fun htmlSlide(id: String = "", content: SECTION.() -> Unit) =
+    Slide { slideConfig ->
       section {
         if (id.isNotEmpty())
           this.id = id
@@ -145,17 +126,15 @@ class Presentation internal constructor(path: String, val title: String, val the
         content.invoke(this)
       }
       rawHtml("\n")
-    }
-  }
+    }.also { slides += it }
 
   @HtmlTagMarker
   fun VerticalContext.markdownSlide(
-    slideConfig: SlideConfig = slideConfig {},
     id: String = "",
     filename: String = "",
     content: () -> String = { "" },
-  ) {
-    htmlSlide(slideConfig = slideConfig, id = id) {
+  ) =
+    htmlSlide(id = id) {
       // If this value is == "" it means read content inline
       attributes["data-markdown"] = filename
       attributes["data-separator"] = ""
@@ -170,19 +149,18 @@ class Presentation internal constructor(path: String, val title: String, val the
           rawHtml("\n" + content.invoke().let { if (config.markdownTrimIndent) it.trimIndent() else it })
         }
     }
-  }
+
 
   @HtmlTagMarker
   fun markdownSlide(
-    slideConfig: SlideConfig = slideConfig {},
     id: String = "",
     filename: String = "",
     separator: String = "",
     vertical_separator: String = "",
     notes: String = "^Note:",
     content: () -> String = { "" },
-  ) {
-    htmlSlide(slideConfig = slideConfig, id = id) {
+  ) =
+    htmlSlide(id = id) {
       // If this value is == "" it means read content inline
       attributes["data-markdown"] = filename
 
@@ -204,10 +182,6 @@ class Presentation internal constructor(path: String, val title: String, val the
             "\n" + content.invoke().let { escapeHtml4(if (config.markdownTrimIndent) it.trimIndent() else it) })
         }
     }
-  }
-
-  @HtmlTagMarker
-  fun config(block: PresentationConfig.() -> Unit) = block.invoke(config)
 
   private fun options(language: PlaygroundLanguage) =
     """
@@ -221,6 +195,8 @@ class Presentation internal constructor(path: String, val title: String, val the
   fun playgroundUrl(url: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN): String {
     return "<div class=\"kotlin-code\" ${options(language)}>\n${includeUrl(url).trimIndent()}\n</div>\n"
   }
+
+  fun config(block: PresentationConfig.() -> Unit) = block.invoke(config)
 
   private fun toJsValue(key: String, value: Any) =
     when (value) {
@@ -277,7 +253,7 @@ class Presentation internal constructor(path: String, val title: String, val the
     }
 
   companion object : KLogging() {
-    internal val presentations = mutableMapOf<String, Presentation>()
+    internal val decks = mutableMapOf<String, Presentation>()
     internal val globalConfig = PresentationConfig()
 
     fun servePresentations() {
@@ -289,7 +265,7 @@ class Presentation internal constructor(path: String, val title: String, val the
       require(dir.isNotEmpty()) { "dir value must not be empty" }
 
       File(dir).mkdir()
-      presentations.forEach { (key, p) ->
+      decks.forEach { (key, p) ->
         val (file, prefix) =
           when {
             key == "/" -> {
@@ -318,8 +294,8 @@ class Presentation internal constructor(path: String, val title: String, val the
           attributes["data-transition"] = "${slideConfig.transitionIn.asIn()} ${slideConfig.transitionOut.asOut()}"
       }
 
-      if (slideConfig.speed != Speed.DEFAULT)
-        attributes["data-transition-speed"] = slideConfig.speed.name.toLower()
+      if (slideConfig.transitionSpeed != Speed.DEFAULT)
+        attributes["data-transition-speed"] = slideConfig.transitionSpeed.name.toLower()
 
       if (slideConfig.backgroundColor.isNotEmpty())
         attributes["data-background"] = slideConfig.backgroundColor

@@ -51,14 +51,14 @@ internal object Page {
         title { +p.title }
 
       if (p.config.copyCode)
-        p.cssFiles += "plugin/copycode/copycode.css" to ""
+        p.cssFiles += CssFile("plugin/copycode/copycode.css")
 
       p.cssFiles.forEach {
         link {
           rel = "stylesheet"
-          href = if (it.first.startsWith("http")) it.first else "$srcPrefix${it.first}"
-          if (it.second.isNotEmpty())
-            id = it.second
+          href = if (it.filename.startsWith("http")) it.filename else "$srcPrefix${it.filename}"
+          if (it.id.isNotEmpty())
+            id = it.id
         }
       }
 
@@ -102,19 +102,19 @@ internal object Page {
         div("slides") {
           p.slides
             .forEach { slide ->
-              slide(this)
+              slide.content(this, slide.slideConfig)
             }
         }
       }
 
       if (p.config.copyCode) {
-        p.jsFiles += "plugin/copycode/copycode.js"
+        p.jsFiles += JsFile("plugin/copycode/copycode.js")
         // Required for copycode.js
-        p.jsFiles += "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"
+        p.jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js")
       }
 
       if (p.config.enableMenu) {
-        p.jsFiles += "plugin/menu/menu.js"
+        p.jsFiles += JsFile("plugin/menu/menu.js")
       }
 
 //      if (p.config.toolbar) {
@@ -126,7 +126,7 @@ internal object Page {
       rawHtml("\n\t\n")
       p.jsFiles.forEach {
         rawHtml("\t")
-        script { src = if (it.startsWith("http")) it else "$srcPrefix$it" }
+        script { src = if (it.filename.startsWith("http")) it.filename else "$srcPrefix${it.filename}" }
         rawHtml("\n")
       }
 
