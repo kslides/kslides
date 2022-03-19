@@ -11,7 +11,4 @@ class SlideConfig {
   var backgroundInteractive: Boolean = false
   var backgroundVideo: String = ""
 
-  companion object {
-    fun slideConfig(block: SlideConfig.() -> Unit) = SlideConfig().apply(block)
-  }
 }

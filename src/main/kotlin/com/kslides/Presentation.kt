@@ -11,24 +11,21 @@ import mu.*
 import java.io.*
 
 @HtmlTagMarker
-fun defaultConfig(block: PresentationConfig.() -> Unit) = block.invoke(globalConfig)
+fun presentationDefaults(block: PresentationConfig.() -> Unit) = block.invoke(globalConfig)
 
 // Keep this global to make it easier for users to be prompted for completion in it
 @HtmlTagMarker
 fun presentation(
   path: String = "/",
-  title: String = "",
-  theme: Theme = Theme.BLACK,
-  highlight: Highlight = Highlight.MONOKAI,
   block: Presentation.() -> Unit
 ) =
-  Presentation(path, title, theme.name.toLower(), highlight.name.toLower()).apply { block(this) }
+  Presentation(path).apply { block(this) }
 
 class JsFile(val filename: String)
 
 class CssFile(val filename: String, val id: String = "")
 
-class Presentation internal constructor(path: String, val title: String, val theme: String, val highlight: String) {
+class Presentation internal constructor(path: String) {
 
   var css = ""
 
@@ -44,10 +41,8 @@ class Presentation internal constructor(path: String, val title: String, val the
 
   val cssFiles =
     mutableListOf(
-      CssFile("dist/reset.css"),
       CssFile("dist/reveal.css"),
-      CssFile("dist/theme/$theme.css", "theme"),
-      CssFile("plugin/highlight/$highlight.css", "highlight-theme"),
+      CssFile("dist/reset.css"),
     )
 
   private val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")

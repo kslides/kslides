@@ -6,6 +6,9 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   internal val menuConfig = MenuConfig()
 
   // var enablePlayground by ConfigProperty<Boolean>(presentationVals) // true
+  var title by ConfigProperty<String>(presentationVals) // "",
+  var theme by ConfigProperty<Theme>(presentationVals) // Theme.BLACK
+  var highlight by ConfigProperty<Highlight>(presentationVals) // Highlight.MONOKAI
   var enableMenu by ConfigProperty<Boolean>(presentationVals) // true
   var copyCode by ConfigProperty<Boolean>(presentationVals) // true
   var trimIndentMarkdown by ConfigProperty<Boolean>(presentationVals) // true
@@ -13,6 +16,9 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   init {
     if (init) {
       // Initialize with default values
+      title = ""
+      theme = Theme.BLACK
+      highlight = Highlight.MONOKAI
       enableMenu = true
       copyCode = true
       trimIndentMarkdown = true

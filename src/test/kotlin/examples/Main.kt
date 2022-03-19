@@ -2,17 +2,17 @@ package examples
 
 import com.kslides.*
 import com.kslides.Presentation.Companion.outputPresentations
-import kotlinx.css.Color
-import kotlinx.css.color
+import kotlinx.css.*
 import kotlinx.html.*
 
 fun main() {
 
-  defaultConfig {
+  presentationDefaults {
+    slideNumber = "c/t"
     transition = Transition.FADE
   }
 
-  presentation(title = "markdown Demo", theme = Theme.MOON) {
+  presentation {
 
     css += """
 			.slides section h3 {
@@ -275,11 +275,12 @@ fun main() {
       "![Sample image](https://picsum.photos/512/512)"
     }
   }.config {
+    title = "markdown Demo"
+    theme = Theme.MOON
     hash = true
     history = true
     transition = Transition.SLIDE
     transitionSpeed = Speed.FAST
-    slideNumber = "c/t"
     enableMenu = false
 
     menu {

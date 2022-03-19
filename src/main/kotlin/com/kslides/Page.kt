@@ -55,11 +55,14 @@ internal object Page {
         content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
       }
 
-      if (p.title.isNotEmpty())
-        title { +p.title }
+      if (config.title.isNotEmpty())
+        title { +config.title }
 
       if (config.copyCode)
         p.cssFiles += CssFile("plugin/copycode/copycode.css")
+
+      p.cssFiles += CssFile("dist/theme/${config.theme}.css", "theme")
+      p.cssFiles += CssFile("plugin/highlight/${config.highlight}.css", "highlight-theme")
 
       p.cssFiles.forEach {
         link {
