@@ -59,8 +59,8 @@ internal object Page {
         title { +config.title }
 
       // Css Files
-      p.cssFiles += CssFile("dist/theme/${config.theme}.css", "theme")
-      p.cssFiles += CssFile("plugin/highlight/${config.highlight}.css", "highlight-theme")
+      p.cssFiles += CssFile("dist/theme/${config.theme.name.toLower()}.css", "theme")
+      p.cssFiles += CssFile("plugin/highlight/${config.highlight.name.toLower()}.css", "highlight-theme")
 
       if (config.enableCodeCopy)
         p.cssFiles += CssFile("plugin/copycode/copycode.css")
