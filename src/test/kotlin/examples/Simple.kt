@@ -2,7 +2,6 @@ package examples
 
 import com.kslides.*
 import com.kslides.Presentation.Companion.servePresentations
-import com.kslides.SlideConfig.Companion.slideConfig
 import com.kslides.Speed.SLOW
 import com.kslides.Transition.SLIDE
 import com.kslides.Transition.ZOOM
@@ -31,20 +30,25 @@ fun main() {
       """
     }
 
-    markdownSlide(slideConfig { transition(ZOOM, SLOW) }) {
+    markdownSlide {
       """
       # Markdown Slide 🍒 
       
       Press ESC to see presentation overview.
       """
+    }.config {
+      transition = ZOOM
+      transitionSpeed = SLOW
     }
 
     verticalSlides {
-      htmlSlide(slideConfig { backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4" }) {
+      htmlSlide {
         h1 {
           style = "color: red;"
           +"Vertical HTML Slide 👇"
         }
+      }.config {
+        backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
       }
 
       markdownSlide {

@@ -2,30 +2,17 @@ package examples
 
 import com.kslides.*
 import com.kslides.Presentation.Companion.outputPresentations
-import com.kslides.SlideConfig.Companion.slideConfig
-import com.kslides.Transition.CONCAVE
 import kotlinx.css.Color
 import kotlinx.css.color
 import kotlinx.html.*
 
 fun main() {
+
+  defaultConfig {
+    transition = Transition.FADE
+  }
+
   presentation(title = "markdown Demo", theme = Theme.MOON) {
-
-    config {
-      hash = true
-      history = true
-      transition = Transition.SLIDE
-      transitionSpeed = Speed.SLOW
-      slideNumber = "c/t"
-      enableMenu = false
-
-      menu {
-        numbers = true
-        markers = false
-        openOnInit = true
-      }
-
-    }
 
     css += """
 			.slides section h3 {
@@ -34,10 +21,6 @@ fun main() {
 			.slides section h4 a {
 				color: red;
 			}
-
-      .code-output {
-        text-align: left;  
-      }
      """
 
     css {
@@ -49,30 +32,23 @@ fun main() {
       }
     }
 
-    markdownSlide(slideConfig { backgroundColor = "#4DD0A5" }) {
-      """
-      # Kotlin Playground   
-      ${playgroundFile(includeFile("src/test/kotlin/examples/HelloWorldK.kt"))}
-      """.trimIndentWithPlayground()
-    }
-
-    markdownSlide(slideConfig { backgroundColor = "#4DD0A5" }) {
-      """
-      # Java Code   
-      ${playgroundFile("src/test/kotlin/examples/HelloWorldJ.java", PlaygroundLanguage.JAVA)}
-      """.trimIndentWithPlayground()
-    }
-
-    markdownSlide(slideConfig { backgroundColor = "#4DD0A5" }) {
+    markdownSlide {
       """
       # Java Code  
-      ```java [1|3]
+      ```java [3|4|5]
       ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
       ```
       """.trimIndentWithInclude()
+    }.config {
+      backgroundColor = "#4DD0A5"
     }
 
-    markdownSlide(slideConfig { backgroundColor = "#4370A5" }) {
+    htmlSlide {
+    }.config {
+      backgroundIframe = "https://www.readingbat.com"
+    }
+
+    markdownSlide {
       """
       # Code Highlights    
       ```kotlin [1,6|2,5|3-4]
@@ -84,14 +60,16 @@ fun main() {
       }
       ```
       """
+    }.config {
+      backgroundColor = "#4370A5"
     }
 
     markdownSlide {
       """
       # Markdown Example
-      ````kotlin [1|3-4|20,24-25]
-      ${includeFile("src/test/kotlin/examples/Simple.kt")}
-      ````
+      ```kotlin [3|4|5]
+      ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
+      ```
       """.trimIndentWithInclude()
     }
 
@@ -99,10 +77,24 @@ fun main() {
       """
       # Markdown Example
       ````kotlin [1|3-4|20,24-25]
-      ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/Simple.kt")}
+      ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
       ````
       """.trimIndentWithInclude()
     }
+
+    markdownSlide {
+      """
+        # Markdown List Items 
+        * Item 1
+        * Item 2
+        * Item 3
+      """
+    }.config {
+      backgroundColor = "#000433"
+      transition = Transition.CONCAVE
+      transitionSpeed = Speed.SLOW
+    }
+
 
     rawHtmlSlide {
       """
@@ -116,28 +108,34 @@ fun main() {
     htmlSlide(id = "home") {
       h3 { +"Examples" }
       h4 { a { href = "/demo.html"; +"Demo Deck" } }
+    }.config {
+      backgroundColor = "#4DDFA1"
     }
 
-    htmlSlide(slideConfig { transition(Transition.ZOOM, Speed.SLOW); backgroundColor = "#bb00bb" }) {
+    htmlSlide {
       img { src = "https://picsum.photos/512/512" }
+    }.config {
+      transition = Transition.ZOOM
+      transitionSpeed = Speed.SLOW
+      backgroundColor = "#bb00bb"
     }
 
     verticalSlides {
-      htmlSlide(slideConfig { backgroundColor = "aquamarine" }) {
+      htmlSlide {
         h2 { +"🐟" }
+      }.config {
+        backgroundColor = "aquamarine"
       }
 
-      htmlSlide(slideConfig { transition(CONCAVE, speed = Speed.SLOW); backgroundColor = "rgb(70, 70, 255)" }) {
+      htmlSlide {
         h2 { +"🐳" }
+      }.config {
+        transition = Transition.CONCAVE
+        transitionSpeed = Speed.SLOW
+        backgroundColor = "rgb(70, 70, 255)"
       }
 
       markdownSlide {
-        """
-        # Markdown Slide
-        """
-      }
-
-      markdownSlide(slideConfig { backgroundColor = "red" }) {
         """
         ## Demo 1
         Slide 1
@@ -152,6 +150,8 @@ fun main() {
         ## Demo 1
         Slide 3
         """
+      }.config {
+        backgroundColor = "red"
       }
 
       //markdownSlide(filename = "public/markdown.md")
@@ -218,10 +218,12 @@ fun main() {
     }
 
     // Slide attributes
-    markdownSlide(slideConfig { backgroundColor = "#FFFF00" }) {
+    markdownSlide {
       """
       ## Slide attributes
       """
+    }.config {
+      backgroundColor = "#FFFF00"
     }
 
     markdownSlide {
@@ -233,18 +235,6 @@ fun main() {
       Item 2 ${fragmentIndex(2)}
 
       Item 3 ${fragmentIndex(3)}
-      """
-    }
-
-    markdownSlide(id = "markdown-example") {
-      """
-      # Markdown Example
-      ```kotlin [1|3-4]
-          fun main() {
-              println("Hello")
-              println("World")
-          }
-      ```
       """
     }
 
@@ -265,7 +255,7 @@ fun main() {
       h4 { a { href = "#/home"; +"Home" } }
     }
 
-    htmlSlide(slideConfig { backgroundIframe = "https://revealjs.com" }) {
+    htmlSlide {
       //attributes["data-background-interactive"] = "false"
       div {
         style =
@@ -276,11 +266,26 @@ fun main() {
                     page in the background."""
         }
       }
+    }.config {
+      backgroundIframe = "https://revealjs.com"
     }
 
     // Images
     markdownSlide {
       "![Sample image](https://picsum.photos/512/512)"
+    }
+  }.config {
+    hash = true
+    history = true
+    transition = Transition.SLIDE
+    transitionSpeed = Speed.FAST
+    slideNumber = "c/t"
+    enableMenu = false
+
+    menu {
+      numbers = true
+      markers = false
+      openOnInit = true
     }
   }
 
@@ -313,7 +318,6 @@ fun main() {
       +"Demo3 Slide 2"
     }
   }
-
 
   //servePresentations()
   outputPresentations()

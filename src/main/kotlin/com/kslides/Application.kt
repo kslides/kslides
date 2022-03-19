@@ -27,10 +27,10 @@ fun Application.module(testing: Boolean = false) {
       static("/$it") { resources(it) }
     }
 
-    presentations.forEach { presentation ->
-      get(presentation.key) {
+    presentations.forEach { (key, value) ->
+      get(key) {
         respondWith {
-          generatePage(presentation.value)
+          generatePage(value)
         }
       }
     }

@@ -2,14 +2,16 @@ package com.kslides
 
 import com.kslides.Page.generatePage
 import com.kslides.Page.rawHtml
-import com.kslides.SlideConfig.Companion.slideConfig
+import com.kslides.Presentation.Companion.globalConfig
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
-import org.apache.commons.lang3.StringEscapeUtils.escapeHtml4
 import java.io.*
+
+@HtmlTagMarker
+fun defaultConfig(block: PresentationConfig.() -> Unit) = block.invoke(globalConfig)
 
 // Keep this global to make it easier for users to be prompted for completion in it
 @HtmlTagMarker
@@ -22,34 +24,37 @@ fun presentation(
 ) =
   Presentation(path, title, theme.name.toLower(), highlight.name.toLower()).apply { block(this) }
 
+class JsFile(val filename: String)
+
+class CssFile(val filename: String, val id: String = "")
+
 class Presentation internal constructor(path: String, val title: String, val theme: String, val highlight: String) {
 
   var css = ""
 
   val jsFiles =
     mutableListOf(
-      "dist/reveal.js",
-      "plugin/zoom/zoom.js",
-      "plugin/notes/notes.js",
-      "plugin/search/search.js",
-      "plugin/markdown/markdown.js",
-      "plugin/highlight/highlight.js",
+      JsFile("dist/reveal.js"),
+      JsFile("plugin/zoom/zoom.js"),
+      JsFile("plugin/notes/notes.js"),
+      JsFile("plugin/search/search.js"),
+      JsFile("plugin/markdown/markdown.js"),
+      JsFile("plugin/highlight/highlight.js"),
     )
 
   val cssFiles =
     mutableListOf(
-      "dist/reset.css" to "",
-      "dist/reveal.css" to "",
-      "dist/theme/$theme.css" to "theme",
-      "plugin/highlight/$highlight.css" to "highlight-theme",
+      CssFile("dist/reset.css"),
+      CssFile("dist/reveal.css"),
+      CssFile("dist/theme/$theme.css", "theme"),
+      CssFile("plugin/highlight/$highlight.css", "highlight-theme"),
     )
 
-  private val baseConfigMap = mutableMapOf<String, Any>()
-  private val menuConfigMap = mutableMapOf<String, Any>()
-  private val menuConfig = MenuConfig(menuConfigMap)
+  private val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
+  private val dependencies = mutableListOf<String>()
 
-  val baseConfig = BaseConfig(baseConfigMap, menuConfig)
-  val slides = mutableListOf<DIV.() -> Unit>()
+  val presentationConfig = PresentationConfig()
+  val slides = mutableListOf<Slide>()
 
   init {
     if (path.removePrefix("/") in staticRoots)
@@ -67,77 +72,54 @@ class Presentation internal constructor(path: String, val title: String, val the
   }
 
   class VerticalContext {
-    val vertSlides = mutableListOf<SECTION.() -> Unit>()
+    val vertSlides = mutableListOf<VerticalSlide>()
   }
 
   @HtmlTagMarker
-  fun verticalSlides(block: VerticalContext.() -> Unit) {
-    val vertContext = VerticalContext()
-    block.invoke(vertContext)
-
-    slides += {
+  fun verticalSlides(block: VerticalContext.() -> Unit) =
+    Slide {
+      val vertContext = VerticalContext()
+      block.invoke(vertContext)
       section {
         vertContext.vertSlides.forEach {
-          section { it.invoke(this) }
+          section { it.content.invoke(this, it.slideConfig) }
           rawHtml("\n")
         }
-      }
-      rawHtml("\n")
-    }
-  }
+      }.also { rawHtml("\n") }
+    }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.rawHtmlSlide(
-    slideConfig: SlideConfig = slideConfig {},
-    id: String = "",
-    content: () -> String
-  ) {
-    vertSlides += {
+  fun VerticalContext.rawHtmlSlide(id: String = "", content: () -> String) =
+    VerticalSlide { slideConfig ->
       if (id.isNotEmpty())
         this.id = id
       applyConfig(slideConfig)
       rawHtml(content.invoke())
-    }
-  }
+    }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun rawHtmlSlide(
-    slideConfig: SlideConfig = slideConfig {},
-    id: String = "",
-    content: () -> String
-  ) {
-    slides += {
+  fun rawHtmlSlide(id: String = "", content: () -> String) =
+    Slide { slideConfig ->
       section {
         if (id.isNotEmpty())
           this.id = id
         applyConfig(slideConfig)
         rawHtml("\n" + content.invoke())
-      }
-      rawHtml("\n")
-    }
-  }
+      }.also { rawHtml("\n") }
+    }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.htmlSlide(
-    slideConfig: SlideConfig = slideConfig {},
-    id: String = "",
-    content: SECTION.() -> Unit
-  ) {
-    vertSlides += {
+  fun Presentation.VerticalContext.htmlSlide(id: String = "", content: SECTION.() -> Unit) =
+    VerticalSlide { slideConfig ->
       if (id.isNotEmpty())
         this.id = id
       applyConfig(slideConfig)
       content.invoke(this)
-    }
-  }
+    }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun htmlSlide(
-    slideConfig: SlideConfig = slideConfig {},
-    id: String = "",
-    content: SECTION.() -> Unit
-  ) {
-    slides += {
+  fun htmlSlide(id: String = "", content: SECTION.() -> Unit) =
+    Slide { slideConfig ->
       section {
         if (id.isNotEmpty())
           this.id = id
@@ -145,17 +127,15 @@ class Presentation internal constructor(path: String, val title: String, val the
         content.invoke(this)
       }
       rawHtml("\n")
-    }
-  }
+    }.also { slides += it }
 
   @HtmlTagMarker
   fun VerticalContext.markdownSlide(
-    slideConfig: SlideConfig = slideConfig {},
     id: String = "",
     filename: String = "",
     content: () -> String = { "" },
-  ) {
-    htmlSlide(slideConfig = slideConfig, id = id) {
+  ) =
+    htmlSlide(id = id) {
       // If this value is == "" it means read content inline
       attributes["data-markdown"] = filename
       attributes["data-separator"] = ""
@@ -167,22 +147,20 @@ class Presentation internal constructor(path: String, val title: String, val the
       if (filename.isEmpty())
         script {
           type = "text/template"
-          rawHtml("\n" + content.invoke().let { if (baseConfig.markdownTrimIndent) it.trimIndent() else it })
+          rawHtml("\n" + content.invoke().let { if (presentationConfig.trimIndentMarkdown) it.trimIndent() else it })
         }
     }
-  }
 
   @HtmlTagMarker
   fun markdownSlide(
-    slideConfig: SlideConfig = slideConfig {},
     id: String = "",
     filename: String = "",
     separator: String = "",
     vertical_separator: String = "",
     notes: String = "^Note:",
     content: () -> String = { "" },
-  ) {
-    htmlSlide(slideConfig = slideConfig, id = id) {
+  ) =
+    htmlSlide(id = id) {
       // If this value is == "" it means read content inline
       attributes["data-markdown"] = filename
 
@@ -201,26 +179,22 @@ class Presentation internal constructor(path: String, val title: String, val the
         script {
           type = "text/template"
           rawHtml(
-            "\n" + content.invoke().let { escapeHtml4(if (baseConfig.markdownTrimIndent) it.trimIndent() else it) })
+            "\n" + content.invoke().let { if (presentationConfig.trimIndentMarkdown) it.trimIndent() else it })
         }
     }
-  }
 
-  @HtmlTagMarker
-  fun config(block: BaseConfig.() -> Unit) = block.invoke(baseConfig)
+//  private fun options(language: PlaygroundLanguage) =
+//    """
+//      mode="${language.name.toLower()}" theme="idea" indent="4" auto-indent="true" lines="true" highlight-on-fly="true" data-autocomplete="true" match-brackets="true"
+//      """.trimIndent()
+//
+//  fun playgroundFile(filename: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN) =
+//    "<div class=\"kotlin-code\" ${options(language)}>\n${includeFile(filename).trimIndent()}\n</div>\n"
+//
+//  fun playgroundUrl(url: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN) =
+//    "<div class=\"kotlin-code\" ${options(language)}>\n${includeUrl(url).trimIndent()}\n</div>\n"
 
-  private fun options(language: PlaygroundLanguage) =
-    """
-      mode="${language.name.toLower()}" theme="idea" indent="4" auto-indent="true" lines="true" highlight-on-fly="true" data-autocomplete="true" match-brackets="true" 
-      """.trimIndent()
-
-  fun playgroundFile(filename: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN): String {
-    return "<div class=\"kotlin-code\" ${options(language)}>\n${includeFile(filename).trimIndent()}\n</div>\n"
-  }
-
-  fun playgroundUrl(url: String, language: PlaygroundLanguage = PlaygroundLanguage.KOTLIN): String {
-    return "<div class=\"kotlin-code\" ${options(language)}>\n${includeUrl(url).trimIndent()}\n</div>\n"
-  }
+  fun config(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
 
   private fun toJsValue(key: String, value: Any) =
     when (value) {
@@ -232,34 +206,38 @@ class Presentation internal constructor(path: String, val title: String, val the
       else -> throw IllegalArgumentException("Invalid value for $key: $value")
     }
 
-  fun toJs(srcPrefix: String) =
+  fun toJs(config: PresentationConfig, srcPrefix: String) =
     buildString {
-      if (baseConfigMap.isNotEmpty()) {
-        baseConfigMap.forEach { (k, v) ->
-          append("\t\t\t${toJsValue(k, v)},\n")
+      config.revealVals.also { vals ->
+        if (vals.isNotEmpty()) {
+          vals.forEach { (k, v) ->
+            append("\t\t\t${toJsValue(k, v)},\n")
+          }
+          appendLine()
         }
-        appendLine()
       }
 
-      if (menuConfigMap.isNotEmpty()) {
-        appendLine(
-          buildString {
-            appendLine("menu: {")
-            appendLine(menuConfigMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
-            appendLine("},")
-          }.prependIndent("\t\t\t")
-        )
+      config.menuConfig.revealVals.also { vals ->
+        if (vals.isNotEmpty()) {
+          appendLine(
+            buildString {
+              appendLine("menu: {")
+              appendLine(vals.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
+              appendLine("},")
+            }.prependIndent("\t\t\t")
+          )
+        }
       }
 
       // Dependencies
       // if (toolbar)
       //   dependencies += "plugin/toolbar/toolbar.js"
 
-      if (baseConfig.dependencies.isNotEmpty()) {
+      if (dependencies.isNotEmpty()) {
         appendLine(
           buildString {
             appendLine("dependencies: [")
-            appendLine(baseConfig.dependencies.map { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" }
+            appendLine(dependencies.map { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" }
                          .joinToString(",\n"))
             appendLine("],")
           }.prependIndent("\t\t\t")
@@ -267,17 +245,18 @@ class Presentation internal constructor(path: String, val title: String, val the
       }
 
       // Plugins
-      if (baseConfig.copyCode)
-        baseConfig.plugins += "CopyCode"
+      if (config.copyCode)
+        plugins += "CopyCode"
 
-      if (baseConfig.enableMenu)
-        baseConfig.plugins += "RevealMenu"
+      if (config.enableMenu)
+        plugins += "RevealMenu"
 
-      appendLine("\t\t\tplugins: [ ${baseConfig.plugins.joinToString(", ")} ]")
+      appendLine("\t\t\tplugins: [ ${plugins.joinToString(", ")} ]")
     }
 
   companion object : KLogging() {
     internal val presentations = mutableMapOf<String, Presentation>()
+    internal val globalConfig = PresentationConfig(true)
 
     fun servePresentations() {
       val environment = commandLineEnvironment(emptyArray())
@@ -317,8 +296,8 @@ class Presentation internal constructor(path: String, val title: String, val the
           attributes["data-transition"] = "${slideConfig.transitionIn.asIn()} ${slideConfig.transitionOut.asOut()}"
       }
 
-      if (slideConfig.speed != Speed.DEFAULT)
-        attributes["data-transition-speed"] = slideConfig.speed.name.toLower()
+      if (slideConfig.transitionSpeed != Speed.DEFAULT)
+        attributes["data-transition-speed"] = slideConfig.transitionSpeed.name.toLower()
 
       if (slideConfig.backgroundColor.isNotEmpty())
         attributes["data-background"] = slideConfig.backgroundColor

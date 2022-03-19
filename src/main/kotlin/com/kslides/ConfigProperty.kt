@@ -6,8 +6,8 @@ class ConfigProperty<T>(val configMap: MutableMap<String, Any>) {
   var configName = ""
 
   operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
-    return if (configName.isNotEmpty() && configMap.containsKey(configName))
-      configMap[configName] as T
+    return if (configMap.containsKey(property.name))
+      configMap[property.name] as T
     else
       throw IllegalStateException("Config property ${property.name} has not been set")
   }
