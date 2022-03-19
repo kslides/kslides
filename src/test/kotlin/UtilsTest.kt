@@ -142,6 +142,5 @@ val y = 1              // NO TAB
           }
       p3.enableMenu shouldBe false
     }
-
   }
 )

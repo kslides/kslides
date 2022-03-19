@@ -10,5 +10,4 @@ class SlideConfig {
   var backgroundIframe: String = ""
   var backgroundInteractive: Boolean = false
   var backgroundVideo: String = ""
-
 }

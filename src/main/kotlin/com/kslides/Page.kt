@@ -58,11 +58,12 @@ internal object Page {
       if (config.title.isNotEmpty())
         title { +config.title }
 
-      if (config.copyCode)
-        p.cssFiles += CssFile("plugin/copycode/copycode.css")
-
+      // Css Files
       p.cssFiles += CssFile("dist/theme/${config.theme}.css", "theme")
       p.cssFiles += CssFile("plugin/highlight/${config.highlight}.css", "highlight-theme")
+
+      if (config.enableCodeCopy)
+        p.cssFiles += CssFile("plugin/copycode/copycode.css")
 
       p.cssFiles.forEach {
         link {
@@ -119,7 +120,7 @@ internal object Page {
         }
       }
 
-      if (config.copyCode) {
+      if (config.enableCodeCopy) {
         p.jsFiles += JsFile("plugin/copycode/copycode.js")
         // Required for copycode.js
         p.jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js")

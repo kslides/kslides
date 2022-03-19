@@ -5,6 +5,7 @@ import com.kslides.Page.rawHtml
 import com.kslides.Presentation.Companion.globalConfig
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.util.logging.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
@@ -128,6 +129,7 @@ class Presentation internal constructor(path: String) {
   fun VerticalContext.markdownSlide(
     id: String = "",
     filename: String = "",
+    disableTrimIndent: Boolean = false,
     content: () -> String = { "" },
   ) =
     htmlSlide(id = id) {
@@ -142,7 +144,7 @@ class Presentation internal constructor(path: String) {
       if (filename.isEmpty())
         script {
           type = "text/template"
-          rawHtml("\n" + content.invoke().let { if (presentationConfig.trimIndentMarkdown) it.trimIndent() else it })
+          rawHtml("\n" + content.invoke().let { if (!disableTrimIndent) it.trimIndent() else it })
         }
     }
 
@@ -150,6 +152,7 @@ class Presentation internal constructor(path: String) {
   fun markdownSlide(
     id: String = "",
     filename: String = "",
+    disableTrimIndent: Boolean = false,
     separator: String = "",
     vertical_separator: String = "",
     notes: String = "^Note:",
@@ -173,8 +176,7 @@ class Presentation internal constructor(path: String) {
       if (filename.isEmpty())
         script {
           type = "text/template"
-          rawHtml(
-            "\n" + content.invoke().let { if (presentationConfig.trimIndentMarkdown) it.trimIndent() else it })
+          rawHtml("\n" + content.invoke().let { if (!disableTrimIndent) it.trimIndent() else it })
         }
     }
 
@@ -240,7 +242,7 @@ class Presentation internal constructor(path: String) {
       }
 
       // Plugins
-      if (config.copyCode)
+      if (config.enableCodeCopy)
         plugins += "CopyCode"
 
       if (config.enableMenu)
@@ -255,6 +257,10 @@ class Presentation internal constructor(path: String) {
 
     fun servePresentations() {
       val environment = commandLineEnvironment(emptyArray())
+      val environment2 = applicationEngineEnvironment {
+        this.log = KtorSimpleLogger("ktor.application")
+        watchPaths = listOf("classes")
+      }
       embeddedServer(CIO, environment).start(wait = true)
     }
 
