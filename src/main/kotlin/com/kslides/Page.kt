@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
+import com.kslides.Presentation.Companion.globalConfig
 import kotlinx.html.*
 import kotlinx.html.dom.*
 
@@ -9,9 +10,16 @@ internal object Page {
   fun generatePage(p: Presentation, srcPrefix: String = "/"): String {
     val document =
       document {
+        val finalConfig =
+          PresentationConfig()
+            .apply {
+              merge(globalConfig)
+              merge(p.presentationConfig)
+            }
+
         append.html {
-          generateHead(p, srcPrefix.ensureSuffix("/"))
-          generateBody(p, srcPrefix.ensureSuffix("/"))
+          generateHead(p, finalConfig, srcPrefix.ensureSuffix("/"))
+          generateBody(p, finalConfig, srcPrefix.ensureSuffix("/"))
         }
       }
 
@@ -37,7 +45,7 @@ internal object Page {
     return document.serialize()
   }
 
-  fun HTML.generateHead(p: Presentation, srcPrefix: String) {
+  fun HTML.generateHead(p: Presentation, config: PresentationConfig, srcPrefix: String) {
     head {
       meta { charset = "utf-8" }
       meta { name = "apple-mobile-web-app-capable"; content = "yes" }
@@ -50,7 +58,7 @@ internal object Page {
       if (p.title.isNotEmpty())
         title { +p.title }
 
-      if (p.presentationConfig.copyCode)
+      if (config.copyCode)
         p.cssFiles += CssFile("plugin/copycode/copycode.css")
 
       p.cssFiles.forEach {
@@ -62,7 +70,7 @@ internal object Page {
         }
       }
 
-//      if (p.presentationConfig.enablePlayground)
+//      if (config.enablePlayground)
 //        p.css += """
 //          .code-output {
 //          text-align: left;
@@ -79,7 +87,7 @@ internal object Page {
     }
   }
 
-  fun HTML.generateBody(p: Presentation, srcPrefix: String) {
+  fun HTML.generateBody(p: Presentation, config: PresentationConfig, srcPrefix: String) {
     body {
       div("reveal") {
 //        a {
@@ -108,17 +116,17 @@ internal object Page {
         }
       }
 
-      if (p.presentationConfig.copyCode) {
+      if (config.copyCode) {
         p.jsFiles += JsFile("plugin/copycode/copycode.js")
         // Required for copycode.js
         p.jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js")
       }
 
-      if (p.presentationConfig.enableMenu) {
+      if (config.enableMenu) {
         p.jsFiles += JsFile("plugin/menu/menu.js")
       }
 
-//      if (p.config.toolbar) {
+//      if (config.toolbar) {
 //        p.jsFiles += "plugin/toolbar/toolbar.js"
 //      }
 
@@ -133,7 +141,7 @@ internal object Page {
 
       rawHtml("\n\t")
       script {
-        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(p.presentationConfig, srcPrefix)}\t\t});\n\n")
+        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config, srcPrefix)}\t\t});\n\n")
       }
     }
   }

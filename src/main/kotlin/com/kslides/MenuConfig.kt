@@ -1,6 +1,6 @@
 package com.kslides
 
-class MenuConfig() : AbstractConfig() {
+class MenuConfig : AbstractConfig() {
 
   // Specifies which side of the presentation the menu will
   // be shown. Use 'left' or 'right'.

@@ -50,6 +50,9 @@ class Presentation internal constructor(path: String, val title: String, val the
       CssFile("plugin/highlight/$highlight.css", "highlight-theme"),
     )
 
+  private val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
+  private val dependencies = mutableListOf<String>()
+
   val presentationConfig = PresentationConfig()
   val slides = mutableListOf<Slide>()
 
@@ -205,32 +208,36 @@ class Presentation internal constructor(path: String, val title: String, val the
 
   fun toJs(config: PresentationConfig, srcPrefix: String) =
     buildString {
-      if (config.revealVals.isNotEmpty()) {
-        config.revealVals.forEach { (k, v) ->
-          append("\t\t\t${toJsValue(k, v)},\n")
+      config.revealVals.also { vals ->
+        if (vals.isNotEmpty()) {
+          vals.forEach { (k, v) ->
+            append("\t\t\t${toJsValue(k, v)},\n")
+          }
+          appendLine()
         }
-        appendLine()
       }
 
-      if (config.menuConfig.revealVals.isNotEmpty()) {
-        appendLine(
-          buildString {
-            appendLine("menu: {")
-            appendLine(config.menuConfig.revealVals.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
-            appendLine("},")
-          }.prependIndent("\t\t\t")
-        )
+      config.menuConfig.revealVals.also { vals ->
+        if (vals.isNotEmpty()) {
+          appendLine(
+            buildString {
+              appendLine("menu: {")
+              appendLine(vals.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
+              appendLine("},")
+            }.prependIndent("\t\t\t")
+          )
+        }
       }
 
       // Dependencies
       // if (toolbar)
       //   dependencies += "plugin/toolbar/toolbar.js"
 
-      if (config.dependencies.isNotEmpty()) {
+      if (dependencies.isNotEmpty()) {
         appendLine(
           buildString {
             appendLine("dependencies: [")
-            appendLine(config.dependencies.map { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" }
+            appendLine(dependencies.map { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" }
                          .joinToString(",\n"))
             appendLine("],")
           }.prependIndent("\t\t\t")
@@ -239,17 +246,17 @@ class Presentation internal constructor(path: String, val title: String, val the
 
       // Plugins
       if (config.copyCode)
-        config.plugins += "CopyCode"
+        plugins += "CopyCode"
 
       if (config.enableMenu)
-        config.plugins += "RevealMenu"
+        plugins += "RevealMenu"
 
-      appendLine("\t\t\tplugins: [ ${config.plugins.joinToString(", ")} ]")
+      appendLine("\t\t\tplugins: [ ${plugins.joinToString(", ")} ]")
     }
 
   companion object : KLogging() {
     internal val presentations = mutableMapOf<String, Presentation>()
-    internal val globalConfig = PresentationConfig()
+    internal val globalConfig = PresentationConfig(true)
 
     fun servePresentations() {
       val environment = commandLineEnvironment(emptyArray())

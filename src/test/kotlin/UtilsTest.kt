@@ -84,5 +84,64 @@ val y = 1              // NO TAB
       val m3 = mapOf("a" to 4, "b" to 5)
       m1.merge(m2) shouldBe m3
     }
+
+    "PresentationConfig Test 1" {
+      val p1 = PresentationConfig(true)
+      val p2 = PresentationConfig()
+      val p3 =
+        PresentationConfig()
+          .apply {
+            merge(p1)
+            merge(p2)
+          }
+      p3.enableMenu shouldBe true
+    }
+
+    "PresentationConfig Test 2" {
+      val p1 = PresentationConfig(true).apply {
+        enableMenu = false
+      }
+      val p2 = PresentationConfig()
+      val p3 =
+        PresentationConfig()
+          .apply {
+            merge(p1)
+            merge(p2)
+          }
+      p3.enableMenu shouldBe false
+    }
+
+    "PresentationConfig Test 3" {
+      val p1 = PresentationConfig(true).apply {
+        enableMenu = false
+      }
+      val p2 = PresentationConfig().apply {
+        enableMenu = true
+      }
+      val p3 =
+        PresentationConfig()
+          .apply {
+            merge(p1)
+            merge(p2)
+          }
+      p3.enableMenu shouldBe true
+    }
+
+    "PresentationConfig Test 4" {
+      val p1 = PresentationConfig(true).apply {
+        enableMenu = true
+      }
+      val p2 = PresentationConfig().apply {
+        enableMenu = false
+      }
+      val p3 =
+        PresentationConfig()
+          .apply {
+            merge(p1)
+            merge(p2)
+          }
+      p3.enableMenu shouldBe false
+    }
+
   }
 )

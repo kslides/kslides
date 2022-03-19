@@ -2,16 +2,22 @@ package com.kslides
 
 import kotlinx.html.*
 
-class PresentationConfig() : AbstractConfig() {
+class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   internal val menuConfig = MenuConfig()
-
-  val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
-  val dependencies = mutableListOf<String>()
 
   // var enablePlayground by ConfigProperty<Boolean>(presentationVals) // true
   var enableMenu by ConfigProperty<Boolean>(presentationVals) // true
   var copyCode by ConfigProperty<Boolean>(presentationVals) // true
   var trimIndentMarkdown by ConfigProperty<Boolean>(presentationVals) // true
+
+  init {
+    if (init) {
+      // Initialize with default values
+      enableMenu = true
+      copyCode = true
+      trimIndentMarkdown = true
+    }
+  }
 
   @HtmlTagMarker
   fun menu(block: MenuConfig.() -> Unit) = block.invoke(menuConfig)
@@ -260,4 +266,9 @@ class PresentationConfig() : AbstractConfig() {
 
   // Time before the cursor is hidden (in ms)
   var hideCursorTime by ConfigProperty<Int>(revealVals) // 5000
+
+  fun merge(other: PresentationConfig) {
+    this.combine(other)
+    this.menuConfig.combine(other.menuConfig)
+  }
 }
