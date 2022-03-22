@@ -14,7 +14,6 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
       .apply { combine(presentation.presentationConfig.slideConfig) }
       .apply { combine(slideConfig) }
 
-
   fun assignId(section: SECTION, id: String) {
     if (id.isNotEmpty())
       section.id = id

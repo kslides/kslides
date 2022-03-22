@@ -244,6 +244,7 @@ class Presentation internal constructor(path: String) {
       }
 
       // Dependencies
+
       // if (toolbar)
       //   dependencies += "plugin/toolbar/toolbar.js"
 

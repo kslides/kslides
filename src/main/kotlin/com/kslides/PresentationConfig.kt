@@ -11,6 +11,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   var highlight by ConfigProperty<Highlight>(secondaryValues)
   var enableMenu by ConfigProperty<Boolean>(secondaryValues)
   var enableCodeCopy by ConfigProperty<Boolean>(secondaryValues)
+  var gaPropertyId by ConfigProperty<String>(secondaryValues)
 
   init {
     if (init) {
@@ -20,6 +21,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       highlight = Highlight.MONOKAI
       enableMenu = true
       enableCodeCopy = true
+      gaPropertyId = ""
 
       // Initialize the slide config
       slideConfig.init()

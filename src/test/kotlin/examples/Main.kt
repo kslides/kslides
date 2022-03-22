@@ -10,6 +10,7 @@ fun main() {
   globalConfig {
     slideNumber = "c/t"
     transition = Transition.FADE
+    gaPropertyId = "G-XXXXXXXXX"
 
     slides {
       backgroundColor = "green"
@@ -237,8 +238,8 @@ fun main() {
     //markdownSlide(filename = "/public/markdown.md", separator = "^---", vertical_separator = "^--")
 
     // Slides are separated by three dashes
-    markdownSlide(separator = "---") {
-      content {
+    markdownSlide {
+      content(separator = "---") {
         """
         ## Demo 1
         Slide 1
@@ -253,8 +254,8 @@ fun main() {
     }
 
     // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
-    markdownSlide(separator = "\r?\\n---\r?\\n", verticalSeparator = "\r?\\n--\r?\\n") {
-      content {
+    markdownSlide {
+      content(separator = "\r?\\n---\r?\\n", verticalSeparator = "\r?\\n--\r?\\n") {
         """
       ## Demo 2
       Slide 1.1
@@ -405,6 +406,7 @@ fun main() {
     }
   }
 
-//servePresentations()
+
+  //servePresentations()
   outputPresentations()
 }

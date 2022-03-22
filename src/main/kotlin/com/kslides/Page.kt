@@ -58,6 +58,20 @@ internal object Page {
       if (config.title.isNotEmpty())
         title { +config.title }
 
+      if (config.gaPropertyId.isNotEmpty()) {
+        script { async = true; src = "https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K" }
+        script {
+          rawHtml(
+            """
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date()); 
+          gtag('config', '${config.gaPropertyId}');
+          """
+          )
+        }
+      }
+
       // Css Files
       p.cssFiles += CssFile("dist/theme/${config.theme.name.toLower()}.css", "theme")
       p.cssFiles += CssFile("plugin/highlight/${config.highlight.name.toLower()}.css", "highlight-theme")
@@ -125,9 +139,9 @@ internal object Page {
 //      }
 
       rawHtml("\n\t\n")
-      p.jsFiles.forEach {
+      p.jsFiles.forEach { jsFile ->
         rawHtml("\t")
-        script { src = if (it.filename.startsWith("http")) it.filename else "$srcPrefix${it.filename}" }
+        script { src = if (jsFile.filename.startsWith("http")) jsFile.filename else "$srcPrefix${jsFile.filename}" }
         rawHtml("\n")
       }
 
