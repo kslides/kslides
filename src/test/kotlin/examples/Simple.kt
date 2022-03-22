@@ -10,7 +10,7 @@ import kotlinx.html.*
 fun main() {
   presentation {
 
-    config {
+    presentationConfig {
       history = true
       transition = SLIDE
       transitionSpeed = SLOW
@@ -24,29 +24,33 @@ fun main() {
     }
 
     htmlSlide {
-      """
-      <h1>Raw HTML Slide 🐦</h1>
-      <h2>HTML Slide 🐦</h2>
-      <h3>HTML Slide 🐦</h3>
-      <p>This is a test</p>
-      """
+      content {
+        """
+        <h1>Raw HTML Slide 🐦</h1>
+        <h2>HTML Slide 🐦</h2>
+        <h3>HTML Slide 🐦</h3>
+        <p>This is a test</p>
+        """
+      }
     }
 
     markdownSlide {
-      config {
+      slideConfig {
         transition = ZOOM
         transitionSpeed = SLOW
       }
-      """
-      # Markdown Slide 🍒 
-      
-      Press ESC to see presentation overview.
-      """
+      content {
+        """
+        # Markdown Slide 🍒 
+        
+        Press ESC to see presentation overview.
+        """
+      }
     }
 
     verticalSlides {
       dslSlide {
-        config {
+        slideConfig {
           backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
         }
 

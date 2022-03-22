@@ -7,9 +7,13 @@ import kotlinx.html.*
 
 fun main() {
 
-  presentationsDefaults {
+  globalConfig {
     slideNumber = "c/t"
     transition = Transition.FADE
+
+    slides {
+      backgroundColor = "green"
+    }
   }
 
   presentation {
@@ -32,7 +36,7 @@ fun main() {
       }
     }
 
-    config {
+    presentationConfig {
       title = "markdown Demo"
       theme = Theme.MOON
       hash = true
@@ -48,70 +52,77 @@ fun main() {
       }
 
       slides {
-        backgroundColor = "#4DD0A5"
+        backgroundColor = "red"
       }
     }
 
     markdownSlide {
 
-      config {
+      slideConfig {
         backgroundColor = "blue"
       }
 
-      """
-      # Java Code  
-      ```java [3|4|5]
-      ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
-      ```
-      """.trimIndentWithInclude()
+      content {
+        """
+        # Java Code  
+        ```java [3|4|5]
+        ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
+        ```
+        """.trimIndentWithInclude()
+      }
     }
 
     dslSlide {
-      config {
+      slideConfig {
         backgroundIframe = "https://www.readingbat.com"
       }
     }
 
     markdownSlide {
-      config {
+      slideConfig {
         backgroundColor = "#4370A5"
       }
 
-      """
-      # Markdown Example
-      ```kotlin [3|4|5]
-      ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
-      ```
-      """.trimIndentWithInclude()
+      content {
+        """
+        # Markdown Example
+        ```kotlin [3|4|5]
+        ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
+        ```
+        """.trimIndentWithInclude()
+      }
     }
 
     markdownSlide {
-      """
-      # Markdown Example
-      ````kotlin [1|3-4|20,24-25]
-      ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
-      ````
-      """.trimIndentWithInclude()
+      content {
+        """
+        # Markdown Example
+        ````kotlin [1|3-4|20,24-25]
+        ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
+        ````
+        """.trimIndentWithInclude()
+      }
     }
 
     markdownSlide {
-      config {
+      slideConfig {
         backgroundColor = "#000433"
         transition = Transition.CONCAVE
         transitionSpeed = Speed.SLOW
       }
 
-      """
+      content {
+        """
         # Markdown List Items 
         * Item 1
         * Item 2
-        * Item 3
-      """
+        * Item 3  
+        """
+      }
     }
 
     dslSlide {
-
-      config {
+      slideConfig {
         backgroundColor = "#4D55A1"
       }
 
@@ -124,21 +135,22 @@ fun main() {
     }
 
     htmlSlide {
-
-      config {
+      slideConfig {
         backgroundColor = "#4D55A1"
       }
 
-      """ 
-      <h1>HTML Slide</h1>
-      <h2>This is an H2</h2> 
-      <h3>This is an H3</h3>
-      <p>This is a P</p>
-      """
+      content {
+        """ 
+        <h1>HTML Slide</h1>
+        <h2>This is an H2</h2> 
+        <h3>This is an H3</h3>
+        <p>This is a P</p>
+        """
+      }
     }
 
     dslSlide(id = "home") {
-      config {
+      slideConfig {
         backgroundColor = "#3DDFF1"
       }
 
@@ -149,7 +161,7 @@ fun main() {
     }
 
     dslSlide {
-      config {
+      slideConfig {
         transition = Transition.ZOOM
         transitionSpeed = Speed.SLOW
         backgroundColor = "#bb00bb"
@@ -162,17 +174,16 @@ fun main() {
 
     verticalSlides {
       dslSlide {
-        config {
+        slideConfig {
           backgroundColor = "aquamarine"
         }
-
         content {
           h2 { +"🐟" }
         }
       }
 
       dslSlide {
-        config {
+        slideConfig {
           transition = Transition.CONCAVE
           transitionSpeed = Speed.SLOW
           backgroundColor = "rgb(70, 70, 255)"
@@ -184,24 +195,26 @@ fun main() {
       }
 
       markdownSlide {
-        config {
+        slideConfig {
           backgroundColor = "red"
         }
 
-        """
-        ## Demo 1
-        Slide 1
-
-        ---
-
-        ## Demo 1
-        Slide 2
-
-        ---
-
-        ## Demo 1
-        Slide 3
-        """
+        content {
+          """
+          ## Demo 1
+          Slide 1
+  
+          ---
+  
+          ## Demo 1
+          Slide 2
+  
+          ---
+  
+          ## Demo 1
+          Slide 3
+          """
+        }
       }
 
       //markdownSlide(filename = "public/markdown.md")
@@ -225,7 +238,8 @@ fun main() {
 
     // Slides are separated by three dashes
     markdownSlide(separator = "---") {
-      """
+      content {
+        """
         ## Demo 1
         Slide 1
         ---
@@ -235,11 +249,13 @@ fun main() {
         ## Demo 1
         Slide 3
         """
+      }
     }
 
     // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
     markdownSlide(separator = "\r?\\n---\r?\\n", vertical_separator = "\r?\\n--\r?\\n") {
-      """
+      content {
+        """
       ## Demo 2
       Slide 1.1
 
@@ -253,10 +269,12 @@ fun main() {
       ## Demo 2
       Slide 2
       """
+      }
     }
 
     markdownSlide {
-      """
+      content {
+        """
         A
   
         ---
@@ -267,29 +285,34 @@ fun main() {
   
         C
         """
+      }
     }
 
     markdownSlide {
 
-      config {
+      slideConfig {
         backgroundColor = "#FFFF00"
       }
 
-      """
-      ## Slide attributes
-      """
+      content {
+        """
+        ## Slide attributes
+        """
+      }
     }
 
     markdownSlide {
-      """
-      ## Element attributes
-
-      Item 1 ${fragmentIndex(1)}
-
-      Item 2 ${fragmentIndex(2)}
-
-      Item 3 ${fragmentIndex(3)}
-      """
+      content {
+        """
+        ## Element attributes
+  
+        Item 1 ${fragmentIndex(1)}
+  
+        Item 2 ${fragmentIndex(2)}
+  
+        Item 3 ${fragmentIndex(3)}
+        """
+      }
     }
 
     dslSlide {
@@ -314,7 +337,7 @@ fun main() {
     }
 
     dslSlide {
-      config {
+      slideConfig {
         backgroundIframe = "https://revealjs.com"
       }
 
@@ -334,7 +357,9 @@ fun main() {
 
     // Images
     markdownSlide {
-      "![Sample image](https://picsum.photos/512/512)"
+      content {
+        "![Sample image](https://picsum.photos/512/512)"
+      }
     }
   }
 

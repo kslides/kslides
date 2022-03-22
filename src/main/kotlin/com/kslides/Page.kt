@@ -106,15 +106,7 @@ internal object Page {
 //        }
 
         div("slides") {
-          p.slides
-            .forEach { slide ->
-              when (slide) {
-                is HtmlSlide -> slide.content(this, slide, config)
-                is DslSlide -> slide.content(this, slide, config)
-                is VerticalSlide -> slide.content(this, slide, config)
-                else -> error("Unknown slide type: ${slide.javaClass.name}")
-              }
-            }
+          p.slides.forEach { slide -> slide.content(this, slide) }
         }
       }
 

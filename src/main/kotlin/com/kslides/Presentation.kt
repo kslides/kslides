@@ -12,7 +12,7 @@ import mu.*
 import java.io.*
 
 @HtmlTagMarker
-fun presentationsDefaults(block: PresentationConfig.() -> Unit) = block.invoke(globalConfig)
+fun globalConfig(block: PresentationConfig.() -> Unit) = block.invoke(globalConfig)
 
 class VerticalContext {
   val vertSlides = mutableListOf<VerticalSlide>()
@@ -73,13 +73,13 @@ class Presentation internal constructor(path: String) {
 
   @HtmlTagMarker
   fun verticalSlides(block: VerticalContext.() -> Unit) =
-    VerticalSlide(this) { div, slide, config ->
+    VerticalSlide(this) { div, slide ->
       div.apply {
         section {
           val vertContext = VerticalContext()
           block.invoke(vertContext)
           vertContext.vertSlides.forEach { vertSlide ->
-            vertSlide.content.invoke(div, vertSlide, config)
+            vertSlide.content.invoke(div, vertSlide)
             rawHtml("\n")
           }
         }
@@ -88,26 +88,27 @@ class Presentation internal constructor(path: String) {
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.htmlSlide(id: String = "", content: Slide.() -> String) =
-    VerticalHtmlSlide(this@Presentation) { div, slide, config ->
+  fun VerticalContext.htmlSlide(id: String = "", content: VerticalHtmlSlide.() -> String) =
+    VerticalHtmlSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          if (id.isNotEmpty())
-            this.id = id
-          rawHtml(content.invoke(slide))
+          slide.assignId(this, id)
+          content.invoke(slide as VerticalHtmlSlide)
+          rawHtml("\n" + slide.htmlBlock.invoke())
           applyConfig(slide.mergedConfig())
         }
+        rawHtml("\n")
       }
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun htmlSlide(id: String = "", content: Slide.() -> String) =
-    HtmlSlide(this) { div, slide, config ->
+  fun htmlSlide(id: String = "", content: HtmlSlide.() -> Unit) =
+    HtmlSlide(this) { div, slide ->
       div.apply {
         section {
-          if (id.isNotEmpty())
-            this.id = id
-          rawHtml("\n" + content.invoke(slide))
+          slide.assignId(this, id)
+          content.invoke(slide as HtmlSlide)
+          rawHtml("\n" + slide.htmlBlock.invoke())
           applyConfig(slide.mergedConfig())
         }
         rawHtml("\n")
@@ -116,27 +117,27 @@ class Presentation internal constructor(path: String) {
 
   @HtmlTagMarker
   fun VerticalContext.dslSlide(id: String = "", content: VerticalDslSlide.() -> Unit) =
-    VerticalDslSlide(this@Presentation) { div, slide, config ->
+    VerticalDslSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
           if (id.isNotEmpty())
             this.id = id
           content.invoke(slide as VerticalDslSlide)
-          slide.dslBlock?.dslContent?.invoke(this, slide)
+          slide.dslBlock.dsl.invoke(this, slide)
           applyConfig(slide.mergedConfig())
         }
+        rawHtml("\n")
       }
     }.also { vertSlides += it }
 
   @HtmlTagMarker
   fun dslSlide(id: String = "", content: DslSlide.() -> Unit) =
-    DslSlide(this) { div, slide, config ->
+    DslSlide(this) { div, slide ->
       div.apply {
         section {
-          if (id.isNotEmpty())
-            this.id = id
+          slide.assignId(this, id)
           content.invoke(slide as DslSlide)
-          slide.dslBlock?.dslContent?.invoke(this, slide)
+          slide.dslBlock.dsl.invoke(this, slide)
           applyConfig(slide.mergedConfig())
         }
         rawHtml("\n")
@@ -148,26 +149,36 @@ class Presentation internal constructor(path: String) {
     id: String = "",
     filename: String = "",
     disableTrimIndent: Boolean = false,
-    content: Slide.() -> String = { "" },
+    slideContent: VerticalMarkdownSlide.() -> Unit = { },
   ) =
-    dslSlide(id = id) {
-      content { dslSlide ->
+    VerticalMarkdownSlide(this@Presentation) { div, slide ->
+      div.apply {
+        section {
+          slide.assignId(this, id)
+          slideContent.invoke(slide as VerticalMarkdownSlide)
 
-        // If this value is == "" it means read content inline
-        attributes["data-markdown"] = filename
-        attributes["data-separator"] = ""
-        attributes["data-separator-vertical"] = ""
+          // If this value is == "" it means read content inline
+          attributes["data-markdown"] = filename
+          attributes["data-separator"] = ""
+          attributes["data-separator-vertical"] = ""
 
-        //if (notes.isNotEmpty())
-        //    attributes["data-separator-notes"] = notes
+          //if (notes.isNotEmpty())
+          //    attributes["data-separator-notes"] = notes
 
-        if (filename.isEmpty())
-          script {
-            type = "text/template"
-            rawHtml("\n" + content.invoke(dslSlide).let { if (!disableTrimIndent) it.trimIndent() else it })
+          if (filename.isEmpty()) {
+            slide.markdownBlock.invoke().also { textContent ->
+              if (textContent.isNotEmpty())
+                script {
+                  type = "text/template"
+                  rawHtml("\n" + textContent.let { if (!disableTrimIndent) it.trimIndent() else it })
+                }
+            }
           }
+          applyConfig(slide.mergedConfig())
+        }
+        rawHtml("\n")
       }
-    }
+    }.also { vertSlides += it }
 
   @HtmlTagMarker
   fun markdownSlide(
@@ -177,35 +188,46 @@ class Presentation internal constructor(path: String) {
     separator: String = "",
     vertical_separator: String = "",
     notes: String = "^Note:",
-    content: Slide.() -> String = { "" },
+    slideContent: MarkdownSlide.() -> Unit = {},
   ) =
-    dslSlide(id = id) {
-      content { dslSlide ->
+    MarkdownSlide(this) { div, slide ->
+      div.apply {
+        section {
+          slide.assignId(this, id)
+          slideContent.invoke(slide as MarkdownSlide)
 
-        // If this value is == "" it means read content inline
-        attributes["data-markdown"] = filename
+          // If this value is == "" it means read content inline
+          attributes["data-markdown"] = filename
 
-        if (separator.isNotEmpty())
-          attributes["data-separator"] = separator
+          if (separator.isNotEmpty())
+            attributes["data-separator"] = separator
 
-        if (vertical_separator.isNotEmpty())
-          attributes["data-separator-vertical"] = vertical_separator
+          if (vertical_separator.isNotEmpty())
+            attributes["data-separator-vertical"] = vertical_separator
 
-        // If any of the data-separator values are defined, then plain --- in markdown will not work
-        // So do not define data-separator-notes unless using other data-separator values
-        if (notes.isNotEmpty() && separator.isNotEmpty() && vertical_separator.isNotEmpty())
-          attributes["data-separator-notes"] = notes
+          // If any of the data-separator values are defined, then plain --- in markdown will not work
+          // So do not define data-separator-notes unless using other data-separator values
+          if (notes.isNotEmpty() && separator.isNotEmpty() && vertical_separator.isNotEmpty())
+            attributes["data-separator-notes"] = notes
 
-        if (filename.isEmpty())
-          script {
-            type = "text/template"
-            rawHtml("\n" + content.invoke(dslSlide).let { if (!disableTrimIndent) it.trimIndent() else it })
+          if (filename.isEmpty()) {
+            slide.markdownBlock.invoke().also { textContent ->
+              if (textContent.isNotEmpty())
+                script {
+                  type = "text/template"
+                  rawHtml("\n" + textContent.let { if (!disableTrimIndent) it.trimIndent() else it })
+                }
+            }
           }
+
+          applyConfig(slide.mergedConfig())
+        }
+        rawHtml("\n")
       }
-    }
+    }.also { slides += it }
 
   @HtmlTagMarker
-  fun config(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
+  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
 
   private fun toJsValue(key: String, value: Any) =
     when (value) {
@@ -248,8 +270,7 @@ class Presentation internal constructor(path: String) {
         appendLine(
           buildString {
             appendLine("dependencies: [")
-            appendLine(dependencies.map { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" }
-                         .joinToString(",\n"))
+            appendLine(dependencies.joinToString(",\n") { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" })
             appendLine("],")
           }.prependIndent("\t\t\t")
         )
