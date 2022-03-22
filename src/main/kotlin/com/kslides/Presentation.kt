@@ -76,57 +76,55 @@ class Presentation internal constructor(path: String) {
     VerticalSlide(this) { div, slide ->
       div.apply {
         section {
-          val vertContext = VerticalContext()
-          block.invoke(vertContext)
-          vertContext.vertSlides.forEach { vertSlide ->
-            vertSlide.content.invoke(div, vertSlide)
-            rawHtml("\n")
-          }
-        }
-        rawHtml("\n")
+          (slide as VerticalSlide).vertContext
+            .also { vertContext ->
+              block.invoke(vertContext)
+              vertContext.vertSlides.forEach { vertSlide ->
+                vertSlide.content.invoke(div, vertSlide)
+                rawHtml("\n")
+              }
+            }
+        }.also { rawHtml("\n") }
       }
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.htmlSlide(id: String = "", content: VerticalHtmlSlide.() -> String) =
+  fun VerticalContext.htmlSlide(id: String = "", slideContent: VerticalHtmlSlide.() -> String) =
     VerticalHtmlSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
           slide.assignId(this, id)
-          content.invoke(slide as VerticalHtmlSlide)
-          rawHtml("\n" + slide.htmlBlock.invoke())
+          slideContent.invoke(slide as VerticalHtmlSlide)
           applyConfig(slide.mergedConfig())
-        }
-        rawHtml("\n")
+          rawHtml("\n" + slide.htmlBlock.invoke())
+        }.also { rawHtml("\n") }
       }
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun htmlSlide(id: String = "", content: HtmlSlide.() -> Unit) =
+  fun htmlSlide(id: String = "", slideContent: HtmlSlide.() -> Unit) =
     HtmlSlide(this) { div, slide ->
       div.apply {
         section {
           slide.assignId(this, id)
-          content.invoke(slide as HtmlSlide)
-          rawHtml("\n" + slide.htmlBlock.invoke())
+          slideContent.invoke(slide as HtmlSlide)
           applyConfig(slide.mergedConfig())
-        }
-        rawHtml("\n")
+          rawHtml("\n" + slide.htmlBlock.invoke())
+        }.also { rawHtml("\n") }
       }
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.dslSlide(id: String = "", content: VerticalDslSlide.() -> Unit) =
+  fun VerticalContext.dslSlide(id: String = "", slideContent: VerticalDslSlide.() -> Unit) =
     VerticalDslSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
           if (id.isNotEmpty())
             this.id = id
-          content.invoke(slide as VerticalDslSlide)
-          slide.dslBlock.dsl.invoke(this, slide)
+          slideContent.invoke(slide as VerticalDslSlide)
           applyConfig(slide.mergedConfig())
-        }
-        rawHtml("\n")
+          slide.dslBlock.invoke(this, slide)
+        }.also { rawHtml("\n") }
       }
     }.also { vertSlides += it }
 
@@ -137,10 +135,9 @@ class Presentation internal constructor(path: String) {
         section {
           slide.assignId(this, id)
           content.invoke(slide as DslSlide)
-          slide.dslBlock.dsl.invoke(this, slide)
           applyConfig(slide.mergedConfig())
-        }
-        rawHtml("\n")
+          slide.dslBlock.invoke(this, slide)
+        }.also { rawHtml("\n") }
       }
     }.also { slides += it }
 
@@ -165,6 +162,8 @@ class Presentation internal constructor(path: String) {
           //if (notes.isNotEmpty())
           //    attributes["data-separator-notes"] = notes
 
+          applyConfig(slide.mergedConfig())
+
           if (filename.isEmpty()) {
             slide.markdownBlock.invoke().also { textContent ->
               if (textContent.isNotEmpty())
@@ -174,9 +173,7 @@ class Presentation internal constructor(path: String) {
                 }
             }
           }
-          applyConfig(slide.mergedConfig())
-        }
-        rawHtml("\n")
+        }.also { rawHtml("\n") }
       }
     }.also { vertSlides += it }
 
@@ -210,6 +207,8 @@ class Presentation internal constructor(path: String) {
           if (notes.isNotEmpty() && separator.isNotEmpty() && vertical_separator.isNotEmpty())
             attributes["data-separator-notes"] = notes
 
+          applyConfig(slide.mergedConfig())
+
           if (filename.isEmpty()) {
             slide.markdownBlock.invoke().also { textContent ->
               if (textContent.isNotEmpty())
@@ -219,10 +218,7 @@ class Presentation internal constructor(path: String) {
                 }
             }
           }
-
-          applyConfig(slide.mergedConfig())
-        }
-        rawHtml("\n")
+        }.also { rawHtml("\n") }
       }
     }.also { slides += it }
 
@@ -306,12 +302,8 @@ class Presentation internal constructor(path: String) {
       presentations.forEach { (key, p) ->
         val (file, prefix) =
           when {
-            key == "/" -> {
-              File("$dir/index.html") to srcPrefix
-            }
-            key.endsWith(".html") -> {
-              File("$dir/$key") to srcPrefix
-            }
+            key == "/" -> File("$dir/index.html") to srcPrefix
+            key.endsWith(".html") -> File("$dir/$key") to srcPrefix
             else -> {
               val pathElems = "$dir/$key".split("/").filter { it.isNotEmpty() }
               val path = pathElems.joinToString("/")
@@ -325,29 +317,29 @@ class Presentation internal constructor(path: String) {
       }
     }
 
-    private fun SECTION.applyConfig(slideConfig: SlideConfig) {
-      if (slideConfig.transition != Transition.SLIDE) {
-        attributes["data-transition"] = slideConfig.transition.asInOut()
+    private fun SECTION.applyConfig(config: SlideConfig) {
+      if (config.transition != Transition.SLIDE) {
+        attributes["data-transition"] = config.transition.asInOut()
       } else {
-        if (slideConfig.transitionIn != Transition.SLIDE || slideConfig.transitionOut != Transition.SLIDE)
-          attributes["data-transition"] = "${slideConfig.transitionIn.asIn()} ${slideConfig.transitionOut.asOut()}"
+        if (config.transitionIn != Transition.SLIDE || config.transitionOut != Transition.SLIDE)
+          attributes["data-transition"] = "${config.transitionIn.asIn()} ${config.transitionOut.asOut()}"
       }
 
-      if (slideConfig.transitionSpeed != Speed.DEFAULT)
-        attributes["data-transition-speed"] = slideConfig.transitionSpeed.name.toLower()
+      if (config.transitionSpeed != Speed.DEFAULT)
+        attributes["data-transition-speed"] = config.transitionSpeed.name.toLower()
 
-      if (slideConfig.backgroundColor.isNotEmpty())
-        attributes["data-background"] = slideConfig.backgroundColor
+      if (config.backgroundColor.isNotEmpty())
+        attributes["data-background"] = config.backgroundColor
 
-      if (slideConfig.backgroundIframe.isNotEmpty()) {
-        attributes["data-background-iframe"] = slideConfig.backgroundIframe
+      if (config.backgroundIframe.isNotEmpty()) {
+        attributes["data-background-iframe"] = config.backgroundIframe
 
-        if (slideConfig.backgroundInteractive)
+        if (config.backgroundInteractive)
           attributes["data-background-interactive"] = ""
       }
 
-      if (slideConfig.backgroundVideo.isNotEmpty())
-        attributes["data-background-video"] = slideConfig.backgroundVideo
+      if (config.backgroundVideo.isNotEmpty())
+        attributes["data-background-video"] = config.backgroundVideo
     }
   }
 }
