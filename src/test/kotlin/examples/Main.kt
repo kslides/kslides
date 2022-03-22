@@ -1,13 +1,13 @@
 package examples
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.servePresentations
+import com.kslides.Presentation.Companion.outputPresentations
 import kotlinx.css.*
 import kotlinx.html.*
 
 fun main() {
 
-  presentationDefaults {
+  presentationsDefaults {
     slideNumber = "c/t"
     transition = Transition.FADE
   }
@@ -32,39 +32,51 @@ fun main() {
       }
     }
 
+    config {
+      title = "markdown Demo"
+      theme = Theme.MOON
+      hash = true
+      history = true
+      transition = Transition.SLIDE
+      transitionSpeed = Speed.FAST
+      enableMenu = false
+
+      menu {
+        numbers = true
+        markers = false
+        openOnInit = true
+      }
+
+      slides {
+        backgroundColor = "#4DD0A5"
+      }
+    }
+
     markdownSlide {
+
+      config {
+        backgroundColor = "blue"
+      }
+
       """
       # Java Code  
       ```java [3|4|5]
       ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
       ```
       """.trimIndentWithInclude()
-    }.config {
-      backgroundColor = "#4DD0A5"
     }
 
-    htmlSlide {
-    }.config {
-      backgroundIframe = "https://www.readingbat.com"
-    }
-
-    markdownSlide {
-      """
-      # Code Highlights    
-      ```kotlin [1,6|2,5|3-4]
-      fun main() {
-        repeat(10) {
-          println("Hello")
-          println("World")
-        }
+    dslSlide {
+      config {
+        backgroundIframe = "https://www.readingbat.com"
       }
-      ```
-      """
-    }.config {
-      backgroundColor = "#4370A5"
     }
 
     markdownSlide {
+      config {
+        backgroundColor = "#4370A5"
+      }
+
       """
       # Markdown Example
       ```kotlin [3|4|5]
@@ -83,58 +95,99 @@ fun main() {
     }
 
     markdownSlide {
+      config {
+        backgroundColor = "#000433"
+        transition = Transition.CONCAVE
+        transitionSpeed = Speed.SLOW
+      }
+
       """
         # Markdown List Items 
         * Item 1
         * Item 2
         * Item 3
       """
-    }.config {
-      backgroundColor = "#000433"
-      transition = Transition.CONCAVE
-      transitionSpeed = Speed.SLOW
     }
 
-    rawHtmlSlide {
+    dslSlide {
+
+      config {
+        backgroundColor = "#4D55A1"
+      }
+
+      content {
+        h1 { +"DSL Slide" }
+        h2 { +"This is an H2" }
+        h3 { +"This is an H3" }
+        p { +"This is a P" }
+      }
+    }
+
+    htmlSlide {
+
+      config {
+        backgroundColor = "#4D55A1"
+      }
+
       """ 
-      <h1>Raw Slide</h1>
+      <h1>HTML Slide</h1>
       <h2>This is an H2</h2> 
       <h3>This is an H3</h3>
       <p>This is a P</p>
       """
     }
 
-    htmlSlide(id = "home") {
-      h3 { +"Examples" }
-      h4 { a { href = "/demo.html"; +"Demo Deck" } }
-    }.config {
-      backgroundColor = "#4DDFA1"
+    dslSlide(id = "home") {
+      config {
+        backgroundColor = "#3DDFF1"
+      }
+
+      content {
+        h3 { +"Examples" }
+        h4 { a { href = "/demo.html"; +"Demo Deck" } }
+      }
     }
 
-    htmlSlide {
-      img { src = "https://picsum.photos/512/512" }
-    }.config {
-      transition = Transition.ZOOM
-      transitionSpeed = Speed.SLOW
-      backgroundColor = "#bb00bb"
+    dslSlide {
+      config {
+        transition = Transition.ZOOM
+        transitionSpeed = Speed.SLOW
+        backgroundColor = "#bb00bb"
+      }
+
+      content {
+        img { src = "https://picsum.photos/512/512" }
+      }
     }
 
     verticalSlides {
-      htmlSlide {
-        h2 { +"🐟" }
-      }.config {
-        backgroundColor = "aquamarine"
+      dslSlide {
+        config {
+          backgroundColor = "aquamarine"
+        }
+
+        content {
+          h2 { +"🐟" }
+        }
       }
 
-      htmlSlide {
-        h2 { +"🐳" }
-      }.config {
-        transition = Transition.CONCAVE
-        transitionSpeed = Speed.SLOW
-        backgroundColor = "rgb(70, 70, 255)"
+      dslSlide {
+        config {
+          transition = Transition.CONCAVE
+          transitionSpeed = Speed.SLOW
+          backgroundColor = "rgb(70, 70, 255)"
+        }
+
+        content {
+          h2 { +"🐳" }
+        }
       }
 
       markdownSlide {
+        config {
+          backgroundColor = "red"
+        }
+
         """
         ## Demo 1
         Slide 1
@@ -149,22 +202,22 @@ fun main() {
         ## Demo 1
         Slide 3
         """
-      }.config {
-        backgroundColor = "red"
       }
 
       //markdownSlide(filename = "public/markdown.md")
     }
 
-    htmlSlide(id = "embed-web-content") {
-      h2 { +"Embed Web Content" }
+    dslSlide(id = "embed-web-content") {
+      content {
+        h2 { +"Embed Web Content" }
 
-      iframe {
-        attributes["data-autoplay"] = "true"
-        attributes["frameborder"] = "0"
-        width = "700"
-        height = "540"
-        src = "https://slides.com/news/auto-animate/embed"
+        iframe {
+          attributes["data-autoplay"] = "true"
+          attributes["frameborder"] = "0"
+          width = "700"
+          height = "540"
+          src = "https://slides.com/news/auto-animate/embed"
+        }
       }
     }
 
@@ -173,15 +226,15 @@ fun main() {
     // Slides are separated by three dashes
     markdownSlide(separator = "---") {
       """
-      ## Demo 1
-      Slide 1
-      ---
-      ## Demo 1
-      Slide 2
-      ---
-      ## Demo 1
-      Slide 3
-      """
+        ## Demo 1
+        Slide 1
+        ---
+        ## Demo 1
+        Slide 2
+        ---
+        ## Demo 1
+        Slide 3
+        """
     }
 
     // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
@@ -204,25 +257,27 @@ fun main() {
 
     markdownSlide {
       """
-      A
-
-      ---
-
-      B
-
-      ---
-
-      C
-      """
+        A
+  
+        ---
+  
+        B
+  
+        ---
+  
+        C
+        """
     }
 
-    // Slide attributes
     markdownSlide {
+
+      config {
+        backgroundColor = "#FFFF00"
+      }
+
       """
       ## Slide attributes
       """
-    }.config {
-      backgroundColor = "#FFFF00"
     }
 
     markdownSlide {
@@ -237,88 +292,94 @@ fun main() {
       """
     }
 
-    htmlSlide {
-      section {
-        +"Slide 2"
-      }
-      section {
-        +"Sub 1"
-      }
-      section {
-        +"Sub 2"
-      }
-    }
-
-    htmlSlide {
-      +"Slide 3"
-      h4 { a { href = "#/home"; +"Home" } }
-    }
-
-    htmlSlide {
-      //attributes["data-background-interactive"] = "false"
-      div {
-        style =
-          "position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;"
-        h2 { +"Iframe Backgrounds" }
-        p {
-          +"""Since reveal.js runs on the web, you can easily embed other web content. Try interacting with the
-                    page in the background."""
+    dslSlide {
+      content {
+        section {
+          +"Slide 2"
+        }
+        section {
+          +"Sub 1"
+        }
+        section {
+          +"Sub 2"
         }
       }
-    }.config {
-      backgroundIframe = "https://revealjs.com"
+    }
+
+    dslSlide {
+      content {
+        +"Slide 3"
+        h4 { a { href = "#/home"; +"Home" } }
+      }
+    }
+
+    dslSlide {
+      config {
+        backgroundIframe = "https://revealjs.com"
+      }
+
+      content {
+        //attributes["data-background-interactive"] = "false"
+        div {
+          style =
+            "position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;"
+          h2 { +"Iframe Backgrounds" }
+          p {
+            +"""Since reveal.js runs on the web, you can easily embed other web content. Try interacting with the
+                    page in the background."""
+          }
+        }
+      }
     }
 
     // Images
     markdownSlide {
       "![Sample image](https://picsum.photos/512/512)"
     }
-  }.config {
-    title = "markdown Demo"
-    theme = Theme.MOON
-    hash = true
-    history = true
-    transition = Transition.SLIDE
-    transitionSpeed = Speed.FAST
-    enableMenu = false
-
-    menu {
-      numbers = true
-      markers = false
-      openOnInit = true
-    }
   }
 
   presentation("demo1") {
-    htmlSlide {
-      +"Demo1 Slide 1"
+    dslSlide {
+      content {
+        +"Demo1 Slide 1"
+      }
     }
 
-    htmlSlide {
-      +"Demo1 Slide 2"
+    dslSlide {
+      content {
+        +"Demo1 Slide 2"
+      }
     }
   }
 
   presentation("demo1/demo2") {
-    htmlSlide {
-      +"Demo2 Slide 1"
+    dslSlide {
+      content {
+        +"Demo2 Slide 1"
+      }
     }
 
-    htmlSlide {
-      +"Demo2 Slide 2"
+    dslSlide {
+      content {
+        +"Demo2 Slide 2"
+      }
     }
   }
 
   presentation("demo3.html") {
-    htmlSlide {
-      +"Demo3 Slide 1"
+    dslSlide {
+      content {
+        +"Demo3 Slide 1"
+      }
     }
 
-    htmlSlide {
-      +"Demo3 Slide 2"
+    dslSlide {
+      content {
+        +"Demo3 Slide 2"
+      }
     }
   }
 
-  servePresentations()
-  //outputPresentations()
+//servePresentations()
+  outputPresentations()
 }

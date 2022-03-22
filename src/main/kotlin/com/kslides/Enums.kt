@@ -19,11 +19,3 @@ enum class Transition {
   fun asIn() = "${name.toLower()}-in"
   fun asOut() = "${name.toLower()}-out"
 }
-
-enum class PlaygroundLanguage {
-  KOTLIN, JS, JAVA, GROOVY, XML, C, SHELL, SWIFT, OBJC
-}
-
-enum class PlaygroundTheme {
-  DEFAULT, IDEA, DARCULA
-}

@@ -74,13 +74,6 @@ internal object Page {
         }
       }
 
-//      if (config.enablePlayground)
-//        p.css += """
-//          .code-output {
-//          text-align: left;
-//          }
-//        """.trimIndent()
-
       if (p.css.isNotEmpty()) {
         style {
           type = "text/css"
@@ -115,7 +108,12 @@ internal object Page {
         div("slides") {
           p.slides
             .forEach { slide ->
-              slide.content(this, slide.slideConfig)
+              when (slide) {
+                is HtmlSlide -> slide.content(this, slide, config)
+                is DslSlide -> slide.content(this, slide, config)
+                is VerticalSlide -> slide.content(this, slide, config)
+                else -> error("Unknown slide type: ${slide.javaClass.name}")
+              }
             }
         }
       }
@@ -133,8 +131,6 @@ internal object Page {
 //      if (config.toolbar) {
 //        p.jsFiles += "plugin/toolbar/toolbar.js"
 //      }
-
-      // script { src = "https://unpkg.com/kotlin-playground@1"; attributes["data-selector"] = ".kotlin-code" }
 
       rawHtml("\n\t\n")
       p.jsFiles.forEach {

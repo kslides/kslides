@@ -1,13 +1,23 @@
 package com.kslides
 
-class SlideConfig {
+class SlideConfig : AbstractConfig() {
+  var transition by ConfigProperty<Transition>(primaryValues)
+  var transitionIn by ConfigProperty<Transition>(primaryValues)
+  var transitionOut by ConfigProperty<Transition>(primaryValues)
+  var transitionSpeed by ConfigProperty<Speed>(primaryValues)
+  var backgroundColor by ConfigProperty<String>(primaryValues)
+  var backgroundIframe by ConfigProperty<String>(primaryValues)
+  var backgroundInteractive by ConfigProperty<Boolean>(primaryValues)
+  var backgroundVideo by ConfigProperty<String>(primaryValues)
 
-  var transition: Transition = Transition.SLIDE
-  var transitionIn: Transition = Transition.SLIDE
-  var transitionOut: Transition = Transition.SLIDE
-  var transitionSpeed: Speed = Speed.DEFAULT
-  var backgroundColor: String = ""
-  var backgroundIframe: String = ""
-  var backgroundInteractive: Boolean = false
-  var backgroundVideo: String = ""
+  fun init() {
+    transition = Transition.SLIDE
+    transitionIn = Transition.SLIDE
+    transitionOut = Transition.SLIDE
+    transitionSpeed = Speed.DEFAULT
+    backgroundColor = ""
+    backgroundIframe = ""
+    backgroundInteractive = false
+    backgroundVideo = ""
+  }
 }

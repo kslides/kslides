@@ -16,12 +16,14 @@ fun main() {
       transitionSpeed = SLOW
     }
 
-    htmlSlide {
-      h1 { +"HTML Slide 🐦" }
-      p { +"Use the arrow keys to navigate" }
+    dslSlide {
+      content {
+        h1 { +"HTML Slide 🐦" }
+        p { +"Use the arrow keys to navigate" }
+      }
     }
 
-    rawHtmlSlide {
+    htmlSlide {
       """
       <h1>Raw HTML Slide 🐦</h1>
       <h2>HTML Slide 🐦</h2>
@@ -31,24 +33,29 @@ fun main() {
     }
 
     markdownSlide {
+      config {
+        transition = ZOOM
+        transitionSpeed = SLOW
+      }
       """
       # Markdown Slide 🍒 
       
       Press ESC to see presentation overview.
       """
-    }.config {
-      transition = ZOOM
-      transitionSpeed = SLOW
     }
 
     verticalSlides {
-      htmlSlide {
-        h1 {
-          style = "color: red;"
-          +"Vertical HTML Slide 👇"
+      dslSlide {
+        config {
+          backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
         }
-      }.config {
-        backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+
+        content {
+          h1 {
+            style = "color: red;"
+            +"Vertical HTML Slide 👇"
+          }
+        }
       }
 
       markdownSlide {

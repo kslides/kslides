@@ -7,8 +7,7 @@ import java.util.*
 
 fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
 
-fun fragmentIndex(index: Int) =
-  "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
+fun fragmentIndex(index: Int) = "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
 
 fun includeFile(
   path: String,
@@ -115,38 +114,6 @@ fun String.trimIndentWithInclude(): String {
           insideFence = true
           fenceLine = i
           fence = trimmed.substring(0, fenceLength)
-        }
-        trimmed
-      }
-    }
-    .joinToString("\n")
-}
-
-fun String.trimIndentWithPlayground(): String {
-  var insideDiv = false
-  var divLine = -1
-
-  return lines()
-    .asSequence()
-    .mapIndexed { i, str ->
-      val trimmed = str.trimStart()
-      if (insideDiv) {
-        when {
-          trimmed.contains("</div>") -> {
-            insideDiv = false
-            divLine = -1
-            trimmed
-          }
-          divLine != -1 && str.isNotBlank() -> {
-            divLine = -1
-            trimmed
-          }
-          else -> str
-        }
-      } else {
-        if (trimmed.contains("""div class="kotlin-code"""")) {
-          insideDiv = true
-          divLine = i
         }
         trimmed
       }
