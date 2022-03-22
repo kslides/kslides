@@ -2,7 +2,7 @@ package com.kslides
 
 import com.kslides.Page.generatePage
 import com.kslides.Page.rawHtml
-import com.kslides.Presentation.Companion.globalConfig
+import com.kslides.Presentation.Companion.globalDefaults
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.util.logging.*
@@ -12,7 +12,7 @@ import mu.*
 import java.io.*
 
 @HtmlTagMarker
-fun globalConfig(block: PresentationConfig.() -> Unit) = block.invoke(globalConfig)
+fun globalConfig(block: PresentationConfig.() -> Unit) = block.invoke(globalDefaults)
 
 class VerticalContext {
   val vertSlides = mutableListOf<VerticalSlide>()
@@ -53,7 +53,7 @@ class Presentation internal constructor(path: String) {
   private val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
   private val dependencies = mutableListOf<String>()
 
-  val presentationConfig = PresentationConfig()
+  val presentationDefaults = PresentationConfig()
   val slides = mutableListOf<Slide>()
 
   init {
@@ -67,7 +67,7 @@ class Presentation internal constructor(path: String) {
   }
 
   @HtmlTagMarker
-  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
+  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationDefaults)
 
   @HtmlTagMarker
   fun css(block: CssBuilder.() -> Unit) {
@@ -231,7 +231,7 @@ class Presentation internal constructor(path: String) {
         }
       }
 
-      config.menuConfig.primaryValues.also { vals ->
+      config.menuDefaults.primaryValues.also { vals ->
         if (vals.isNotEmpty()) {
           appendLine(
             buildString {
@@ -270,7 +270,7 @@ class Presentation internal constructor(path: String) {
 
   companion object : KLogging() {
     internal val presentations = mutableMapOf<String, Presentation>()
-    internal val globalConfig = PresentationConfig(true)
+    internal val globalDefaults = PresentationConfig(true)
 
     fun servePresentations() {
       val environment = commandLineEnvironment(emptyArray())

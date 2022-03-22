@@ -1,7 +1,7 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
-import com.kslides.Presentation.Companion.globalConfig
+import com.kslides.Presentation.Companion.globalDefaults
 import kotlinx.html.*
 import kotlinx.html.dom.*
 
@@ -10,17 +10,16 @@ internal object Page {
   fun generatePage(p: Presentation, srcPrefix: String = "/"): String {
     val document =
       document {
-        val finalConfig =
-          PresentationConfig()
-            .apply {
-              merge(globalConfig)
-              merge(p.presentationConfig)
+        PresentationConfig()
+          .apply {
+            merge(globalDefaults)
+            merge(p.presentationDefaults)
+          }.also { config ->
+            append.html {
+              generateHead(p, config, srcPrefix.ensureSuffix("/"))
+              generateBody(p, config, srcPrefix.ensureSuffix("/"))
             }
-
-        append.html {
-          generateHead(p, finalConfig, srcPrefix.ensureSuffix("/"))
-          generateBody(p, finalConfig, srcPrefix.ensureSuffix("/"))
-        }
+          }
       }
 
     // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder

@@ -1,18 +1,18 @@
 package com.kslides
 
-import com.kslides.Presentation.Companion.globalConfig
+import com.kslides.Presentation.Companion.globalDefaults
 import kotlinx.html.*
 
 typealias SlideArg = (DIV, Slide) -> Unit
 
 abstract class Slide(internal val presentation: Presentation, internal val content: SlideArg) {
-  private val slideConfig = SlideConfig()
+  private val slideDefaults = SlideConfig()
 
   internal fun mergedConfig() =
     SlideConfig()
-      .apply { combine(globalConfig.slideConfig) }
-      .apply { combine(presentation.presentationConfig.slideConfig) }
-      .apply { combine(slideConfig) }
+      .apply { combine(globalDefaults.slideDefaults) }
+      .apply { combine(presentation.presentationDefaults.slideDefaults) }
+      .apply { combine(slideDefaults) }
 
   fun assignId(section: SECTION, id: String) {
     if (id.isNotEmpty())
@@ -20,7 +20,7 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
   }
 
   @HtmlTagMarker
-  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
+  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideDefaults)
 }
 
 abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content)
