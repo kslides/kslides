@@ -30,17 +30,34 @@ class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide
   var htmlBlock: () -> String = { "" }
 
   @HtmlTagMarker
-  fun content(block: () -> String) {
-    htmlBlock = block
+  fun content(htmlBlock: () -> String) {
+    this.htmlBlock = htmlBlock
   }
 }
 
 class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
+  var filename: String = ""
+  var separator: String = ""
+  var verticalSeparator: String = ""
+  var notesSeparator: String = "^Note:"
+  var disableTrimIndent: Boolean = false
   var markdownBlock: () -> String = { "" }
 
   @HtmlTagMarker
-  fun content(block: () -> String) {
-    markdownBlock = block
+  fun content(
+    filename: String = "",
+    separator: String = "",
+    verticalSeparator: String = "",
+    notesSeparator: String = "^Note:",
+    disableTrimIndent: Boolean = false,
+    markdownBlock: () -> String
+  ) {
+    this.filename = filename
+    this.separator = separator
+    this.verticalSeparator = verticalSeparator
+    this.notesSeparator = notesSeparator
+    this.disableTrimIndent = disableTrimIndent
+    this.markdownBlock = markdownBlock
   }
 }
 
@@ -48,8 +65,8 @@ class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(
   var dslBlock: SECTION.(DslSlide) -> Unit = { }
 
   @HtmlTagMarker
-  fun content(block: SECTION.(DslSlide) -> Unit) {
-    dslBlock = block
+  fun content(dslBlock: SECTION.(DslSlide) -> Unit) {
+    this.dslBlock = dslBlock
   }
 }
 
@@ -61,17 +78,21 @@ class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : Vertica
   var htmlBlock: () -> String = { "" }
 
   @HtmlTagMarker
-  fun content(block: () -> String) {
-    htmlBlock = block
+  fun content(htmlBlock: () -> String) {
+    this.htmlBlock = htmlBlock
   }
 }
 
 class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
+  var filename: String = ""
+  var disableTrimIndent: Boolean = false
   var markdownBlock: () -> String = { "" }
 
   @HtmlTagMarker
-  fun content(block: () -> String) {
-    markdownBlock = block
+  fun content(filename: String = "", disableTrimIndent: Boolean = false, markdownBlock: () -> String) {
+    this.filename = filename
+    this.disableTrimIndent = disableTrimIndent
+    this.markdownBlock = markdownBlock
   }
 }
 
@@ -79,7 +100,7 @@ class VerticalDslSlide(presentation: Presentation, content: SlideArg) : Vertical
   var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
 
   @HtmlTagMarker
-  fun content(block: SECTION.(VerticalDslSlide) -> Unit) {
-    dslBlock = block
+  fun content(dslBlock: SECTION.(VerticalDslSlide) -> Unit) {
+    this.dslBlock = dslBlock
   }
 }

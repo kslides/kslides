@@ -67,6 +67,9 @@ class Presentation internal constructor(path: String) {
   }
 
   @HtmlTagMarker
+  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
+
+  @HtmlTagMarker
   fun css(block: CssBuilder.() -> Unit) {
     css += CssBuilder().apply(block).toString()
   }
@@ -96,7 +99,7 @@ class Presentation internal constructor(path: String) {
           slide.assignId(this, id)
           slideContent.invoke(slide as VerticalHtmlSlide)
           applyConfig(slide.mergedConfig())
-          rawHtml("\n" + slide.htmlBlock.invoke())
+          rawHtml("\n${slide.htmlBlock()}")
         }.also { rawHtml("\n") }
       }
     }.also { vertSlides += it }
@@ -109,7 +112,7 @@ class Presentation internal constructor(path: String) {
           slide.assignId(this, id)
           slideContent.invoke(slide as HtmlSlide)
           applyConfig(slide.mergedConfig())
-          rawHtml("\n" + slide.htmlBlock.invoke())
+          rawHtml("\n${slide.htmlBlock()}")
         }.also { rawHtml("\n") }
       }
     }.also { slides += it }
@@ -129,12 +132,12 @@ class Presentation internal constructor(path: String) {
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun dslSlide(id: String = "", content: DslSlide.() -> Unit) =
+  fun dslSlide(id: String = "", slideContent: DslSlide.() -> Unit) =
     DslSlide(this) { div, slide ->
       div.apply {
         section {
           slide.assignId(this, id)
-          content.invoke(slide as DslSlide)
+          slideContent.invoke(slide as DslSlide)
           applyConfig(slide.mergedConfig())
           slide.dslBlock.invoke(this, slide)
         }.also { rawHtml("\n") }
@@ -142,34 +145,28 @@ class Presentation internal constructor(path: String) {
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.markdownSlide(
-    id: String = "",
-    filename: String = "",
-    disableTrimIndent: Boolean = false,
-    slideContent: VerticalMarkdownSlide.() -> Unit = { },
-  ) =
+  fun VerticalContext.markdownSlide(id: String = "", slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
     VerticalMarkdownSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
           slide.assignId(this, id)
           slideContent.invoke(slide as VerticalMarkdownSlide)
+          applyConfig(slide.mergedConfig())
 
           // If this value is == "" it means read content inline
-          attributes["data-markdown"] = filename
+          attributes["data-markdown"] = slide.filename
           attributes["data-separator"] = ""
           attributes["data-separator-vertical"] = ""
 
           //if (notes.isNotEmpty())
           //    attributes["data-separator-notes"] = notes
 
-          applyConfig(slide.mergedConfig())
-
-          if (filename.isEmpty()) {
-            slide.markdownBlock.invoke().also { textContent ->
-              if (textContent.isNotEmpty())
+          if (slide.filename.isEmpty()) {
+            slide.markdownBlock().also { markdown ->
+              if (markdown.isNotEmpty())
                 script {
                   type = "text/template"
-                  rawHtml("\n" + textContent.let { if (!disableTrimIndent) it.trimIndent() else it })
+                  rawHtml("\n${markdown.let { if (!slide.disableTrimIndent) it.trimIndent() else it }}")
                 }
             }
           }
@@ -178,52 +175,40 @@ class Presentation internal constructor(path: String) {
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun markdownSlide(
-    id: String = "",
-    filename: String = "",
-    disableTrimIndent: Boolean = false,
-    separator: String = "",
-    vertical_separator: String = "",
-    notes: String = "^Note:",
-    slideContent: MarkdownSlide.() -> Unit = {},
-  ) =
+  fun markdownSlide(id: String = "", slideContent: MarkdownSlide.() -> Unit = {}) =
     MarkdownSlide(this) { div, slide ->
       div.apply {
         section {
           slide.assignId(this, id)
           slideContent.invoke(slide as MarkdownSlide)
+          applyConfig(slide.mergedConfig())
 
           // If this value is == "" it means read content inline
-          attributes["data-markdown"] = filename
+          attributes["data-markdown"] = slide.filename
 
-          if (separator.isNotEmpty())
-            attributes["data-separator"] = separator
+          if (slide.separator.isNotEmpty())
+            attributes["data-separator"] = slide.separator
 
-          if (vertical_separator.isNotEmpty())
-            attributes["data-separator-vertical"] = vertical_separator
+          if (slide.verticalSeparator.isNotEmpty())
+            attributes["data-separator-vertical"] = slide.verticalSeparator
 
           // If any of the data-separator values are defined, then plain --- in markdown will not work
           // So do not define data-separator-notes unless using other data-separator values
-          if (notes.isNotEmpty() && separator.isNotEmpty() && vertical_separator.isNotEmpty())
-            attributes["data-separator-notes"] = notes
+          if (slide.notesSeparator.isNotEmpty() && slide.separator.isNotEmpty() && slide.verticalSeparator.isNotEmpty())
+            attributes["data-separator-notes"] = slide.notesSeparator
 
-          applyConfig(slide.mergedConfig())
-
-          if (filename.isEmpty()) {
-            slide.markdownBlock.invoke().also { textContent ->
-              if (textContent.isNotEmpty())
+          if (slide.filename.isEmpty()) {
+            slide.markdownBlock().also { markdown ->
+              if (markdown.isNotEmpty())
                 script {
                   type = "text/template"
-                  rawHtml("\n" + textContent.let { if (!disableTrimIndent) it.trimIndent() else it })
+                  rawHtml("\n${markdown.let { if (!slide.disableTrimIndent) it.trimIndent() else it }}")
                 }
             }
           }
         }.also { rawHtml("\n") }
       }
     }.also { slides += it }
-
-  @HtmlTagMarker
-  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
 
   private fun toJsValue(key: String, value: Any) =
     when (value) {
