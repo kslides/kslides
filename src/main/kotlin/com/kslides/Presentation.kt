@@ -243,7 +243,7 @@ class Presentation internal constructor(path: String) {
 
   fun toJs(config: PresentationConfig, srcPrefix: String) =
     buildString {
-      config.primaryValues.also { vals ->
+      config.unmanagedValues.also { vals ->
         if (vals.isNotEmpty()) {
           vals.forEach { (k, v) ->
             append("\t\t\t${toJsValue(k, v)},\n")
@@ -252,7 +252,39 @@ class Presentation internal constructor(path: String) {
         }
       }
 
-      config.menuDefaults.primaryValues.also { vals ->
+      config.autoSlide.also { autoSlide ->
+        when {
+          autoSlide is Boolean && !autoSlide -> {
+            append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
+            appendLine()
+          }
+          autoSlide is Int -> {
+            if (autoSlide > 0) {
+              append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
+              appendLine()
+            }
+          }
+          else -> error("Invalid value for autoSlide: ${autoSlide}")
+        }
+      }
+
+      config.slideNumber.also { slideNumber ->
+        when {
+          slideNumber is Boolean -> {
+            if (slideNumber) {
+              append("\t\t\t${toJsValue("slideNumber", slideNumber)},\n")
+              appendLine()
+            }
+          }
+          slideNumber is String -> {
+            append("\t\t\t${toJsValue("slideNumber", slideNumber)},\n")
+            appendLine()
+          }
+          else -> error("Invalid value for slideNumber: ${slideNumber}")
+        }
+      }
+
+      config.menuDefaults.unmanagedValues.also { vals ->
         if (vals.isNotEmpty()) {
           appendLine(
             buildString {
@@ -360,7 +392,7 @@ class Presentation internal constructor(path: String) {
         attributes["data-transition-speed"] = config.transitionSpeed.name.toLower()
 
       if (config.backgroundColor.isNotEmpty())
-        attributes["data-background"] = config.backgroundColor
+        attributes["data-background-color"] = config.backgroundColor
 
       if (config.backgroundIframe.isNotEmpty()) {
         attributes["data-background-iframe"] = config.backgroundIframe
