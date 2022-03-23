@@ -226,7 +226,12 @@ class Presentation internal constructor(path: String) {
               if (markdown.isNotEmpty())
                 script {
                   type = "text/template"
-                  rawHtml("\n${markdown.let { if (!slide.disableTrimIndent) it.trimIndent() else it }}")
+                  val markdownText =
+                    markdown
+                      .let { if (!slide.disableTrimIndent) it.trimIndent() else it }
+                      .let { if (slide.withInclude) it.trimIndentWithInclude() else it }
+
+                  rawHtml("\n$markdownText")
                 }
             }
           }

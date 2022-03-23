@@ -94,13 +94,13 @@ fun main() {
         backgroundColor = "blue"
       }
 
-      content {
+      contentWithInclude {
         """
         # Java Code  
         ```java [3|4|5]
         ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
         ```
-        """.trimIndentWithInclude()
+        """
       }
     }
 
@@ -115,24 +115,24 @@ fun main() {
         backgroundColor = "#4370A5"
       }
 
-      content {
+      contentWithInclude {
         """
         # Markdown Example
         ```kotlin [3|4|5]
         ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
         ```
-        """.trimIndentWithInclude()
+        """
       }
     }
 
     markdownSlide {
-      content {
+      contentWithInclude {
         """
         # Markdown Example
         ````kotlin [1|3-4|20,24-25]
         ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
         ````
-        """.trimIndentWithInclude()
+        """
       }
     }
 
