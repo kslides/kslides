@@ -87,12 +87,13 @@ class Presentation internal constructor(path: String) {
   fun VerticalContext.htmlSlide(
     id: String = "",
     hidden: Boolean = false,
+    uncounted: Boolean = false,
     slideContent: VerticalHtmlSlide.() -> String
   ) =
     VerticalHtmlSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden)
+          slide.assignAttribs(this, id, hidden, uncounted)
           slideContent.invoke(slide as VerticalHtmlSlide)
           applyConfig(slide.mergedConfig())
           rawHtml("\n${slide.htmlBlock()}")
@@ -101,11 +102,16 @@ class Presentation internal constructor(path: String) {
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun htmlSlide(id: String = "", hidden: Boolean = false, slideContent: HtmlSlide.() -> Unit) =
+  fun htmlSlide(
+    id: String = "",
+    hidden: Boolean = false,
+    uncounted: Boolean = false,
+    slideContent: HtmlSlide.() -> Unit
+  ) =
     HtmlSlide(this) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden)
+          slide.assignAttribs(this, id, hidden, uncounted)
           slideContent.invoke(slide as HtmlSlide)
           applyConfig(slide.mergedConfig())
           rawHtml("\n${slide.htmlBlock()}")
@@ -114,11 +120,16 @@ class Presentation internal constructor(path: String) {
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.dslSlide(id: String = "", hidden: Boolean = false, slideContent: VerticalDslSlide.() -> Unit) =
+  fun VerticalContext.dslSlide(
+    id: String = "",
+    hidden: Boolean = false,
+    uncounted: Boolean = false,
+    slideContent: VerticalDslSlide.() -> Unit
+  ) =
     VerticalDslSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden)
+          slide.assignAttribs(this, id, hidden, uncounted)
           slideContent.invoke(slide as VerticalDslSlide)
           applyConfig(slide.mergedConfig())
           slide.dslBlock.invoke(this, slide)
@@ -127,11 +138,16 @@ class Presentation internal constructor(path: String) {
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun dslSlide(id: String = "", hidden: Boolean = false, slideContent: DslSlide.() -> Unit) =
+  fun dslSlide(
+    id: String = "",
+    hidden: Boolean = false,
+    uncounted: Boolean = false,
+    slideContent: DslSlide.() -> Unit
+  ) =
     DslSlide(this) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden)
+          slide.assignAttribs(this, id, hidden, uncounted)
           slideContent.invoke(slide as DslSlide)
           applyConfig(slide.mergedConfig())
           slide.dslBlock.invoke(this, slide)
@@ -143,12 +159,13 @@ class Presentation internal constructor(path: String) {
   fun VerticalContext.markdownSlide(
     id: String = "",
     hidden: Boolean = false,
+    uncounted: Boolean = false,
     slideContent: VerticalMarkdownSlide.() -> Unit = { }
   ) =
     VerticalMarkdownSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden)
+          slide.assignAttribs(this, id, hidden, uncounted)
           slideContent.invoke(slide as VerticalMarkdownSlide)
           applyConfig(slide.mergedConfig())
 
@@ -174,11 +191,16 @@ class Presentation internal constructor(path: String) {
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun markdownSlide(id: String = "", hidden: Boolean = false, slideContent: MarkdownSlide.() -> Unit = {}) =
+  fun markdownSlide(
+    id: String = "",
+    hidden: Boolean = false,
+    uncounted: Boolean = false,
+    slideContent: MarkdownSlide.() -> Unit = {}
+  ) =
     MarkdownSlide(this) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden)
+          slide.assignAttribs(this, id, hidden, uncounted)
           slideContent.invoke(slide as MarkdownSlide)
           applyConfig(slide.mergedConfig())
 

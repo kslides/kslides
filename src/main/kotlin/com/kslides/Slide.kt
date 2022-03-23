@@ -14,12 +14,15 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
       .apply { combine(presentation.presentationDefaults.slideDefaults) }
       .apply { combine(slideDefaults) }
 
-  internal fun assignAttribs(section: SECTION, id: String, hidden: Boolean) {
+  internal fun assignAttribs(section: SECTION, id: String, hidden: Boolean, uncounted: Boolean) {
     if (id.isNotEmpty())
       section.id = id
 
     if (hidden)
       section.attributes["data-visibility"] = "hidden"
+
+    if (uncounted)
+      section.attributes["data-visibility"] = "uncounted"
   }
 
   @HtmlTagMarker
