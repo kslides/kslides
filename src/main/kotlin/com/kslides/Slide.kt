@@ -14,9 +14,12 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
       .apply { combine(presentation.presentationDefaults.slideDefaults) }
       .apply { combine(slideDefaults) }
 
-  fun assignId(section: SECTION, id: String) {
+  internal fun assignAttribs(section: SECTION, id: String, hidden: Boolean) {
     if (id.isNotEmpty())
       section.id = id
+
+    if (hidden)
+      section.attributes["data-visibility"] = "hidden"
   }
 
   @HtmlTagMarker
@@ -25,7 +28,8 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
 
 abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content)
 
-class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
+class HtmlSlide(presentation: Presentation, content: SlideArg) :
+  HorizontalSlide(presentation, content) {
   var htmlBlock: () -> String = { "" }
 
   @HtmlTagMarker
@@ -34,7 +38,8 @@ class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide
   }
 }
 
-class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
+class MarkdownSlide(presentation: Presentation, content: SlideArg) :
+  HorizontalSlide(presentation, content) {
   var filename: String = ""
   var separator: String = ""
   var verticalSeparator: String = ""
@@ -60,7 +65,8 @@ class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalS
   }
 }
 
-class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
+class DslSlide(presentation: Presentation, content: SlideArg) :
+  HorizontalSlide(presentation, content) {
   var dslBlock: SECTION.(DslSlide) -> Unit = { }
 
   @HtmlTagMarker
@@ -73,7 +79,8 @@ open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(
   val vertContext = VerticalContext()
 }
 
-class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
+class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) :
+  VerticalSlide(presentation, content) {
   var htmlBlock: () -> String = { "" }
 
   @HtmlTagMarker
@@ -82,7 +89,8 @@ class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : Vertica
   }
 }
 
-class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
+class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) :
+  VerticalSlide(presentation, content) {
   var filename: String = ""
   var disableTrimIndent: Boolean = false
   var markdownBlock: () -> String = { "" }
@@ -95,7 +103,8 @@ class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : Ver
   }
 }
 
-class VerticalDslSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
+class VerticalDslSlide(presentation: Presentation, content: SlideArg) :
+  VerticalSlide(presentation, content) {
   var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
 
   @HtmlTagMarker

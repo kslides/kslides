@@ -45,8 +45,8 @@ class Presentation internal constructor(path: String) {
   private val plugins = mutableListOf<String>()
   private val dependencies = mutableListOf<String>()
 
-  val presentationDefaults = PresentationConfig()
-  val slides = mutableListOf<Slide>()
+  internal val presentationDefaults = PresentationConfig()
+  internal val slides = mutableListOf<Slide>()
 
   init {
     if (path.removePrefix("/") in staticRoots)
@@ -84,11 +84,15 @@ class Presentation internal constructor(path: String) {
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.htmlSlide(id: String = "", slideContent: VerticalHtmlSlide.() -> String) =
+  fun VerticalContext.htmlSlide(
+    id: String = "",
+    hidden: Boolean = false,
+    slideContent: VerticalHtmlSlide.() -> String
+  ) =
     VerticalHtmlSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          slide.assignId(this, id)
+          slide.assignAttribs(this, id, hidden)
           slideContent.invoke(slide as VerticalHtmlSlide)
           applyConfig(slide.mergedConfig())
           rawHtml("\n${slide.htmlBlock()}")
@@ -97,11 +101,11 @@ class Presentation internal constructor(path: String) {
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun htmlSlide(id: String = "", slideContent: HtmlSlide.() -> Unit) =
+  fun htmlSlide(id: String = "", hidden: Boolean = false, slideContent: HtmlSlide.() -> Unit) =
     HtmlSlide(this) { div, slide ->
       div.apply {
         section {
-          slide.assignId(this, id)
+          slide.assignAttribs(this, id, hidden)
           slideContent.invoke(slide as HtmlSlide)
           applyConfig(slide.mergedConfig())
           rawHtml("\n${slide.htmlBlock()}")
@@ -110,12 +114,11 @@ class Presentation internal constructor(path: String) {
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.dslSlide(id: String = "", slideContent: VerticalDslSlide.() -> Unit) =
+  fun VerticalContext.dslSlide(id: String = "", hidden: Boolean = false, slideContent: VerticalDslSlide.() -> Unit) =
     VerticalDslSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          if (id.isNotEmpty())
-            this.id = id
+          slide.assignAttribs(this, id, hidden)
           slideContent.invoke(slide as VerticalDslSlide)
           applyConfig(slide.mergedConfig())
           slide.dslBlock.invoke(this, slide)
@@ -124,11 +127,11 @@ class Presentation internal constructor(path: String) {
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun dslSlide(id: String = "", slideContent: DslSlide.() -> Unit) =
+  fun dslSlide(id: String = "", hidden: Boolean = false, slideContent: DslSlide.() -> Unit) =
     DslSlide(this) { div, slide ->
       div.apply {
         section {
-          slide.assignId(this, id)
+          slide.assignAttribs(this, id, hidden)
           slideContent.invoke(slide as DslSlide)
           applyConfig(slide.mergedConfig())
           slide.dslBlock.invoke(this, slide)
@@ -137,11 +140,15 @@ class Presentation internal constructor(path: String) {
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.markdownSlide(id: String = "", slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
+  fun VerticalContext.markdownSlide(
+    id: String = "",
+    hidden: Boolean = false,
+    slideContent: VerticalMarkdownSlide.() -> Unit = { }
+  ) =
     VerticalMarkdownSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          slide.assignId(this, id)
+          slide.assignAttribs(this, id, hidden)
           slideContent.invoke(slide as VerticalMarkdownSlide)
           applyConfig(slide.mergedConfig())
 
@@ -167,11 +174,11 @@ class Presentation internal constructor(path: String) {
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun markdownSlide(id: String = "", slideContent: MarkdownSlide.() -> Unit = {}) =
+  fun markdownSlide(id: String = "", hidden: Boolean = false, slideContent: MarkdownSlide.() -> Unit = {}) =
     MarkdownSlide(this) { div, slide ->
       div.apply {
         section {
-          slide.assignId(this, id)
+          slide.assignAttribs(this, id, hidden)
           slideContent.invoke(slide as MarkdownSlide)
           applyConfig(slide.mergedConfig())
 
