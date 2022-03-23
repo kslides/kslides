@@ -31,22 +31,19 @@ class JsFile(val filename: String)
 class CssFile(val filename: String, val id: String = "")
 
 class Presentation internal constructor(path: String) {
+  private val plugins = mutableListOf<String>()
+  private val dependencies = mutableListOf<String>()
 
-  var css = ""
-
-  val jsFiles = mutableListOf(JsFile("dist/reveal.js"))
-
-  val cssFiles =
+  internal val jsFiles = mutableListOf(JsFile("dist/reveal.js"))
+  internal val cssFiles =
     mutableListOf(
       CssFile("dist/reveal.css"),
       CssFile("dist/reset.css"),
     )
-
-  private val plugins = mutableListOf<String>()
-  private val dependencies = mutableListOf<String>()
-
   internal val presentationDefaults = PresentationConfig()
   internal val slides = mutableListOf<Slide>()
+
+  var css = ""
 
   init {
     if (path.removePrefix("/") in staticRoots)
@@ -88,12 +85,13 @@ class Presentation internal constructor(path: String) {
     id: String = "",
     hidden: Boolean = false,
     uncounted: Boolean = false,
+    autoAnimate: Boolean = false,
     slideContent: VerticalHtmlSlide.() -> String
   ) =
     VerticalHtmlSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden, uncounted)
+          slide.assignAttribs(this, id, hidden, uncounted, autoAnimate)
           slideContent.invoke(slide as VerticalHtmlSlide)
           applyConfig(slide.mergedConfig())
           rawHtml("\n${slide.htmlBlock()}")
@@ -106,12 +104,13 @@ class Presentation internal constructor(path: String) {
     id: String = "",
     hidden: Boolean = false,
     uncounted: Boolean = false,
+    autoAnimate: Boolean = false,
     slideContent: HtmlSlide.() -> Unit
   ) =
     HtmlSlide(this) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden, uncounted)
+          slide.assignAttribs(this, id, hidden, uncounted, autoAnimate)
           slideContent.invoke(slide as HtmlSlide)
           applyConfig(slide.mergedConfig())
           rawHtml("\n${slide.htmlBlock()}")
@@ -124,12 +123,13 @@ class Presentation internal constructor(path: String) {
     id: String = "",
     hidden: Boolean = false,
     uncounted: Boolean = false,
+    autoAnimate: Boolean = false,
     slideContent: VerticalDslSlide.() -> Unit
   ) =
     VerticalDslSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden, uncounted)
+          slide.assignAttribs(this, id, hidden, uncounted, autoAnimate)
           slideContent.invoke(slide as VerticalDslSlide)
           applyConfig(slide.mergedConfig())
           slide.dslBlock.invoke(this, slide)
@@ -142,12 +142,13 @@ class Presentation internal constructor(path: String) {
     id: String = "",
     hidden: Boolean = false,
     uncounted: Boolean = false,
+    autoAnimate: Boolean = false,
     slideContent: DslSlide.() -> Unit
   ) =
     DslSlide(this) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden, uncounted)
+          slide.assignAttribs(this, id, hidden, uncounted, autoAnimate)
           slideContent.invoke(slide as DslSlide)
           applyConfig(slide.mergedConfig())
           slide.dslBlock.invoke(this, slide)
@@ -160,12 +161,13 @@ class Presentation internal constructor(path: String) {
     id: String = "",
     hidden: Boolean = false,
     uncounted: Boolean = false,
+    autoAnimate: Boolean = false,
     slideContent: VerticalMarkdownSlide.() -> Unit = { }
   ) =
     VerticalMarkdownSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden, uncounted)
+          slide.assignAttribs(this, id, hidden, uncounted, autoAnimate)
           slideContent.invoke(slide as VerticalMarkdownSlide)
           applyConfig(slide.mergedConfig())
 
@@ -195,12 +197,13 @@ class Presentation internal constructor(path: String) {
     id: String = "",
     hidden: Boolean = false,
     uncounted: Boolean = false,
+    autoAnimate: Boolean = false,
     slideContent: MarkdownSlide.() -> Unit = {}
   ) =
     MarkdownSlide(this) { div, slide ->
       div.apply {
         section {
-          slide.assignAttribs(this, id, hidden, uncounted)
+          slide.assignAttribs(this, id, hidden, uncounted, autoAnimate)
           slideContent.invoke(slide as MarkdownSlide)
           applyConfig(slide.mergedConfig())
 

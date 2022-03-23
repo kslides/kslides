@@ -14,7 +14,7 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
       .apply { combine(presentation.presentationDefaults.slideDefaults) }
       .apply { combine(slideDefaults) }
 
-  internal fun assignAttribs(section: SECTION, id: String, hidden: Boolean, uncounted: Boolean) {
+  internal fun assignAttribs(section: SECTION, id: String, hidden: Boolean, uncounted: Boolean, autoAnimate: Boolean) {
     if (id.isNotEmpty())
       section.id = id
 
@@ -23,6 +23,9 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
 
     if (uncounted)
       section.attributes["data-visibility"] = "uncounted"
+
+    if (autoAnimate)
+      section.attributes["data-auto-animate"] = ""
   }
 
   @HtmlTagMarker

@@ -53,7 +53,38 @@ fun main() {
       }
 
       slides {
-        backgroundColor = "red"
+        backgroundColor = "yellow"
+      }
+    }
+
+    htmlSlide(autoAnimate = true) {
+      content {
+        """
+        <h1>Auto-Animate HTML</h1>
+        """
+      }
+    }
+
+    htmlSlide(autoAnimate = true) {
+      content {
+        """
+        <h1 style="margin-top: 100px; color: red;">Auto-Animate HTML</h1>
+        """
+      }
+    }
+
+    dslSlide(autoAnimate = true) {
+      content {
+        h1 { +"Auto-Animate DSL" }
+      }
+    }
+
+    dslSlide(autoAnimate = true) {
+      content {
+        h1 {
+          style = "margin-top: 100px; color: red;"
+          +"Auto-Animate DSL"
+        }
       }
     }
 
