@@ -123,15 +123,32 @@ internal object Page {
         }
       }
 
+      if (config.enableSpeakerNotes)
+        p.jsFiles += JsFile("plugin/notes/notes.js")
+
+      if (config.enableZoom)
+        p.jsFiles += JsFile("plugin/zoom/zoom.js")
+
+      if (config.enableSearch)
+        p.jsFiles += JsFile("plugin/search/search.js")
+
+      if (config.enableMarkdown)
+        p.jsFiles += JsFile("plugin/markdown/markdown.js")
+
+      if (config.enableHighlight)
+        p.jsFiles += JsFile("plugin/highlight/highlight.js")
+
+      if (config.enableMathKatex || config.enableMathJax2 || config.enableMathJax3)
+        p.jsFiles += JsFile("plugin/math/math.js")
+
       if (config.enableCodeCopy) {
         p.jsFiles += JsFile("plugin/copycode/copycode.js")
         // Required for copycode.js
         p.jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js")
       }
 
-      if (config.enableMenu) {
+      if (config.enableMenu)
         p.jsFiles += JsFile("plugin/menu/menu.js")
-      }
 
 //      if (config.toolbar) {
 //        p.jsFiles += "plugin/toolbar/toolbar.js"

@@ -34,15 +34,7 @@ class Presentation internal constructor(path: String) {
 
   var css = ""
 
-  val jsFiles =
-    mutableListOf(
-      JsFile("dist/reveal.js"),
-      JsFile("plugin/zoom/zoom.js"),
-      JsFile("plugin/notes/notes.js"),
-      JsFile("plugin/search/search.js"),
-      JsFile("plugin/markdown/markdown.js"),
-      JsFile("plugin/highlight/highlight.js"),
-    )
+  val jsFiles = mutableListOf(JsFile("dist/reveal.js"))
 
   val cssFiles =
     mutableListOf(
@@ -50,7 +42,7 @@ class Presentation internal constructor(path: String) {
       CssFile("dist/reset.css"),
     )
 
-  private val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
+  private val plugins = mutableListOf<String>()
   private val dependencies = mutableListOf<String>()
 
   val presentationDefaults = PresentationConfig()
@@ -259,11 +251,35 @@ class Presentation internal constructor(path: String) {
       }
 
       // Plugins
-      if (config.enableCodeCopy)
-        plugins += "CopyCode"
+      if (config.enableSpeakerNotes)
+        plugins += "RevealNotes"
+
+      if (config.enableZoom)
+        plugins += "RevealZoom"
+
+      if (config.enableSearch)
+        plugins += "RevealSearch"
+
+      if (config.enableMarkdown)
+        plugins += "RevealMarkdown"
+
+      if (config.enableHighlight)
+        plugins += "RevealHighlight"
+
+      if (config.enableMathKatex)
+        plugins += "RevealMath.KaTeX"
+
+      if (config.enableMathJax2)
+        plugins += "RevealMath.MathJax2"
+
+      if (config.enableMathJax3)
+        plugins += "RevealMath.MathJax3"
 
       if (config.enableMenu)
         plugins += "RevealMenu"
+
+      if (config.enableCodeCopy)
+        plugins += "CopyCode"
 
       appendLine("\t\t\tplugins: [ ${plugins.joinToString(", ")} ]")
     }

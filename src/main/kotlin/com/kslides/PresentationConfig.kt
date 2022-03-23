@@ -9,8 +9,16 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   var title by ConfigProperty<String>(secondaryValues)
   var theme by ConfigProperty<Theme>(secondaryValues)
   var highlight by ConfigProperty<Highlight>(secondaryValues)
-  var enableMenu by ConfigProperty<Boolean>(secondaryValues)
+  var enableSpeakerNotes by ConfigProperty<Boolean>(secondaryValues)
+  var enableZoom by ConfigProperty<Boolean>(secondaryValues)
+  var enableSearch by ConfigProperty<Boolean>(secondaryValues)
+  var enableMarkdown by ConfigProperty<Boolean>(secondaryValues)
+  var enableHighlight by ConfigProperty<Boolean>(secondaryValues)
+  var enableMathKatex by ConfigProperty<Boolean>(secondaryValues)
+  var enableMathJax2 by ConfigProperty<Boolean>(secondaryValues)
+  var enableMathJax3 by ConfigProperty<Boolean>(secondaryValues)
   var enableCodeCopy by ConfigProperty<Boolean>(secondaryValues)
+  var enableMenu by ConfigProperty<Boolean>(secondaryValues)
   var gaPropertyId by ConfigProperty<String>(secondaryValues)
 
   init {
@@ -19,8 +27,16 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       title = ""
       theme = Theme.BLACK
       highlight = Highlight.MONOKAI
-      enableMenu = true
+      enableSpeakerNotes = true
+      enableZoom = true
+      enableSearch = true
+      enableMarkdown = true
+      enableHighlight = true
+      enableMathKatex = false
+      enableMathJax2 = false
+      enableMathJax3 = false
       enableCodeCopy = true
+      enableMenu = true
       gaPropertyId = ""
 
       // Initialize the slide config

@@ -1,7 +1,7 @@
 package examples
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.outputPresentations
+import com.kslides.Presentation.Companion.servePresentations
 import kotlinx.css.*
 import kotlinx.html.*
 
@@ -406,6 +406,6 @@ fun main() {
     }
   }
 
-  //servePresentations()
-  outputPresentations()
+  servePresentations()
+  //outputPresentations()
 }
