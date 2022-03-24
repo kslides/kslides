@@ -5,6 +5,10 @@ import kotlinx.html.*
 
 typealias SlideArg = (DIV, Slide) -> Unit
 
+fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
+
+fun fragmentIndex(index: Int) = "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
+
 abstract class Slide(internal val presentation: Presentation, internal val content: SlideArg) {
   private val slideDefaults = SlideConfig()
 
@@ -35,22 +39,26 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
 abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content)
 
 class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
-  var htmlBlock: () -> String = { "" }
+  internal var indentToken: String = INDENT_TOKEN
+  internal var disableTrimIndent: Boolean = false
+  internal var htmlBlock: () -> String = { "" }
 
   @HtmlTagMarker
-  fun content(htmlBlock: () -> String) {
+  fun content(indentToken: String = INDENT_TOKEN, disableTrimIndent: Boolean = false, htmlBlock: () -> String) {
+    this.indentToken = indentToken
+    this.disableTrimIndent = disableTrimIndent
     this.htmlBlock = htmlBlock
   }
 }
 
 class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
-  var filename: String = ""
-  var separator: String = ""
-  var verticalSeparator: String = ""
-  var notesSeparator: String = "^Note:"
-  var disableTrimIndent: Boolean = false
-  var markdownBlock: () -> String = { "" }
-  var withInclude = false
+  internal var filename: String = ""
+  internal var separator: String = ""
+  internal var verticalSeparator: String = ""
+  internal var notesSeparator: String = "^Note:"
+  internal var indentToken: String = INDENT_TOKEN
+  internal var disableTrimIndent: Boolean = false
+  internal var markdownBlock: () -> String = { "" }
 
   @HtmlTagMarker
   fun content(
@@ -58,6 +66,7 @@ class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalS
     separator: String = "",
     verticalSeparator: String = "",
     notesSeparator: String = "^Note:",
+    indentToken: String = INDENT_TOKEN,
     disableTrimIndent: Boolean = false,
     markdownBlock: () -> String
   ) {
@@ -65,21 +74,9 @@ class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalS
     this.separator = separator
     this.verticalSeparator = verticalSeparator
     this.notesSeparator = notesSeparator
+    this.indentToken = indentToken
     this.disableTrimIndent = disableTrimIndent
     this.markdownBlock = markdownBlock
-  }
-
-  @HtmlTagMarker
-  fun contentWithInclude(
-    filename: String = "",
-    separator: String = "",
-    verticalSeparator: String = "",
-    notesSeparator: String = "^Note:",
-    disableTrimIndent: Boolean = false,
-    markdownBlock: () -> String
-  ) {
-    this.withInclude = true
-    content(filename, separator, verticalSeparator, notesSeparator, disableTrimIndent, markdownBlock)
   }
 }
 
@@ -97,29 +94,40 @@ open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(
 }
 
 class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
-  var htmlBlock: () -> String = { "" }
+  internal var indentToken: String = INDENT_TOKEN
+  internal var disableTrimIndent: Boolean = false
+  internal var htmlBlock: () -> String = { "" }
 
   @HtmlTagMarker
-  fun content(htmlBlock: () -> String) {
+  fun content(indentToken: String = INDENT_TOKEN, disableTrimIndent: Boolean = false, htmlBlock: () -> String) {
+    this.indentToken = indentToken
+    this.disableTrimIndent = disableTrimIndent
     this.htmlBlock = htmlBlock
   }
 }
 
 class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
-  var filename: String = ""
-  var disableTrimIndent: Boolean = false
-  var markdownBlock: () -> String = { "" }
+  internal var filename: String = ""
+  internal var indentToken: String = INDENT_TOKEN
+  internal var disableTrimIndent: Boolean = false
+  internal var markdownBlock: () -> String = { "" }
 
   @HtmlTagMarker
-  fun content(filename: String = "", disableTrimIndent: Boolean = false, markdownBlock: () -> String) {
+  fun content(
+    filename: String = "",
+    indentToken: String = INDENT_TOKEN,
+    disableTrimIndent: Boolean = false,
+    markdownBlock: () -> String
+  ) {
     this.filename = filename
+    this.indentToken = indentToken
     this.disableTrimIndent = disableTrimIndent
     this.markdownBlock = markdownBlock
   }
 }
 
 class VerticalDslSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
-  var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
+  internal var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
 
   @HtmlTagMarker
   fun content(dslBlock: SECTION.(VerticalDslSlide) -> Unit) {

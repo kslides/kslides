@@ -94,7 +94,11 @@ class Presentation internal constructor(path: String) {
           slide.assignAttribs(this, id, hidden, uncounted, autoAnimate)
           slideContent.invoke(slide as VerticalHtmlSlide)
           applyConfig(slide.mergedConfig())
-          rawHtml("\n${slide.htmlBlock()}")
+          val text =
+            slide.htmlBlock()
+              .indentInclude(slide.indentToken)
+              .let { if (!slide.disableTrimIndent) it.trimIndent() else it }
+          rawHtml("\n$text")
         }.also { rawHtml("\n") }
       }
     }.also { vertSlides += it }
@@ -113,7 +117,11 @@ class Presentation internal constructor(path: String) {
           slide.assignAttribs(this, id, hidden, uncounted, autoAnimate)
           slideContent.invoke(slide as HtmlSlide)
           applyConfig(slide.mergedConfig())
-          rawHtml("\n${slide.htmlBlock()}")
+          val text =
+            slide.htmlBlock()
+              .indentInclude(slide.indentToken)
+              .let { if (!slide.disableTrimIndent) it.trimIndent() else it }
+          rawHtml("\n$text")
         }.also { rawHtml("\n") }
       }
     }.also { slides += it }
@@ -184,7 +192,11 @@ class Presentation internal constructor(path: String) {
               if (markdown.isNotEmpty())
                 script {
                   type = "text/template"
-                  rawHtml("\n${markdown.let { if (!slide.disableTrimIndent) it.trimIndent() else it }}")
+                  val text =
+                    markdown
+                      .indentInclude(slide.indentToken)
+                      .let { if (!slide.disableTrimIndent) it.trimIndent() else it }
+                  rawHtml("\n$text")
                 }
             }
           }
@@ -226,12 +238,11 @@ class Presentation internal constructor(path: String) {
               if (markdown.isNotEmpty())
                 script {
                   type = "text/template"
-                  val markdownText =
+                  val text =
                     markdown
+                      .indentInclude(slide.indentToken)
                       .let { if (!slide.disableTrimIndent) it.trimIndent() else it }
-                      .let { if (slide.withInclude) it.trimIndentWithInclude() else it }
-
-                  rawHtml("\n$markdownText")
+                  rawHtml("\n$text")
                 }
             }
           }
@@ -260,37 +271,39 @@ class Presentation internal constructor(path: String) {
         }
       }
 
-      config.autoSlide.also { autoSlide ->
-        when {
-          autoSlide is Boolean && !autoSlide -> {
-            append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
-            appendLine()
-          }
-          autoSlide is Int -> {
-            if (autoSlide > 0) {
+      config.autoSlide
+        .also { autoSlide ->
+          when {
+            autoSlide is Boolean && !autoSlide -> {
               append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
               appendLine()
             }
+            autoSlide is Int -> {
+              if (autoSlide > 0) {
+                append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
+                appendLine()
+              }
+            }
+            else -> error("Invalid value for autoSlide: $autoSlide")
           }
-          else -> error("Invalid value for autoSlide: ${autoSlide}")
         }
-      }
 
-      config.slideNumber.also { slideNumber ->
-        when {
-          slideNumber is Boolean -> {
-            if (slideNumber) {
+      config.slideNumber
+        .also { slideNumber ->
+          when (slideNumber) {
+            is Boolean -> {
+              if (slideNumber) {
+                append("\t\t\t${toJsValue("slideNumber", slideNumber)},\n")
+                appendLine()
+              }
+            }
+            is String -> {
               append("\t\t\t${toJsValue("slideNumber", slideNumber)},\n")
               appendLine()
             }
+            else -> error("Invalid value for slideNumber: $slideNumber")
           }
-          slideNumber is String -> {
-            append("\t\t\t${toJsValue("slideNumber", slideNumber)},\n")
-            appendLine()
-          }
-          else -> error("Invalid value for slideNumber: ${slideNumber}")
         }
-      }
 
       config.menuDefaults.unmanagedValues.also { vals ->
         if (vals.isNotEmpty()) {
@@ -363,7 +376,7 @@ class Presentation internal constructor(path: String) {
         this.log = KtorSimpleLogger("ktor.application")
         watchPaths = listOf("classes")
       }
-      embeddedServer(CIO, environment).start(wait = true)
+      embeddedServer(factory = CIO, environment).start(wait = true)
     }
 
     fun outputPresentations(dir: String = "docs", srcPrefix: String = "revealjs/") {

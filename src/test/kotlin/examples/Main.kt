@@ -1,12 +1,12 @@
 package examples
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.servePresentations
 import kotlinx.css.*
 import kotlinx.html.*
 
 fun main() {
 
+  //serve {
   globalConfig {
     slideNumber = "c/t"
     transition = Transition.FADE
@@ -60,6 +60,28 @@ fun main() {
     htmlSlide(autoAnimate = true) {
       content {
         """
+        <pre data-id="code-animation"><code data-trim="" data-line-numbers="">
+        ${includeFile("src/test/kotlin/examples/assign1.js")}
+        </code></pre>
+        """
+      }
+    }
+
+    htmlSlide(autoAnimate = true) {
+      content {
+        """
+        <pre data-id="code-animation">
+        <code data-trim="" data-line-numbers="">
+        ${includeFile("src/test/kotlin/examples/assign2.js")}
+        </code>
+        </pre>
+        """
+      }
+    }
+
+    htmlSlide(autoAnimate = true) {
+      content {
+        """
         <h1>Auto-Animate HTML</h1>
         """
       }
@@ -94,7 +116,7 @@ fun main() {
         backgroundColor = "blue"
       }
 
-      contentWithInclude {
+      content {
         """
         # Java Code  
         ```java [3|4|5]
@@ -115,7 +137,7 @@ fun main() {
         backgroundColor = "#4370A5"
       }
 
-      contentWithInclude {
+      content {
         """
         # Markdown Example
         ```kotlin [3|4|5]
@@ -126,7 +148,7 @@ fun main() {
     }
 
     markdownSlide {
-      contentWithInclude {
+      content {
         """
         # Markdown Example
         ````kotlin [1|3-4|20,24-25]
@@ -436,7 +458,8 @@ fun main() {
       }
     }
   }
+  //}
 
-  servePresentations()
-  //outputPresentations()
+  Presentation.Companion.outputPresentations()
+  Presentation.Companion.servePresentations()
 }

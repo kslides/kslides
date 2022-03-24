@@ -1,81 +1,6 @@
 package com.kslides
 
-import org.apache.commons.text.StringEscapeUtils.escapeHtml4
-import java.io.*
-import java.net.*
 import java.util.*
-
-fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
-
-fun fragmentIndex(index: Int) = "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
-
-fun includeFile(
-  path: String,
-  beginToken: String = "",
-  endToken: String = "",
-  commentPrefix: String = "//"
-) =
-  try {
-    processCode(
-      File("${System.getProperty("user.dir")}/$path").readLines(),
-      beginToken,
-      endToken,
-      commentPrefix
-    )
-  } catch (e: Exception) {
-    e.printStackTrace()
-    ""
-  }
-
-fun includeUrl(
-  source: String,
-  beginToken: String = "",
-  endToken: String = "",
-  commentPrefix: String = "//"
-) =
-  try {
-    processCode(
-      URL(source).readText().lines(),
-      beginToken,
-      endToken,
-      commentPrefix
-    )
-  } catch (e: Exception) {
-    e.printStackTrace()
-    ""
-  }
-
-private fun processCode(
-  lines: List<String>,
-  beginToken: String,
-  endToken: String,
-  commentPrefix: String
-): String {
-  val beginRegex = "$commentPrefix\\s*$beginToken".toRegex()
-  val endRegex = "$commentPrefix\\s*$endToken".toRegex()
-
-  val startIndex =
-    if (beginToken.isEmpty())
-      0
-    else
-      (lines
-        .asSequence()
-        .mapIndexed { i, s -> i to s }
-        .firstOrNull { it.second.contains(beginRegex) }?.first
-        ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
-
-  val endIndex =
-    if (endToken.isEmpty())
-      lines.size
-    else
-      (lines.reversed()
-        .asSequence()
-        .mapIndexed { i, s -> (lines.size - i - 1) to s }
-        .firstOrNull { it.second.contains(endRegex) }?.first
-        ?: throw IllegalArgumentException("endToken not found: $endToken"))
-
-  return lines.subList(startIndex, endIndex).joinToString("\n") { escapeHtml4(it) }
-}
 
 fun String.toLower(locale: Locale = Locale.getDefault()) = lowercase(locale)
 
@@ -86,7 +11,56 @@ fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
       other.forEach { (key, value) -> result[key] = value }
     }
 
-fun String.trimIndentWithInclude(): String {
+internal fun String.indentInclude(indentToken: String): String {
+  var firstLineFound = false
+  var firstLineIndent = ""
+  return lines()
+    .joinToString("\n") { str ->
+      if (!firstLineFound) {
+        val trimmed = str.trimStart()
+        if (trimmed.startsWith(indentToken)) {
+          firstLineFound = true
+          firstLineIndent = str.substring(0, str.indexOf(indentToken))
+          firstLineIndent + trimmed.substring(indentToken.length)
+        } else {
+          str
+        }
+      } else {
+        if (str.startsWith(indentToken)) {
+          firstLineIndent + str.substring(indentToken.length)
+        } else {
+          firstLineFound = false
+          firstLineIndent = ""
+          str
+        }
+      }
+    }
+}
+
+internal fun String.indentFirstLine(indentToken: String): String {
+  var firstLineFound = false
+  return lines()
+    .joinToString("\n") { str ->
+      if (!firstLineFound) {
+        val trimmed = str.trimStart()
+        if (trimmed.startsWith(indentToken)) {
+          firstLineFound = true
+          trimmed.substring(indentToken.length)
+        } else {
+          str
+        }
+      } else {
+        if (str.startsWith(indentToken)) {
+          str.substring(indentToken.length)
+        } else {
+          firstLineFound = false
+          str
+        }
+      }
+    }
+}
+
+internal fun String.trimIndentWithInclude(): String {
   var insideFence = false
   var fence = ""
   var fenceLine = -1
