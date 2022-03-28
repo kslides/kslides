@@ -18,42 +18,55 @@
 package com.github.readingbat
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.presentations
-import io.kotest.assertions.throwables.*
+import com.kslides.Presentations.Companion.staticRoots
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
 
 class PresentationTest : StringSpec(
   {
     "Simple presentation tests" {
-      presentation {
-      }
 
-      presentations.size shouldBe 1
+      presentations {
 
-      shouldThrowExactly<IllegalArgumentException> {
-        presentation { }
-      }
-
-      presentation("test") { }
-
-      presentations.size shouldBe 2
-
-      shouldThrowExactly<IllegalArgumentException> {
-        presentation("test") { }
-      }
-
-      shouldThrowExactly<IllegalArgumentException> {
-        presentation("/test") { }
-      }
-
-      staticRoots.forEach {
-        shouldThrowExactly<IllegalArgumentException> {
-          presentation(it) { }
+        presentation {
         }
 
-        shouldThrowExactly<IllegalArgumentException> {
-          presentation("/$it") { }
+        presentationBlocks.size shouldBe 1
+
+//        shouldThrowExactly<IllegalArgumentException> {
+//          presentation { }
+//        }
+
+        presentation {
+          path = "test"
+        }
+
+        presentationBlocks.size shouldBe 2
+
+//        shouldThrowExactly<IllegalArgumentException> {
+//          presentation {
+//            path = "test"
+//          }
+//        }
+//
+//        shouldThrowExactly<IllegalArgumentException> {
+//          presentation {
+//            path = "/test"
+//          }
+//        }
+
+        staticRoots.forEach {
+//          shouldThrowExactly<IllegalArgumentException> {
+//            presentation {
+//              path = it
+//            }
+//          }
+//
+//          shouldThrowExactly<IllegalArgumentException> {
+//            presentation {
+//              path = "/$it"
+//            }
+//          }
         }
       }
     }

@@ -1,7 +1,6 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
-import com.kslides.Presentation.Companion.globalDefaults
 import kotlinx.html.*
 import kotlinx.html.dom.*
 
@@ -12,7 +11,7 @@ internal object Page {
       document {
         PresentationConfig()
           .apply {
-            merge(globalDefaults)
+            merge(p.presentations.globalDefaults)
             merge(p.presentationDefaults)
           }.also { config ->
             append.html {

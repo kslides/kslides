@@ -2,14 +2,13 @@ package com.kslides
 
 import com.github.pambrose.common.response.*
 import com.kslides.Page.generatePage
-import com.kslides.Presentation.Companion.presentations
+import com.kslides.Presentations.Companion.staticRoots
+import com.kslides.Presentations.Companion.topLevelPresentations
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.plugins.*
 import io.ktor.server.routing.*
 import org.slf4j.event.*
-
-internal val staticRoots = listOf("public", "assets", "css", "dist", "js", "plugin")
 
 fun Application.module(testing: Boolean = false) {
 
@@ -27,7 +26,7 @@ fun Application.module(testing: Boolean = false) {
       static("/$it") { resources(it) }
     }
 
-    presentations.forEach { (key, value) ->
+    topLevelPresentations.presentationMap.forEach { (key, value) ->
       get(key) {
         respondWith {
           generatePage(value)
