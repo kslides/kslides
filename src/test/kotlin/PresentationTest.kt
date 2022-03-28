@@ -19,6 +19,7 @@ package com.github.readingbat
 
 import com.kslides.*
 import com.kslides.Presentations.Companion.staticRoots
+import io.kotest.assertions.throwables.*
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
 
@@ -28,45 +29,68 @@ class PresentationTest : StringSpec(
 
       presentations {
 
-        presentation {
-        }
+        presentation {}
 
         presentationBlocks.size shouldBe 1
-
-//        shouldThrowExactly<IllegalArgumentException> {
-//          presentation { }
-//        }
 
         presentation {
           path = "test"
         }
 
         presentationBlocks.size shouldBe 2
+      }
+    }
 
-//        shouldThrowExactly<IllegalArgumentException> {
-//          presentation {
-//            path = "test"
-//          }
-//        }
-//
-//        shouldThrowExactly<IllegalArgumentException> {
-//          presentation {
-//            path = "/test"
-//          }
-//        }
+    "Simple presentation tests2" {
 
-        staticRoots.forEach {
-//          shouldThrowExactly<IllegalArgumentException> {
-//            presentation {
-//              path = it
-//            }
-//          }
-//
-//          shouldThrowExactly<IllegalArgumentException> {
-//            presentation {
-//              path = "/$it"
-//            }
-//          }
+      shouldThrowExactly<IllegalArgumentException> {
+        presentations {
+          presentation {}
+          presentation {}
+        }
+      }
+    }
+
+    "Simple presentation tests3" {
+
+      shouldThrowExactly<IllegalArgumentException> {
+        presentations {
+          presentation {
+            path = "test"
+          }
+          presentation {
+            path = "test"
+          }
+        }
+      }
+    }
+
+    "Simple presentation tests4" {
+
+      shouldThrowExactly<IllegalArgumentException> {
+        presentations {
+          presentation {
+            path = "test"
+          }
+          presentation {
+            path = "/test"
+          }
+        }
+      }
+    }
+
+    "Simple presentation tests5" {
+
+      staticRoots.forEach {
+        shouldThrowExactly<IllegalArgumentException> {
+          presentations {
+            presentation {
+              path = it
+            }
+            presentation {
+              path = "/it"
+            }
+          }
         }
       }
     }
