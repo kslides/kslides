@@ -3,8 +3,22 @@ package com.kslides
 import kotlinx.html.*
 
 class PresentationConfig(init: Boolean = false) : AbstractConfig() {
-  internal val menuDefaults = MenuConfig()
-  internal val slideDefaults = SlideConfig()
+  internal val menuConfig = MenuConfig()
+
+  @HtmlTagMarker
+  fun slides(block: SlideConfig.() -> Unit) = block.invoke(slideConfig)
+
+  // Display presentation control arrows
+  var controls by ConfigProperty<Boolean>(unmanagedValues) // true
+
+  // Help the user learn the controls by providing hints, for example by
+  // bouncing the down arrow when they first encounter a vertical slide
+  var controlsTutorial by ConfigProperty<Boolean>(unmanagedValues) // true
+
+  // Determines where controls appear, "edges" or "bottom-right"
+  var controlsLayout by ConfigProperty<String>(unmanagedValues) // 'bottom-right'
+
+  internal val slideConfig = SlideConfig()
 
   var title by ConfigProperty<String>(managedValues)
   var theme by ConfigProperty<Theme>(managedValues)
@@ -61,31 +75,18 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       slideNumber = false
 
       // Initialize the slide config
-      slideDefaults.init()
+      slideConfig.init()
     }
   }
 
   fun merge(other: PresentationConfig) {
     this.combine(other)
-    this.menuDefaults.combine(other.menuDefaults)
-    this.slideDefaults.combine(other.slideDefaults)
+    this.menuConfig.combine(other.menuConfig)
+    this.slideConfig.combine(other.slideConfig)
   }
 
   @HtmlTagMarker
-  fun menu(block: MenuConfig.() -> Unit) = block.invoke(menuDefaults)
-
-  @HtmlTagMarker
-  fun slides(block: SlideConfig.() -> Unit) = block.invoke(slideDefaults)
-
-  // Display presentation control arrows
-  var controls by ConfigProperty<Boolean>(unmanagedValues) // true
-
-  // Help the user learn the controls by providing hints, for example by
-  // bouncing the down arrow when they first encounter a vertical slide
-  var controlsTutorial by ConfigProperty<Boolean>(unmanagedValues) // true
-
-  // Determines where controls appear, "edges" or "bottom-right"
-  var controlsLayout by ConfigProperty<String>(unmanagedValues) // 'bottom-right'
+  fun menu(block: MenuConfig.() -> Unit) = block.invoke(menuConfig)
 
   // Visibility rule for backwards navigation arrows; "faded", "hidden"
   // or "visible"

@@ -18,7 +18,7 @@
 package com.github.readingbat
 
 import com.kslides.*
-import com.kslides.Presentations.Companion.staticRoots
+import com.kslides.KSlides.Companion.topLevel
 import io.kotest.assertions.throwables.*
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
@@ -27,7 +27,7 @@ class PresentationTest : StringSpec(
   {
     "Simple presentation tests" {
 
-      presentations {
+      kslides {
 
         presentation {}
 
@@ -44,7 +44,7 @@ class PresentationTest : StringSpec(
     "Simple presentation tests2" {
 
       shouldThrowExactly<IllegalArgumentException> {
-        presentations {
+        kslides {
           presentation {}
           presentation {}
         }
@@ -54,7 +54,7 @@ class PresentationTest : StringSpec(
     "Simple presentation tests3" {
 
       shouldThrowExactly<IllegalArgumentException> {
-        presentations {
+        kslides {
           presentation {
             path = "test"
           }
@@ -68,7 +68,7 @@ class PresentationTest : StringSpec(
     "Simple presentation tests4" {
 
       shouldThrowExactly<IllegalArgumentException> {
-        presentations {
+        kslides {
           presentation {
             path = "test"
           }
@@ -81,9 +81,9 @@ class PresentationTest : StringSpec(
 
     "Simple presentation tests5" {
 
-      staticRoots.forEach {
+      topLevel.staticRoots.forEach {
         shouldThrowExactly<IllegalArgumentException> {
-          presentations {
+          kslides {
             presentation {
               path = it
             }

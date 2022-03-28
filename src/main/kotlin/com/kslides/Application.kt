@@ -1,9 +1,8 @@
 package com.kslides
 
 import com.github.pambrose.common.response.*
+import com.kslides.KSlides.Companion.topLevel
 import com.kslides.Page.generatePage
-import com.kslides.Presentations.Companion.staticRoots
-import com.kslides.Presentations.Companion.topLevelPresentations
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.plugins.*
@@ -22,11 +21,11 @@ fun Application.module(testing: Boolean = false) {
   }
 
   routing {
-    staticRoots.forEach {
+    topLevel.staticRoots.forEach {
       static("/$it") { resources(it) }
     }
 
-    topLevelPresentations.presentationMap.forEach { (key, value) ->
+    topLevel.presentationMap.forEach { (key, value) ->
       get(key) {
         respondWith {
           generatePage(value)

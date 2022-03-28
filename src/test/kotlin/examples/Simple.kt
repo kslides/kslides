@@ -7,7 +7,7 @@ import com.kslides.Transition.ZOOM
 import kotlinx.html.*
 
 fun main() {
-  presentations {
+  kslides {
     presentation {
 
       presentationConfig {
@@ -78,7 +78,7 @@ fun main() {
 
     // Run the web server
     output {
-      httpServer()
+      enableHttp = true
     }
   }
 }

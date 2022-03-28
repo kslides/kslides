@@ -11,8 +11,8 @@ internal object Page {
       document {
         PresentationConfig()
           .apply {
-            merge(p.presentations.globalDefaults)
-            merge(p.presentationDefaults)
+            merge(p.kslides.globalConfig)
+            merge(p.presentationConfig)
           }.also { config ->
             append.html {
               generateHead(p, config, srcPrefix.ensureSuffix("/"))

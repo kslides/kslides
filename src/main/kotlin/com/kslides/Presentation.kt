@@ -1,22 +1,22 @@
 package com.kslides
 
-import com.kslides.Page.generatePage
+import com.kslides.KSlides.Companion.topLevel
+import com.kslides.Output.runHttpServer
+import com.kslides.Output.writeToFileSystem
 import com.kslides.Page.rawHtml
-import com.kslides.Presentations.Companion.staticRoots
-import com.kslides.Presentations.Companion.topLevelPresentations
-import io.ktor.server.cio.*
-import io.ktor.server.engine.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
-import java.io.*
 
 @HtmlTagMarker
-fun presentations(block: Presentations.() -> Unit) {
-  topLevelPresentations
+fun kslides(block: KSlides.() -> Unit) {
+  topLevel
     .apply {
+
       block()
-      configBlock.invoke(globalDefaults)
+
+      configBlock.invoke(globalConfig)
+
       presentationBlocks.forEach {
         Presentation(this)
           .also { presentation ->
@@ -24,17 +24,25 @@ fun presentations(block: Presentations.() -> Unit) {
             presentation.validatePath()
           }
       }
+
       outputBlock.invoke(presentationOutput)
+      if (presentationOutput.enableFileSystem)
+        writeToFileSystem(presentationOutput)
+
+      if (presentationOutput.enableHttp)
+        runHttpServer(presentationOutput)
     }
 }
 
-class Presentations {
-  internal val globalDefaults = PresentationConfig(true)
+class KSlides {
+  internal val globalConfig = PresentationConfig(true)
   internal val presentationOutput = PresentationOutput(this)
   internal var configBlock: PresentationConfig.() -> Unit = {}
   internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
   internal var outputBlock: PresentationOutput.() -> Unit = {}
   internal val presentationMap = mutableMapOf<String, Presentation>()
+
+  val staticRoots = mutableListOf("public", "assets", "css", "dist", "js", "plugin")
 
   @HtmlTagMarker
   fun presentation(block: Presentation.() -> Unit) {
@@ -52,12 +60,11 @@ class Presentations {
   }
 
   companion object {
-    internal val topLevelPresentations = Presentations()
-    internal val staticRoots = listOf("public", "assets", "css", "dist", "js", "plugin")
+    internal val topLevel = KSlides()
   }
 }
 
-class Presentation(val presentations: Presentations) {
+class Presentation(val kslides: KSlides) {
   private val plugins = mutableListOf<String>()
   private val dependencies = mutableListOf<String>()
 
@@ -67,24 +74,24 @@ class Presentation(val presentations: Presentations) {
       CssFile("dist/reveal.css"),
       CssFile("dist/reset.css"),
     )
-  internal val presentationDefaults = PresentationConfig()
+  internal val presentationConfig = PresentationConfig()
   internal val slides = mutableListOf<Slide>()
 
   var path = "/"
   var css = ""
 
   internal fun validatePath() {
-    if (path.removePrefix("/") in staticRoots)
+    if (path.removePrefix("/") in kslides.staticRoots)
       throw IllegalArgumentException("Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"")
 
     val adjustedPath = if (path.startsWith("/")) path else "/$path"
-    if (presentations.presentationMap.containsKey(adjustedPath))
+    if (kslides.presentationMap.containsKey(adjustedPath))
       throw IllegalArgumentException("Presentation path already defined: \"$adjustedPath\"")
-    presentations.presentationMap[adjustedPath] = this
+    kslides.presentationMap[adjustedPath] = this
   }
 
   @HtmlTagMarker
-  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationDefaults)
+  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
 
   @HtmlTagMarker
   fun css(block: CssBuilder.() -> Unit) {
@@ -188,6 +195,11 @@ class Presentation(val presentations: Presentations) {
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = filename
+
+            if (charset.isNotEmpty())
+              attributes["data-charset"] = charset
+
+            // These are not applicable for vertical markdown slides
             attributes["data-separator"] = ""
             attributes["data-separator-vertical"] = ""
 
@@ -220,21 +232,25 @@ class Presentation(val presentations: Presentations) {
           (slide as MarkdownSlide).apply {
             assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             slideContent.invoke(this)
-            applyConfig(mergedConfig())
+            val config = mergedConfig()
+            applyConfig(config)
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = filename
 
-            if (separator.isNotEmpty())
-              attributes["data-separator"] = separator
+            if (charset.isNotEmpty())
+              attributes["data-charset"] = charset
 
-            if (verticalSeparator.isNotEmpty())
-              attributes["data-separator-vertical"] = verticalSeparator
+            if (config.markdownSeparator.isNotEmpty())
+              attributes["data-separator"] = config.markdownSeparator
+
+            if (config.markdownVerticalSeparator.isNotEmpty())
+              attributes["data-separator-vertical"] = config.markdownVerticalSeparator
 
             // If any of the data-separator values are defined, then plain --- in markdown will not work
             // So do not define data-separator-notes unless using other data-separator values
-            if (notesSeparator.isNotEmpty() && separator.isNotEmpty() && verticalSeparator.isNotEmpty())
-              attributes["data-separator-notes"] = notesSeparator
+            if (config.markdownNotesSeparator.isNotEmpty() && config.markdownSeparator.isNotEmpty() && config.markdownVerticalSeparator.isNotEmpty())
+              attributes["data-separator-notes"] = config.markdownNotesSeparator
 
             if (filename.isEmpty()) {
               markdownBlock().also { markdown ->
@@ -309,7 +325,7 @@ class Presentation(val presentations: Presentations) {
           }
         }
 
-      config.menuDefaults.unmanagedValues.also { vals ->
+      config.menuConfig.unmanagedValues.also { vals ->
         if (vals.isNotEmpty()) {
           appendLine(
             buildString {
@@ -398,38 +414,12 @@ class Presentation(val presentations: Presentations) {
   }
 }
 
-class PresentationOutput(val presentations: Presentations) {
+class PresentationOutput(val kslides: KSlides) {
   var port = 8080
   var dir = "docs"
   var srcPrefix = "revealjs/"
-
-  fun httpServer() {
-    val environment = commandLineEnvironment(emptyArray())
-    embeddedServer(factory = CIO, environment).start(wait = true)
-  }
-
-  fun fileSystem() {
-    require(dir.isNotEmpty()) { "dir value must not be empty" }
-
-    File(dir).mkdir()
-    presentations.presentationMap.forEach { (key, p) ->
-      val (file, prefix) =
-        when {
-          key == "/" -> File("$dir/index.html") to srcPrefix
-          key.endsWith(".html") -> File("$dir/$key") to srcPrefix
-          else -> {
-            val pathElems = "$dir/$key".split("/").filter { it.isNotEmpty() }
-            val path = pathElems.joinToString("/")
-            val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
-            File(path).mkdir()
-            File("$path/index.html") to "$dotDot$srcPrefix"
-          }
-        }
-      println("Writing presentation $key to $file")
-      file.writeText(generatePage(p, prefix))
-    }
-  }
-
+  var enableHttp = false
+  var enableFileSystem = false
 }
 
 class VerticalContext {

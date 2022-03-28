@@ -9,6 +9,9 @@ class SlideConfig : AbstractConfig() {
   var backgroundIframe by ConfigProperty<String>(unmanagedValues)
   var backgroundInteractive by ConfigProperty<Boolean>(unmanagedValues)
   var backgroundVideo by ConfigProperty<String>(unmanagedValues)
+  var markdownSeparator by ConfigProperty<String>(unmanagedValues)
+  var markdownVerticalSeparator by ConfigProperty<String>(unmanagedValues)
+  var markdownNotesSeparator by ConfigProperty<String>(unmanagedValues)
 
   fun init() {
     transition = Transition.SLIDE
@@ -19,5 +22,8 @@ class SlideConfig : AbstractConfig() {
     backgroundIframe = ""
     backgroundInteractive = false
     backgroundVideo = ""
+    markdownSeparator = ""
+    markdownVerticalSeparator = ""
+    markdownNotesSeparator = "^Note:"
   }
 }

@@ -6,7 +6,7 @@ import kotlinx.html.*
 
 fun main() {
 
-  presentations {
+  kslides {
 
     globalConfig {
       slideNumber = "c/t"
@@ -15,12 +15,14 @@ fun main() {
 
       slides {
         backgroundColor = "green"
+        markdownSeparator = "---"
+        markdownVerticalSeparator = "--"
       }
     }
 
     output {
-      fileSystem()
-      httpServer()
+      enableFileSystem = true
+      enableHttp = true
     }
 
     presentation {
@@ -63,15 +65,19 @@ fun main() {
         }
       }
 
+      markdownSlide {
+        filename = "public/markdown.md"
+      }
+
       htmlSlide {
         autoAnimate = true
 
         content {
           """
-        <pre data-id="code-animation"><code data-trim="" data-line-numbers="">
-        ${includeFile("src/test/kotlin/examples/assign1.js")}
-        </code></pre>
-        """
+          <pre data-id="code-animation"><code data-trim="" data-line-numbers="">
+          ${includeFile("src/test/kotlin/examples/assign1.js")}
+          </code></pre>
+          """
         }
       }
 
@@ -80,12 +86,12 @@ fun main() {
 
         content {
           """
-        <pre data-id="code-animation">
-        <code data-trim="" data-line-numbers="">
-        ${includeFile("src/test/kotlin/examples/assign2.js")}
-        </code>
-        </pre>
-        """
+          <pre data-id="code-animation">
+          <code data-trim="" data-line-numbers="">
+          ${includeFile("src/test/kotlin/examples/assign2.js")}
+          </code>
+          </pre>
+          """
         }
       }
 
@@ -94,8 +100,8 @@ fun main() {
 
         content {
           """
-        <h1>Auto-Animate HTML</h1>
-        """
+          <h1>Auto-Animate HTML</h1>
+          """
         }
       }
 
@@ -105,8 +111,8 @@ fun main() {
 
         content {
           """
-        <h1 style="margin-top: 100px; color: red;">Auto-Animate HTML</h1>
-        """
+          <h1 style="margin-top: 200px; color: red;">Auto-Animate HTML</h1>
+          """
         }
       }
 
@@ -137,11 +143,11 @@ fun main() {
 
         content {
           """
-        # Java Code  
-        ```java [3|4|5]
-        ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
-        ```
-        """
+          # Java Code  
+          ```java [3|4|5]
+          ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
+          ```
+          """
         }
       }
 
@@ -158,22 +164,22 @@ fun main() {
 
         content {
           """
-        # Markdown Example
-        ```kotlin [3|4|5]
-        ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
-        ```
-        """
+          # Markdown Example
+          ```kotlin [3|4|5]
+          ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
+          ```
+          """
         }
       }
 
       markdownSlide {
         content {
           """
-        # Markdown Example
-        ````kotlin [1|3-4|20,24-25]
-        ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
-        ````
-        """
+          # Markdown Example
+          ````kotlin [1|3-4|20,24-25]
+     //     ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
+          ````
+          """
         }
       }
 
@@ -186,11 +192,11 @@ fun main() {
 
         content {
           """
-        # Markdown List Items 
-        * Item 1
-        * Item 2
-        * Item 3  
-        """
+          # Markdown List Items 
+          * Item 1
+          * Item 2
+          * Item 3  
+          """
         }
       }
 
@@ -214,11 +220,11 @@ fun main() {
 
         content {
           """ 
-        <h1>HTML Slide</h1>
-        <h2>This is an H2</h2> 
-        <h3>This is an H3</h3>
-        <p>This is a P</p>
-        """
+          <h1>HTML Slide</h1>
+          <h2>This is an H2</h2> 
+          <h3>This is an H3</h3>
+          <p>This is a P</p>
+          """
         }
       }
 
@@ -276,19 +282,19 @@ fun main() {
 
           content {
             """
-          ## Demo 1
-          Slide 1
-  
-          ---
-  
-          ## Demo 1
-          Slide 2
-  
-          ---
-  
-          ## Demo 1
-          Slide 3
-          """
+            ## Demo 1
+            Slide 1
+    
+            ---
+    
+            ## Demo 1
+            Slide 2
+    
+            ---
+    
+            ## Demo 1
+            Slide 3
+            """
           }
         }
 
@@ -315,26 +321,26 @@ fun main() {
 
       // Slides are separated by three dashes
       markdownSlide {
-        separator = "---"
-
         content {
           """
-        ## Demo 1
-        Slide 1
-        ---
-        ## Demo 1
-        Slide 2
-        ---
-        ## Demo 1
-        Slide 3
-        """
+          ## Demo 1
+          Slide 1
+          ---
+          ## Demo 1
+          Slide 2
+          ---
+          ## Demo 1
+          Slide 3
+          """
         }
       }
 
       // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
       markdownSlide {
-        separator = "\r?\\n---\r?\\n"
-        verticalSeparator = "\r?\\n--\r?\\n"
+        slideConfig {
+          markdownSeparator = "\r?\\n---\r?\\n"
+          markdownVerticalSeparator = "\r?\\n--\r?\\n"
+        }
 
         content {
           """

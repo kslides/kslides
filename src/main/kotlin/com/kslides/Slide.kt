@@ -9,7 +9,7 @@ fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" --
 fun fragmentIndex(index: Int) = "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
 
 abstract class Slide(internal val presentation: Presentation, internal val content: SlideArg) {
-  private val slideDefaults = SlideConfig()
+  private val slideConfig = SlideConfig()
 
   var id = ""
   var hidden = false
@@ -18,9 +18,9 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
 
   internal fun mergedConfig() =
     SlideConfig()
-      .apply { combine(presentation.presentations.globalDefaults.slideDefaults) }
-      .apply { combine(presentation.presentationDefaults.slideDefaults) }
-      .apply { combine(slideDefaults) }
+      .apply { combine(presentation.kslides.globalConfig.slideConfig) }
+      .apply { combine(presentation.presentationConfig.slideConfig) }
+      .apply { combine(slideConfig) }
 
   internal fun assignAttribs(section: SECTION, id: String, hidden: Boolean, uncounted: Boolean, autoAnimate: Boolean) {
     if (id.isNotEmpty())
@@ -37,7 +37,7 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
   }
 
   @HtmlTagMarker
-  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideDefaults)
+  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
 }
 
 abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content)
@@ -57,9 +57,7 @@ class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide
 class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
   internal var markdownBlock: () -> String = { "" }
   var filename: String = ""
-  var separator: String = ""
-  var verticalSeparator: String = ""
-  var notesSeparator: String = "^Note:"
+  var charset: String = ""
   var indentToken: String = INDENT_TOKEN
   var disableTrimIndent: Boolean = false
 
@@ -96,6 +94,7 @@ class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : Vertica
 class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
   internal var markdownBlock: () -> String = { "" }
   var filename: String = ""
+  var charset: String = ""
   var indentToken: String = INDENT_TOKEN
   var disableTrimIndent: Boolean = false
 
