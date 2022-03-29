@@ -12,7 +12,7 @@ object Output {
     //embeddedServer(factory = CIO, environment).start(wait = true)
 
     embeddedServer(CIO, port = output.port) {
-      module(output.kslides, false)
+      module(output, false)
     }.start(wait = true)
   }
 
