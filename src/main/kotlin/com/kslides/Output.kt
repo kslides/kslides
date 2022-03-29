@@ -8,8 +8,12 @@ import java.io.*
 object Output {
 
   internal fun runHttpServer(output: PresentationOutput) {
-    val environment = commandLineEnvironment(emptyArray())
-    embeddedServer(factory = CIO, environment).start(wait = true)
+    //val environment = commandLineEnvironment(emptyArray())
+    //embeddedServer(factory = CIO, environment).start(wait = true)
+
+    embeddedServer(CIO, port = output.port) {
+      module(output.kslides, false)
+    }.start(wait = true)
   }
 
   internal fun writeToFileSystem(output: PresentationOutput) {

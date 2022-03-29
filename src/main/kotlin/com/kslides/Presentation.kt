@@ -7,6 +7,7 @@ import com.kslides.Page.rawHtml
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
+import org.slf4j.event.*
 
 @HtmlTagMarker
 fun kslides(block: KSlides.() -> Unit) {
@@ -42,7 +43,7 @@ class KSlides {
   internal var outputBlock: PresentationOutput.() -> Unit = {}
   internal val presentationMap = mutableMapOf<String, Presentation>()
 
-  val staticRoots = mutableListOf("public", "assets", "css", "dist", "js", "plugin")
+  val staticRoots = mutableListOf("assets", "css", "dist", "js", "plugin")
 
   @HtmlTagMarker
   fun presentation(block: Presentation.() -> Unit) {
@@ -415,11 +416,14 @@ class Presentation(val kslides: KSlides) {
 }
 
 class PresentationOutput(val kslides: KSlides) {
+  var enableHttp = false
   var port = 8080
+  var defaultRoot = "public"
+  var logLevel = Level.INFO
+
+  var enableFileSystem = false
   var dir = "docs"
   var srcPrefix = "revealjs/"
-  var enableHttp = false
-  var enableFileSystem = false
 }
 
 class VerticalContext {

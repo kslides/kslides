@@ -80,13 +80,13 @@ class PresentationTest : StringSpec(
     }
 
     "Simple presentation tests5" {
-
       topLevel.staticRoots.forEach {
         shouldThrowExactly<IllegalArgumentException> {
           kslides {
             presentation {
               path = it
             }
+
             presentation {
               path = "/it"
             }

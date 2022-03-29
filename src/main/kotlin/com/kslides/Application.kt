@@ -1,17 +1,15 @@
 package com.kslides
 
 import com.github.pambrose.common.response.*
-import com.kslides.KSlides.Companion.topLevel
 import com.kslides.Page.generatePage
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.plugins.*
 import io.ktor.server.routing.*
-import org.slf4j.event.*
 
-fun Application.module(testing: Boolean = false) {
+fun Application.module(output: PresentationOutput, testing: Boolean = false) {
 
-  install(CallLogging) { level = Level.INFO }
+  install(CallLogging) { level = output.logLevel }
 
   install(DefaultHeaders) { header("X-Engine", "Ktor") }
 
@@ -21,14 +19,27 @@ fun Application.module(testing: Boolean = false) {
   }
 
   routing {
-    topLevel.staticRoots.forEach {
-      static("/$it") { resources(it) }
-    }
 
-    topLevel.presentationMap.forEach { (key, value) ->
-      get(key) {
-        respondWith {
-          generatePage(value)
+    output.kslides.also { topLevel ->
+
+      if (output.defaultRoot.isNotEmpty())
+        static("/") {
+          staticBasePackage = output.defaultRoot
+          resources(".")
+        }
+
+      topLevel.staticRoots.forEach {
+        if (it.isNotEmpty())
+          static("/$it") {
+            resources(it)
+          }
+      }
+
+      topLevel.presentationMap.forEach { (key, value) ->
+        get(key) {
+          respondWith {
+            generatePage(value)
+          }
         }
       }
     }

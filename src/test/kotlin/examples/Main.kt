@@ -65,7 +65,11 @@ fun main() {
       }
 
       markdownSlide {
-        filename = "public/markdown.md"
+        filename = "markdown.md"
+
+        slideConfig {
+          backgroundColor = "orange"
+        }
       }
 
       htmlSlide {
