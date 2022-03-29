@@ -4,9 +4,7 @@ import kotlinx.html.*
 
 class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   internal val menuConfig = MenuConfig()
-
-  @HtmlTagMarker
-  fun slides(block: SlideConfig.() -> Unit) = block.invoke(slideConfig)
+  internal val slideConfig = SlideConfig()
 
   // Display presentation control arrows
   var controls by ConfigProperty<Boolean>(unmanagedValues) // true
@@ -17,8 +15,6 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
 
   // Determines where controls appear, "edges" or "bottom-right"
   var controlsLayout by ConfigProperty<String>(unmanagedValues) // 'bottom-right'
-
-  internal val slideConfig = SlideConfig()
 
   var title by ConfigProperty<String>(managedValues)
   var theme by ConfigProperty<Theme>(managedValues)
@@ -78,15 +74,6 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       slideConfig.init()
     }
   }
-
-  fun merge(other: PresentationConfig) {
-    this.combine(other)
-    this.menuConfig.combine(other.menuConfig)
-    this.slideConfig.combine(other.slideConfig)
-  }
-
-  @HtmlTagMarker
-  fun menu(block: MenuConfig.() -> Unit) = block.invoke(menuConfig)
 
   // Visibility rule for backwards navigation arrows; "faded", "hidden"
   // or "visible"
@@ -304,4 +291,16 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
 
   // Time before the cursor is hidden (in ms)
   var hideCursorTime by ConfigProperty<Int>(unmanagedValues) // 5000
+
+  internal fun merge(other: PresentationConfig) {
+    this.combine(other)
+    this.menuConfig.combine(other.menuConfig)
+    this.slideConfig.combine(other.slideConfig)
+  }
+
+  @HtmlTagMarker
+  fun menu(block: MenuConfig.() -> Unit) = block.invoke(menuConfig)
+
+  @HtmlTagMarker
+  fun slides(block: SlideConfig.() -> Unit) = block.invoke(slideConfig)
 }

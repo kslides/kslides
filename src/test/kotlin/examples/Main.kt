@@ -26,15 +26,14 @@ fun main() {
     }
 
     presentation {
-
       css += """
-			.slides section h3 {
-				color: green;
-			}
-			.slides section h4 a {
-				color: red;
-			}
-     """
+        .slides section h3 {
+          color: green;
+        }
+        .slides section h4 a {
+          color: red;
+        }
+       """
 
       css {
         rule(".slides section h3") {
@@ -106,7 +105,6 @@ fun main() {
       }
 
       htmlSlide {
-
         autoAnimate = true
 
         content {
@@ -136,7 +134,6 @@ fun main() {
       }
 
       markdownSlide {
-
         slideConfig {
           backgroundColor = "blue"
         }
@@ -177,7 +174,7 @@ fun main() {
           """
           # Markdown Example
           ````kotlin [1|3-4|20,24-25]
-     //     ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
+          ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
           ````
           """
         }
@@ -297,8 +294,6 @@ fun main() {
             """
           }
         }
-
-        //markdownSlide(filename = "public/markdown.md")
       }
 
       dslSlide {
@@ -316,8 +311,6 @@ fun main() {
           }
         }
       }
-
-      //markdownSlide(filename = "/public/markdown.md", separator = "^---", vertical_separator = "^--")
 
       // Slides are separated by three dashes
       markdownSlide {
