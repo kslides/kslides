@@ -4,13 +4,8 @@ import kotlinx.html.*
 
 typealias SlideArg = (DIV, Slide) -> Unit
 
-fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
-
-fun fragmentIndex(index: Int) = "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
-
 abstract class Slide(internal val presentation: Presentation, internal val content: SlideArg) {
   private val slideConfig = SlideConfig()
-
   var id = ""
   var hidden = false
   var uncounted = false
@@ -44,7 +39,6 @@ abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : 
 
 class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
   internal var htmlBlock: () -> String = { "" }
-
   var indentToken: String = INDENT_TOKEN
   var disableTrimIndent: Boolean = false
 

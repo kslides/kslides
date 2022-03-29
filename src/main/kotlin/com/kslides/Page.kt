@@ -6,7 +6,7 @@ import kotlinx.html.dom.*
 
 internal object Page {
 
-  fun generatePage(p: Presentation, srcPrefix: String = "/"): String {
+  fun generatePage(p: Presentation, prefix: String = "/"): String {
     val document =
       document {
         PresentationConfig()
@@ -15,8 +15,8 @@ internal object Page {
             merge(p.presentationConfig)
           }.also { config ->
             append.html {
-              generateHead(p, config, srcPrefix.ensureSuffix("/"))
-              generateBody(p, config, srcPrefix.ensureSuffix("/"))
+              generateHead(p, config, prefix.ensureSuffix("/"))
+              generateBody(p, config, prefix.ensureSuffix("/"))
             }
           }
       }

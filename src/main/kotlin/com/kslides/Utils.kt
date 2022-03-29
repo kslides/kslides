@@ -4,6 +4,10 @@ import java.util.*
 
 fun String.toLower(locale: Locale = Locale.getDefault()) = lowercase(locale)
 
+fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
+
+fun fragmentIndex(index: Int) = "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
+
 fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
   mutableMapOf<K, V>()
     .also { result ->

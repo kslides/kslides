@@ -77,7 +77,6 @@ presentation {
 
 * https://github.com/Martinomagnifico/reveal.js-copycode
 * https://github.com/denehyg/reveal.js-menu
-* https://github.com/denehyg/reveal.js-toolbar
 
 ## FAQ
 
