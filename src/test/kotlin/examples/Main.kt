@@ -8,12 +8,12 @@ fun main() {
 
   kslides {
 
-    globalConfig {
+    presentationDefault {
       slideNumber = "c/t"
       transition = Transition.FADE
       gaPropertyId = "G-XXXXXXXXX"
 
-      slides {
+      slideDefault {
         backgroundColor = "green"
         markdownSeparator = "---"
         markdownVerticalSeparator = "--"
@@ -59,7 +59,7 @@ fun main() {
           openOnInit = true
         }
 
-        slides {
+        slideDefault {
           backgroundColor = "yellow"
         }
       }
@@ -68,7 +68,7 @@ fun main() {
         filename = "markdown.md"
 
         slideConfig {
-          backgroundColor = "orange"
+          backgroundColor = "red"
         }
       }
 
@@ -102,9 +102,7 @@ fun main() {
         autoAnimate = true
 
         content {
-          """
-          <h1>Auto-Animate HTML</h1>
-          """
+          "<h1>Auto-Animate HTML</h1>"
         }
       }
 

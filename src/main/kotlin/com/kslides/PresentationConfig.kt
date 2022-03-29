@@ -302,5 +302,5 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   fun menu(block: MenuConfig.() -> Unit) = block.invoke(menuConfig)
 
   @HtmlTagMarker
-  fun slides(block: SlideConfig.() -> Unit) = block.invoke(slideConfig)
+  fun slideDefault(block: SlideConfig.() -> Unit) = block.invoke(slideConfig)
 }

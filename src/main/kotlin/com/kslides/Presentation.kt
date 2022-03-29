@@ -26,11 +26,15 @@ fun kslides(block: KSlides.() -> Unit) {
       }
 
       outputBlock.invoke(presentationOutput)
+
       if (presentationOutput.enableFileSystem)
         writeToFileSystem(presentationOutput)
 
       if (presentationOutput.enableHttp)
         runHttpServer(presentationOutput)
+
+      if (!presentationOutput.enableFileSystem && !presentationOutput.enableHttp)
+        KSlides.logger.warn { "Set enableHttp or enableFileSystem to true in the output block" }
     }
 }
 
@@ -45,12 +49,7 @@ class KSlides {
   val staticRoots = mutableListOf("assets", "css", "dist", "js", "plugin")
 
   @HtmlTagMarker
-  fun presentation(block: Presentation.() -> Unit) {
-    presentationBlocks += block
-  }
-
-  @HtmlTagMarker
-  fun globalConfig(block: PresentationConfig.() -> Unit) {
+  fun presentationDefault(block: PresentationConfig.() -> Unit) {
     configBlock = block
   }
 
@@ -59,7 +58,12 @@ class KSlides {
     this.outputBlock = outputBlock
   }
 
-  companion object {
+  @HtmlTagMarker
+  fun presentation(block: Presentation.() -> Unit) {
+    presentationBlocks += block
+  }
+
+  companion object : KLogging() {
     internal val topLevel = KSlides()
   }
 }

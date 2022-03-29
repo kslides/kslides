@@ -1,19 +1,8 @@
-# kslides
+package com.github.readingbat.examples
 
-[![Release](https://jitpack.io/v/pambrose/kslides.svg)](https://jitpack.io/#pambrose/kslides)
-[![Build Status](https://travis-ci.org/pambrose/kslides.svg?branch=master)](https://travis-ci.org/pambrose/kslides)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/pambrose/kslides/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pambrose/kslides&amp;utm_campaign=Badge_Grade)
-[![Kotlin](https://img.shields.io/badge/%20language-Kotlin-red.svg)](https://kotlinlang.org/)
+import com.kslides.*
+import kotlinx.html.*
 
-
-**kslides** is a Kotlin DSL wrapper for [reveal.js](https://revealjs.com). It is meant for people who would prefer to
-build presentations with IntelliJ than Powerpoint.
-
-## Example
-
-Click [here](https://kslides-readme.herokuapp.com) to see [this presentation](src/main/kotlin/Simple.kt) running.
-
-```kotlin
 fun main() {
   kslides {
     output {
@@ -125,26 +114,3 @@ fun main() {
     }
   }
 }
-```
-
-## Third Party Plugins
-
-* https://github.com/Martinomagnifico/reveal.js-copycode
-* https://github.com/denehyg/reveal.js-menu
-
-## FAQ
-
-* https://stackoverflow.com/questions/49267811/how-can-i-escape-3-backticks-code-block-in-3-backticks-code-block
-
-## Getting Started
-
-[![Template](https://img.shields.io/badge/kslides-template-blue?logo=github)](https://github.com/pambrose/kslides-template/generate)
-
-[Create a presentation repo](https://github.com/pambrose/kslides-template/generate) using
-the [kslides-template](https://github.com/pambrose/kslides-template) repo.
-
-## Notes
-
-* When a `markdownSlide` is in a `verticalSlides` section and references an external file, the string "---"
-  is interpreted as a vertical page separator and "--- " (with a space suffix) is rendered as a markdown horizontal
-  line. 

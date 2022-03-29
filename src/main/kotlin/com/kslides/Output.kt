@@ -15,39 +15,37 @@ object Output {
   internal fun runHttpServer(output: PresentationOutput) {
     embeddedServer(CIO, port = output.httpPort) {
 
+      // By embedding this here, ather than in a Application.module() call, we are not able to use auto-reload
       install(CallLogging) { level = output.logLevel }
-
       install(DefaultHeaders) { header("X-Engine", "Ktor") }
-
       install(Compression) {
         gzip { priority = 1.0 }
         deflate { priority = 10.0; minimumSize(1024) /* condition*/ }
       }
 
       routing {
-        output.kslides.also { topLevel ->
-          if (output.defaultHttpRoot.isNotEmpty())
-            static("/") {
-              staticBasePackage = output.defaultHttpRoot
-              resources(".")
-            }
-
-          topLevel.staticRoots.forEach {
-            if (it.isNotEmpty())
-              static("/$it") {
-                resources(it)
-              }
+        if (output.defaultHttpRoot.isNotEmpty())
+          static("/") {
+            staticBasePackage = output.defaultHttpRoot
+            resources(".")
           }
 
-          topLevel.presentationMap.forEach { (key, value) ->
-            get(key) {
-              respondWith {
-                generatePage(value)
-              }
+        output.kslides.staticRoots.forEach {
+          if (it.isNotEmpty())
+            static("/$it") {
+              resources(it)
+            }
+        }
+
+        output.kslides.presentationMap.forEach { (key, value) ->
+          get(key) {
+            respondWith {
+              generatePage(value)
             }
           }
         }
       }
+
     }.start(wait = true)
   }
 
