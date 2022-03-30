@@ -128,6 +128,18 @@ and [Github Pages](https://pambrose.github.io/kslides/).
         }
       }
     }
+
+    markdownSlide {
+      content {
+        """
+          ## Presentation Description    
+          ```kotlin [9-12|16-24|26-39|1-132]
+          ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/main/kotlin/com/kslides/examples/Readme.kt")}
+          ```
+          """
+      }
+    }
+
   }
 }
 ```
@@ -137,9 +149,6 @@ and [Github Pages](https://pambrose.github.io/kslides/).
 * https://github.com/Martinomagnifico/reveal.js-copycode
 * https://github.com/denehyg/reveal.js-menu
 
-## FAQ
-
-* https://stackoverflow.com/questions/49267811/how-can-i-escape-3-backticks-code-block-in-3-backticks-code-block
 
 ## Getting Started
 
@@ -148,8 +157,15 @@ and [Github Pages](https://pambrose.github.io/kslides/).
 [Create a presentation repo](https://github.com/pambrose/kslides-template/generate) using
 the [kslides-template](https://github.com/pambrose/kslides-template) repo.
 
-## Notes
+## Heroku Notes
+
+* Add a Config Var for `GRADLE_TASK=-Pprod=true uberjar`
+
+
+## MarkDown Slide Notes
 
 * When a `markdownSlide` is in a `verticalSlides` section and references an external file, the string "---"
   is interpreted as a vertical page separator and "--- " (with a space suffix) is rendered as a markdown horizontal
   line.
+
+* https://stackoverflow.com/questions/49267811/how-can-i-escape-3-backticks-code-block-in-3-backticks-code-block
