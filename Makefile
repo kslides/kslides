@@ -1,5 +1,3 @@
-VERSION=0.1.0
-
 default: versioncheck
 
 build-all: clean stage
