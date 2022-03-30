@@ -6,12 +6,15 @@
 [![Kotlin](https://img.shields.io/badge/%20language-Kotlin-red.svg)](https://kotlinlang.org/)
 
 **kslides** is a Kotlin DSL wrapper for [reveal.js](https://revealjs.com). It is meant for people who would prefer to
-build presentations with IntelliJ than Powerpoint. It works particularly well for presentationing code and slides
+build presentations with IntelliJ than Powerpoint. It works particularly well for presentations with code and slides
 authored in Markdown/HTML.
 
 ## Example
 
-Click [here](https://kslides-readme.herokuapp.com) to see [this presentation](src/main/kotlin/Simple.kt) running.
+[This presentation](src/test/kotlin/examples/Readme.kt) can be seen running on 
+[Heroku](https://kslides-readme.herokuapp.com),
+[Netlify](https://kslides-readme.netlify.app), 
+and [Github Pages](https://pambrose.github.io/kslides/).
 
 ```kotlin
   kslides {
@@ -148,4 +151,4 @@ the [kslides-template](https://github.com/pambrose/kslides-template) repo.
 
 * When a `markdownSlide` is in a `verticalSlides` section and references an external file, the string "---"
   is interpreted as a vertical page separator and "--- " (with a space suffix) is rendered as a markdown horizontal
-  line. 
+  line.
