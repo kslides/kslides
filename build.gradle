@@ -9,7 +9,7 @@ plugins {
 }
 
 // These are for the uber target
-def mainName = "com.github.readingbat.examples.ReadmeKt"
+def mainName = "com.kslides.examples.ReadmeKt"
 def appName = 'kslides'
 
 // This is for ./gradlew run
@@ -49,6 +49,9 @@ dependencies {
 
     testImplementation "io.kotest:kotest-runner-junit5:$kotest_version"
 }
+
+// Run tests if you provide test project property from command line
+test.onlyIf { project.hasProperty('test') }
 
 task stage(dependsOn: ['uberjar', 'build', 'clean'])
 build.mustRunAfter clean
