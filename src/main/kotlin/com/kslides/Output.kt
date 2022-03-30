@@ -14,7 +14,10 @@ import java.io.*
 
 object Output : KLogging() {
   internal fun runHttpServer(output: PresentationOutput) {
-    embeddedServer(CIO, port = output.httpPort) {
+
+    val port = System.getenv("PORT")?.toInt() ?: output.httpPort
+
+    embeddedServer(CIO, port = port) {
 
       // By embedding this here, rather than in an Application.module() call, we are not able to use auto-reload
       install(CallLogging) { level = output.logLevel }

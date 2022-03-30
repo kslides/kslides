@@ -11,9 +11,9 @@ authored in Markdown/HTML.
 
 ## Example
 
-[This presentation](src/test/kotlin/examples/Readme.kt) can be seen running on 
-[Heroku](https://kslides-readme.herokuapp.com),
-[Netlify](https://kslides-readme.netlify.app), 
+[This presentation](src/main/kotlin/com/kslides/examples/Readme.kt) can be seen running dynamically on 
+[Heroku](https://kslides-readme.herokuapp.com), or statically from 
+[Netlify](https://kslides-readme.netlify.app) 
 and [Github Pages](https://pambrose.github.io/kslides/).
 
 ```kotlin

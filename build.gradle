@@ -9,7 +9,7 @@ plugins {
 }
 
 // These are for the uber target
-def mainName = "ReadmeKt"
+def mainName = "com.github.readingbat.examples.ReadmeKt"
 def appName = 'kslides'
 
 // This is for ./gradlew run

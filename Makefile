@@ -21,9 +21,6 @@ uber: uberjar
 dist:
 	./gradlew installDist
 
-script: dist
-	build/install/battlesnake-examples/bin/snake
-
 stage:
 	./gradlew stage
 
