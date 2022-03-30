@@ -219,7 +219,7 @@ class Presentation(val kslides: KSlides) {
                       markdown
                         .indentInclude(indentToken)
                         .let { if (!disableTrimIndent) it.trimIndent() else it }
-                    rawHtml("\n$text")
+                    rawHtml("\n$text\n")
                   }
               }
             }
@@ -265,7 +265,7 @@ class Presentation(val kslides: KSlides) {
                       markdown
                         .indentInclude(indentToken)
                         .let { if (!disableTrimIndent) it.trimIndent() else it }
-                    rawHtml("\n$text")
+                    rawHtml("\n$text\n")
                   }
               }
             }
