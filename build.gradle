@@ -51,7 +51,7 @@ dependencies {
 }
 
 // Skips tests if you provide prod project property from command line
-test.onlyIf { !project.hasProperty('prod') }
+//test.onlyIf { !project.hasProperty('prod') }
 
 task stage(dependsOn: ['uberjar', 'build', 'clean'])
 build.mustRunAfter clean
