@@ -9,9 +9,10 @@ import io.ktor.server.engine.*
 import io.ktor.server.http.content.*
 import io.ktor.server.plugins.*
 import io.ktor.server.routing.*
+import mu.*
 import java.io.*
 
-object Output {
+object Output : KLogging() {
   internal fun runHttpServer(output: PresentationOutput) {
     embeddedServer(CIO, port = output.httpPort) {
 
@@ -68,7 +69,7 @@ object Output {
             File("$path/index.html") to "$dotDot$srcPrefix"
           }
         }
-      println("Writing presentation $key to $file")
+      logger.info { "Writing presentation $key to $file" }
       file.writeText(generatePage(p, prefix))
     }
   }
