@@ -41,12 +41,11 @@ Press ESC to see presentation overview.
         <section data-background-color="#4370A5" data-markdown="">
           <script type="text/template">
 ## Kotlin Code Highlights    
-```kotlin [1|3,8|4|5-7]
+```kotlin [3,7|4,6|5]
 package com.examples
 
 fun main() {
-  val ints: List<Int> = listOf(1, 2, 3)
-  for (i in ints) {
+  for (i in (0..5)) {
     println("Hello World $i")
   }
 }
@@ -210,6 +209,18 @@ fun main() {
           }
         }
       }
+
+      markdownSlide {
+        content {
+          """
+          ## Presentation Description    
+          ```kotlin [9-12|16-24|26-39|1-132]
+          ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/main/kotlin/com/kslides/examples/Readme.kt")}
+          ```
+          """
+        }
+      }
+
     }
   }
 }

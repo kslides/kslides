@@ -1,8 +1,7 @@
 package com.examples
 
 fun main() {
-  val ints: List<Int> = listOf(1, 2, 3)
-  for (i in ints) {
+  for (i in (0..5)) {
     println("Hello World $i")
   }
 }

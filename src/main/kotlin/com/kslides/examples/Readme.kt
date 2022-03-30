@@ -65,7 +65,7 @@ fun main() {
         content {
           """
           ## Kotlin Code Highlights    
-          ```kotlin [1|3,8|4|5-7]
+          ```kotlin [3,7|4,6|5]
           ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
           ```
           """

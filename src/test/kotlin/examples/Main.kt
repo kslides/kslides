@@ -164,7 +164,7 @@ fun main() {
         content {
           """
           # Markdown Example
-          ```kotlin [3|4|5]
+          ```kotlin [3,7|4,6|5]
           ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
           ```
           """
@@ -175,7 +175,7 @@ fun main() {
         content {
           """
           # Markdown Example
-          ````kotlin [1|3-4|20,24-25]
+          ````kotlin [3,7|4,6|5]
           ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
           ````
           """
