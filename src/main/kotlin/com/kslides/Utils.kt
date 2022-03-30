@@ -98,3 +98,6 @@ internal fun String.trimIndentWithInclude(): String {
     }
     .joinToString("\n")
 }
+
+fun githubPrefix(username: String, repoName: String, branchName: String="master") =
+  "https://raw.githubusercontent.com/$username/$repoName/$branchName"

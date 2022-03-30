@@ -17,7 +17,7 @@ authored in Markdown/HTML.
 and [Github Pages](https://pambrose.github.io/kslides/).
 
 ```kotlin
-  kslides {
+kslides {
 
   output {
     enableFileSystem = true
@@ -78,7 +78,7 @@ and [Github Pages](https://pambrose.github.io/kslides/).
       content {
         """
           ## Kotlin Code Highlights    
-          ```kotlin [1|3,8|4|5-7]
+          ```kotlin [3,7|4,6|5]
           ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
           ```
           """
@@ -134,12 +134,11 @@ and [Github Pages](https://pambrose.github.io/kslides/).
         """
           ## Presentation Description    
           ```kotlin [9-12|16-24|26-39|1-132]
-          ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/main/kotlin/com/kslides/examples/Readme.kt")}
+          ${includeUrl("${githubPrefix("pambrose", "kslides")}/src/main/kotlin/com/kslides/examples/Readme.kt")}
           ```
           """
       }
     }
-
   }
 }
 ```

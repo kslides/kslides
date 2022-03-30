@@ -121,12 +121,11 @@ fun main() {
           """
           ## Presentation Description    
           ```kotlin [9-12|16-24|26-39|1-132]
-          ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/main/kotlin/com/kslides/examples/Readme.kt")}
+          ${includeUrl("${githubPrefix("pambrose", "kslides")}/src/main/kotlin/com/kslides/examples/Readme.kt")}
           ```
           """
         }
       }
-
     }
   }
 }
