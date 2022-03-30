@@ -1,385 +1,497 @@
 package examples
 
 import com.kslides.*
-import com.kslides.Presentation.Companion.outputPresentations
 import kotlinx.css.*
 import kotlinx.html.*
 
 fun main() {
 
-  presentationsDefaults {
-    slideNumber = "c/t"
-    transition = Transition.FADE
-  }
+  kslides {
 
-  presentation {
+    presentationDefault {
+      slideNumber = "c/t"
+      transition = Transition.FADE
+      gaPropertyId = "G-XXXXXXXXX"
 
-    css += """
-			.slides section h3 {
-				color: green;
-			}
-			.slides section h4 a {
-				color: red;
-			}
-     """
-
-    css {
-      rule(".slides section h3") {
-        color = Color.green
-      }
-      rule(".slides section h4 a") {
-        color = Color.red
+      slideConfig {
+        backgroundColor = "green"
+        markdownSeparator = "---"
+        markdownVerticalSeparator = "--"
       }
     }
 
-    config {
-      title = "markdown Demo"
-      theme = Theme.MOON
-      hash = true
-      history = true
-      transition = Transition.SLIDE
-      transitionSpeed = Speed.FAST
-      enableMenu = false
-
-      menu {
-        numbers = true
-        markers = false
-        openOnInit = true
-      }
-
-      slides {
-        backgroundColor = "#4DD0A5"
-      }
+    output {
+      enableFileSystem = true
+      enableHttp = true
     }
 
-    markdownSlide {
-
-      config {
-        backgroundColor = "blue"
-      }
-
-      """
-      # Java Code  
-      ```java [3|4|5]
-      ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
-      ```
-      """.trimIndentWithInclude()
-    }
-
-    dslSlide {
-      config {
-        backgroundIframe = "https://www.readingbat.com"
-      }
-    }
-
-    markdownSlide {
-      config {
-        backgroundColor = "#4370A5"
-      }
-
-      """
-      # Markdown Example
-      ```kotlin [3|4|5]
-      ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
-      ```
-      """.trimIndentWithInclude()
-    }
-
-    markdownSlide {
-      """
-      # Markdown Example
-      ````kotlin [1|3-4|20,24-25]
-      ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
-      ````
-      """.trimIndentWithInclude()
-    }
-
-    markdownSlide {
-      config {
-        backgroundColor = "#000433"
-        transition = Transition.CONCAVE
-        transitionSpeed = Speed.SLOW
-      }
-
-      """
-        # Markdown List Items 
-        * Item 1
-        * Item 2
-        * Item 3
-      """
-    }
-
-    dslSlide {
-
-      config {
-        backgroundColor = "#4D55A1"
-      }
-
-      content {
-        h1 { +"DSL Slide" }
-        h2 { +"This is an H2" }
-        h3 { +"This is an H3" }
-        p { +"This is a P" }
-      }
-    }
-
-    htmlSlide {
-
-      config {
-        backgroundColor = "#4D55A1"
-      }
-
-      """ 
-      <h1>HTML Slide</h1>
-      <h2>This is an H2</h2> 
-      <h3>This is an H3</h3>
-      <p>This is a P</p>
-      """
-    }
-
-    dslSlide(id = "home") {
-      config {
-        backgroundColor = "#3DDFF1"
-      }
-
-      content {
-        h3 { +"Examples" }
-        h4 { a { href = "/demo.html"; +"Demo Deck" } }
-      }
-    }
-
-    dslSlide {
-      config {
-        transition = Transition.ZOOM
-        transitionSpeed = Speed.SLOW
-        backgroundColor = "#bb00bb"
-      }
-
-      content {
-        img { src = "https://picsum.photos/512/512" }
-      }
-    }
-
-    verticalSlides {
-      dslSlide {
-        config {
-          backgroundColor = "aquamarine"
+    presentation {
+      css += """
+        .slides section h3 {
+          color: green;
         }
+        .slides section h4 a {
+          color: red;
+        }
+       """
 
-        content {
-          h2 { +"🐟" }
+      css {
+        rule(".slides section h3") {
+          color = Color.green
+        }
+        rule(".slides section h4 a") {
+          color = Color.red
         }
       }
 
-      dslSlide {
-        config {
-          transition = Transition.CONCAVE
-          transitionSpeed = Speed.SLOW
-          backgroundColor = "rgb(70, 70, 255)"
+      presentationConfig {
+        title = "markdown Demo"
+        theme = Theme.MOON
+        hash = true
+        history = true
+        transition = Transition.SLIDE
+        transitionSpeed = Speed.FAST
+        enableMenu = false
+
+        menuConfig {
+          numbers = true
+          markers = false
+          openOnInit = true
         }
 
-        content {
-          h2 { +"🐳" }
+        slideConfig {
+          backgroundColor = "yellow"
         }
       }
 
       markdownSlide {
-        config {
+        filename = "markdown.md"
+
+        slideConfig {
           backgroundColor = "red"
         }
-
-        """
-        ## Demo 1
-        Slide 1
-
-        ---
-
-        ## Demo 1
-        Slide 2
-
-        ---
-
-        ## Demo 1
-        Slide 3
-        """
       }
 
-      //markdownSlide(filename = "public/markdown.md")
-    }
+      htmlSlide {
+        autoAnimate = true
 
-    dslSlide(id = "embed-web-content") {
-      content {
-        h2 { +"Embed Web Content" }
-
-        iframe {
-          attributes["data-autoplay"] = "true"
-          attributes["frameborder"] = "0"
-          width = "700"
-          height = "540"
-          src = "https://slides.com/news/auto-animate/embed"
+        content {
+          """
+          <pre data-id="code-animation"><code data-trim="" data-line-numbers="">
+          ${includeFile("src/test/kotlin/examples/assign1.js")}
+          </code></pre>
+          """
         }
       }
-    }
 
-    //markdownSlide(filename = "/public/markdown.md", separator = "^---", vertical_separator = "^--")
+      htmlSlide {
+        autoAnimate = true
 
-    // Slides are separated by three dashes
-    markdownSlide(separator = "---") {
-      """
-        ## Demo 1
-        Slide 1
-        ---
-        ## Demo 1
-        Slide 2
-        ---
-        ## Demo 1
-        Slide 3
-        """
-    }
-
-    // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
-    markdownSlide(separator = "\r?\\n---\r?\\n", vertical_separator = "\r?\\n--\r?\\n") {
-      """
-      ## Demo 2
-      Slide 1.1
-
-      --
-
-      ## Demo 2
-      Slide 1.2
-
-      ---
-
-      ## Demo 2
-      Slide 2
-      """
-    }
-
-    markdownSlide {
-      """
-        A
-  
-        ---
-  
-        B
-  
-        ---
-  
-        C
-        """
-    }
-
-    markdownSlide {
-
-      config {
-        backgroundColor = "#FFFF00"
-      }
-
-      """
-      ## Slide attributes
-      """
-    }
-
-    markdownSlide {
-      """
-      ## Element attributes
-
-      Item 1 ${fragmentIndex(1)}
-
-      Item 2 ${fragmentIndex(2)}
-
-      Item 3 ${fragmentIndex(3)}
-      """
-    }
-
-    dslSlide {
-      content {
-        section {
-          +"Slide 2"
-        }
-        section {
-          +"Sub 1"
-        }
-        section {
-          +"Sub 2"
+        content {
+          """
+          <pre data-id="code-animation">
+          <code data-trim="" data-line-numbers="">
+          ${includeFile("src/test/kotlin/examples/assign2.js")}
+          </code>
+          </pre>
+          """
         }
       }
-    }
 
-    dslSlide {
-      content {
-        +"Slide 3"
-        h4 { a { href = "#/home"; +"Home" } }
-      }
-    }
+      htmlSlide {
+        autoAnimate = true
 
-    dslSlide {
-      config {
-        backgroundIframe = "https://revealjs.com"
+        content {
+          "<h1>Auto-Animate HTML</h1>"
+        }
       }
 
-      content {
-        //attributes["data-background-interactive"] = "false"
-        div {
-          style =
-            "position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;"
-          h2 { +"Iframe Backgrounds" }
-          p {
-            +"""Since reveal.js runs on the web, you can easily embed other web content. Try interacting with the
-                    page in the background."""
+      htmlSlide {
+        autoAnimate = true
+
+        content {
+          """
+          <h1 style="margin-top: 200px; color: red;">Auto-Animate HTML</h1>
+          """
+        }
+      }
+
+      dslSlide {
+        autoAnimate = true
+
+        content {
+          h1 { +"Auto-Animate DSL" }
+        }
+      }
+
+      dslSlide {
+        autoAnimate = true
+
+        content {
+          h1 {
+            style = "margin-top: 100px; color: red;"
+            +"Auto-Animate DSL"
           }
         }
       }
+
+      markdownSlide {
+        slideConfig {
+          backgroundColor = "blue"
+        }
+
+        content {
+          """
+          # Java Code  
+          ```java [3|4|5]
+          ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
+          ```
+          """
+        }
+      }
+
+      dslSlide {
+        slideConfig {
+          backgroundIframe = "https://www.readingbat.com"
+        }
+      }
+
+      markdownSlide {
+        slideConfig {
+          backgroundColor = "#4370A5"
+        }
+
+        content {
+          """
+          # Markdown Example
+          ```kotlin [3|4|5]
+          ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
+          ```
+          """
+        }
+      }
+
+      markdownSlide {
+        content {
+          """
+          # Markdown Example
+          ````kotlin [1|3-4|20,24-25]
+          ${includeUrl("https://raw.githubusercontent.com/pambrose/kslides/master/src/test/kotlin/examples/HelloWorldK.kt")}
+          ````
+          """
+        }
+      }
+
+      markdownSlide {
+        slideConfig {
+          backgroundColor = "#000433"
+          transition = Transition.CONCAVE
+          transitionSpeed = Speed.SLOW
+        }
+
+        content {
+          """
+          # Markdown List Items 
+          * Item 1
+          * Item 2
+          * Item 3  
+          """
+        }
+      }
+
+      dslSlide {
+        slideConfig {
+          backgroundColor = "#4D55A1"
+        }
+
+        content {
+          h1 { +"DSL Slide" }
+          h2 { +"This is an H2" }
+          h3 { +"This is an H3" }
+          p { +"This is a P" }
+        }
+      }
+
+      htmlSlide {
+        slideConfig {
+          backgroundColor = "#4D55A1"
+        }
+
+        content {
+          """ 
+          <h1>HTML Slide</h1>
+          <h2>This is an H2</h2> 
+          <h3>This is an H3</h3>
+          <p>This is a P</p>
+          """
+        }
+      }
+
+      dslSlide {
+        id = "home"
+
+        slideConfig {
+          backgroundColor = "#3DDFF1"
+        }
+
+        content {
+          h3 { +"Examples" }
+          h4 { a { href = "/demo.html"; +"Demo Deck" } }
+        }
+      }
+
+      dslSlide {
+        slideConfig {
+          transition = Transition.ZOOM
+          transitionSpeed = Speed.SLOW
+          backgroundColor = "#bb00bb"
+        }
+
+        content {
+          img { src = "https://picsum.photos/512/512" }
+        }
+      }
+
+      verticalSlides {
+        dslSlide {
+          slideConfig {
+            backgroundColor = "aquamarine"
+          }
+          content {
+            h2 { +"🐟" }
+          }
+        }
+
+        dslSlide {
+          slideConfig {
+            transition = Transition.CONCAVE
+            transitionSpeed = Speed.SLOW
+            backgroundColor = "rgb(70, 70, 255)"
+          }
+
+          content {
+            h2 { +"🐳" }
+          }
+        }
+
+        markdownSlide {
+          slideConfig {
+            backgroundColor = "red"
+          }
+
+          content {
+            """
+            ## Demo 1
+            Slide 1
+    
+            ---
+    
+            ## Demo 1
+            Slide 2
+    
+            ---
+    
+            ## Demo 1
+            Slide 3
+            """
+          }
+        }
+      }
+
+      dslSlide {
+        id = "embed-web-content"
+
+        content {
+          h2 { +"Embed Web Content" }
+
+          iframe {
+            attributes["data-autoplay"] = "true"
+            attributes["frameborder"] = "0"
+            width = "700"
+            height = "540"
+            src = "https://slides.com/news/auto-animate/embed"
+          }
+        }
+      }
+
+      // Slides are separated by three dashes
+      markdownSlide {
+        content {
+          """
+          ## Demo 1
+          Slide 1
+          ---
+          ## Demo 1
+          Slide 2
+          ---
+          ## Demo 1
+          Slide 3
+          """
+        }
+      }
+
+      // Slides are separated by newline + three dashes + newline, vertical slides identical but two dashes
+      markdownSlide {
+        slideConfig {
+          markdownSeparator = "\r?\\n---\r?\\n"
+          markdownVerticalSeparator = "\r?\\n--\r?\\n"
+        }
+
+        content {
+          """
+          ## Demo 2
+          Slide 1.1
+    
+          --
+    
+          ## Demo 2
+          Slide 1.2
+    
+          ---
+    
+          ## Demo 2
+          Slide 2
+          """
+        }
+      }
+
+      markdownSlide {
+        content {
+          """
+          A
+    
+          ---
+    
+          B
+    
+          ---
+    
+          C
+          """
+        }
+      }
+
+      markdownSlide {
+
+        slideConfig {
+          backgroundColor = "#FFFF00"
+        }
+
+        content {
+          """
+          ## Slide attributes
+          """
+        }
+      }
+
+      markdownSlide {
+        content {
+          """
+          ## Element attributes
+    
+          Item 1 ${fragmentIndex(1)}
+    
+          Item 2 ${fragmentIndex(2)}
+    
+          Item 3 ${fragmentIndex(3)}
+          """
+        }
+      }
+
+      dslSlide {
+        content {
+          section {
+            +"Slide 2"
+          }
+          section {
+            +"Sub 1"
+          }
+          section {
+            +"Sub 2"
+          }
+        }
+      }
+
+      dslSlide {
+        content {
+          +"Slide 3"
+          h4 { a { href = "#/home"; +"Home" } }
+        }
+      }
+
+      dslSlide {
+        slideConfig {
+          backgroundIframe = "https://revealjs.com"
+        }
+
+        content {
+          //attributes["data-background-interactive"] = "false"
+          div {
+            style =
+              "position: absolute; width: 40%; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px; font-size: 20px; text-align: left;"
+            h2 { +"Iframe Backgrounds" }
+            p {
+              +"""Since reveal.js runs on the web, you can easily embed other web content. Try interacting with the
+                    page in the background."""
+            }
+          }
+        }
+      }
+
+      // Images
+      markdownSlide {
+        content {
+          "![Sample image](https://picsum.photos/512/512)"
+        }
+      }
     }
 
-    // Images
-    markdownSlide {
-      "![Sample image](https://picsum.photos/512/512)"
+    presentation {
+      path = "demo1"
+
+      dslSlide {
+        content {
+          +"Demo1 Slide 1"
+        }
+      }
+
+      dslSlide {
+        content {
+          +"Demo1 Slide 2"
+        }
+      }
+    }
+
+    presentation {
+      path = "demo1/demo2"
+
+      dslSlide {
+        content {
+          +"Demo2 Slide 1"
+        }
+      }
+
+      dslSlide {
+        content {
+          +"Demo2 Slide 2"
+        }
+      }
+    }
+
+    presentation {
+      path = "demo3.html"
+
+      dslSlide {
+        content {
+          +"Demo3 Slide 1"
+        }
+      }
+
+      dslSlide {
+        content {
+          +"Demo3 Slide 2"
+        }
+      }
     }
   }
-
-  presentation("demo1") {
-    dslSlide {
-      content {
-        +"Demo1 Slide 1"
-      }
-    }
-
-    dslSlide {
-      content {
-        +"Demo1 Slide 2"
-      }
-    }
-  }
-
-  presentation("demo1/demo2") {
-    dslSlide {
-      content {
-        +"Demo2 Slide 1"
-      }
-    }
-
-    dslSlide {
-      content {
-        +"Demo2 Slide 2"
-      }
-    }
-  }
-
-  presentation("demo3.html") {
-    dslSlide {
-      content {
-        +"Demo3 Slide 1"
-      }
-    }
-
-    dslSlide {
-      content {
-        +"Demo3 Slide 2"
-      }
-    }
-  }
-
-//servePresentations()
-  outputPresentations()
 }

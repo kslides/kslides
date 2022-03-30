@@ -2,14 +2,14 @@ plugins {
     id 'java'
     id 'application'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.20-RC'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20-RC2'
     id 'org.jmailen.kotlinter' version "3.9.0"
     id "com.github.ben-manes.versions" version '0.42.0'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 // These are for the uber target
-def mainName = "SimpleKt"
+def mainName = "ReadmeKt"
 def appName = 'kslides'
 
 // This is for ./gradlew run
@@ -18,7 +18,7 @@ application {
 }
 
 group 'com.github.pambrose'
-version '0.6.4'
+version '0.6.5'
 
 repositories {
     maven { url "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers" }

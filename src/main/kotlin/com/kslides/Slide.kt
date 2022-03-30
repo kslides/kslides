@@ -1,51 +1,108 @@
 package com.kslides
 
-import com.kslides.Presentation.Companion.globalConfig
 import kotlinx.html.*
 
-typealias SlideArg = (DIV, Slide, PresentationConfig) -> Unit
+typealias SlideArg = (DIV, Slide) -> Unit
 
-abstract class Slide(val presentation: Presentation, val content: SlideArg) {
+abstract class Slide(internal val presentation: Presentation, internal val content: SlideArg) {
   private val slideConfig = SlideConfig()
+  var id = ""
+  var hidden = false
+  var uncounted = false
+  var autoAnimate = false
 
-  fun mergedConfig(): SlideConfig {
-    val global = SlideConfig().apply { combine(globalConfig.slideConfig) }
-    val pres = global.apply { combine(presentation.presentationConfig.slideConfig) }
-    return pres.apply { combine(slideConfig) }
+  internal fun mergedConfig() =
+    SlideConfig()
+      .apply { combine(presentation.kslides.globalConfig.slideConfig) }
+      .apply { combine(presentation.presentationConfig.slideConfig) }
+      .apply { combine(slideConfig) }
+
+  internal fun assignAttribs(section: SECTION, id: String, hidden: Boolean, uncounted: Boolean, autoAnimate: Boolean) {
+    if (id.isNotEmpty())
+      section.id = id
+
+    if (hidden)
+      section.attributes["data-visibility"] = "hidden"
+
+    if (uncounted)
+      section.attributes["data-visibility"] = "uncounted"
+
+    if (autoAnimate)
+      section.attributes["data-auto-animate"] = ""
   }
 
   @HtmlTagMarker
-  fun config(block: SlideConfig.() -> Unit) = block(slideConfig)
+  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
 }
 
 abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content)
 
-class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content)
-
-class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
-
-  class DslBlock(val dslContent: SECTION.(DslSlide) -> Unit)
-
-  var dslBlock: DslBlock? = null
+class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
+  internal var htmlBlock: () -> String = { "" }
+  var indentToken: String = INDENT_TOKEN
+  var disableTrimIndent: Boolean = false
 
   @HtmlTagMarker
-  fun content(block: SECTION.(DslSlide) -> Unit) {
-    dslBlock = DslBlock(block)
+  fun content(htmlBlock: () -> String) {
+    this.htmlBlock = htmlBlock
   }
 }
 
-open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content)
-
-class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content)
-
-class VerticalDslSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
-
-  class VerticalDslBlock(val dslContent: SECTION.(VerticalDslSlide) -> Unit)
-
-  var dslBlock: VerticalDslBlock? = null
+class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
+  internal var markdownBlock: () -> String = { "" }
+  var filename: String = ""
+  var charset: String = ""
+  var indentToken: String = INDENT_TOKEN
+  var disableTrimIndent: Boolean = false
 
   @HtmlTagMarker
-  fun content(block: SECTION.(VerticalDslSlide) -> Unit) {
-    dslBlock = VerticalDslBlock(block)
+  fun content(markdownBlock: () -> String) {
+    this.markdownBlock = markdownBlock
+  }
+}
+
+class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
+  internal var dslBlock: SECTION.(DslSlide) -> Unit = { }
+
+  @HtmlTagMarker
+  fun content(dslBlock: SECTION.(DslSlide) -> Unit) {
+    this.dslBlock = dslBlock
+  }
+}
+
+open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content) {
+  val vertContext = VerticalContext()
+}
+
+class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
+  internal var htmlBlock: () -> String = { "" }
+  var indentToken: String = INDENT_TOKEN
+  var disableTrimIndent: Boolean = false
+
+  @HtmlTagMarker
+  fun content(htmlBlock: () -> String) {
+    this.htmlBlock = htmlBlock
+  }
+}
+
+class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
+  internal var markdownBlock: () -> String = { "" }
+  var filename: String = ""
+  var charset: String = ""
+  var indentToken: String = INDENT_TOKEN
+  var disableTrimIndent: Boolean = false
+
+  @HtmlTagMarker
+  fun content(markdownBlock: () -> String) {
+    this.markdownBlock = markdownBlock
+  }
+}
+
+class VerticalDslSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
+  internal var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
+
+  @HtmlTagMarker
+  fun content(dslBlock: SECTION.(VerticalDslSlide) -> Unit) {
+    this.dslBlock = dslBlock
   }
 }

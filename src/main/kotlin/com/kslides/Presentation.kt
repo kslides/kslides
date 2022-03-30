@@ -1,70 +1,101 @@
 package com.kslides
 
-import com.kslides.Page.generatePage
+import com.kslides.KSlides.Companion.topLevel
+import com.kslides.Output.runHttpServer
+import com.kslides.Output.writeToFileSystem
 import com.kslides.Page.rawHtml
-import com.kslides.Presentation.Companion.globalConfig
-import io.ktor.server.cio.*
-import io.ktor.server.engine.*
-import io.ktor.util.logging.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
-import java.io.*
 
 @HtmlTagMarker
-fun presentationsDefaults(block: PresentationConfig.() -> Unit) = block.invoke(globalConfig)
+fun kslides(block: KSlides.() -> Unit) {
+  topLevel
+    .apply {
 
-class VerticalContext {
-  val vertSlides = mutableListOf<VerticalSlide>()
+      block()
+
+      configBlock.invoke(globalConfig)
+
+      presentationBlocks.forEach {
+        Presentation(this)
+          .also { presentation ->
+            it.invoke(presentation)
+            presentation.validatePath()
+          }
+      }
+
+      outputBlock.invoke(presentationOutput)
+
+      if (presentationOutput.enableFileSystem)
+        writeToFileSystem(presentationOutput)
+
+      if (presentationOutput.enableHttp)
+        runHttpServer(presentationOutput)
+
+      if (!presentationOutput.enableFileSystem && !presentationOutput.enableHttp)
+        KSlides.logger.warn { "Set enableHttp or enableFileSystem to true in the output block" }
+    }
 }
 
-// Keep this global to make it easier for users to be prompted for completion with it
-@HtmlTagMarker
-fun presentation(
-  path: String = "/",
-  block: Presentation.() -> Unit
-) =
-  Presentation(path).apply { block(this) }
+class KSlides {
+  internal val globalConfig = PresentationConfig(true)
+  internal val presentationOutput = PresentationOutput(this)
+  internal var configBlock: PresentationConfig.() -> Unit = {}
+  internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
+  internal var outputBlock: PresentationOutput.() -> Unit = {}
+  internal val presentationMap = mutableMapOf<String, Presentation>()
 
-class JsFile(val filename: String)
+  val staticRoots = mutableListOf("assets", "css", "dist", "js", "plugin")
 
-class CssFile(val filename: String, val id: String = "")
+  @HtmlTagMarker
+  fun presentationDefault(block: PresentationConfig.() -> Unit) {
+    configBlock = block
+  }
 
-class Presentation internal constructor(path: String) {
+  @HtmlTagMarker
+  fun output(outputBlock: PresentationOutput.() -> Unit) {
+    this.outputBlock = outputBlock
+  }
 
-  var css = ""
+  @HtmlTagMarker
+  fun presentation(block: Presentation.() -> Unit) {
+    presentationBlocks += block
+  }
 
-  val jsFiles =
-    mutableListOf(
-      JsFile("dist/reveal.js"),
-      JsFile("plugin/zoom/zoom.js"),
-      JsFile("plugin/notes/notes.js"),
-      JsFile("plugin/search/search.js"),
-      JsFile("plugin/markdown/markdown.js"),
-      JsFile("plugin/highlight/highlight.js"),
-    )
+  companion object : KLogging() {
+    internal val topLevel = KSlides()
+  }
+}
 
-  val cssFiles =
+class Presentation(val kslides: KSlides) {
+  private val plugins = mutableListOf<String>()
+  private val dependencies = mutableListOf<String>()
+
+  internal val jsFiles = mutableListOf(JsFile("dist/reveal.js"))
+  internal val cssFiles =
     mutableListOf(
       CssFile("dist/reveal.css"),
       CssFile("dist/reset.css"),
     )
+  internal val presentationConfig = PresentationConfig()
+  internal val slides = mutableListOf<Slide>()
 
-  private val plugins = mutableListOf("RevealZoom", "RevealSearch", "RevealMarkdown", "RevealHighlight")
-  private val dependencies = mutableListOf<String>()
+  var path = "/"
+  var css = ""
 
-  val presentationConfig = PresentationConfig()
-  val slides = mutableListOf<Slide>()
-
-  init {
-    if (path.removePrefix("/") in staticRoots)
+  internal fun validatePath() {
+    if (path.removePrefix("/") in kslides.staticRoots)
       throw IllegalArgumentException("Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"")
 
     val adjustedPath = if (path.startsWith("/")) path else "/$path"
-    if (presentations.containsKey(adjustedPath))
+    if (kslides.presentationMap.containsKey(adjustedPath))
       throw IllegalArgumentException("Presentation path already defined: \"$adjustedPath\"")
-    presentations[adjustedPath] = this
+    kslides.presentationMap[adjustedPath] = this
   }
+
+  @HtmlTagMarker
+  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
 
   @HtmlTagMarker
   fun css(block: CssBuilder.() -> Unit) {
@@ -73,139 +104,175 @@ class Presentation internal constructor(path: String) {
 
   @HtmlTagMarker
   fun verticalSlides(block: VerticalContext.() -> Unit) =
-    VerticalSlide(this) { div, slide, config ->
+    VerticalSlide(this) { div, slide ->
       div.apply {
         section {
-          val vertContext = VerticalContext()
-          block.invoke(vertContext)
-          vertContext.vertSlides.forEach { vertSlide ->
-            vertSlide.content.invoke(div, vertSlide, config)
-            rawHtml("\n")
-          }
-        }
-        rawHtml("\n")
+          (slide as VerticalSlide).vertContext
+            .also { vertContext ->
+              block.invoke(vertContext)
+              vertContext.vertSlides.forEach { vertSlide ->
+                vertSlide.content.invoke(div, vertSlide)
+                rawHtml("\n")
+              }
+            }
+        }.also { rawHtml("\n") }
       }
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.htmlSlide(id: String = "", content: Slide.() -> String) =
-    VerticalHtmlSlide(this@Presentation) { div, slide, config ->
+  fun VerticalContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> String) =
+    VerticalHtmlSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          if (id.isNotEmpty())
-            this.id = id
-          rawHtml(content.invoke(slide))
-          applyConfig(slide.mergedConfig())
-        }
+          (slide as VerticalHtmlSlide).apply {
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
+            slideContent.invoke(this)
+            applyConfig(mergedConfig())
+            val text =
+              htmlBlock()
+                .indentInclude(indentToken)
+                .let { if (!disableTrimIndent) it.trimIndent() else it }
+            rawHtml("\n$text")
+          }
+        }.also { rawHtml("\n") }
       }
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun htmlSlide(id: String = "", content: Slide.() -> String) =
-    HtmlSlide(this) { div, slide, config ->
+  fun htmlSlide(slideContent: HtmlSlide.() -> Unit) =
+    HtmlSlide(this) { div, slide ->
       div.apply {
         section {
-          if (id.isNotEmpty())
-            this.id = id
-          rawHtml("\n" + content.invoke(slide))
-          applyConfig(slide.mergedConfig())
-        }
-        rawHtml("\n")
+          (slide as HtmlSlide).apply {
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
+            slideContent.invoke(this)
+            applyConfig(mergedConfig())
+            val text =
+              htmlBlock()
+                .indentInclude(indentToken)
+                .let { if (!disableTrimIndent) it.trimIndent() else it }
+            rawHtml("\n$text")
+          }
+        }.also { rawHtml("\n") }
       }
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.dslSlide(id: String = "", content: VerticalDslSlide.() -> Unit) =
-    VerticalDslSlide(this@Presentation) { div, slide, config ->
+  fun VerticalContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
+    VerticalDslSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
-          if (id.isNotEmpty())
-            this.id = id
-          content.invoke(slide as VerticalDslSlide)
-          slide.dslBlock?.dslContent?.invoke(this, slide)
-          applyConfig(slide.mergedConfig())
-        }
+          (slide as VerticalDslSlide).apply {
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
+            slideContent.invoke(this)
+            applyConfig(mergedConfig())
+            dslBlock.invoke(this@section, this)
+          }
+        }.also { rawHtml("\n") }
       }
     }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun dslSlide(id: String = "", content: DslSlide.() -> Unit) =
-    DslSlide(this) { div, slide, config ->
+  fun dslSlide(slideContent: DslSlide.() -> Unit) =
+    DslSlide(this) { div, slide ->
       div.apply {
         section {
-          if (id.isNotEmpty())
-            this.id = id
-          content.invoke(slide as DslSlide)
-          slide.dslBlock?.dslContent?.invoke(this, slide)
-          applyConfig(slide.mergedConfig())
-        }
-        rawHtml("\n")
+          (slide as DslSlide).apply {
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
+            slideContent.invoke(this)
+            applyConfig(mergedConfig())
+            dslBlock.invoke(this@section, this)
+          }
+        }.also { rawHtml("\n") }
       }
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.markdownSlide(
-    id: String = "",
-    filename: String = "",
-    disableTrimIndent: Boolean = false,
-    content: Slide.() -> String = { "" },
-  ) =
-    dslSlide(id = id) {
-      content { dslSlide ->
+  fun VerticalContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
+    VerticalMarkdownSlide(this@Presentation) { div, slide ->
+      div.apply {
+        section {
+          (slide as VerticalMarkdownSlide).apply {
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
+            slideContent.invoke(this)
+            applyConfig(mergedConfig())
 
-        // If this value is == "" it means read content inline
-        attributes["data-markdown"] = filename
-        attributes["data-separator"] = ""
-        attributes["data-separator-vertical"] = ""
+            // If this value is == "" it means read content inline
+            attributes["data-markdown"] = filename
 
-        //if (notes.isNotEmpty())
-        //    attributes["data-separator-notes"] = notes
+            if (charset.isNotEmpty())
+              attributes["data-charset"] = charset
 
-        if (filename.isEmpty())
-          script {
-            type = "text/template"
-            rawHtml("\n" + content.invoke(dslSlide).let { if (!disableTrimIndent) it.trimIndent() else it })
+            // These are not applicable for vertical markdown slides
+            attributes["data-separator"] = ""
+            attributes["data-separator-vertical"] = ""
+
+            //if (notes.isNotEmpty())
+            //    attributes["data-separator-notes"] = notes
+
+            if (filename.isEmpty()) {
+              markdownBlock().also { markdown ->
+                if (markdown.isNotEmpty())
+                  script {
+                    type = "text/template"
+                    val text =
+                      markdown
+                        .indentInclude(indentToken)
+                        .let { if (!disableTrimIndent) it.trimIndent() else it }
+                    rawHtml("\n$text")
+                  }
+              }
+            }
           }
+        }.also { rawHtml("\n") }
       }
-    }
+    }.also { vertSlides += it }
 
   @HtmlTagMarker
-  fun markdownSlide(
-    id: String = "",
-    filename: String = "",
-    disableTrimIndent: Boolean = false,
-    separator: String = "",
-    vertical_separator: String = "",
-    notes: String = "^Note:",
-    content: Slide.() -> String = { "" },
-  ) =
-    dslSlide(id = id) {
-      content { dslSlide ->
+  fun markdownSlide(slideContent: MarkdownSlide.() -> Unit = {}) =
+    MarkdownSlide(this) { div, slide ->
+      div.apply {
+        section {
+          (slide as MarkdownSlide).apply {
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
+            slideContent.invoke(this)
+            val config = mergedConfig()
+            applyConfig(config)
 
-        // If this value is == "" it means read content inline
-        attributes["data-markdown"] = filename
+            // If this value is == "" it means read content inline
+            attributes["data-markdown"] = filename
 
-        if (separator.isNotEmpty())
-          attributes["data-separator"] = separator
+            if (charset.isNotEmpty())
+              attributes["data-charset"] = charset
 
-        if (vertical_separator.isNotEmpty())
-          attributes["data-separator-vertical"] = vertical_separator
+            if (config.markdownSeparator.isNotEmpty())
+              attributes["data-separator"] = config.markdownSeparator
 
-        // If any of the data-separator values are defined, then plain --- in markdown will not work
-        // So do not define data-separator-notes unless using other data-separator values
-        if (notes.isNotEmpty() && separator.isNotEmpty() && vertical_separator.isNotEmpty())
-          attributes["data-separator-notes"] = notes
+            if (config.markdownVerticalSeparator.isNotEmpty())
+              attributes["data-separator-vertical"] = config.markdownVerticalSeparator
 
-        if (filename.isEmpty())
-          script {
-            type = "text/template"
-            rawHtml("\n" + content.invoke(dslSlide).let { if (!disableTrimIndent) it.trimIndent() else it })
+            // If any of the data-separator values are defined, then plain --- in markdown will not work
+            // So do not define data-separator-notes unless using other data-separator values
+            if (config.markdownNotesSeparator.isNotEmpty() && config.markdownSeparator.isNotEmpty() && config.markdownVerticalSeparator.isNotEmpty())
+              attributes["data-separator-notes"] = config.markdownNotesSeparator
+
+            if (filename.isEmpty()) {
+              markdownBlock().also { markdown ->
+                if (markdown.isNotEmpty())
+                  script {
+                    type = "text/template"
+                    val text =
+                      markdown
+                        .indentInclude(indentToken)
+                        .let { if (!disableTrimIndent) it.trimIndent() else it }
+                    rawHtml("\n$text")
+                  }
+              }
+            }
           }
+        }.also { rawHtml("\n") }
       }
-    }
-
-  @HtmlTagMarker
-  fun config(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
+    }.also { slides += it }
 
   private fun toJsValue(key: String, value: Any) =
     when (value) {
@@ -219,7 +286,7 @@ class Presentation internal constructor(path: String) {
 
   fun toJs(config: PresentationConfig, srcPrefix: String) =
     buildString {
-      config.primaryValues.also { vals ->
+      config.unmanagedValues.also { vals ->
         if (vals.isNotEmpty()) {
           vals.forEach { (k, v) ->
             append("\t\t\t${toJsValue(k, v)},\n")
@@ -228,7 +295,41 @@ class Presentation internal constructor(path: String) {
         }
       }
 
-      config.menuConfig.primaryValues.also { vals ->
+      config.autoSlide
+        .also { autoSlide ->
+          when {
+            autoSlide is Boolean && !autoSlide -> {
+              append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
+              appendLine()
+            }
+            autoSlide is Int -> {
+              if (autoSlide > 0) {
+                append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
+                appendLine()
+              }
+            }
+            else -> error("Invalid value for autoSlide: $autoSlide")
+          }
+        }
+
+      config.slideNumber
+        .also { slideNumber ->
+          when (slideNumber) {
+            is Boolean -> {
+              if (slideNumber) {
+                append("\t\t\t${toJsValue("slideNumber", slideNumber)},\n")
+                appendLine()
+              }
+            }
+            is String -> {
+              append("\t\t\t${toJsValue("slideNumber", slideNumber)},\n")
+              appendLine()
+            }
+            else -> error("Invalid value for slideNumber: $slideNumber")
+          }
+        }
+
+      config.menuConfig.unmanagedValues.also { vals ->
         if (vals.isNotEmpty()) {
           appendLine(
             buildString {
@@ -241,6 +342,7 @@ class Presentation internal constructor(path: String) {
       }
 
       // Dependencies
+
       // if (toolbar)
       //   dependencies += "plugin/toolbar/toolbar.js"
 
@@ -248,85 +350,78 @@ class Presentation internal constructor(path: String) {
         appendLine(
           buildString {
             appendLine("dependencies: [")
-            appendLine(dependencies.map { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" }
-                         .joinToString(",\n"))
+            appendLine(dependencies.joinToString(",\n") { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" })
             appendLine("],")
           }.prependIndent("\t\t\t")
         )
       }
 
       // Plugins
-      if (config.enableCodeCopy)
-        plugins += "CopyCode"
+      if (config.enableSpeakerNotes)
+        plugins += "RevealNotes"
+
+      if (config.enableZoom)
+        plugins += "RevealZoom"
+
+      if (config.enableSearch)
+        plugins += "RevealSearch"
+
+      if (config.enableMarkdown)
+        plugins += "RevealMarkdown"
+
+      if (config.enableHighlight)
+        plugins += "RevealHighlight"
+
+      if (config.enableMathKatex)
+        plugins += "RevealMath.KaTeX"
+
+      if (config.enableMathJax2)
+        plugins += "RevealMath.MathJax2"
+
+      if (config.enableMathJax3)
+        plugins += "RevealMath.MathJax3"
 
       if (config.enableMenu)
         plugins += "RevealMenu"
+
+      if (config.enableCodeCopy)
+        plugins += "CopyCode"
 
       appendLine("\t\t\tplugins: [ ${plugins.joinToString(", ")} ]")
     }
 
   companion object : KLogging() {
-    internal val presentations = mutableMapOf<String, Presentation>()
-    internal val globalConfig = PresentationConfig(true)
-
-    fun servePresentations() {
-      val environment = commandLineEnvironment(emptyArray())
-      val environment2 = applicationEngineEnvironment {
-        this.log = KtorSimpleLogger("ktor.application")
-        watchPaths = listOf("classes")
-      }
-      embeddedServer(CIO, environment).start(wait = true)
-    }
-
-    fun outputPresentations(dir: String = "docs", srcPrefix: String = "revealjs/") {
-      require(dir.isNotEmpty()) { "dir value must not be empty" }
-
-      File(dir).mkdir()
-      presentations.forEach { (key, p) ->
-        val (file, prefix) =
-          when {
-            key == "/" -> {
-              File("$dir/index.html") to srcPrefix
-            }
-            key.endsWith(".html") -> {
-              File("$dir/$key") to srcPrefix
-            }
-            else -> {
-              val pathElems = "$dir/$key".split("/").filter { it.isNotEmpty() }
-              val path = pathElems.joinToString("/")
-              val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
-              File(path).mkdir()
-              File("$path/index.html") to "$dotDot$srcPrefix"
-            }
-          }
-        println("Writing presentation $key to $file")
-        file.writeText(generatePage(p, prefix))
-      }
-    }
-
-    private fun SECTION.applyConfig(slideConfig: SlideConfig) {
-      if (slideConfig.transition != Transition.SLIDE) {
-        attributes["data-transition"] = slideConfig.transition.asInOut()
+    private fun SECTION.applyConfig(config: SlideConfig) {
+      if (config.transition != Transition.SLIDE) {
+        attributes["data-transition"] = config.transition.asInOut()
       } else {
-        if (slideConfig.transitionIn != Transition.SLIDE || slideConfig.transitionOut != Transition.SLIDE)
-          attributes["data-transition"] = "${slideConfig.transitionIn.asIn()} ${slideConfig.transitionOut.asOut()}"
+        if (config.transitionIn != Transition.SLIDE || config.transitionOut != Transition.SLIDE)
+          attributes["data-transition"] = "${config.transitionIn.asIn()} ${config.transitionOut.asOut()}"
       }
 
-      if (slideConfig.transitionSpeed != Speed.DEFAULT)
-        attributes["data-transition-speed"] = slideConfig.transitionSpeed.name.toLower()
+      if (config.transitionSpeed != Speed.DEFAULT)
+        attributes["data-transition-speed"] = config.transitionSpeed.name.toLower()
 
-      if (slideConfig.backgroundColor.isNotEmpty())
-        attributes["data-background"] = slideConfig.backgroundColor
+      if (config.backgroundColor.isNotEmpty())
+        attributes["data-background-color"] = config.backgroundColor
 
-      if (slideConfig.backgroundIframe.isNotEmpty()) {
-        attributes["data-background-iframe"] = slideConfig.backgroundIframe
+      if (config.backgroundIframe.isNotEmpty()) {
+        attributes["data-background-iframe"] = config.backgroundIframe
 
-        if (slideConfig.backgroundInteractive)
+        if (config.backgroundInteractive)
           attributes["data-background-interactive"] = ""
       }
 
-      if (slideConfig.backgroundVideo.isNotEmpty())
-        attributes["data-background-video"] = slideConfig.backgroundVideo
+      if (config.backgroundVideo.isNotEmpty())
+        attributes["data-background-video"] = config.backgroundVideo
     }
   }
 }
+
+class VerticalContext {
+  internal val vertSlides = mutableListOf<VerticalSlide>()
+}
+
+class JsFile(val filename: String)
+
+class CssFile(val filename: String, val id: String = "")

@@ -1,26 +1,24 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
-import com.kslides.Presentation.Companion.globalConfig
 import kotlinx.html.*
 import kotlinx.html.dom.*
 
 internal object Page {
 
-  fun generatePage(p: Presentation, srcPrefix: String = "/"): String {
+  fun generatePage(p: Presentation, prefix: String = "/"): String {
     val document =
       document {
-        val finalConfig =
-          PresentationConfig()
-            .apply {
-              merge(globalConfig)
-              merge(p.presentationConfig)
+        PresentationConfig()
+          .apply {
+            merge(p.kslides.globalConfig)
+            merge(p.presentationConfig)
+          }.also { config ->
+            append.html {
+              generateHead(p, config, prefix.ensureSuffix("/"))
+              generateBody(p, config, prefix.ensureSuffix("/"))
             }
-
-        append.html {
-          generateHead(p, finalConfig, srcPrefix.ensureSuffix("/"))
-          generateBody(p, finalConfig, srcPrefix.ensureSuffix("/"))
-        }
+          }
       }
 
     // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
@@ -57,6 +55,20 @@ internal object Page {
 
       if (config.title.isNotEmpty())
         title { +config.title }
+
+      if (config.gaPropertyId.isNotEmpty()) {
+        script { async = true; src = "https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K" }
+        script {
+          rawHtml(
+            """
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date()); 
+          gtag('config', '${config.gaPropertyId}');
+          """
+          )
+        }
+      }
 
       // Css Files
       p.cssFiles += CssFile("dist/theme/${config.theme.name.toLower()}.css", "theme")
@@ -106,17 +118,27 @@ internal object Page {
 //        }
 
         div("slides") {
-          p.slides
-            .forEach { slide ->
-              when (slide) {
-                is HtmlSlide -> slide.content(this, slide, config)
-                is DslSlide -> slide.content(this, slide, config)
-                is VerticalSlide -> slide.content(this, slide, config)
-                else -> error("Unknown slide type: ${slide.javaClass.name}")
-              }
-            }
+          p.slides.forEach { slide -> slide.content(this, slide) }
         }
       }
+
+      if (config.enableSpeakerNotes)
+        p.jsFiles += JsFile("plugin/notes/notes.js")
+
+      if (config.enableZoom)
+        p.jsFiles += JsFile("plugin/zoom/zoom.js")
+
+      if (config.enableSearch)
+        p.jsFiles += JsFile("plugin/search/search.js")
+
+      if (config.enableMarkdown)
+        p.jsFiles += JsFile("plugin/markdown/markdown.js")
+
+      if (config.enableHighlight)
+        p.jsFiles += JsFile("plugin/highlight/highlight.js")
+
+      if (config.enableMathKatex || config.enableMathJax2 || config.enableMathJax3)
+        p.jsFiles += JsFile("plugin/math/math.js")
 
       if (config.enableCodeCopy) {
         p.jsFiles += JsFile("plugin/copycode/copycode.js")
@@ -124,18 +146,17 @@ internal object Page {
         p.jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js")
       }
 
-      if (config.enableMenu) {
+      if (config.enableMenu)
         p.jsFiles += JsFile("plugin/menu/menu.js")
-      }
 
 //      if (config.toolbar) {
 //        p.jsFiles += "plugin/toolbar/toolbar.js"
 //      }
 
       rawHtml("\n\t\n")
-      p.jsFiles.forEach {
+      p.jsFiles.forEach { jsFile ->
         rawHtml("\t")
-        script { src = if (it.filename.startsWith("http")) it.filename else "$srcPrefix${it.filename}" }
+        script { src = if (jsFile.filename.startsWith("http")) jsFile.filename else "$srcPrefix${jsFile.filename}" }
         rawHtml("\n")
       }
 

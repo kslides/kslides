@@ -5,70 +5,125 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/pambrose/kslides/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pambrose/kslides&amp;utm_campaign=Badge_Grade)
 [![Kotlin](https://img.shields.io/badge/%20language-Kotlin-red.svg)](https://kotlinlang.org/)
 
-
 **kslides** is a Kotlin DSL wrapper for [reveal.js](https://revealjs.com). It is meant for people who would prefer to
-build presentations with IntelliJ than Powerpoint.
+build presentations with IntelliJ than Powerpoint. It works particularly well for presentationing code and slides
+authored in Markdown/HTML.
 
 ## Example
 
 Click [here](https://kslides-readme.herokuapp.com) to see [this presentation](src/main/kotlin/Simple.kt) running.
 
 ```kotlin
-presentation {
+  kslides {
 
-  htmlSlide(id = "start") {
-    h1 { +"HTML Slide 🐦" }
-    p { +"Use the arrow keys to navigate" }
+  output {
+    enableHttp = true
   }
 
-  markdownSlide(
-    transition = Zoom,
-    speed = Slow,
-    content = """
-      # Markdown Slide 🍒 
-      
-      Press ESC to see presentation overview.
-    """
-  )
+  presentation {
 
-  markdownSlide(backgroundColor = "#4370A5") {
-    """
-      # Code Highlights    
-      ```kotlin [1|2,5|3-4]
-      fun main() {
-          repeat(10) {
-              println("Hello")
-              println("World")
-          }
-      }
-      ```
-    """
-  }
+    presentationConfig {
+      history = true
+      transition = Transition.SLIDE
+      transitionSpeed = Speed.SLOW
 
-  verticalSlides {
-    
-    htmlSlide(backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4") {
-      h1 {
-        style = "color: red;"
-        +"Vertical HTML Slide 👇"
+      slideConfig {
+        backgroundColor = "#4370A5"
       }
     }
 
-    markdownSlide(
-      """
-        # Vertical Markdown Slide 🦊 
-        
-        [Go back to the 1st slide](#/start) ${fragmentIndex(1)}
-      
-        [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
-      """
-    )
-  }
+    markdownSlide {
+      slideConfig {
+        transition = Transition.ZOOM
+        transitionSpeed = Speed.FAST
+      }
 
-  config {
-    history = true
-    transition = Slide
-    transitionSpeed = Slow
+      content {
+        """
+          # Markdown Slide
+          ## 🍒
+          Press ESC to see presentation overview.
+          """
+      }
+    }
+
+    htmlSlide {
+      content {
+        """
+          <h1>HTML Slide</h1>
+          <h2>🐦</h2>
+          <p>Use the arrow keys to navigate</p>
+          """
+      }
+    }
+
+    dslSlide {
+      slideConfig {
+        transition = Transition.ZOOM
+        transitionSpeed = Speed.FAST
+      }
+
+      content {
+        h1 { +"DSL Slide" }
+        h2 { +"👀" }
+        p { +"Use the arrow keys to navigate" }
+      }
+    }
+
+    markdownSlide {
+      content {
+        """
+          ## Kotlin Code Highlights    
+          ```kotlin [1|3,8|4|5-7]
+          ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
+          ```
+          """
+      }
+    }
+
+    markdownSlide {
+      slideConfig {
+        backgroundColor = "lightblue"
+      }
+
+      content {
+        """
+          ## Java Code Highlights    
+          ```java [1|3,7|4,6|5]
+          ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
+          ```
+          """
+      }
+    }
+
+    verticalSlides {
+
+      dslSlide {
+        slideConfig {
+          backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+        }
+
+        content {
+          h1 {
+            style = "color: red;"
+            +"Vertical DSL Slide 👇"
+          }
+        }
+      }
+
+      markdownSlide {
+        content {
+          """
+            # Vertical Markdown Slide 🦊 
+            
+            [Go back to the 1st slide](#/) ${fragmentIndex(1)}
+         
+            [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
+            
+            """
+        }
+      }
+    }
   }
 }
 ```
@@ -77,7 +132,6 @@ presentation {
 
 * https://github.com/Martinomagnifico/reveal.js-copycode
 * https://github.com/denehyg/reveal.js-menu
-* https://github.com/denehyg/reveal.js-toolbar
 
 ## FAQ
 

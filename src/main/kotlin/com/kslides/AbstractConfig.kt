@@ -1,11 +1,11 @@
 package com.kslides
 
 abstract class AbstractConfig {
-  val primaryValues = mutableMapOf<String, Any>()
-  val secondaryValues = mutableMapOf<String, Any>()
+  val unmanagedValues = mutableMapOf<String, Any>()
+  val managedValues = mutableMapOf<String, Any>()
 
   fun combine(other: AbstractConfig) {
-    primaryValues.putAll(other.primaryValues)
-    secondaryValues.putAll(other.secondaryValues)
+    unmanagedValues.putAll(other.unmanagedValues)
+    managedValues.putAll(other.managedValues)
   }
 }
