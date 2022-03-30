@@ -44,20 +44,20 @@ kslides {
 
       content {
         """
-          # Markdown Slide
-          ## 🍒
-          Press ESC to see presentation overview.
-          """
+        # Markdown Slide
+        ## 🍒
+        Press ESC to see presentation overview.
+        """
       }
     }
 
     htmlSlide {
       content {
         """
-          <h1>HTML Slide</h1>
-          <h2>🐦</h2>
-          <p>Use the arrow keys to navigate</p>
-          """
+        <h1>HTML Slide</h1>
+        <h2>🐦</h2>
+        <p>Use the arrow keys to navigate</p>
+        """
       }
     }
 
@@ -77,11 +77,11 @@ kslides {
     markdownSlide {
       content {
         """
-          ## Kotlin Code Highlights    
-          ```kotlin [3,7|4,6|5]
-          ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
-          ```
-          """
+        ## Kotlin Code Highlights    
+        ```kotlin [3,7|4,6|5]
+        ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
+        ```
+        """
       }
     }
 
@@ -92,11 +92,11 @@ kslides {
 
       content {
         """
-          ## Java Code Highlights    
-          ```java [1|3,7|4,6|5]
-          ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
-          ```
-          """
+        ## Java Code Highlights    
+        ```java [1|3,7|4,6|5]
+        ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
+        ```
+        """
       }
     }
 
@@ -118,13 +118,13 @@ kslides {
       markdownSlide {
         content {
           """
-            # Vertical Markdown Slide 🦊 
-            
-            [Go back to the 1st slide](#/) ${fragmentIndex(1)}
-         
-            [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
-            
-            """
+          # Vertical Markdown Slide 🦊 
+          
+          [Go back to the 1st slide](#/) ${fragmentIndex(1)}
+       
+          [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
+          
+          """
         }
       }
     }
@@ -132,11 +132,11 @@ kslides {
     markdownSlide {
       content {
         """
-          ## Presentation Description    
-          ```kotlin [9-12|16-24|26-39|1-132]
-          ${includeUrl("${githubPrefix("pambrose", "kslides")}/src/main/kotlin/com/kslides/examples/Readme.kt")}
-          ```
-          """
+        ## Presentation Description    
+        ```kotlin [9-12|16-24|26-39|1-132]
+        ${includeUrl("${githubPrefix("pambrose", "kslides")}/src/main/kotlin/com/kslides/examples/Readme.kt")}
+        ```
+        """
       }
     }
   }
