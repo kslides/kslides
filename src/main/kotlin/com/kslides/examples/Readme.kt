@@ -1,4 +1,4 @@
-package com.github.readingbat.examples
+package com.kslides.examples
 
 import com.kslides.*
 import kotlinx.html.*
