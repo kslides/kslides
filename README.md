@@ -11,8 +11,8 @@ authored in Markdown/HTML.
 
 ## Example
 
-[This presentation](src/main/kotlin/com/kslides/examples/Readme.kt) can be seen running dynamically on 
-[Heroku](https://kslides-readme.herokuapp.com), or statically from 
+[This presentation](src/main/kotlin/com/kslides/examples/Readme.kt) is running dynamically on 
+[Heroku](https://kslides-readme.herokuapp.com), and statically from 
 [Netlify](https://kslides-readme.netlify.app) 
 and [Github Pages](https://pambrose.github.io/kslides/).
 
@@ -20,6 +20,7 @@ and [Github Pages](https://pambrose.github.io/kslides/).
   kslides {
 
   output {
+    enableFileSystem = true
     enableHttp = true
   }
 
