@@ -13,7 +13,7 @@ fun main() {
       transition = Transition.FADE
       gaPropertyId = "G-XXXXXXXXX"
 
-      slideDefault {
+      slideConfig {
         backgroundColor = "green"
         markdownSeparator = "---"
         markdownVerticalSeparator = "--"
@@ -53,13 +53,13 @@ fun main() {
         transitionSpeed = Speed.FAST
         enableMenu = false
 
-        menu {
+        menuConfig {
           numbers = true
           markers = false
           openOnInit = true
         }
 
-        slideDefault {
+        slideConfig {
           backgroundColor = "yellow"
         }
       }

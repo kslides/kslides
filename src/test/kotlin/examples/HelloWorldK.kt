@@ -1,4 +1,4 @@
-package com.github.readingbat.examples
+package com.examples
 
 fun main() {
   val ints: List<Int> = listOf(1, 2, 3)

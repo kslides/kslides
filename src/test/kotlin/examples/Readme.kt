@@ -5,7 +5,9 @@ import kotlinx.html.*
 
 fun main() {
   kslides {
+
     output {
+      enableFileSystem = true
       enableHttp = true
     }
 
@@ -15,11 +17,13 @@ fun main() {
         history = true
         transition = Transition.SLIDE
         transitionSpeed = Speed.SLOW
+
+        slideConfig {
+          backgroundColor = "#4370A5"
+        }
       }
 
       markdownSlide {
-        id = "start"
-
         slideConfig {
           transition = Transition.ZOOM
           transitionSpeed = Speed.FAST
@@ -45,23 +49,23 @@ fun main() {
       }
 
       dslSlide {
+        slideConfig {
+          transition = Transition.ZOOM
+          transitionSpeed = Speed.FAST
+        }
+
         content {
           h1 { +"DSL Slide" }
-          h2 { +"🐦" }
+          h2 { +"👀" }
           p { +"Use the arrow keys to navigate" }
         }
       }
 
-
       markdownSlide {
-        slideConfig {
-          backgroundColor = "#4370A5"
-        }
-
         content {
           """
-          # Code Highlights    
-          ```kotlin [1|2,5|3-4]
+          ## Kotlin Code Highlights    
+          ```kotlin [1|3,8|4|5-7]
           ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
           ```
           """
@@ -70,13 +74,13 @@ fun main() {
 
       markdownSlide {
         slideConfig {
-          backgroundColor = "#DD70A5"
+          backgroundColor = "lightblue"
         }
 
         content {
           """
-          # Code Highlights    
-          ```java [1|2|3]
+          ## Java Code Highlights    
+          ```java [1|3,7|4,6|5]
           ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
           ```
           """
@@ -93,7 +97,7 @@ fun main() {
           content {
             h1 {
               style = "color: red;"
-              +"Vertical HTML Slide 👇"
+              +"Vertical DSL Slide 👇"
             }
           }
         }
@@ -103,7 +107,7 @@ fun main() {
             """
             # Vertical Markdown Slide 🦊 
             
-            [Go back to the 1st slide](#/start) ${fragmentIndex(1)}
+            [Go back to the 1st slide](#/) ${fragmentIndex(1)}
          
             [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
             
