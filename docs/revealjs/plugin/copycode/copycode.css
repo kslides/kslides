@@ -1,0 +1,53 @@
+.reveal pre, .codeblock {
+    width: 100%;
+}
+
+.codeblock {
+    margin: 20px auto;
+    position: relative;
+}
+
+.codeblock pre {
+    margin: 0;
+    width: 100%;
+    font-size: 1.5rem;
+}
+
+.codeblock > button {
+    opacity: 0.5;
+    z-index: 1;
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: orange;
+    color: black;
+    border: 0;
+    margin: 0;
+    padding: .2em .5em;
+    font-family: inherit;
+    font-size: 1.5rem;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: background-color 0.25s ease-in-out, opacity .25s ease-in-out;
+    -o-transition: background-color 0.25s ease-in-out, opacity .25s ease-in-out;
+    transition: background-color 0.25s ease-in-out, opacity .25s ease-in-out;
+    cursor: pointer;
+}
+
+.codeblock > button:hover, pre > button:hover {
+    opacity: 1;
+}
+
+.codeblock > button[disabled] {
+    opacity: 1;
+    background: green;
+    color: white;
+    cursor: default;
+}
+
+.codeblock > button:focus {
+    outline: 0;
+}
