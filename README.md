@@ -79,7 +79,7 @@ kslides {
         """
         ## Kotlin Code Highlights    
         ```kotlin [3,7|4,6|5]
-        ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
+        ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
         ```
         """
       }
@@ -94,7 +94,7 @@ kslides {
         """
         ## Java Code Highlights    
         ```java [1|3,7|4,6|5]
-        ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
+        ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldJ.java")}
         ```
         """
       }
@@ -134,7 +134,7 @@ kslides {
         """
         ## Presentation Description    
         ```kotlin [9-12|16-24|26-39|1-132]
-        ${includeUrl("${githubPrefix("pambrose", "kslides")}/src/main/kotlin/com/kslides/examples/Readme.kt")}
+        ${includeUrl("${githubPrefix("pambrose", "kslides")}/kslides-examples/src/main/kotlin/Readme.kt")}
         ```
         """
       }
