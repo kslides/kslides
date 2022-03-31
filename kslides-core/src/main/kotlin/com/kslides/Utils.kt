@@ -4,6 +4,9 @@ import java.util.*
 
 fun String.toLower(locale: Locale = Locale.getDefault()) = lowercase(locale)
 
+fun githubPrefix(username: String, repoName: String, branchName: String = "master") =
+  "https://raw.githubusercontent.com/$username/$repoName/$branchName"
+
 fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
 
 fun fragmentIndex(index: Int) = "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
@@ -98,6 +101,3 @@ internal fun String.trimIndentWithInclude(): String {
     }
     .joinToString("\n")
 }
-
-fun githubPrefix(username: String, repoName: String, branchName: String="master") =
-  "https://raw.githubusercontent.com/$username/$repoName/$branchName"

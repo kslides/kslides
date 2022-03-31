@@ -19,10 +19,10 @@ import defaultConfig from './config.js'
 import * as Util from './utils/util.js'
 import * as Device from './utils/device.js'
 import {
-	HORIZONTAL_SLIDES_SELECTOR,
-	POST_MESSAGE_METHOD_BLACKLIST,
-	SLIDES_SELECTOR,
-	VERTICAL_SLIDES_SELECTOR
+    HORIZONTAL_SLIDES_SELECTOR,
+    POST_MESSAGE_METHOD_BLACKLIST,
+    SLIDES_SELECTOR,
+    VERTICAL_SLIDES_SELECTOR
 } from './utils/constants.js'
 
 // The reveal.js version

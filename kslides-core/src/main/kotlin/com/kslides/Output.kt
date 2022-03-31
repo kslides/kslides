@@ -19,7 +19,7 @@ object Output : KLogging() {
 
     embeddedServer(CIO, port = port) {
 
-      // By embedding this here, rather than in an Application.module() call, we are not able to use auto-reload
+      // By embedding this logic here, rather than in an Application.module() call, we are not able to use auto-reload
       install(CallLogging) { level = output.logLevel }
       install(DefaultHeaders) { header("X-Engine", "Ktor") }
       install(Compression) {

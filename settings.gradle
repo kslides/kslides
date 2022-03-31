@@ -1,2 +1,4 @@
 rootProject.name = 'kslides'
 
+include ':kslides-core'
+include ':kslides-examples'

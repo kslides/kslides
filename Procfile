@@ -1,1 +1,1 @@
-web: java -DPORT=$PORT -jar build/libs/kslides.jar
+web: java -DPORT=$PORT -jar kslides-examples/build/libs/kslides.jar
