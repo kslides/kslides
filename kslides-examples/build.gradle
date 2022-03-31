@@ -3,7 +3,7 @@ description = 'kslides-examples'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 // These are for the uber target
-def mainName = 'com.kslides.examples.ReadmeKt'
+def mainName = 'ReadmeKt'
 def appName = 'kslides'
 
 application {
