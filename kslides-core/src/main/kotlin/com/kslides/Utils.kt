@@ -4,8 +4,8 @@ import java.util.*
 
 fun String.toLower(locale: Locale = Locale.getDefault()) = lowercase(locale)
 
-fun githubPrefix(username: String, repoName: String, branchName: String = "master") =
-  "https://raw.githubusercontent.com/$username/$repoName/$branchName"
+fun githubPrefix(username: String, repoName: String, moduleName: String = "", branchName: String = "master") =
+  "https://raw.githubusercontent.com/$username/$repoName/$branchName" + if (moduleName.isNotEmpty()) "/$moduleName" else ""
 
 fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
 

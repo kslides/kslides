@@ -134,7 +134,7 @@ kslides {
         """
         ## Presentation Description    
         ```kotlin [9-12|16-24|26-39|1-132]
-        ${includeUrl("${githubPrefix("pambrose", "kslides")}/kslides-examples/src/main/kotlin/Readme.kt")}
+        ${includeUrl("${githubPrefix("pambrose", "kslides", "kslides-examples")}/src/main/kotlin/Readme.kt")}
         ```
         """
       }
