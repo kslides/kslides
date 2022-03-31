@@ -1,0 +1,41 @@
+description = 'kslides-examples'
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+// These are for the uber target
+def mainName = 'com.kslides.examples.ReadmeKt'
+def appName = 'kslides'
+
+application {
+    mainClassName = mainName
+}
+
+dependencies {
+    implementation project(':kslides-core')
+}
+
+// Include build uberjars in heroku deploy
+task stage(dependsOn: ['uberjar', 'build', 'clean'])
+build.mustRunAfter clean
+
+shadowJar {
+    zip64 true
+    mergeServiceFiles()
+    exclude "META-INF/*.SF"
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    exclude "LICENSE*"
+}
+
+task uberjar(type: Jar, dependsOn: shadowJar) {
+    zip64 true
+    archiveFileName = 'kslides.jar'
+    manifest {
+        attributes('Implementation-Title': appName)
+        attributes('Implementation-Version': version)
+        attributes('Built-Date': new Date())
+        attributes('Built-JDK': System.getProperty('java.version'))
+        attributes('Main-Class': mainName)
+    }
+    from zipTree(shadowJar.archiveFile)
+}
