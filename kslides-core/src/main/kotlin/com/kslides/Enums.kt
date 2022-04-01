@@ -1,5 +1,7 @@
 package com.kslides
 
+import com.github.pambrose.common.util.*
+
 enum class Highlight {
   MONOKAI, ZENBURN
 }

@@ -1,4 +1,6 @@
 import com.kslides.*
+import com.kslides.Include.includeFile
+import com.kslides.Include.includeUrl
 import kotlinx.html.*
 
 fun main() {
@@ -24,6 +26,20 @@ fun main() {
 
         slideConfig {
           backgroundColor = "#4370A5"
+        }
+      }
+
+      markdownSlide {
+        slideConfig {
+          transition = Transition.ZOOM
+          transitionSpeed = Speed.FAST
+        }
+
+        content {
+          """
+          # kslides
+          A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
+          """
         }
       }
 

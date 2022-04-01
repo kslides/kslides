@@ -19,6 +19,7 @@
     <link href="revealjs/plugin/highlight/monokai.css" id="highlight-theme" rel="stylesheet">
     <link href="revealjs/plugin/copycode/copycode.css" rel="stylesheet">
     <link href="revealjs/plugin/githubCorner/githubCorner.css" rel="stylesheet">
+    <link href="revealjs/css/custom.css" rel="stylesheet">
   </head>
   <body>
     <div class="reveal">
@@ -31,6 +32,13 @@
         </svg>
                 </a>
       <div class="slides">
+        <section data-background-color="#4370A5" data-markdown="" data-transition="zoom" data-transition-speed="fast">
+          <script type="text/template">
+# kslides
+A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
+</script>
+        </section>
+        
         <section data-background-color="#4370A5" data-markdown="" data-transition="zoom" data-transition-speed="fast">
           <script type="text/template">
 # Markdown Slide
@@ -69,8 +77,8 @@ fun main() {
 </script>
         </section>
         
-        <section>
-          <section data-auto-animate="" data-background-color="#4370A5">
+        <section class="vert1">
+          <section class="vert2" data-auto-animate="" data-background-color="#4370A5">
             
             <h2>Animated Code &#128071;</h2>
               
@@ -162,7 +170,9 @@ fun main() {
     presentation {
 
       presentationConfig {
-        githubCornerHref = "https://github.com/pambrose/kslides/blob/master/kslides-examples/src/main/kotlin/Readme.kt"
+        githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Readme.kt")
+        githubCornerTitle = "View presentation source on Github"
+
         slideNumber = "c/t"
         history = true
         transition = Transition.SLIDE
@@ -215,24 +225,9 @@ fun main() {
       markdownSlide {
         content {
           """
-          ## Kotlin Code Highlights    
+          ## Code Highlights    
           ```kotlin [3,7|4,6|5]
           ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
-          ```
-          """
-        }
-      }
-
-      markdownSlide {
-        slideConfig {
-          backgroundColor = "#BB4400"
-        }
-
-        content {
-          """
-          ## Java Code Highlights    
-          ```java [1|3,7|4,6|5]
-          ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldJ.java")}
           ```
           """
         }
@@ -245,13 +240,13 @@ fun main() {
 
           content {
             """
-          <h2>Animated Code 👇</h2>  
-          <pre data-id="code-animation" data-cc="false"> 
-            <code data-trim="" data-line-numbers="">
-              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-6,9]")}
-            </code>
-          </pre>
-          """
+            <h2>Animated Code 👇</h2>  
+            <pre data-id="code-animation" data-cc="false"> 
+              <code data-trim="" data-line-numbers="">
+                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-6,9]")}
+              </code>
+            </pre>
+            """
           }
         }
 
@@ -260,28 +255,30 @@ fun main() {
 
           content {
             """
-          <h2>Animated Code 👇</h2>  
-          <pre data-id="code-animation" data-cc="false"> 
-            <code data-trim="" data-line-numbers="">
-              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-9]")}
-            </code>
-          </pre>
-          """
+            <h2>Animated Code 👇</h2>  
+            <pre data-id="code-animation" data-cc="false"> 
+              <code data-trim="" data-line-numbers="">
+                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-9]")}
+              </code>
+            </pre>
+            """
           }
         }
 
-        htmlSlide {
+        dslSlide {
           autoAnimate = true
 
           content {
-            """
-          <h2>Animated Code 👇</h2>  
-          <pre data-id="code-animation" data-cc="false">
-            <code data-trim="" data-line-numbers="">
-              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js")}
-            </code>
-          </pre>
-          """
+            h2 { +"Animated Code 👇" }
+            pre {
+              attributes["data-id"] = "code-animation"
+              attributes["data-cc"] = "false"
+              code {
+                attributes["data-trim"] = ""
+                attributes["data-line-numbers"] = ""
+                +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", indentToken="")
+              }
+            }
           }
         }
       }
@@ -318,9 +315,9 @@ fun main() {
       markdownSlide {
         content {
           """
-          ## Presentation Description    
+          ## Presentation Definition    
           ```kotlin []
-          ${includeUrl("${githubPrefix("pambrose", "kslides", "kslides-examples")}/src/main/kotlin/Readme.kt")}
+          ${includeUrl(githubRawUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Readme.kt"))}
           ```
           """
         }

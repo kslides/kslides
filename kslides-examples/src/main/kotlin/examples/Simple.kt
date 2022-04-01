@@ -8,6 +8,12 @@ import kotlinx.html.*
 
 fun main() {
   kslides {
+
+    output {
+      // Run the web server
+      enableHttp = true
+    }
+
     presentation {
 
       presentationConfig {
@@ -27,11 +33,11 @@ fun main() {
 
         content {
           """
-        <h1>Raw HTML Slide 🐦</h1>
-        <h2>HTML Slide 🐦</h2>
-        <h3>HTML Slide 🐦</h3>
-        <p>This is a test</p>
-        """
+          <h1>Raw HTML Slide 🐦</h1>
+          <h2>HTML Slide 🐦</h2>
+          <h3>HTML Slide 🐦</h3>
+          <p>This is a test</p>
+          """
         }
       }
 
@@ -43,10 +49,10 @@ fun main() {
         }
         content {
           """
-        # Markdown Slide 🍒 
-        
-        Press ESC to see presentation overview.
-        """
+          # Markdown Slide 🍒 
+          
+          Press ESC to see presentation overview.
+          """
         }
       }
 
@@ -66,19 +72,14 @@ fun main() {
 
         markdownSlide {
           """
-        # Vertical Markdown Slide 🦊 
-        
-        [Go back to the 1st slide](#/0) ${fragmentIndex(1)}
-     
-        [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
-        """
+          # Vertical Markdown Slide 🦊 
+          
+          [Go back to the 1st slide](#/0) ${fragmentIndex(1)}
+       
+          [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
+          """
         }
       }
-    }
-
-    // Run the web server
-    output {
-      enableHttp = true
     }
   }
 }

@@ -7,6 +7,7 @@ typealias SlideArg = (DIV, Slide) -> Unit
 abstract class Slide(internal val presentation: Presentation, internal val content: SlideArg) {
   private val slideConfig = SlideConfig()
   var id = ""
+  var classes = ""
   var hidden = false
   var uncounted = false
   var autoAnimate = false

@@ -1,9 +1,5 @@
 package com.kslides
 
-import java.util.*
-
-fun String.toLower(locale: Locale = Locale.getDefault()) = lowercase(locale)
-
 fun githubSourceUrl(username: String, repoName: String, path: String = "", branchName: String = "master") =
   "https://github.com/$username/$repoName/blob/$branchName/$path"
 
@@ -13,6 +9,8 @@ fun githubRawUrl(username: String, repoName: String, path: String = "", branchNa
 fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
 
 fun fragmentIndex(index: Int) = "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
+
+fun String.nullIfEmpty() = if (isNotEmpty()) this else null
 
 fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
   mutableMapOf<K, V>()

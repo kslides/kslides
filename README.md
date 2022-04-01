@@ -6,41 +6,38 @@
 [![Kotlin](https://img.shields.io/badge/%20language-Kotlin-red.svg)](https://kotlinlang.org/)
 
 **kslides** is a Kotlin DSL wrapper for the incredible [reveal.js](https://revealjs.com) presentation framework. 
-It is meant for people who prefer working in an IDE rather than PowerPoint. 
+It is meant for people who prefer working with an IDE rather than PowerPoint. 
 It works particularly well for presentations with code snippets and slides
 authored in Markdown/HTML.
 
 [![Screenshot](https://pambrose.github.io/kslides/kslides-screenshot.png)](https://pambrose.github.io/kslides/)
 
-## Example
-
-[This](kslides-examples/src/main/kotlin/Readme.kt) presentation is available statically from
+[This](kslides-examples/src/main/kotlin/Readme.kt) presentation is served statically from
 [Netlify](https://kslides-readme.netlify.app)
 and [Github Pages](https://pambrose.github.io/kslides/).
-It is also running dynamically on 
-[Heroku](https://kslides-readme.herokuapp.com).
+It is also running dynamically on [Heroku](https://kslides-readme.herokuapp.com).
 
 ## Getting Started
 
 [![Template](https://img.shields.io/badge/kslides-template-blue?logo=github)](https://github.com/pambrose/kslides-template/generate)
 
-[Create a presentation repo](https://github.com/pambrose/kslides-template/generate) using
+[Create a presentation repo](https://github.com/pambrose/kslides-template/generate) with
 the [kslides-template](https://github.com/pambrose/kslides-template) repo.
 
-## Third Party Plugins
-
-* https://github.com/Martinomagnifico/reveal.js-copycode
-* https://github.com/denehyg/reveal.js-menu
-
+Must be logged in to see "Use this template" button
 
 ## Heroku Notes
 
-* Add a Config Var for `GRADLE_TASK=-Pprod=true uberjar`
+* Add a Config Var: `GRADLE_TASK=-Pprod=true uberjar`
 
 ## MarkDown Slide Notes
 
 * When a `markdownSlide` is in a `verticalSlides` section and references an external file, the string "---"
   is interpreted as a vertical page separator and "--- " (with a space suffix) is rendered as a markdown horizontal
   line.
+* 
+## Third Party Plugins
 
-* https://stackoverflow.com/questions/49267811/how-can-i-escape-3-backticks-code-block-in-3-backticks-code-block
+* https://github.com/Martinomagnifico/reveal.js-copycode
+* https://github.com/denehyg/reveal.js-menu
+

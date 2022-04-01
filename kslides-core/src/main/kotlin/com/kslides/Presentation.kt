@@ -1,5 +1,6 @@
 package com.kslides
 
+import com.github.pambrose.common.util.*
 import com.kslides.KSlides.Companion.topLevel
 import com.kslides.Output.runHttpServer
 import com.kslides.Output.writeToFileSystem
@@ -17,60 +18,23 @@ fun kslides(block: KSlides.() -> Unit) {
 
       configBlock.invoke(globalConfig)
 
-      presentationBlocks.forEach {
+      presentationBlocks.forEach { block ->
         Presentation(this)
-          .also { p ->
-            it.invoke(p)
-            p.validatePath()
+          .apply {
+            block.invoke(this)
+            validatePath()
 
-            p.finalConfig = PresentationConfig()
-              .apply {
-                merge(p.kslides.globalConfig)
-                merge(p.presentationConfig)
-              }
+            finalConfig =
+              PresentationConfig()
+                .apply {
+                  merge(kslides.globalConfig)
+                  merge(presentationConfig)
+                }
 
-            p.finalConfig.also { config ->
-              // Css Files
-              p.cssFiles += CssFile("dist/theme/${config.theme.name.toLower()}.css", "theme")
-              p.cssFiles += CssFile("plugin/highlight/${config.highlight.name.toLower()}.css", "highlight-theme")
-
-              if (config.enableCodeCopy)
-                p.cssFiles += CssFile("plugin/copycode/copycode.css")
-
-              if (config.githubCornerHref.isNotEmpty())
-                p.cssFiles += CssFile("plugin/githubCorner/githubCorner.css")
-
-              if (config.enableSpeakerNotes)
-                p.jsFiles += JsFile("plugin/notes/notes.js")
-
-              if (config.enableZoom)
-                p.jsFiles += JsFile("plugin/zoom/zoom.js")
-
-              if (config.enableSearch)
-                p.jsFiles += JsFile("plugin/search/search.js")
-
-              if (config.enableMarkdown)
-                p.jsFiles += JsFile("plugin/markdown/markdown.js")
-
-              if (config.enableHighlight)
-                p.jsFiles += JsFile("plugin/highlight/highlight.js")
-
-              if (config.enableMathKatex || config.enableMathJax2 || config.enableMathJax3)
-                p.jsFiles += JsFile("plugin/math/math.js")
-
-              if (config.enableCodeCopy) {
-                p.jsFiles += JsFile("plugin/copycode/copycode.js")
-                // Required for copycode.js
-                p.jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js")
-              }
-
-              if (config.enableMenu)
-                p.jsFiles += JsFile("plugin/menu/menu.js")
-
-              // if (config.toolbar) {
-              //   p.jsFiles += "plugin/toolbar/toolbar.js"
-              // }
-            }
+            assignCssFiles( )
+            assignJsFiles( )
+            assignPlugins( )
+            assignDependencies( )
           }
       }
 
@@ -118,8 +82,8 @@ class KSlides {
 }
 
 class Presentation(val kslides: KSlides) {
-  private val plugins = mutableListOf<String>()
-  private val dependencies = mutableListOf<String>()
+  internal val plugins = mutableListOf<String>()
+  internal val dependencies = mutableListOf<String>()
 
   internal val jsFiles = mutableListOf(JsFile("dist/reveal.js"))
   internal val cssFiles =
@@ -144,6 +108,90 @@ class Presentation(val kslides: KSlides) {
     kslides.presentationMap[adjustedPath] = this
   }
 
+  internal fun assignCssFiles() {
+    cssFiles += CssFile("dist/theme/${finalConfig.theme.name.toLower()}.css", "theme")
+    cssFiles += CssFile("plugin/highlight/${finalConfig.highlight.name.toLower()}.css", "highlight-theme")
+
+    if (finalConfig.enableCodeCopy)
+      cssFiles += CssFile("plugin/copycode/copycode.css")
+
+    if (finalConfig.githubCornerHref.isNotEmpty())
+      cssFiles += CssFile("plugin/githubCorner/githubCorner.css")
+
+    // Add this last so it does not get overridden
+    cssFiles += CssFile("css/custom.css")
+  }
+
+  internal fun assignJsFiles() {
+    if (finalConfig.enableSpeakerNotes)
+      jsFiles += JsFile("plugin/notes/notes.js")
+
+    if (finalConfig.enableZoom)
+      jsFiles += JsFile("plugin/zoom/zoom.js")
+
+    if (finalConfig.enableSearch)
+      jsFiles += JsFile("plugin/search/search.js")
+
+    if (finalConfig.enableMarkdown)
+      jsFiles += JsFile("plugin/markdown/markdown.js")
+
+    if (finalConfig.enableHighlight)
+      jsFiles += JsFile("plugin/highlight/highlight.js")
+
+    if (finalConfig.enableMathKatex || finalConfig.enableMathJax2 || finalConfig.enableMathJax3)
+      jsFiles += JsFile("plugin/math/math.js")
+
+    if (finalConfig.enableCodeCopy) {
+      jsFiles += JsFile("plugin/copycode/copycode.js")
+      // Required for copycode.js
+      jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js")
+    }
+
+    if (finalConfig.enableMenu)
+      jsFiles += JsFile("plugin/menu/menu.js")
+
+    // if (finalConfig.toolbar) {
+    //   jsFiles += "plugin/toolbar/toolbar.js"
+    // }
+  }
+
+  internal fun assignPlugins() {
+    if (finalConfig.enableSpeakerNotes)
+      plugins += "RevealNotes"
+
+    if (finalConfig.enableZoom)
+      plugins += "RevealZoom"
+
+    if (finalConfig.enableSearch)
+      plugins += "RevealSearch"
+
+    if (finalConfig.enableMarkdown)
+      plugins += "RevealMarkdown"
+
+    if (finalConfig.enableHighlight)
+      plugins += "RevealHighlight"
+
+    if (finalConfig.enableMathKatex)
+      plugins += "RevealMath.KaTeX"
+
+    if (finalConfig.enableMathJax2)
+      plugins += "RevealMath.MathJax2"
+
+    if (finalConfig.enableMathJax3)
+      plugins += "RevealMath.MathJax3"
+
+    if (finalConfig.enableMenu)
+      plugins += "RevealMenu"
+
+    if (finalConfig.enableCodeCopy)
+      plugins += "CopyCode"
+  }
+
+  internal fun assignDependencies() {
+    // if (finalConfig.toolbar)
+    //   dependencies += "plugin/toolbar/toolbar.js"
+  }
+
   @HtmlTagMarker
   fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
 
@@ -156,16 +204,16 @@ class Presentation(val kslides: KSlides) {
   fun verticalSlides(block: VerticalSlideContext.() -> Unit) =
     VerticalSlide(this) { div, slide ->
       div.apply {
-        section {
-          (slide as VerticalSlide).verticalContext
-            .also { verticalContext ->
-              block.invoke(verticalContext)
+        (slide as VerticalSlide).verticalContext
+          .also { verticalContext ->
+            block(verticalContext)
+            section(classes = verticalContext.classes.nullIfEmpty()) {
               verticalContext.verticalSlides.forEach { verticalSlide ->
                 verticalSlide.content.invoke(div, verticalSlide)
                 rawHtml("\n")
               }
-            }
-        }.also { rawHtml("\n") }
+            }.also { rawHtml("\n") }
+          }
       }
     }.also { slides += it }
 
@@ -173,18 +221,18 @@ class Presentation(val kslides: KSlides) {
   fun VerticalSlideContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
     VerticalHtmlSlide(this@Presentation) { div, slide ->
       div.apply {
-        section {
-          (slide as VerticalHtmlSlide).apply {
-            slideContent.invoke(this)
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
-            applyConfig(mergedConfig())
+        (slide as VerticalHtmlSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfEmpty()) {
+            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
+            applyConfig(s.mergedConfig())
             val text =
-              htmlBlock()
-                .indentInclude(indentToken)
-                .let { if (!disableTrimIndent) it.trimIndent() else it }
+              s.htmlBlock()
+                .indentInclude(s.indentToken)
+                .let { if (!s.disableTrimIndent) it.trimIndent() else it }
             rawHtml("\n$text")
-          }
-        }.also { rawHtml("\n") }
+          }.also { rawHtml("\n") }
+        }
       }
     }.also { verticalSlides += it }
 
@@ -192,18 +240,18 @@ class Presentation(val kslides: KSlides) {
   fun htmlSlide(slideContent: HtmlSlide.() -> Unit) =
     HtmlSlide(this) { div, slide ->
       div.apply {
-        section {
-          (slide as HtmlSlide).apply {
-            slideContent.invoke(this)
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
-            applyConfig(mergedConfig())
+        (slide as HtmlSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfEmpty()) {
+            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
+            applyConfig(s.mergedConfig())
             val text =
-              htmlBlock()
-                .indentInclude(indentToken)
-                .let { if (!disableTrimIndent) it.trimIndent() else it }
+              s.htmlBlock()
+                .indentInclude(s.indentToken)
+                .let { if (!s.disableTrimIndent) it.trimIndent() else it }
             rawHtml("\n$text")
-          }
-        }.also { rawHtml("\n") }
+          }.also { rawHtml("\n") }
+        }
       }
     }.also { slides += it }
 
@@ -211,14 +259,14 @@ class Presentation(val kslides: KSlides) {
   fun VerticalSlideContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
     VerticalDslSlide(this@Presentation) { div, slide ->
       div.apply {
-        section {
-          (slide as VerticalDslSlide).apply {
-            slideContent.invoke(this)
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
-            applyConfig(mergedConfig())
-            dslBlock.invoke(this@section, this)
-          }
-        }.also { rawHtml("\n") }
+        (slide as VerticalDslSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfEmpty()) {
+            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
+            applyConfig(s.mergedConfig())
+            s.dslBlock.invoke(this, s)
+          }.also { rawHtml("\n") }
+        }
       }
     }.also { verticalSlides += it }
 
@@ -226,14 +274,14 @@ class Presentation(val kslides: KSlides) {
   fun dslSlide(slideContent: DslSlide.() -> Unit) =
     DslSlide(this) { div, slide ->
       div.apply {
-        section {
-          (slide as DslSlide).apply {
-            slideContent.invoke(this)
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
-            applyConfig(mergedConfig())
-            dslBlock.invoke(this@section, this)
-          }
-        }.also { rawHtml("\n") }
+        (slide as DslSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfEmpty()) {
+            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
+            applyConfig(s.mergedConfig())
+            s.dslBlock.invoke(this, s)
+          }.also { rawHtml("\n") }
+        }
       }
     }.also { slides += it }
 
@@ -241,17 +289,17 @@ class Presentation(val kslides: KSlides) {
   fun VerticalSlideContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
     VerticalMarkdownSlide(this@Presentation) { div, slide ->
       div.apply {
-        section {
-          (slide as VerticalMarkdownSlide).apply {
-            slideContent.invoke(this)
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
-            applyConfig(mergedConfig())
+        (slide as VerticalMarkdownSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfEmpty()) {
+            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
+            applyConfig(s.mergedConfig())
 
             // If this value is == "" it means read content inline
-            attributes["data-markdown"] = filename
+            attributes["data-markdown"] = s.filename
 
-            if (charset.isNotEmpty())
-              attributes["data-charset"] = charset
+            if (s.charset.isNotEmpty())
+              attributes["data-charset"] = s.charset
 
             // These are not applicable for vertical markdown slides
             attributes["data-separator"] = ""
@@ -260,21 +308,20 @@ class Presentation(val kslides: KSlides) {
             //if (notes.isNotEmpty())
             //    attributes["data-separator-notes"] = notes
 
-            if (filename.isEmpty()) {
-              markdownBlock().also { markdown ->
+            if (s.filename.isEmpty()) {
+              s.markdownBlock().also { markdown ->
                 if (markdown.isNotEmpty())
-                  script {
-                    type = "text/template"
+                  script("text/template") {
                     val text =
                       markdown
-                        .indentInclude(indentToken)
-                        .let { if (!disableTrimIndent) it.trimIndent() else it }
+                        .indentInclude(s.indentToken)
+                        .let { if (!s.disableTrimIndent) it.trimIndent() else it }
                     rawHtml("\n$text\n")
                   }
               }
             }
-          }
-        }.also { rawHtml("\n") }
+          }.also { rawHtml("\n") }
+        }
       }
     }.also { verticalSlides += it }
 
@@ -282,18 +329,18 @@ class Presentation(val kslides: KSlides) {
   fun markdownSlide(slideContent: MarkdownSlide.() -> Unit = {}) =
     MarkdownSlide(this) { div, slide ->
       div.apply {
-        section {
-          (slide as MarkdownSlide).apply {
-            slideContent.invoke(this)
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
-            val config = mergedConfig()
+        (slide as MarkdownSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfEmpty()) {
+            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
+            val config = s.mergedConfig()
             applyConfig(config)
 
             // If this value is == "" it means read content inline
-            attributes["data-markdown"] = filename
+            attributes["data-markdown"] = s.filename
 
-            if (charset.isNotEmpty())
-              attributes["data-charset"] = charset
+            if (s.charset.isNotEmpty())
+              attributes["data-charset"] = s.charset
 
             if (config.markdownSeparator.isNotEmpty())
               attributes["data-separator"] = config.markdownSeparator
@@ -306,21 +353,20 @@ class Presentation(val kslides: KSlides) {
             if (config.markdownNotesSeparator.isNotEmpty() && config.markdownSeparator.isNotEmpty() && config.markdownVerticalSeparator.isNotEmpty())
               attributes["data-separator-notes"] = config.markdownNotesSeparator
 
-            if (filename.isEmpty()) {
-              markdownBlock().also { markdown ->
+            if (s.filename.isEmpty()) {
+              s.markdownBlock().also { markdown ->
                 if (markdown.isNotEmpty())
-                  script {
-                    type = "text/template"
+                  script("text/template") {
                     val text =
                       markdown
-                        .indentInclude(indentToken)
-                        .let { if (!disableTrimIndent) it.trimIndent() else it }
+                        .indentInclude(s.indentToken)
+                        .let { if (!s.disableTrimIndent) it.trimIndent() else it }
                     rawHtml("\n$text\n")
                   }
               }
             }
-          }
-        }.also { rawHtml("\n") }
+          }.also { rawHtml("\n") }
+        }
       }
     }.also { slides += it }
 
@@ -403,11 +449,6 @@ class Presentation(val kslides: KSlides) {
         }
       }
 
-      // Dependencies
-
-      // if (toolbar)
-      //   dependencies += "plugin/toolbar/toolbar.js"
-
       if (dependencies.isNotEmpty()) {
         appendLine(
           buildString {
@@ -417,37 +458,6 @@ class Presentation(val kslides: KSlides) {
           }.prependIndent("\t\t\t")
         )
       }
-
-      // Plugins
-      if (config.enableSpeakerNotes)
-        plugins += "RevealNotes"
-
-      if (config.enableZoom)
-        plugins += "RevealZoom"
-
-      if (config.enableSearch)
-        plugins += "RevealSearch"
-
-      if (config.enableMarkdown)
-        plugins += "RevealMarkdown"
-
-      if (config.enableHighlight)
-        plugins += "RevealHighlight"
-
-      if (config.enableMathKatex)
-        plugins += "RevealMath.KaTeX"
-
-      if (config.enableMathJax2)
-        plugins += "RevealMath.MathJax2"
-
-      if (config.enableMathJax3)
-        plugins += "RevealMath.MathJax3"
-
-      if (config.enableMenu)
-        plugins += "RevealMenu"
-
-      if (config.enableCodeCopy)
-        plugins += "CopyCode"
 
       appendLine("\t\t\tplugins: [ ${plugins.joinToString(", ")} ]")
     }
@@ -482,6 +492,7 @@ class Presentation(val kslides: KSlides) {
 
 class VerticalSlideContext {
   internal val verticalSlides = mutableListOf<VerticalSlide>()
+  var classes = ""
 }
 
 class JsFile(val filename: String)
