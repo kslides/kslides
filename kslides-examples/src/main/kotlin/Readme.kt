@@ -169,7 +169,7 @@ fun main() {
         content {
           """
           ## Presentation Description    
-          ```kotlin [9-12|16-24|26-39|1-132]
+          ```kotlin []
           ${includeUrl("${githubPrefix("pambrose", "kslides", "kslides-examples")}/src/main/kotlin/Readme.kt")}
           ```
           """
