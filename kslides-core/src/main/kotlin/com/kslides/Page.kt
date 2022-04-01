@@ -6,12 +6,12 @@ import kotlinx.html.dom.*
 
 internal object Page {
 
-  fun generatePage(p: Presentation,  prefix: String = "/"): String {
+  fun generatePage(p: Presentation, config: PresentationConfig, prefix: String = "/"): String {
     val document =
       document {
         append.html {
-          generateHead(p,  prefix.ensureSuffix("/"))
-          generateBody(p,  prefix.ensureSuffix("/"))
+          generateHead(p, config, prefix.ensureSuffix("/"))
+          generateBody(p, config, prefix.ensureSuffix("/"))
         }
       }
 
@@ -37,7 +37,7 @@ internal object Page {
     return document.serialize()
   }
 
-  fun HTML.generateHead(p: Presentation,  srcPrefix: String) {
+  fun HTML.generateHead(p: Presentation, config: PresentationConfig, srcPrefix: String) =
     head {
       meta { charset = "utf-8" }
       meta { name = "apple-mobile-web-app-capable"; content = "yes" }
@@ -47,18 +47,19 @@ internal object Page {
         content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
       }
 
-      if (p.finalConfig.title.isNotEmpty())
-        title { +p.finalConfig.title }
+      if (config.title.isNotEmpty())
+        title { +config.title }
 
-      if (p.finalConfig.gaPropertyId.isNotEmpty()) {
+      if (config.gaPropertyId.isNotEmpty()) {
         script { async = true; src = "https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K" }
+        rawHtml("\n\t")
         script {
           rawHtml(
             """
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date()); 
-            gtag('config', '${p.finalConfig.gaPropertyId}');
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date()); 
+              gtag('config', '${config.gaPropertyId}');
             """
           )
         }
@@ -79,22 +80,14 @@ internal object Page {
         }
       }
     }
-  }
 
-  fun HTML.generateBody(p: Presentation,  srcPrefix: String) {
+  fun HTML.generateBody(p: Presentation, config: PresentationConfig, srcPrefix: String) =
     body {
       div("reveal") {
-        if (p.finalConfig.githubCornerHref.isNotEmpty()) {
-          a(p.finalConfig.githubCornerHref, "blank", classes = "github-corner") {
-            title = "View source on Github"
-            rawHtml(
-              """
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
-              <path fill="currentColor" d="M27.5 11.2a16.3 16.3 0 0 0-5.1 31.7c.8.2 1.1-.3 1.1-.7v-2.8c-4.5 1-5.5-2.2-5.5-2.2-.7-1.9-1.8-2.4-1.8-2.4-1.5-1 .1-1 .1-1 1.6.1 2.5 1.7 2.5 1.7 1.5 2.5 3.8 1.8 4.7 1.4.2-1 .6-1.8 1-2.2-3.5-.4-7.3-1.8-7.3-8 0-1.8.6-3.3 1.6-4.4-.1-.5-.7-2.1.2-4.4 0 0 1.4-.4 4.5 1.7a15.6 15.6 0 0 1 8.1 0c3.1-2 4.5-1.7 4.5-1.7.9 2.3.3 4 .2 4.4 1 1 1.6 2.6 1.6 4.3 0 6.3-3.8 7.7-7.4 8 .6.6 1.1 1.6 1.1 3v4.6c0 .4.3.9 1.1.7a16.3 16.3 0 0 0-5.2-31.7">
-              </path>
-            </svg>
-          """
-            )
+        if (config.githubCornerHref.isNotEmpty()) {
+          a(config.githubCornerHref, "blank", classes = "github-corner") {
+            title = config.githubCornerTitle
+            rawHtml(config.githubCornerSvg)
           }
         }
 
@@ -112,10 +105,9 @@ internal object Page {
 
       rawHtml("\n\t")
       script {
-        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(p.finalConfig, srcPrefix)}\t\t});\n\n")
+        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config, srcPrefix)}\t\t});\n\n")
       }
     }
-  }
 
   fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
 }

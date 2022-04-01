@@ -13,7 +13,9 @@ fun main() {
     presentation {
 
       presentationConfig {
-        githubCornerHref = "https://github.com/pambrose/kslides/blob/master/kslides-examples/src/main/kotlin/Readme.kt"
+        githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Readme.kt")
+        githubCornerTitle = "View presentation source on Github"
+
         slideNumber = "c/t"
         history = true
         transition = Transition.SLIDE
@@ -66,24 +68,9 @@ fun main() {
       markdownSlide {
         content {
           """
-          ## Kotlin Code Highlights    
+          ## Code Highlights    
           ```kotlin [3,7|4,6|5]
           ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
-          ```
-          """
-        }
-      }
-
-      markdownSlide {
-        slideConfig {
-          backgroundColor = "#BB4400"
-        }
-
-        content {
-          """
-          ## Java Code Highlights    
-          ```java [1|3,7|4,6|5]
-          ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldJ.java")}
           ```
           """
         }
@@ -96,13 +83,13 @@ fun main() {
 
           content {
             """
-          <h2>Animated Code 👇</h2>  
-          <pre data-id="code-animation" data-cc="false"> 
-            <code data-trim="" data-line-numbers="">
-              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-6,9]")}
-            </code>
-          </pre>
-          """
+            <h2>Animated Code 👇</h2>  
+            <pre data-id="code-animation" data-cc="false"> 
+              <code data-trim="" data-line-numbers="">
+                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-6,9]")}
+              </code>
+            </pre>
+            """
           }
         }
 
@@ -111,28 +98,30 @@ fun main() {
 
           content {
             """
-          <h2>Animated Code 👇</h2>  
-          <pre data-id="code-animation" data-cc="false"> 
-            <code data-trim="" data-line-numbers="">
-              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-9]")}
-            </code>
-          </pre>
-          """
+            <h2>Animated Code 👇</h2>  
+            <pre data-id="code-animation" data-cc="false"> 
+              <code data-trim="" data-line-numbers="">
+                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-9]")}
+              </code>
+            </pre>
+            """
           }
         }
 
-        htmlSlide {
+        dslSlide {
           autoAnimate = true
 
           content {
-            """
-          <h2>Animated Code 👇</h2>  
-          <pre data-id="code-animation" data-cc="false">
-            <code data-trim="" data-line-numbers="">
-              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js")}
-            </code>
-          </pre>
-          """
+            h2 { +"Animated Code 👇" }
+            pre {
+              attributes["data-id"] = "code-animation"
+              attributes["data-cc"] = "false"
+              code {
+                attributes["data-trim"] = ""
+                attributes["data-line-numbers"] = ""
+                +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", indentToken="")
+              }
+            }
           }
         }
       }
@@ -169,9 +158,9 @@ fun main() {
       markdownSlide {
         content {
           """
-          ## Presentation Description    
+          ## Presentation Definition    
           ```kotlin []
-          ${includeUrl("${githubPrefix("pambrose", "kslides", "kslides-examples")}/src/main/kotlin/Readme.kt")}
+          ${includeUrl(githubRawUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Readme.kt"))}
           ```
           """
         }
