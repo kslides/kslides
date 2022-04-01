@@ -13,16 +13,11 @@ authored in Markdown/HTML.
 
 ## Example
 
-[This presentation](src/main/kotlin/com/kslides/examples/Readme.kt) is running dynamically on 
-[Heroku](https://kslides-readme.herokuapp.com), and statically from 
-[Netlify](https://kslides-readme.netlify.app) 
+[This](kslides-examples/src/main/kotlin/Readme.kt) presentation is available statically from
+[Netlify](https://kslides-readme.netlify.app)
 and [Github Pages](https://pambrose.github.io/kslides/).
-
-## Third Party Plugins
-
-* https://github.com/Martinomagnifico/reveal.js-copycode
-* https://github.com/denehyg/reveal.js-menu
-
+It is also running dynamically on 
+[Heroku](https://kslides-readme.herokuapp.com).
 
 ## Getting Started
 
@@ -31,10 +26,15 @@ and [Github Pages](https://pambrose.github.io/kslides/).
 [Create a presentation repo](https://github.com/pambrose/kslides-template/generate) using
 the [kslides-template](https://github.com/pambrose/kslides-template) repo.
 
+## Third Party Plugins
+
+* https://github.com/Martinomagnifico/reveal.js-copycode
+* https://github.com/denehyg/reveal.js-menu
+
+
 ## Heroku Notes
 
 * Add a Config Var for `GRADLE_TASK=-Pprod=true uberjar`
-
 
 ## MarkDown Slide Notes
 
