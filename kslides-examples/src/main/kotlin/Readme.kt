@@ -18,6 +18,7 @@ fun main() {
         history = true
         transition = Transition.SLIDE
         transitionSpeed = Speed.SLOW
+        gaPropertyId = "G-TRY2Q243XC"
 
         slideConfig {
           backgroundColor = "#4370A5"
