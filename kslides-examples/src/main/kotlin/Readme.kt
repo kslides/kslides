@@ -13,6 +13,7 @@ fun main() {
     presentation {
 
       presentationConfig {
+        githubCornerHref = "https://github.com/pambrose/kslides/blob/master/kslides-examples/src/main/kotlin/Readme.kt"
         slideNumber = "c/t"
         history = true
         transition = Transition.SLIDE
@@ -71,7 +72,6 @@ fun main() {
           """
         }
       }
-
 
       markdownSlide {
         slideConfig {

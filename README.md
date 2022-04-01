@@ -1,12 +1,13 @@
 # kslides
 
-[![Release](https://jitpack.io/v/pambrose/kslides.svg)](https://jitpack.io/#pambrose/kslides)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/pambrose/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=pambrose/kslides&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.org/pambrose/kslides.svg?branch=master)](https://travis-ci.org/pambrose/kslides)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/pambrose/kslides/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pambrose/kslides&amp;utm_campaign=Badge_Grade)
+[![Release](https://jitpack.io/v/pambrose/kslides.svg)](https://jitpack.io/#pambrose/kslides)
 [![Kotlin](https://img.shields.io/badge/%20language-Kotlin-red.svg)](https://kotlinlang.org/)
 
-**kslides** is a Kotlin DSL wrapper for [reveal.js](https://revealjs.com). It is meant for people who would prefer to
-build presentations with IntelliJ than Powerpoint. It works particularly well for presentations with code and slides
+**kslides** is a Kotlin DSL wrapper for the incredible [reveal.js](https://revealjs.com) presentation framework. 
+It is meant for people who prefer working in an IDE rather than PowerPoint. 
+It works particularly well for presentations with code snippets and slides
 authored in Markdown/HTML.
 
 [![Screenshot](https://pambrose.github.io/kslides/kslides-screenshot.png)](https://pambrose.github.io/kslides/)

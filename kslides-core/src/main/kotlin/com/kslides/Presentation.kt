@@ -19,9 +19,58 @@ fun kslides(block: KSlides.() -> Unit) {
 
       presentationBlocks.forEach {
         Presentation(this)
-          .also { presentation ->
-            it.invoke(presentation)
-            presentation.validatePath()
+          .also { p ->
+            it.invoke(p)
+            p.validatePath()
+
+            p.finalConfig = PresentationConfig()
+              .apply {
+                merge(p.kslides.globalConfig)
+                merge(p.presentationConfig)
+              }
+
+            p.finalConfig.also { config ->
+              // Css Files
+              p.cssFiles += CssFile("dist/theme/${config.theme.name.toLower()}.css", "theme")
+              p.cssFiles += CssFile("plugin/highlight/${config.highlight.name.toLower()}.css", "highlight-theme")
+
+              if (config.enableCodeCopy)
+                p.cssFiles += CssFile("plugin/copycode/copycode.css")
+
+              if (config.githubCornerHref.isNotEmpty())
+                p.cssFiles += CssFile("plugin/githubCorner/githubCorner.css")
+
+              if (config.enableSpeakerNotes)
+                p.jsFiles += JsFile("plugin/notes/notes.js")
+
+              if (config.enableZoom)
+                p.jsFiles += JsFile("plugin/zoom/zoom.js")
+
+              if (config.enableSearch)
+                p.jsFiles += JsFile("plugin/search/search.js")
+
+              if (config.enableMarkdown)
+                p.jsFiles += JsFile("plugin/markdown/markdown.js")
+
+              if (config.enableHighlight)
+                p.jsFiles += JsFile("plugin/highlight/highlight.js")
+
+              if (config.enableMathKatex || config.enableMathJax2 || config.enableMathJax3)
+                p.jsFiles += JsFile("plugin/math/math.js")
+
+              if (config.enableCodeCopy) {
+                p.jsFiles += JsFile("plugin/copycode/copycode.js")
+                // Required for copycode.js
+                p.jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js")
+              }
+
+              if (config.enableMenu)
+                p.jsFiles += JsFile("plugin/menu/menu.js")
+
+              // if (config.toolbar) {
+              //   p.jsFiles += "plugin/toolbar/toolbar.js"
+              // }
+            }
           }
       }
 
@@ -79,6 +128,7 @@ class Presentation(val kslides: KSlides) {
       CssFile("dist/reset.css"),
     )
   internal val presentationConfig = PresentationConfig()
+  internal lateinit var finalConfig: PresentationConfig
   internal val slides = mutableListOf<Slide>()
 
   var path = "/"

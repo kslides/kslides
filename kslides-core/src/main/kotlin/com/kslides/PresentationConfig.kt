@@ -30,6 +30,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   var enableMathJax3 by ConfigProperty<Boolean>(managedValues)
   var enableCodeCopy by ConfigProperty<Boolean>(managedValues)
   var enableMenu by ConfigProperty<Boolean>(managedValues)
+  var githubCornerHref by ConfigProperty<String>(managedValues)
   var gaPropertyId by ConfigProperty<String>(managedValues)
 
   // Controls automatic progression to the next slide
@@ -66,6 +67,8 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       enableMathJax3 = false
       enableCodeCopy = true
       enableMenu = true
+
+      githubCornerHref = ""
       gaPropertyId = ""
 
       autoSlide = 0
