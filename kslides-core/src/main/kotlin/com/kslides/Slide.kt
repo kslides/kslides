@@ -71,7 +71,7 @@ class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(
 }
 
 open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content) {
-  val vertContext = VerticalContext()
+  val verticalContext = VerticalSlideContext()
 }
 
 class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {

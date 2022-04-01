@@ -101,3 +101,33 @@ internal fun String.trimIndentWithInclude(): String {
     }
     .joinToString("\n")
 }
+
+private val whiteSpace = "\\s".toRegex()
+
+internal fun String.toIntList() =
+  buildList {
+    replace(whiteSpace, "")
+      .trimStart('[', '(')
+      .trimEnd(']', ')')
+      .split(",", ";")
+      .filter { it.isNotEmpty() }
+      .forEach { splitElem ->
+        splitElem.split('-', '–', ':')
+          .also { elem ->
+            when (elem.size) {
+              1 -> add(splitElem.toInt())
+              2 -> {
+                elem.let { it[0].toInt() to it[1].toInt() }
+                  .also { (beg, end) ->
+                    when {
+                      beg == end -> add(beg)
+                      beg < end -> addAll(beg..end)
+                      else -> addAll((beg downTo end))
+                    }
+                  }
+              }
+              else -> throw IllegalArgumentException("Invalid argument: $elem")
+            }
+          }
+      }
+  }

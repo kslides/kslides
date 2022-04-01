@@ -4,6 +4,7 @@ import kotlinx.html.*
 
 class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   internal val menuConfig = MenuConfig()
+  internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
 
   // Display presentation control arrows
@@ -295,11 +296,15 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   internal fun merge(other: PresentationConfig) {
     this.combine(other)
     this.menuConfig.combine(other.menuConfig)
+    this.copyCodeConfig.combine(other.copyCodeConfig)
     this.slideConfig.combine(other.slideConfig)
   }
 
   @HtmlTagMarker
   fun menuConfig(block: MenuConfig.() -> Unit) = block.invoke(menuConfig)
+
+  @HtmlTagMarker
+  fun copyCodeConfig(block: CopyCodeConfig.() -> Unit) = block.invoke(copyCodeConfig)
 
   @HtmlTagMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = block.invoke(slideConfig)

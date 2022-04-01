@@ -8,6 +8,7 @@ const val INDENT_TOKEN = "__indent__"
 
 fun includeFile(
   path: String,
+  lineNumbers: String = "",
   beginToken: String = "",
   endToken: String = "",
   indentToken: String = INDENT_TOKEN,
@@ -16,6 +17,7 @@ fun includeFile(
   try {
     processCode(
       File("${System.getProperty("user.dir")}/$path").readLines(),
+      lineNumbers,
       beginToken,
       endToken,
       indentToken,
@@ -28,6 +30,7 @@ fun includeFile(
 
 fun includeUrl(
   source: String,
+  lineNumbers: String = "",
   beginToken: String = "",
   endToken: String = "",
   indentToken: String = INDENT_TOKEN,
@@ -36,6 +39,7 @@ fun includeUrl(
   try {
     processCode(
       URL(source).readText().lines(),
+      lineNumbers,
       beginToken,
       endToken,
       indentToken,
@@ -48,35 +52,45 @@ fun includeUrl(
 
 private fun processCode(
   lines: List<String>,
+  lineNumbers: String = "",
   beginToken: String,
   endToken: String,
   indentToken: String,
   commentPrefix: String,
 ): String {
-  val beginRegex = "$commentPrefix\\s*$beginToken".toRegex()
-  val endRegex = "$commentPrefix\\s*$endToken".toRegex()
 
-  val startIndex =
-    if (beginToken.isEmpty())
-      0
-    else
-      (lines
-        .asSequence()
-        .mapIndexed { i, s -> i to s }
-        .firstOrNull { it.second.contains(beginRegex) }?.first
-        ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
+  val subLines =
+    if (lineNumbers.isNotEmpty()) {
+      val lineNums = lineNumbers.toIntList()
+      lines.filterIndexed { i, _ -> i + 1 in lineNums }
+    } else {
+      val startIndex =
+        if (beginToken.isEmpty())
+          0
+        else {
+          val beginRegex = "$commentPrefix\\s*$beginToken".toRegex()
+          (lines
+            .asSequence()
+            .mapIndexed { i, s -> i to s }
+            .firstOrNull { it.second.contains(beginRegex) }?.first
+            ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
+        }
 
-  val endIndex =
-    if (endToken.isEmpty())
-      lines.size
-    else
-      (lines.reversed()
-        .asSequence()
-        .mapIndexed { i, s -> (lines.size - i - 1) to s }
-        .firstOrNull { it.second.contains(endRegex) }?.first
-        ?: throw IllegalArgumentException("endToken not found: $endToken"))
+      val endIndex =
+        if (endToken.isEmpty())
+          lines.size
+        else {
+          val endRegex = "$commentPrefix\\s*$endToken".toRegex()
+          (lines.reversed()
+            .asSequence()
+            .mapIndexed { i, s -> (lines.size - i - 1) to s }
+            .firstOrNull { it.second.contains(endRegex) }?.first
+            ?: throw IllegalArgumentException("endToken not found: $endToken"))
+        }
 
-  val subLines = lines.subList(startIndex, endIndex)
+      lines.subList(startIndex, endIndex)
+    }
+
   val prefixed = subLines.map { "$indentToken$it" }
   return prefixed.joinToString("\n") { StringEscapeUtils.escapeHtml4(it) }
 }

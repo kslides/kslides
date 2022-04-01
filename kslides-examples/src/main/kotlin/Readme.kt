@@ -71,9 +71,10 @@ fun main() {
         }
       }
 
+
       markdownSlide {
         slideConfig {
-          backgroundColor = "lightblue"
+          backgroundColor = "#BB4400"
         }
 
         content {
@@ -83,6 +84,54 @@ fun main() {
           ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldJ.java")}
           ```
           """
+        }
+      }
+
+      verticalSlides {
+
+        htmlSlide {
+          autoAnimate = true
+
+          content {
+            """
+          <h2>Animated Code 👇</h2>  
+          <pre data-id="code-animation" data-cc="false"> 
+            <code data-trim="" data-line-numbers="">
+              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-6,9]")}
+            </code>
+          </pre>
+          """
+          }
+        }
+
+        htmlSlide {
+          autoAnimate = true
+
+          content {
+            """
+          <h2>Animated Code 👇</h2>  
+          <pre data-id="code-animation" data-cc="false"> 
+            <code data-trim="" data-line-numbers="">
+              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-9]")}
+            </code>
+          </pre>
+          """
+          }
+        }
+
+        htmlSlide {
+          autoAnimate = true
+
+          content {
+            """
+          <h2>Animated Code 👇</h2>  
+          <pre data-id="code-animation" data-cc="false">
+            <code data-trim="" data-line-numbers="">
+              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js")}
+            </code>
+          </pre>
+          """
+          }
         }
       }
 

@@ -6,6 +6,35 @@ import io.kotest.matchers.*
 
 class UtilsTest : StringSpec(
   {
+    "String.toIntList()" {
+
+      "1,2,4".toIntList() shouldBe listOf(1, 2, 4)
+
+      "[1,2,4]".toIntList() shouldBe listOf(1, 2, 4)
+
+      "(1,2,4)".toIntList() shouldBe listOf(1, 2, 4)
+
+      "3-5".toIntList() shouldBe listOf(3, 4, 5)
+
+      "5-3".toIntList() shouldBe listOf(5, 4, 3)
+
+      "2, 4 - 6, 8".toIntList() shouldBe listOf(2, 4, 5, 6, 8)
+
+      "2, 6 - 4, 8".toIntList() shouldBe listOf(2, 6, 5, 4, 8)
+
+      "2, 4,".toIntList() shouldBe listOf(2, 4)
+
+      "".toIntList() shouldBe listOf()
+
+      "[]".toIntList() shouldBe listOf()
+
+      "6".toIntList() shouldBe listOf(6)
+
+      ",5".toIntList() shouldBe listOf(5)
+
+      ",".toIntList() shouldBe listOf()
+    }
+
     "Code fence test" {
       val s =
         """

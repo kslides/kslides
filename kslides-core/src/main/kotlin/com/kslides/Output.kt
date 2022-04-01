@@ -59,21 +59,22 @@ object Output : KLogging() {
     val srcPrefix = output.staticRootDir.ensureSuffix("/")
 
     File(outputDir).mkdir()
-    output.kslides.presentationMap.forEach { (key, p) ->
-      val (file, prefix) =
-        when {
-          key == "/" -> File("$outputDir/index.html") to srcPrefix
-          key.endsWith(".html") -> File("$outputDir/$key") to srcPrefix
-          else -> {
-            val pathElems = "$outputDir/$key".split("/").filter { it.isNotEmpty() }
-            val path = pathElems.joinToString("/")
-            val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
-            File(path).mkdir()
-            File("$path/index.html") to "$dotDot$srcPrefix"
+    output.kslides.presentationMap
+      .forEach { (key, p) ->
+        val (file, prefix) =
+          when {
+            key == "/" -> File("$outputDir/index.html") to srcPrefix
+            key.endsWith(".html") -> File("$outputDir/$key") to srcPrefix
+            else -> {
+              val pathElems = "$outputDir/$key".split("/").filter { it.isNotEmpty() }
+              val path = pathElems.joinToString("/")
+              val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
+              File(path).mkdir()
+              File("$path/index.html") to "$dotDot$srcPrefix"
+            }
           }
-        }
-      logger.info { "Writing presentation $key to $file" }
-      file.writeText(generatePage(p, prefix))
-    }
+        logger.info { "Writing presentation $key to $file" }
+        file.writeText(generatePage(p, prefix))
+      }
   }
 }

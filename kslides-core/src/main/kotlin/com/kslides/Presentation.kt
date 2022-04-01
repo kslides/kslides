@@ -103,15 +103,15 @@ class Presentation(val kslides: KSlides) {
   }
 
   @HtmlTagMarker
-  fun verticalSlides(block: VerticalContext.() -> Unit) =
+  fun verticalSlides(block: VerticalSlideContext.() -> Unit) =
     VerticalSlide(this) { div, slide ->
       div.apply {
         section {
-          (slide as VerticalSlide).vertContext
-            .also { vertContext ->
-              block.invoke(vertContext)
-              vertContext.vertSlides.forEach { vertSlide ->
-                vertSlide.content.invoke(div, vertSlide)
+          (slide as VerticalSlide).verticalContext
+            .also { verticalContext ->
+              block.invoke(verticalContext)
+              verticalContext.verticalSlides.forEach { verticalSlide ->
+                verticalSlide.content.invoke(div, verticalSlide)
                 rawHtml("\n")
               }
             }
@@ -120,13 +120,13 @@ class Presentation(val kslides: KSlides) {
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> String) =
+  fun VerticalSlideContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
     VerticalHtmlSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
           (slide as VerticalHtmlSlide).apply {
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             slideContent.invoke(this)
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             applyConfig(mergedConfig())
             val text =
               htmlBlock()
@@ -136,7 +136,7 @@ class Presentation(val kslides: KSlides) {
           }
         }.also { rawHtml("\n") }
       }
-    }.also { vertSlides += it }
+    }.also { verticalSlides += it }
 
   @HtmlTagMarker
   fun htmlSlide(slideContent: HtmlSlide.() -> Unit) =
@@ -144,8 +144,8 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         section {
           (slide as HtmlSlide).apply {
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             slideContent.invoke(this)
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             applyConfig(mergedConfig())
             val text =
               htmlBlock()
@@ -158,19 +158,19 @@ class Presentation(val kslides: KSlides) {
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
+  fun VerticalSlideContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
     VerticalDslSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
           (slide as VerticalDslSlide).apply {
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             slideContent.invoke(this)
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             applyConfig(mergedConfig())
             dslBlock.invoke(this@section, this)
           }
         }.also { rawHtml("\n") }
       }
-    }.also { vertSlides += it }
+    }.also { verticalSlides += it }
 
   @HtmlTagMarker
   fun dslSlide(slideContent: DslSlide.() -> Unit) =
@@ -178,8 +178,8 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         section {
           (slide as DslSlide).apply {
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             slideContent.invoke(this)
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             applyConfig(mergedConfig())
             dslBlock.invoke(this@section, this)
           }
@@ -188,13 +188,13 @@ class Presentation(val kslides: KSlides) {
     }.also { slides += it }
 
   @HtmlTagMarker
-  fun VerticalContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
+  fun VerticalSlideContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
     VerticalMarkdownSlide(this@Presentation) { div, slide ->
       div.apply {
         section {
           (slide as VerticalMarkdownSlide).apply {
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             slideContent.invoke(this)
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             applyConfig(mergedConfig())
 
             // If this value is == "" it means read content inline
@@ -226,7 +226,7 @@ class Presentation(val kslides: KSlides) {
           }
         }.also { rawHtml("\n") }
       }
-    }.also { vertSlides += it }
+    }.also { verticalSlides += it }
 
   @HtmlTagMarker
   fun markdownSlide(slideContent: MarkdownSlide.() -> Unit = {}) =
@@ -234,8 +234,8 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         section {
           (slide as MarkdownSlide).apply {
-            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             slideContent.invoke(this)
+            assignAttribs(this@section, id, hidden, uncounted, autoAnimate)
             val config = mergedConfig()
             applyConfig(config)
 
@@ -341,6 +341,18 @@ class Presentation(val kslides: KSlides) {
         }
       }
 
+      config.copyCodeConfig.unmanagedValues.also { vals ->
+        if (vals.isNotEmpty()) {
+          appendLine(
+            buildString {
+              appendLine("copycode: {")
+              appendLine(vals.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
+              appendLine("},")
+            }.prependIndent("\t\t\t")
+          )
+        }
+      }
+
       // Dependencies
 
       // if (toolbar)
@@ -418,8 +430,8 @@ class Presentation(val kslides: KSlides) {
   }
 }
 
-class VerticalContext {
-  internal val vertSlides = mutableListOf<VerticalSlide>()
+class VerticalSlideContext {
+  internal val verticalSlides = mutableListOf<VerticalSlide>()
 }
 
 class JsFile(val filename: String)
