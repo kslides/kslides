@@ -13,6 +13,7 @@ fun main() {
     presentation {
 
       presentationConfig {
+        slideNumber = "c/t"
         history = true
         transition = Transition.SLIDE
         transitionSpeed = Speed.SLOW
