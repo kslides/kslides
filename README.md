@@ -19,8 +19,8 @@ It is also running dynamically on [Heroku](https://kslides-readme.herokuapp.com)
 
 ## Getting Started
 
-[![Template](https://img.shields.io/endpoint?logo=github&style=plastic&url=https%3A%2F%2Fraw.githubusercontent.com%2Fpambrose%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ftemplate.json)](https://github.com/pambrose/kslides-template/generate)
-[![Fork](https://img.shields.io/endpoint?logo=github&style=plastic&url=https%3A%2F%2Fraw.githubusercontent.com%2Fpambrose%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ffork.json)](https://github.com/pambrose/kslides-template/fork)
+[![Template](https://img.shields.io/endpoint?color=%232A9EEE&logo=github&style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2Fpambrose%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ftemplate.json)](https://github.com/pambrose/kslides-template/generate)
+[![Fork](https://img.shields.io/endpoint?color=%232A9EEE&logo=github&style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2Fpambrose%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ffork.json)](https://github.com/pambrose/kslides-template/fork)
 
 [Create a presentation repo](https://github.com/pambrose/kslides-template/generate) with
 the [kslides-template](https://github.com/pambrose/kslides-template) repo.
