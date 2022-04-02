@@ -1,5 +1,7 @@
 package com.kslides
 
+import kotlinx.html.*
+
 fun githubSourceUrl(username: String, repoName: String, path: String = "", branchName: String = "master") =
   "https://github.com/$username/$repoName/blob/$branchName/$path"
 
@@ -11,6 +13,8 @@ fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" --
 fun fragmentIndex(index: Int) = "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
 
 fun String.nullIfEmpty() = if (isNotEmpty()) this else null
+
+fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
 
 fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
   mutableMapOf<K, V>()

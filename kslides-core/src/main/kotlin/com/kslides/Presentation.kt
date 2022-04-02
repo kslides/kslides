@@ -4,7 +4,6 @@ import com.github.pambrose.common.util.*
 import com.kslides.KSlides.Companion.topLevel
 import com.kslides.Output.runHttpServer
 import com.kslides.Output.writeToFileSystem
-import com.kslides.Page.rawHtml
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
@@ -208,7 +207,6 @@ class Presentation(val kslides: KSlides) {
           .also { verticalContext ->
             block(verticalContext)
             section(classes = verticalContext.classes.nullIfEmpty()) {
-              verticalContext.style.also { if (it.isNotEmpty()) style { rawHtml(it) } }
               verticalContext.id.also { if (it.isNotEmpty()) id = it }
               verticalContext.verticalSlides
                 .forEach { verticalSlide ->
@@ -467,7 +465,6 @@ class VerticalSlideContext {
   internal val verticalSlides = mutableListOf<VerticalSlide>()
   var id = ""
   var classes = ""
-  var style = ""
 }
 
 class JsFile(val filename: String)

@@ -108,6 +108,4 @@ internal object Page {
         rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config, srcPrefix)}\t\t});\n\n")
       }
     }
-
-  fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
 }

@@ -1,6 +1,4 @@
 import com.kslides.*
-import com.kslides.Include.includeFile
-import com.kslides.Include.includeUrl
 import kotlinx.html.*
 
 fun main() {
@@ -15,9 +13,8 @@ fun main() {
     presentation {
 
       css += """
-        #intro h1 {
-           color: red;
-        }
+        #intro h1 { color: #FF5533; }
+        #mdslide p { color: black; }
       """
 
       presentationConfig {
@@ -40,28 +37,34 @@ fun main() {
 
         slideConfig {
           transition = Transition.ZOOM
-          transitionSpeed = Speed.FAST
         }
 
         content {
           """
           # kslides
-          A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
+          ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
           """
         }
       }
 
       markdownSlide {
+        id = "mdslide"
+
         slideConfig {
           transition = Transition.ZOOM
-          transitionSpeed = Speed.FAST
         }
 
         content {
           """
           # Markdown Slide
           ## 🍒
-          Press ESC to see presentation overview.
+          
+          Use the arrow keys to navigate ${fragmentIndex(1)}
+          
+          Press ESC to see presentation overview ${fragmentIndex(2)}
+          
+          Press S to see speaker notes ${fragmentIndex(3)}
+
           """
         }
       }
@@ -72,6 +75,9 @@ fun main() {
           <h1>HTML Slide</h1>
           <h2>🐦</h2>
           <p>Use the arrow keys to navigate</p>
+          <aside class="notes">
+            These are notes for the htmlSlide 📝
+          </aside>
           """
         }
       }
@@ -79,13 +85,15 @@ fun main() {
       dslSlide {
         slideConfig {
           transition = Transition.ZOOM
-          transitionSpeed = Speed.FAST
         }
 
         content {
           h1 { +"DSL Slide" }
           h2 { +"👀" }
           p { +"Use the arrow keys to navigate" }
+          aside("notes") {
+            +"These are notes for the dslSlide ⚾"
+          }
         }
       }
 

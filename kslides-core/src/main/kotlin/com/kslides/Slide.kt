@@ -1,6 +1,5 @@
 package com.kslides
 
-import com.kslides.Page.rawHtml
 import kotlinx.html.*
 
 typealias SlideArg = (DIV, Slide) -> Unit
@@ -9,7 +8,6 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
   private val slideConfig = SlideConfig()
   var id = ""
   var classes = ""
-  var style = ""
   var hidden = false
   var uncounted = false
   var autoAnimate = false
@@ -22,8 +20,6 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
   }
 
   internal fun processSlide(section: SECTION) {
-
-    style.also { if (it.isNotEmpty()) section.style { rawHtml(it) } }
 
     if (id.isNotEmpty())
       section.id = id

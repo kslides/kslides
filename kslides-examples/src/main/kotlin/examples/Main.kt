@@ -1,8 +1,6 @@
 package examples
 
 import com.kslides.*
-import com.kslides.Include.includeFile
-import com.kslides.Include.includeUrl
 import kotlinx.css.*
 import kotlinx.html.*
 
