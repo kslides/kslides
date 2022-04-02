@@ -33,9 +33,10 @@ class SlideConfig : AbstractConfig() {
   internal fun applyConfig(section: SECTION) {
     if (transition != Transition.SLIDE)
       section.attributes["data-transition"] = transition.asInOut()
-    else
+    else {
       if (transitionIn != Transition.SLIDE || transitionOut != Transition.SLIDE)
         section.attributes["data-transition"] = "${transitionIn.asIn()} ${transitionOut.asOut()}"
+    }
 
     if (transitionSpeed != Speed.DEFAULT)
       section.attributes["data-transition-speed"] = transitionSpeed.name.toLower()
@@ -53,5 +54,4 @@ class SlideConfig : AbstractConfig() {
     if (backgroundVideo.isNotEmpty())
       section.attributes["data-background-video"] = backgroundVideo
   }
-
 }

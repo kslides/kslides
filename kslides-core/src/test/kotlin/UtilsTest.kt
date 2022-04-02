@@ -72,8 +72,9 @@ val y = 1              // NO TAB
         .forEach {
           if (it.contains("NO TAB"))
             it.trimStart().length shouldBe it.length
-          else
+          else {
             if (it.isNotEmpty()) it.trimStart().length shouldNotBe it.length
+          }
         }
     }
 
