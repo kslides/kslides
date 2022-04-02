@@ -1,5 +1,6 @@
 package com.kslides
 
+import com.kslides.Page.rawHtml
 import kotlinx.html.*
 
 typealias SlideArg = (DIV, Slide) -> Unit
@@ -8,17 +9,22 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
   private val slideConfig = SlideConfig()
   var id = ""
   var classes = ""
+  var style = ""
   var hidden = false
   var uncounted = false
   var autoAnimate = false
 
-  internal fun mergedConfig() =
+  internal val mergedConfig by lazy {
     SlideConfig()
       .apply { combine(presentation.kslides.globalConfig.slideConfig) }
       .apply { combine(presentation.presentationConfig.slideConfig) }
       .apply { combine(slideConfig) }
+  }
 
-  internal fun assignAttribs(section: SECTION, id: String, hidden: Boolean, uncounted: Boolean, autoAnimate: Boolean) {
+  internal fun processSlide(section: SECTION) {
+
+    style.also { if (it.isNotEmpty()) section.style { rawHtml(it) } }
+
     if (id.isNotEmpty())
       section.id = id
 
@@ -30,6 +36,8 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
 
     if (autoAnimate)
       section.attributes["data-auto-animate"] = ""
+
+    mergedConfig.applyConfig(section)
   }
 
   @HtmlTagMarker
@@ -40,8 +48,8 @@ abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : 
 
 class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
   internal var htmlBlock: () -> String = { "" }
-  var indentToken: String = INDENT_TOKEN
-  var disableTrimIndent: Boolean = false
+  var indentToken = INDENT_TOKEN
+  var disableTrimIndent = false
 
   @HtmlTagMarker
   fun content(htmlBlock: () -> String) {
@@ -51,10 +59,10 @@ class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide
 
 class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
   internal var markdownBlock: () -> String = { "" }
-  var filename: String = ""
-  var charset: String = ""
-  var indentToken: String = INDENT_TOKEN
-  var disableTrimIndent: Boolean = false
+  var filename = ""
+  var charset = ""
+  var indentToken = INDENT_TOKEN
+  var disableTrimIndent = false
 
   @HtmlTagMarker
   fun content(markdownBlock: () -> String) {
@@ -77,8 +85,8 @@ open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(
 
 class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
   internal var htmlBlock: () -> String = { "" }
-  var indentToken: String = INDENT_TOKEN
-  var disableTrimIndent: Boolean = false
+  var indentToken = INDENT_TOKEN
+  var disableTrimIndent = false
 
   @HtmlTagMarker
   fun content(htmlBlock: () -> String) {
@@ -88,10 +96,10 @@ class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : Vertica
 
 class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
   internal var markdownBlock: () -> String = { "" }
-  var filename: String = ""
-  var charset: String = ""
-  var indentToken: String = INDENT_TOKEN
-  var disableTrimIndent: Boolean = false
+  var filename = ""
+  var charset = ""
+  var indentToken = INDENT_TOKEN
+  var disableTrimIndent = false
 
   @HtmlTagMarker
   fun content(markdownBlock: () -> String) {

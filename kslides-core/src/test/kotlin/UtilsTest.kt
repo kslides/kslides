@@ -70,12 +70,10 @@ val y = 1              // NO TAB
       s.trimIndentWithInclude()
         .lines()
         .forEach {
-          if (it.contains("NO TAB")) {
+          if (it.contains("NO TAB"))
             it.trimStart().length shouldBe it.length
-          } else {
-            if (it.isNotEmpty())
-              it.trimStart().length shouldNotBe it.length
-          }
+          else
+            if (it.isNotEmpty()) it.trimStart().length shouldNotBe it.length
         }
     }
 

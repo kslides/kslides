@@ -31,10 +31,10 @@ fun kslides(block: KSlides.() -> Unit) {
                   merge(presentationConfig)
                 }
 
-            assignCssFiles( )
-            assignJsFiles( )
-            assignPlugins( )
-            assignDependencies( )
+            assignCssFiles()
+            assignJsFiles()
+            assignPlugins()
+            assignDependencies()
           }
       }
 
@@ -92,8 +92,8 @@ class Presentation(val kslides: KSlides) {
       CssFile("dist/reset.css"),
     )
   internal val presentationConfig = PresentationConfig()
-  internal lateinit var finalConfig: PresentationConfig
   internal val slides = mutableListOf<Slide>()
+  internal lateinit var finalConfig: PresentationConfig
 
   var path = "/"
   var css = ""
@@ -208,10 +208,13 @@ class Presentation(val kslides: KSlides) {
           .also { verticalContext ->
             block(verticalContext)
             section(classes = verticalContext.classes.nullIfEmpty()) {
-              verticalContext.verticalSlides.forEach { verticalSlide ->
-                verticalSlide.content.invoke(div, verticalSlide)
-                rawHtml("\n")
-              }
+              verticalContext.style.also { if (it.isNotEmpty()) style { rawHtml(it) } }
+              verticalContext.id.also { if (it.isNotEmpty()) id = it }
+              verticalContext.verticalSlides
+                .forEach { verticalSlide ->
+                  verticalSlide.content.invoke(div, verticalSlide)
+                  rawHtml("\n")
+                }
             }.also { rawHtml("\n") }
           }
       }
@@ -224,8 +227,7 @@ class Presentation(val kslides: KSlides) {
         (slide as VerticalHtmlSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfEmpty()) {
-            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
-            applyConfig(s.mergedConfig())
+            s.processSlide(this)
             val text =
               s.htmlBlock()
                 .indentInclude(s.indentToken)
@@ -243,8 +245,7 @@ class Presentation(val kslides: KSlides) {
         (slide as HtmlSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfEmpty()) {
-            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
-            applyConfig(s.mergedConfig())
+            s.processSlide(this)
             val text =
               s.htmlBlock()
                 .indentInclude(s.indentToken)
@@ -262,8 +263,7 @@ class Presentation(val kslides: KSlides) {
         (slide as VerticalDslSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfEmpty()) {
-            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
-            applyConfig(s.mergedConfig())
+            s.processSlide(this)
             s.dslBlock.invoke(this, s)
           }.also { rawHtml("\n") }
         }
@@ -277,8 +277,7 @@ class Presentation(val kslides: KSlides) {
         (slide as DslSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfEmpty()) {
-            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
-            applyConfig(s.mergedConfig())
+            s.processSlide(this)
             s.dslBlock.invoke(this, s)
           }.also { rawHtml("\n") }
         }
@@ -292,8 +291,7 @@ class Presentation(val kslides: KSlides) {
         (slide as VerticalMarkdownSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfEmpty()) {
-            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
-            applyConfig(s.mergedConfig())
+            s.processSlide(this)
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
@@ -332,9 +330,7 @@ class Presentation(val kslides: KSlides) {
         (slide as MarkdownSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfEmpty()) {
-            s.assignAttribs(this, s.id, s.hidden, s.uncounted, s.autoAnimate)
-            val config = s.mergedConfig()
-            applyConfig(config)
+            s.processSlide(this)
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
@@ -342,16 +338,18 @@ class Presentation(val kslides: KSlides) {
             if (s.charset.isNotEmpty())
               attributes["data-charset"] = s.charset
 
-            if (config.markdownSeparator.isNotEmpty())
-              attributes["data-separator"] = config.markdownSeparator
+            s.mergedConfig.apply {
+              if (markdownSeparator.isNotEmpty())
+                this@section.attributes["data-separator"] = markdownSeparator
 
-            if (config.markdownVerticalSeparator.isNotEmpty())
-              attributes["data-separator-vertical"] = config.markdownVerticalSeparator
+              if (markdownVerticalSeparator.isNotEmpty())
+                this@section.attributes["data-separator-vertical"] = markdownVerticalSeparator
 
-            // If any of the data-separator values are defined, then plain --- in markdown will not work
-            // So do not define data-separator-notes unless using other data-separator values
-            if (config.markdownNotesSeparator.isNotEmpty() && config.markdownSeparator.isNotEmpty() && config.markdownVerticalSeparator.isNotEmpty())
-              attributes["data-separator-notes"] = config.markdownNotesSeparator
+              // If any of the data-separator values are defined, then plain --- in markdown will not work
+              // So do not define data-separator-notes unless using other data-separator values
+              if (markdownNotesSeparator.isNotEmpty() && markdownSeparator.isNotEmpty() && markdownVerticalSeparator.isNotEmpty())
+                this@section.attributes["data-separator-notes"] = markdownNotesSeparator
+            }
 
             if (s.filename.isEmpty()) {
               s.markdownBlock().also { markdown ->
@@ -462,37 +460,14 @@ class Presentation(val kslides: KSlides) {
       appendLine("\t\t\tplugins: [ ${plugins.joinToString(", ")} ]")
     }
 
-  companion object : KLogging() {
-    private fun SECTION.applyConfig(config: SlideConfig) {
-      if (config.transition != Transition.SLIDE) {
-        attributes["data-transition"] = config.transition.asInOut()
-      } else {
-        if (config.transitionIn != Transition.SLIDE || config.transitionOut != Transition.SLIDE)
-          attributes["data-transition"] = "${config.transitionIn.asIn()} ${config.transitionOut.asOut()}"
-      }
-
-      if (config.transitionSpeed != Speed.DEFAULT)
-        attributes["data-transition-speed"] = config.transitionSpeed.name.toLower()
-
-      if (config.backgroundColor.isNotEmpty())
-        attributes["data-background-color"] = config.backgroundColor
-
-      if (config.backgroundIframe.isNotEmpty()) {
-        attributes["data-background-iframe"] = config.backgroundIframe
-
-        if (config.backgroundInteractive)
-          attributes["data-background-interactive"] = ""
-      }
-
-      if (config.backgroundVideo.isNotEmpty())
-        attributes["data-background-video"] = config.backgroundVideo
-    }
-  }
+  companion object : KLogging()
 }
 
 class VerticalSlideContext {
   internal val verticalSlides = mutableListOf<VerticalSlide>()
+  var id = ""
   var classes = ""
+  var style = ""
 }
 
 class JsFile(val filename: String)

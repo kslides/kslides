@@ -14,6 +14,12 @@ fun main() {
 
     presentation {
 
+      css += """
+        #intro h1 {
+           color: red;
+        }
+      """
+
       presentationConfig {
         githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Readme.kt")
         githubCornerTitle = "View presentation source on Github"
@@ -30,6 +36,8 @@ fun main() {
       }
 
       markdownSlide {
+        id = "intro"
+
         slideConfig {
           transition = Transition.ZOOM
           transitionSpeed = Speed.FAST
