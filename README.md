@@ -10,7 +10,7 @@ It is meant for people who prefer working with an IDE rather than PowerPoint.
 It works particularly well for presentations with code snippets and slides
 authored in Markdown/HTML.
 
-[![Screenshot](https://pambrose.github.io/kslides/kslides-screenshot.png)](https://pambrose.github.io/kslides/)
+[![kslides screenshot](https://pambrose.github.io/kslides/img/kslides-screenshot.png)](https://pambrose.github.io/kslides/)
 
 [This](kslides-examples/src/main/kotlin/Readme.kt) presentation is served statically from
 [Netlify](https://kslides-readme.netlify.app)
