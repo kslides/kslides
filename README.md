@@ -21,10 +21,14 @@ It is also running dynamically on [Heroku](https://kslides-readme.herokuapp.com)
 
 [![Template](https://img.shields.io/badge/kslides-template-blue?logo=github)](https://github.com/pambrose/kslides-template/generate)
 
+[![fork this repo](https://githubbadges.com/fork.svg?user=pambrose&repo=kslides-template&style=flat)](https://github.com/pambrose/kslides-template/fork)
+
 [Create a presentation repo](https://github.com/pambrose/kslides-template/generate) with
 the [kslides-template](https://github.com/pambrose/kslides-template) repo.
 
 Must be logged in to see "Use this template" button
+
+Speaker Notes do not work properly when running locally.
 
 ## Heroku Notes
 
