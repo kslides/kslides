@@ -19,7 +19,8 @@ It is also running dynamically on [Heroku](https://kslides-readme.herokuapp.com)
 
 ## Getting Started
 
-[![Template](https://img.shields.io/badge/kslides-template-blue?logo=github)](https://github.com/pambrose/kslides-template/generate)
+[![Template](https://img.shields.io/endpoint?logo=github&style=plastic&url=https%3A%2F%2Fraw.githubusercontent.com%2Fpambrose%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ftemplate.json)](https://github.com/pambrose/kslides-template/generate)
+[![Fork](https://img.shields.io/endpoint?logo=github&style=plastic&url=https%3A%2F%2Fraw.githubusercontent.com%2Fpambrose%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ffork.json)](https://github.com/pambrose/kslides-template/generate)
 
 [![fork this repo](https://githubbadges.com/fork.svg?user=pambrose&repo=kslides-template&style=flat)](https://github.com/pambrose/kslides-template/fork)
 
