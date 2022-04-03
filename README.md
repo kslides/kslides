@@ -12,7 +12,7 @@ authored in Markdown/HTML.
 
 [![kslides screenshot](https://pambrose.github.io/kslides/img/kslides-screenshot.png)](https://pambrose.github.io/kslides/)
 
-[This](kslides-examples/src/main/kotlin/KSlides.kt) presentation is served statically from
+[This](kslides-examples/src/main/kotlin/Slides.kt) presentation is served statically from
 [Netlify](https://kslides.netlify.app)
 and [Github Pages](https://pambrose.github.io/kslides/).
 It is also running dynamically on [Heroku](https://kslides-repo.herokuapp.com).
@@ -44,148 +44,60 @@ kslides {
   }
 
   presentation {
+    // Makes this presentation available at helloworld.html
+    path = "helloworld.html"
+
+    // css styles can be specified as a string or with the kotlin css DSL
     css += """
-      #intro h1 { color: #FF5533; }
-      #mdslide p { color: black; }
+      .htmlslide h2 {
+        color: yellow;
+      }
     """
 
-    presentationConfig {
-      githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Slides.kt")
-      githubCornerTitle = "View presentation source on Github"
-      slideNumber = "c/t"
-      history = true
-      transition = Transition.SLIDE
-      transitionSpeed = Speed.SLOW
-      gaPropertyId = "G-TRY2Q243XC"
-      enableSpeakerNotes = true
-      enableMenu = true
-
-      slideConfig {
-        backgroundColor = "#4370A5"
+    css {
+      rule("#mdslide h2") {
+        color = Color.green
       }
     }
 
-    markdownSlide {
-      id = "intro"
+    presentationConfig {
+      transition = Transition.FADE
 
       slideConfig {
-        transition = Transition.ZOOM
-      }
-
-      content {
-        """
-        # kslides
-        ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
-        """
+        backgroundColor = "#2A9EEE"
       }
     }
 
     markdownSlide {
       id = "mdslide"
 
-      slideConfig {
-        transition = Transition.ZOOM
-      }
-
       content {
         """
-        # Markdown Slide
-        ## 🍒
-        
-        Use the arrow keys to navigate ${fragmentIndex(1)}
-        
-        Press ESC to see presentation overview ${fragmentIndex(2)}
-        
-        Press S to see speaker notes ${fragmentIndex(3)}
-
-        """
+      # Markdown
+      ## Hello World
+      """
       }
     }
 
     htmlSlide {
+      classes = "htmlslide"
+
+      slideConfig {
+        backgroundColor = "red"
+      }
+
       content {
         """
-        <h1>HTML Slide</h1>
-        <h2>🐦</h2>
-        <p>Use the arrow keys to navigate</p>
-        <aside class="notes">
-          These are notes for the htmlSlide 📝
-        </aside>
-        """
+      <h1>HTML</h1>
+      <h2>Hello World</h2>
+      """
       }
     }
 
     dslSlide {
-      slideConfig {
-        transition = Transition.ZOOM
-      }
-
       content {
-        h1 { +"DSL Slide" }
-        h2 { +"👀" }
-        p { +"Use the arrow keys to navigate" }
-        aside("notes") {
-          +"These are notes for the dslSlide ⚾"
-        }
-      }
-    }
-
-    markdownSlide {
-      content {
-        """
-        ## Code Highlights    
-        ```kotlin [3,7|4,6|5]
-        ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
-        ```
-        """
-      }
-    }
-
-    verticalSlides {
-      // We use a for loop here to generate a series of slides, each with a different set of lines
-      // We use the same syntax used by revealjs: https://revealjs.com/code/
-      for (lines in lineNumbers("[5,6,9|5-9|]")) {
-        htmlSlide {
-          autoAnimate = true
-          content {
-            """
-            <h2>Animated Code 👇</h2>  
-            <pre data-id="code-animation" data-cc="false"> 
-              <code data-trim="" data-line-numbers="">
-                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
-              </code>
-            </pre>
-            """
-          }
-        }
-      }
-    }
-
-    verticalSlides {
-      dslSlide {
-        slideConfig {
-          backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-        }
-
-        content {
-          h1 {
-            style = "color: red;"
-            +"Vertical DSL Slide 👇"
-          }
-        }
-      }
-
-      markdownSlide {
-        content {
-          """
-          # Vertical Markdown Slide 🦊 
-          
-          [Go back to the 1st slide](#/) ${fragmentIndex(1)}
-       
-          [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
-          
-          """
-        }
+        h1 { +"DSL" }
+        h2 { +"Hello World" }
       }
     }
 
@@ -197,14 +109,15 @@ kslides {
         ${
           includeFile(
             "kslides-examples/src/main/kotlin/Slides.kt",
-            beginToken = "readme begin",
-            endToken = "readme end"
+            beginToken = "helloworld begin",
+            endToken = "helloworld end"
           )
         }
         ```
         """
       }
     }
+
   }
 }
 ```

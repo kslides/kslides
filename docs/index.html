@@ -27,7 +27,7 @@
   </head>
   <body>
     <div class="reveal">
-      <a class="github-corner" href="https://github.com/pambrose/kslides/blob/master/kslides-examples/src/main/kotlin/KSlides.kt" target="blank" title="View presentation source on Github">
+      <a class="github-corner" href="https://github.com/pambrose/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt" target="blank" title="View presentation source on Github">
           
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
                       
@@ -83,7 +83,7 @@ Press S to see speaker notes
         <section data-background-color="#4370A5" data-markdown="">
           <script type="text/template">
 ## Code Highlights    
-```kotlin [3,7|4,6|5|*]
+```kotlin [3,7|4,6|5]
 package examples
 
 fun main() {
@@ -187,7 +187,7 @@ fun main() {
       """
 
       presentationConfig {
-        githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/KSlides.kt")
+        githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Slides.kt")
         githubCornerTitle = "View presentation source on Github"
         slideNumber = "c/t"
         history = true
@@ -271,7 +271,7 @@ fun main() {
         content {
           """
           ## Code Highlights    
-          ```kotlin [3,7|4,6|5|*]
+          ```kotlin [3,7|4,6|5]
           ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
           ```
           """
@@ -279,11 +279,9 @@ fun main() {
       }
 
       verticalSlides {
-        // We use a for loop here to generate 3 slides, each with a different set of lines from the same file
-        // [5,6,9] means include lines 5, 6, 9
-        // [5-9] means include lines 5, 6, 7, 8, 9
-        // An empty string means include all lines
-        for (lines in lineNumbers("[5,6,9|5-9|*]")) {
+        // We use a for loop here to generate a series of slides, each with a different set of lines
+        // We use the same syntax used by revealjs: https://revealjs.com/code/
+        for (lines in lineNumbers("[5,6,9|5-9|]")) {
           htmlSlide {
             autoAnimate = true
             content {
@@ -335,7 +333,7 @@ fun main() {
           ```kotlin []
           ${
             includeFile(
-              "kslides-examples/src/main/kotlin/KSlides.kt",
+              "kslides-examples/src/main/kotlin/Slides.kt",
               beginToken = "readme begin",
               endToken = "readme end"
             )
