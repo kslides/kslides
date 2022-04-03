@@ -11,11 +11,11 @@ enum class Theme {
 }
 
 enum class Speed {
-  DEFAULT, FAST, SLOW
+  DEFAULT, FAST, SLOW, UNASSIGNED
 }
 
 enum class Transition {
-  NONE, FADE, SLIDE, CONVEX, CONCAVE, ZOOM;
+  NONE, FADE, SLIDE, CONVEX, CONCAVE, ZOOM, UNASSIGNED;
 
   fun asInOut() = name.toLower()
   fun asIn() = "${name.toLower()}-in"

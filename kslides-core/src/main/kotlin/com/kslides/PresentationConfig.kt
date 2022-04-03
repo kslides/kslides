@@ -59,7 +59,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       title = ""
       theme = Theme.BLACK
       highlight = Highlight.MONOKAI
-      enableSpeakerNotes = true
+      enableSpeakerNotes = false
       enableZoom = true
       enableSearch = true
       enableMarkdown = true
@@ -68,7 +68,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       enableMathJax2 = false
       enableMathJax3 = false
       enableCodeCopy = true
-      enableMenu = true
+      enableMenu = false
 
       githubCornerHref = ""
       githubCornerTitle = "View source on Github"

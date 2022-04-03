@@ -1,4 +1,5 @@
 import com.kslides.*
+import kotlinx.css.*
 import kotlinx.html.*
 
 fun main() {
@@ -10,22 +11,23 @@ fun main() {
       enableHttp = true
     }
 
+    // readme begin
     presentation {
-
       css += """
         #intro h1 { color: #FF5533; }
         #mdslide p { color: black; }
       """
 
       presentationConfig {
-        githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Readme.kt")
+        githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Slides.kt")
         githubCornerTitle = "View presentation source on Github"
-
         slideNumber = "c/t"
         history = true
         transition = Transition.SLIDE
         transitionSpeed = Speed.SLOW
         gaPropertyId = "G-TRY2Q243XC"
+        enableSpeakerNotes = true
+        enableMenu = true
 
         slideConfig {
           backgroundColor = "#4370A5"
@@ -109,57 +111,26 @@ fun main() {
       }
 
       verticalSlides {
-
-        htmlSlide {
-          autoAnimate = true
-
-          content {
-            """
-            <h2>Animated Code 👇</h2>  
-            <pre data-id="code-animation" data-cc="false"> 
-              <code data-trim="" data-line-numbers="">
-                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-6,9]")}
-              </code>
-            </pre>
-            """
-          }
-        }
-
-        htmlSlide {
-          autoAnimate = true
-
-          content {
-            """
-            <h2>Animated Code 👇</h2>  
-            <pre data-id="code-animation" data-cc="false"> 
-              <code data-trim="" data-line-numbers="">
-                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-9]")}
-              </code>
-            </pre>
-            """
-          }
-        }
-
-        dslSlide {
-          autoAnimate = true
-
-          content {
-            h2 { +"Animated Code 👇" }
-            pre {
-              attributes["data-id"] = "code-animation"
-              attributes["data-cc"] = "false"
-              code {
-                attributes["data-trim"] = ""
-                attributes["data-line-numbers"] = ""
-                +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", indentToken="")
-              }
+        // We use a for loop here to generate a series of slides, each with a different set of lines
+        // We use the same syntax used by revealjs: https://revealjs.com/code/
+        for (lines in lineNumbers("[5,6,9|5-9|]")) {
+          htmlSlide {
+            autoAnimate = true
+            content {
+              """
+              <h2>Animated Code 👇</h2>  
+              <pre data-id="code-animation" data-cc="false"> 
+                <code data-trim="" data-line-numbers="">
+                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+                </code>
+              </pre>
+              """
             }
           }
         }
       }
 
       verticalSlides {
-
         dslSlide {
           slideConfig {
             backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
@@ -192,11 +163,97 @@ fun main() {
           """
           ## Presentation Definition    
           ```kotlin []
-          ${includeUrl(githubRawUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Readme.kt"))}
+          ${
+            includeFile(
+              "kslides-examples/src/main/kotlin/Slides.kt",
+              beginToken = "readme begin",
+              endToken = "readme end"
+            )
+          }
           ```
           """
         }
       }
     }
+    // readme end
+
+    // helloworld begin
+    presentation {
+      // Makes this presentation available at helloworld.html
+      path = "helloworld.html"
+
+      // css styles can be specified as a string or with the kotlin css DSL
+      css += """
+        .htmlslide h2 {
+          color: yellow;
+        }
+      """
+
+      css {
+        rule("#mdslide h2") {
+          color = Color.green
+        }
+      }
+
+      presentationConfig {
+        transition = Transition.FADE
+
+        slideConfig {
+          backgroundColor = "#2A9EEE"
+        }
+      }
+
+      markdownSlide {
+        id = "mdslide"
+
+        content {
+          """
+        # Markdown
+        ## Hello World
+        """
+        }
+      }
+
+      htmlSlide {
+        classes = "htmlslide"
+
+        slideConfig {
+          backgroundColor = "red"
+        }
+
+        content {
+          """
+        <h1>HTML</h1>
+        <h2>Hello World</h2>
+        """
+        }
+      }
+
+      dslSlide {
+        content {
+          h1 { +"DSL" }
+          h2 { +"Hello World" }
+        }
+      }
+
+      markdownSlide {
+        content {
+          """
+          ## Presentation Definition    
+          ```kotlin []
+          ${
+            includeFile(
+              "kslides-examples/src/main/kotlin/Slides.kt",
+              beginToken = "helloworld begin",
+              endToken = "helloworld end"
+            )
+          }
+          ```
+          """
+        }
+      }
+
+    }
+    // helloworld end
   }
 }

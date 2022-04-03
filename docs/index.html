@@ -20,14 +20,14 @@
     <link href="revealjs/plugin/copycode/copycode.css" rel="stylesheet">
     <link href="revealjs/plugin/githubCorner/githubCorner.css" rel="stylesheet">
     <link href="revealjs/css/custom.css" rel="stylesheet">
-    <style media="screen" type="text/css">		
-		        #intro h1 { color: #FF5533; }
-		        #mdslide p { color: black; }
+    <style media="screen" type="text/css">
+        #intro h1 { color: #FF5533; }
+        #mdslide p { color: black; }
       </style>
   </head>
   <body>
     <div class="reveal">
-      <a class="github-corner" href="https://github.com/pambrose/kslides/blob/master/kslides-examples/src/main/kotlin/Readme.kt" target="blank" title="View presentation source on Github">
+      <a class="github-corner" href="https://github.com/pambrose/kslides/blob/master/kslides-examples/src/main/kotlin/KSlides.kt" target="blank" title="View presentation source on Github">
           
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
                       
@@ -83,7 +83,7 @@ Press S to see speaker notes
         <section data-background-color="#4370A5" data-markdown="">
           <script type="text/template">
 ## Code Highlights    
-```kotlin [3,7|4,6|5]
+```kotlin [3,7|4,6|5|*]
 package examples
 
 fun main() {
@@ -131,19 +131,26 @@ fun main() {
           </section>
           
           <section data-auto-animate="" data-background-color="#4370A5">
+            
             <h2>Animated Code &#128071;</h2>
+              
+
             <pre data-cc="false" data-id="code-animation">
-              <code data-line-numbers="" data-trim="">let circumferenceReducer = (c, planet) =&amp;gt; {
-    return c + planet.diameter * Math.PI;
-}
+               
+  <code data-line-numbers="" data-trim="">
+    let circumferenceReducer = (c, planet) =&gt; {
+        return c + planet.diameter * Math.PI;
+    }
+    
+    let planets = [
+        {name: 'mars', diameter: 6779},
+        {name: 'earth', diameter: 12742},
+        {name: 'jupiter', diameter: 139820}
+    ]
+    
+    let c = planets.reduce(circumferenceReducer, 0)
+  </code>
 
-let planets = [
-    {name: 'mars', diameter: 6779},
-    {name: 'earth', diameter: 12742},
-    {name: 'jupiter', diameter: 139820}
-]
-
-let c = planets.reduce(circumferenceReducer, 0)</code>
             </pre>
           </section>
           
@@ -173,34 +180,22 @@ let c = planets.reduce(circumferenceReducer, 0)</code>
           <script type="text/template">
 ## Presentation Definition    
 ```kotlin []
-import com.kslides.*
-import kotlinx.html.*
-
-fun main() {
-
-  kslides {
-
-    output {
-      enableFileSystem = true
-      enableHttp = true
-    }
-
     presentation {
-
       css += """
         #intro h1 { color: #FF5533; }
         #mdslide p { color: black; }
       """
 
       presentationConfig {
-        githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Readme.kt")
+        githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/KSlides.kt")
         githubCornerTitle = "View presentation source on Github"
-
         slideNumber = "c/t"
         history = true
         transition = Transition.SLIDE
         transitionSpeed = Speed.SLOW
         gaPropertyId = "G-TRY2Q243XC"
+        enableSpeakerNotes = true
+        enableMenu = true
 
         slideConfig {
           backgroundColor = "#4370A5"
@@ -276,7 +271,7 @@ fun main() {
         content {
           """
           ## Code Highlights    
-          ```kotlin [3,7|4,6|5]
+          ```kotlin [3,7|4,6|5|*]
           ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
           ```
           """
@@ -284,57 +279,28 @@ fun main() {
       }
 
       verticalSlides {
-
-        htmlSlide {
-          autoAnimate = true
-
-          content {
-            """
-            <h2>Animated Code 👇</h2>  
-            <pre data-id="code-animation" data-cc="false"> 
-              <code data-trim="" data-line-numbers="">
-                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-6,9]")}
-              </code>
-            </pre>
-            """
-          }
-        }
-
-        htmlSlide {
-          autoAnimate = true
-
-          content {
-            """
-            <h2>Animated Code 👇</h2>  
-            <pre data-id="code-animation" data-cc="false"> 
-              <code data-trim="" data-line-numbers="">
-                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", "[5-9]")}
-              </code>
-            </pre>
-            """
-          }
-        }
-
-        dslSlide {
-          autoAnimate = true
-
-          content {
-            h2 { +"Animated Code 👇" }
-            pre {
-              attributes["data-id"] = "code-animation"
-              attributes["data-cc"] = "false"
-              code {
-                attributes["data-trim"] = ""
-                attributes["data-line-numbers"] = ""
-                +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", indentToken="")
-              }
+        // We use a for loop here to generate 3 slides, each with a different set of lines from the same file
+        // [5,6,9] means include lines 5, 6, 9
+        // [5-9] means include lines 5, 6, 7, 8, 9
+        // An empty string means include all lines
+        for (lines in lineNumbers("[5,6,9|5-9|*]")) {
+          htmlSlide {
+            autoAnimate = true
+            content {
+              """
+              <h2>Animated Code 👇</h2>  
+              <pre data-id="code-animation" data-cc="false"> 
+                <code data-trim="" data-line-numbers="">
+                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+                </code>
+              </pre>
+              """
             }
           }
         }
       }
 
       verticalSlides {
-
         dslSlide {
           slideConfig {
             backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
@@ -367,14 +333,18 @@ fun main() {
           """
           ## Presentation Definition    
           ```kotlin []
-          ${includeUrl(githubRawUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Readme.kt"))}
+          ${
+            includeFile(
+              "kslides-examples/src/main/kotlin/KSlides.kt",
+              beginToken = "readme begin",
+              endToken = "readme end"
+            )
+          }
           ```
           """
         }
       }
     }
-  }
-}
 ```
 </script>
         </section>

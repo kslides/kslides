@@ -17,10 +17,10 @@ class SlideConfig : AbstractConfig() {
   var markdownNotesSeparator by ConfigProperty<String>(unmanagedValues)
 
   fun init() {
-    transition = Transition.SLIDE
-    transitionIn = Transition.SLIDE
-    transitionOut = Transition.SLIDE
-    transitionSpeed = Speed.DEFAULT
+    transition = Transition.UNASSIGNED
+    transitionIn = Transition.UNASSIGNED
+    transitionOut = Transition.UNASSIGNED
+    transitionSpeed = Speed.UNASSIGNED
     backgroundColor = ""
     backgroundIframe = ""
     backgroundInteractive = false
@@ -31,14 +31,18 @@ class SlideConfig : AbstractConfig() {
   }
 
   internal fun applyConfig(section: SECTION) {
-    if (transition != Transition.SLIDE)
+    if (transition != Transition.UNASSIGNED)
       section.attributes["data-transition"] = transition.asInOut()
     else {
-      if (transitionIn != Transition.SLIDE || transitionOut != Transition.SLIDE)
+      if (transitionIn != Transition.UNASSIGNED && transitionOut != Transition.UNASSIGNED)
         section.attributes["data-transition"] = "${transitionIn.asIn()} ${transitionOut.asOut()}"
+      else if (transitionIn != Transition.UNASSIGNED)
+        section.attributes["data-transition"] = "${transitionIn.asIn()} ${Transition.SLIDE.asOut()}"
+      else if (transitionOut != Transition.UNASSIGNED)
+        section.attributes["data-transition"] = "${Transition.SLIDE.asIn()} ${transitionOut.asOut()}"
     }
 
-    if (transitionSpeed != Speed.DEFAULT)
+    if (transitionSpeed != Speed.UNASSIGNED)
       section.attributes["data-transition-speed"] = transitionSpeed.name.toLower()
 
     if (backgroundColor.isNotEmpty())

@@ -95,7 +95,7 @@ class Presentation(val kslides: KSlides) {
   internal lateinit var finalConfig: PresentationConfig
 
   var path = "/"
-  var css = ""
+  val css = AppendableString("")
 
   internal fun validatePath() {
     if (path.removePrefix("/") in kslides.staticRoots)
@@ -196,7 +196,7 @@ class Presentation(val kslides: KSlides) {
 
   @HtmlTagMarker
   fun css(block: CssBuilder.() -> Unit) {
-    css += CssBuilder().apply(block).toString()
+    css += "${CssBuilder().apply(block)}\n"
   }
 
   @HtmlTagMarker
@@ -226,11 +226,10 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(classes = s.classes.nullIfEmpty()) {
             s.processSlide(this)
-            val text =
-              s.htmlBlock()
-                .indentInclude(s.indentToken)
-                .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-            rawHtml("\n$text")
+            s.htmlBlock()
+              .indentInclude(s.indentToken)
+              .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+              .also { rawHtml("\n$it") }
           }.also { rawHtml("\n") }
         }
       }
@@ -244,11 +243,10 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(classes = s.classes.nullIfEmpty()) {
             s.processSlide(this)
-            val text =
-              s.htmlBlock()
-                .indentInclude(s.indentToken)
-                .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-            rawHtml("\n$text")
+            s.htmlBlock()
+              .indentInclude(s.indentToken)
+              .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+              .also { rawHtml("\n$it") }
           }.also { rawHtml("\n") }
         }
       }
@@ -308,11 +306,10 @@ class Presentation(val kslides: KSlides) {
               s.markdownBlock().also { markdown ->
                 if (markdown.isNotEmpty())
                   script("text/template") {
-                    val text =
-                      markdown
-                        .indentInclude(s.indentToken)
-                        .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-                    rawHtml("\n$text\n")
+                    markdown
+                      .indentInclude(s.indentToken)
+                      .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+                      .also { rawHtml("\n$it\n") }
                   }
               }
             }
@@ -353,11 +350,10 @@ class Presentation(val kslides: KSlides) {
               s.markdownBlock().also { markdown ->
                 if (markdown.isNotEmpty())
                   script("text/template") {
-                    val text =
-                      markdown
-                        .indentInclude(s.indentToken)
-                        .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-                    rawHtml("\n$text\n")
+                    markdown
+                      .indentInclude(s.indentToken)
+                      .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+                      .also { rawHtml("\n$it\n") }
                   }
               }
             }

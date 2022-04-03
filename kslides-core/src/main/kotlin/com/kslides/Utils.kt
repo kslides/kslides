@@ -136,3 +136,23 @@ internal fun String.toIntList() =
           }
       }
   }
+
+fun lineNumbers(ranges: String) =
+  ranges.replace(whiteSpace, "")
+    .trimStart('[', '(')
+    .trimEnd(']', ')')
+    .split("|")
+    .map { if (it == "*") "" else it }
+
+class AppendableString(private var text: String) {
+
+  operator fun plusAssign(other: String) {
+    text += other
+  }
+
+  fun isNotEmpty() = text.isNotEmpty()
+
+  fun prependIndent(indent: String) = text.indentFirstLine(indent)
+
+  override fun toString() = text
+}

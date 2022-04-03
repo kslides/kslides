@@ -63,7 +63,7 @@ private fun processCode(
 ): String {
 
   val subLines =
-    if (lineNumbers.isNotEmpty()) {
+    if (lineNumbers.isNotBlank()) {
       val lineNums = lineNumbers.toIntList()
       lines.filterIndexed { i, _ -> i + 1 in lineNums }
     } else {
@@ -76,7 +76,7 @@ private fun processCode(
             .asSequence()
             .mapIndexed { i, s -> i to s }
             .firstOrNull { it.second.contains(beginRegex) }?.first
-            ?: throw IllegalArgumentException("beginToken not found: $beginToken")) + 1
+            ?: throw IllegalArgumentException("beginToken not found: $commentPrefix $beginToken")) + 1
         }
 
       val endIndex =
@@ -88,7 +88,7 @@ private fun processCode(
             .asSequence()
             .mapIndexed { i, s -> (lines.size - i - 1) to s }
             .firstOrNull { it.second.contains(endRegex) }?.first
-            ?: throw IllegalArgumentException("endToken not found: $endToken"))
+            ?: throw IllegalArgumentException("endToken not found: $commentPrefix $endToken"))
         }
 
       lines.subList(startIndex, endIndex)
