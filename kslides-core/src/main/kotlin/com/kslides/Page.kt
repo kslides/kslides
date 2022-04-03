@@ -47,10 +47,10 @@ internal object Page {
         content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
       }
 
-      if (config.title.isNotEmpty())
+      if (config.title.isNotBlank())
         title { +config.title }
 
-      if (config.gaPropertyId.isNotEmpty()) {
+      if (config.gaPropertyId.isNotBlank()) {
         script { async = true; src = "https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K" }
         rawHtml("\n\t")
         script {
@@ -68,12 +68,12 @@ internal object Page {
       p.cssFiles.forEach {
         link(rel = "stylesheet") {
           href = if (it.filename.startsWith("http")) it.filename else "$srcPrefix${it.filename}"
-          if (it.id.isNotEmpty())
+          if (it.id.isNotBlank())
             id = it.id
         }
       }
 
-      if (p.css.isNotEmpty()) {
+      if (p.css.isNotBlank()) {
         style("text/css") {
           media = "screen"
           rawHtml(p.css.prependIndent("\t\t"))
@@ -84,7 +84,7 @@ internal object Page {
   fun HTML.generateBody(p: Presentation, config: PresentationConfig, srcPrefix: String) =
     body {
       div("reveal") {
-        if (config.githubCornerHref.isNotEmpty()) {
+        if (config.githubCornerHref.isNotBlank()) {
           a(config.githubCornerHref, "blank", classes = "github-corner") {
             title = config.githubCornerTitle
             rawHtml(config.githubCornerSvg)

@@ -21,7 +21,7 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
 
   internal fun processSlide(section: SECTION) {
 
-    if (id.isNotEmpty())
+    if (id.isNotBlank())
       section.id = id
 
     if (hidden)

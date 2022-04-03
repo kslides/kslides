@@ -12,7 +12,7 @@ fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" --
 
 fun fragmentIndex(index: Int) = "<!-- .element: class=\"fragment\" data-fragment-index=\"$index\" -->"
 
-fun String.nullIfEmpty() = if (isNotEmpty()) this else null
+fun String.nullIfBlank() = if (isNotBlank()) this else null
 
 fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
 
@@ -115,7 +115,7 @@ internal fun String.toIntList() =
       .trimStart('[', '(')
       .trimEnd(']', ')')
       .split(",", ";")
-      .filter { it.isNotEmpty() }
+      .filter { it.isNotBlank() }
       .forEach { splitElem ->
         splitElem.split('-', '–', ':')
           .also { elem ->
@@ -150,7 +150,7 @@ class AppendableString(private var text: String) {
     text += other
   }
 
-  fun isNotEmpty() = text.isNotEmpty()
+  fun isNotBlank() = text.isNotBlank()
 
   fun prependIndent(indent: String) = text.indentFirstLine(indent)
 

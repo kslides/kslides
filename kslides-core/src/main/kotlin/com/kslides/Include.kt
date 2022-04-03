@@ -72,7 +72,7 @@ private fun processCode(
   enableTrimIndent: Boolean,
 ): String {
   val startIndex =
-    if (beginToken.isEmpty())
+    if (beginToken.isBlank())
       0
     else {
       val beginRegex = "$commentPrefix\\s*$beginToken".toRegex()
@@ -84,7 +84,7 @@ private fun processCode(
     }
 
   val endIndex =
-    if (endToken.isEmpty())
+    if (endToken.isBlank())
       lines.size
     else {
       val endRegex = "$commentPrefix\\s*$endToken".toRegex()
@@ -95,7 +95,7 @@ private fun processCode(
         ?: throw IllegalArgumentException("endToken not found: $commentPrefix $endToken"))
     }
 
-  val begEndLines = lines.subList(startIndex, endIndex)
+  val begEndLines = if (beginToken.isBlank() && endToken.isBlank()) lines else lines.subList(startIndex, endIndex)
 
   val rangeLines =
     if (lineNumbers.isNotBlank()) {

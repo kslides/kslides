@@ -28,14 +28,14 @@ object Output : KLogging() {
       }
 
       routing {
-        if (output.defaultHttpRoot.isNotEmpty())
+        if (output.defaultHttpRoot.isNotBlank())
           static("/") {
             staticBasePackage = output.defaultHttpRoot
             resources(".")
           }
 
         output.kslides.staticRoots.forEach {
-          if (it.isNotEmpty())
+          if (it.isNotBlank())
             static("/$it") {
               resources(it)
             }
@@ -53,7 +53,7 @@ object Output : KLogging() {
   }
 
   internal fun writeToFileSystem(output: PresentationOutput) {
-    require(output.outputDir.isNotEmpty()) { "outputDir value must not be empty" }
+    require(output.outputDir.isNotBlank()) { "outputDir value must not be empty" }
 
     val outputDir = output.outputDir
     val srcPrefix = output.staticRootDir.ensureSuffix("/")

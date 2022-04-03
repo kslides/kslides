@@ -27,7 +27,7 @@ class SlideConfig : AbstractConfig() {
     backgroundVideo = ""
     markdownSeparator = ""
     markdownVerticalSeparator = ""
-    markdownNotesSeparator = "^Note:"
+    markdownNotesSeparator = "^Notes?:"
   }
 
   internal fun applyConfig(section: SECTION) {
@@ -45,17 +45,17 @@ class SlideConfig : AbstractConfig() {
     if (transitionSpeed != Speed.UNASSIGNED)
       section.attributes["data-transition-speed"] = transitionSpeed.name.toLower()
 
-    if (backgroundColor.isNotEmpty())
+    if (backgroundColor.isNotBlank())
       section.attributes["data-background-color"] = backgroundColor
 
-    if (backgroundIframe.isNotEmpty()) {
+    if (backgroundIframe.isNotBlank()) {
       section.attributes["data-background-iframe"] = backgroundIframe
 
       if (backgroundInteractive)
         section.attributes["data-background-interactive"] = ""
     }
 
-    if (backgroundVideo.isNotEmpty())
+    if (backgroundVideo.isNotBlank())
       section.attributes["data-background-video"] = backgroundVideo
   }
 }

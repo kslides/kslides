@@ -67,6 +67,9 @@ fun main() {
           
           Press S to see speaker notes ${fragmentIndex(3)}
 
+          Press M to see menu ${fragmentIndex(4)}
+          
+          Note: This is a markdown slide that describes some keystroke options
           """
         }
       }
@@ -110,14 +113,13 @@ fun main() {
         }
       }
 
-      verticalSlides {
-        // We use a for loop here to generate a series of slides, each with a different set of lines
-        // We use the same syntax used by revealjs: https://revealjs.com/code/
-        for (lines in lineNumbers("[5,6,9|5-9|]")) {
-          htmlSlide {
-            autoAnimate = true
-            content {
-              """
+      // We use a for loop here to generate a series of slides, each with a different set of lines
+      // We use the same syntax used by revealjs: https://revealjs.com/code/
+      for (lines in lineNumbers("[5,6,9|5-9|]")) {
+        htmlSlide {
+          autoAnimate = true
+          content {
+            """
               <h2>Animated Code 👇</h2>  
               <pre data-id="code-animation" data-cc="false"> 
                 <code data-trim="" data-line-numbers="">
@@ -125,7 +127,6 @@ fun main() {
                 </code>
               </pre>
               """
-            }
           }
         }
       }

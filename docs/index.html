@@ -57,6 +57,10 @@ Press ESC to see presentation overview
 Press S to see speaker notes 
             <!-- .element: class="fragment" data-fragment-index="3" -->
 
+Press M to see menu 
+            <!-- .element: class="fragment" data-fragment-index="4" -->
+
+Note: This is a markdown slide that describes some keystroke options
 </script>
         </section>
         
@@ -95,30 +99,29 @@ fun main() {
 </script>
         </section>
         
-        <section>
-          <section data-auto-animate="" data-background-color="#4370A5">
+        <section data-auto-animate="" data-background-color="#4370A5">
+          
+          <h2>Animated Code &#128071;</h2>
             
-            <h2>Animated Code &#128071;</h2>
-              
 
-            <pre data-cc="false" data-id="code-animation">
-               
+          <pre data-cc="false" data-id="code-animation">
+             
   <code data-line-numbers="" data-trim="">
     let planets = [
         {name: 'mars', diameter: 6779},
     ]
   </code>
 
-            </pre>
-          </section>
+          </pre>
+        </section>
+        
+        <section data-auto-animate="" data-background-color="#4370A5">
           
-          <section data-auto-animate="" data-background-color="#4370A5">
+          <h2>Animated Code &#128071;</h2>
             
-            <h2>Animated Code &#128071;</h2>
-              
 
-            <pre data-cc="false" data-id="code-animation">
-               
+          <pre data-cc="false" data-id="code-animation">
+             
   <code data-line-numbers="" data-trim="">
     let planets = [
         {name: 'mars', diameter: 6779},
@@ -127,16 +130,16 @@ fun main() {
     ]
   </code>
 
-            </pre>
-          </section>
+          </pre>
+        </section>
+        
+        <section data-auto-animate="" data-background-color="#4370A5">
           
-          <section data-auto-animate="" data-background-color="#4370A5">
+          <h2>Animated Code &#128071;</h2>
             
-            <h2>Animated Code &#128071;</h2>
-              
 
-            <pre data-cc="false" data-id="code-animation">
-               
+          <pre data-cc="false" data-id="code-animation">
+             
   <code data-line-numbers="" data-trim="">
     let circumferenceReducer = (c, planet) =&gt; {
         return c + planet.diameter * Math.PI;
@@ -151,9 +154,7 @@ fun main() {
     let c = planets.reduce(circumferenceReducer, 0)
   </code>
 
-            </pre>
-          </section>
-          
+          </pre>
         </section>
         
         <section>
@@ -235,6 +236,9 @@ presentation {
       
       Press S to see speaker notes ${fragmentIndex(3)}
 
+      Press M to see menu ${fragmentIndex(4)}
+      
+      Note: This is a markdown slide that describes some keystroke options
       """
     }
   }
@@ -278,14 +282,13 @@ presentation {
     }
   }
 
-  verticalSlides {
-    // We use a for loop here to generate a series of slides, each with a different set of lines
-    // We use the same syntax used by revealjs: https://revealjs.com/code/
-    for (lines in lineNumbers("[5,6,9|5-9|]")) {
-      htmlSlide {
-        autoAnimate = true
-        content {
-          """
+  // We use a for loop here to generate a series of slides, each with a different set of lines
+  // We use the same syntax used by revealjs: https://revealjs.com/code/
+  for (lines in lineNumbers("[5,6,9|5-9|]")) {
+    htmlSlide {
+      autoAnimate = true
+      content {
+        """
           <h2>Animated Code 👇</h2>  
           <pre data-id="code-animation" data-cc="false"> 
             <code data-trim="" data-line-numbers="">
@@ -293,7 +296,6 @@ presentation {
             </code>
           </pre>
           """
-        }
       }
     }
   }

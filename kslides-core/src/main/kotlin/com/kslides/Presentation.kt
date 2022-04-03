@@ -114,7 +114,7 @@ class Presentation(val kslides: KSlides) {
     if (finalConfig.enableCodeCopy)
       cssFiles += CssFile("plugin/copycode/copycode.css")
 
-    if (finalConfig.githubCornerHref.isNotEmpty())
+    if (finalConfig.githubCornerHref.isNotBlank())
       cssFiles += CssFile("plugin/githubCorner/githubCorner.css")
 
     // Add this last so it does not get overridden
@@ -206,7 +206,7 @@ class Presentation(val kslides: KSlides) {
         (slide as VerticalSlide).verticalContext
           .also { verticalContext ->
             block(verticalContext)
-            section(classes = verticalContext.classes.nullIfEmpty()) {
+            section(classes = verticalContext.classes.nullIfBlank()) {
               verticalContext.id.also { if (it.isNotEmpty()) id = it }
               verticalContext.verticalSlides
                 .forEach { verticalSlide ->
@@ -224,7 +224,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as VerticalHtmlSlide).also { s ->
           slideContent(s)
-          section(classes = s.classes.nullIfEmpty()) {
+          section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
             s.htmlBlock()
               .indentInclude(s.indentToken)
@@ -241,7 +241,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as HtmlSlide).also { s ->
           slideContent(s)
-          section(classes = s.classes.nullIfEmpty()) {
+          section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
             s.htmlBlock()
               .indentInclude(s.indentToken)
@@ -258,7 +258,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as VerticalDslSlide).also { s ->
           slideContent(s)
-          section(classes = s.classes.nullIfEmpty()) {
+          section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
             s.dslBlock.invoke(this, s)
           }.also { rawHtml("\n") }
@@ -272,7 +272,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as DslSlide).also { s ->
           slideContent(s)
-          section(classes = s.classes.nullIfEmpty()) {
+          section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
             s.dslBlock.invoke(this, s)
           }.also { rawHtml("\n") }
@@ -286,25 +286,25 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as VerticalMarkdownSlide).also { s ->
           slideContent(s)
-          section(classes = s.classes.nullIfEmpty()) {
+          section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
-            if (s.charset.isNotEmpty())
+            if (s.charset.isNotBlank())
               attributes["data-charset"] = s.charset
 
             // These are not applicable for vertical markdown slides
             attributes["data-separator"] = ""
             attributes["data-separator-vertical"] = ""
 
-            //if (notes.isNotEmpty())
+            //if (notes.isNotBlank())
             //    attributes["data-separator-notes"] = notes
 
             if (s.filename.isEmpty()) {
               s.markdownBlock().also { markdown ->
-                if (markdown.isNotEmpty())
+                if (markdown.isNotBlank())
                   script("text/template") {
                     markdown
                       .indentInclude(s.indentToken)
@@ -324,31 +324,31 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as MarkdownSlide).also { s ->
           slideContent(s)
-          section(classes = s.classes.nullIfEmpty()) {
+          section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
-            if (s.charset.isNotEmpty())
+            if (s.charset.isNotBlank())
               attributes["data-charset"] = s.charset
 
             s.mergedConfig.apply {
-              if (markdownSeparator.isNotEmpty())
+              if (markdownSeparator.isNotBlank())
                 this@section.attributes["data-separator"] = markdownSeparator
 
-              if (markdownVerticalSeparator.isNotEmpty())
+              if (markdownVerticalSeparator.isNotBlank())
                 this@section.attributes["data-separator-vertical"] = markdownVerticalSeparator
 
               // If any of the data-separator values are defined, then plain --- in markdown will not work
               // So do not define data-separator-notes unless using other data-separator values
-              if (markdownNotesSeparator.isNotEmpty() && markdownSeparator.isNotEmpty() && markdownVerticalSeparator.isNotEmpty())
+              if (markdownNotesSeparator.isNotBlank() && markdownSeparator.isNotBlank() && markdownVerticalSeparator.isNotBlank())
                 this@section.attributes["data-separator-notes"] = markdownNotesSeparator
             }
 
             if (s.filename.isEmpty()) {
               s.markdownBlock().also { markdown ->
-                if (markdown.isNotEmpty())
+                if (markdown.isNotBlank())
                   script("text/template") {
                     markdown
                       .indentInclude(s.indentToken)
