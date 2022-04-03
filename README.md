@@ -15,7 +15,7 @@ authored in Markdown/HTML.
 [This](kslides-examples/src/main/kotlin/KSlides.kt) presentation is served statically from
 [Netlify](https://kslides.netlify.app)
 and [Github Pages](https://pambrose.github.io/kslides/).
-It is also running dynamically on [Heroku](https://kslides-readme.herokuapp.com).
+It is also running dynamically on [Heroku](https://kslides-repo.herokuapp.com).
 
 ## Getting Started
 

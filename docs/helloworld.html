@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <link href="revealjs/dist/reveal.css" rel="stylesheet">
+    <link href="revealjs/dist/reset.css" rel="stylesheet">
+    <link href="revealjs/dist/theme/black.css" id="theme" rel="stylesheet">
+    <link href="revealjs/plugin/highlight/monokai.css" id="highlight-theme" rel="stylesheet">
+    <link href="revealjs/plugin/copycode/copycode.css" rel="stylesheet">
+    <link href="revealjs/css/custom.css" rel="stylesheet">
+    <style media="screen" type="text/css">
+        .htmlslide h2 {
+          color: yellow;
+        }
+      #mdslide h2 {
+color: green;
+}
+
+</style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section data-background-color="#2A9EEE" data-markdown="" id="mdslide">
+          <script type="text/template">
+# Markdown
+## Hello World
+</script>
+        </section>
+        
+        <section class="htmlslide" data-background-color="red">
+          
+          <h1>HTML</h1>
+          
+          <h2>Hello World</h2>
+        </section>
+        
+        <section data-background-color="#2A9EEE">
+          <h1>DSL</h1>
+          <h2>Hello World</h2>
+        </section>
+        
+        <section data-background-color="#2A9EEE" data-markdown="">
+          <script type="text/template">
+## Presentation Definition    
+```kotlin []
+    presentation {
+      // Makes this presentation available at helloworld.html
+      path = "helloworld.html"
+
+      // css styles can be specified as a string or with the kotlin css DSL
+      css += """
+        .htmlslide h2 {
+          color: yellow;
+        }
+      """
+
+      css {
+        rule("#mdslide h2") {
+          color = Color.green
+        }
+      }
+
+      presentationConfig {
+        transition = Transition.FADE
+
+        slideConfig {
+          backgroundColor = "#2A9EEE"
+        }
+      }
+
+      markdownSlide {
+        id = "mdslide"
+
+        content {
+          """
+        # Markdown
+        ## Hello World
+        """
+        }
+      }
+
+      htmlSlide {
+        classes = "htmlslide"
+
+        slideConfig {
+          backgroundColor = "red"
+        }
+
+        content {
+          """
+        <h1>HTML</h1>
+        <h2>Hello World</h2>
+        """
+        }
+      }
+
+      dslSlide {
+        content {
+          h1 { +"DSL" }
+          h2 { +"Hello World" }
+        }
+      }
+
+      markdownSlide {
+        content {
+          """
+          ## Presentation Definition    
+          ```kotlin []
+          ${
+            includeFile(
+              "kslides-examples/src/main/kotlin/Slides.kt",
+              beginToken = "helloworld begin",
+              endToken = "helloworld end"
+            )
+          }
+          ```
+          """
+        }
+      }
+
+    }
+```
+</script>
+        </section>
+        
+      </div>
+    </div>
+    	
+	<script src="revealjs/dist/reveal.js"></script>
+	<script src="revealjs/plugin/zoom/zoom.js"></script>
+	<script src="revealjs/plugin/search/search.js"></script>
+	<script src="revealjs/plugin/markdown/markdown.js"></script>
+	<script src="revealjs/plugin/highlight/highlight.js"></script>
+	<script src="revealjs/plugin/copycode/copycode.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
+
+	<script>
+		Reveal.initialize({
+			transition: 'fade',
+
+			plugins: [ RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight, CopyCode ]
+		});
+
+</script>
+  </body>
+</html>
