@@ -1,7 +1,7 @@
 package com.kslides
 
 import mu.*
-import org.apache.commons.text.*
+import org.apache.commons.text.StringEscapeUtils.escapeHtml4
 import java.io.*
 import java.net.*
 
@@ -15,7 +15,9 @@ fun includeFile(
   beginToken: String = "",
   endToken: String = "",
   indentToken: String = INDENT_TOKEN,
-  commentPrefix: String = "//"
+  commentPrefix: String = "//",
+  enableEscape: Boolean = true,
+  enableTrimIndent: Boolean = true,
 ) =
   try {
     processCode(
@@ -25,6 +27,8 @@ fun includeFile(
       endToken,
       indentToken,
       commentPrefix,
+      enableEscape,
+      enableTrimIndent,
     )
   } catch (e: Exception) {
     Include.logger.warn(e) { "Unable to read $path" }
@@ -37,7 +41,9 @@ fun includeUrl(
   beginToken: String = "",
   endToken: String = "",
   indentToken: String = INDENT_TOKEN,
-  commentPrefix: String = "//"
+  commentPrefix: String = "//",
+  enableEscape: Boolean = true,
+  enableTrimIndent: Boolean = true,
 ) =
   try {
     processCode(
@@ -47,6 +53,8 @@ fun includeUrl(
       endToken,
       indentToken,
       commentPrefix,
+      enableEscape,
+      enableTrimIndent,
     )
   } catch (e: Exception) {
     Include.logger.warn(e) { "Unable to read $url" }
@@ -55,44 +63,49 @@ fun includeUrl(
 
 private fun processCode(
   lines: List<String>,
-  lineNumbers: String = "",
+  lineNumbers: String,
   beginToken: String,
   endToken: String,
   indentToken: String,
   commentPrefix: String,
+  enableEscape: Boolean,
+  enableTrimIndent: Boolean,
 ): String {
-
-  val subLines =
-    if (lineNumbers.isNotBlank()) {
-      val lineNums = lineNumbers.toIntList()
-      lines.filterIndexed { i, _ -> i + 1 in lineNums }
-    } else {
-      val startIndex =
-        if (beginToken.isEmpty())
-          0
-        else {
-          val beginRegex = "$commentPrefix\\s*$beginToken".toRegex()
-          (lines
-            .asSequence()
-            .mapIndexed { i, s -> i to s }
-            .firstOrNull { it.second.contains(beginRegex) }?.first
-            ?: throw IllegalArgumentException("beginToken not found: $commentPrefix $beginToken")) + 1
-        }
-
-      val endIndex =
-        if (endToken.isEmpty())
-          lines.size
-        else {
-          val endRegex = "$commentPrefix\\s*$endToken".toRegex()
-          (lines.reversed()
-            .asSequence()
-            .mapIndexed { i, s -> (lines.size - i - 1) to s }
-            .firstOrNull { it.second.contains(endRegex) }?.first
-            ?: throw IllegalArgumentException("endToken not found: $commentPrefix $endToken"))
-        }
-
-      lines.subList(startIndex, endIndex)
+  val startIndex =
+    if (beginToken.isEmpty())
+      0
+    else {
+      val beginRegex = "$commentPrefix\\s*$beginToken".toRegex()
+      (lines
+        .asSequence()
+        .mapIndexed { i, s -> i to s }
+        .firstOrNull { it.second.contains(beginRegex) }?.first
+        ?: throw IllegalArgumentException("beginToken not found: $commentPrefix $beginToken")) + 1
     }
 
-  return subLines.map { "$indentToken$it" }.joinToString("\n") { StringEscapeUtils.escapeHtml4(it) }
+  val endIndex =
+    if (endToken.isEmpty())
+      lines.size
+    else {
+      val endRegex = "$commentPrefix\\s*$endToken".toRegex()
+      (lines.reversed()
+        .asSequence()
+        .mapIndexed { i, s -> (lines.size - i - 1) to s }
+        .firstOrNull { it.second.contains(endRegex) }?.first
+        ?: throw IllegalArgumentException("endToken not found: $commentPrefix $endToken"))
+    }
+
+  val begEndLines = lines.subList(startIndex, endIndex)
+
+  val rangeLines =
+    if (lineNumbers.isNotBlank()) {
+      val lineNums = lineNumbers.toIntList()
+      begEndLines.filterIndexed { i, _ -> i + 1 in lineNums }
+    } else {
+      begEndLines
+    }
+
+  return (if (enableTrimIndent) rangeLines.joinToString("\n").trimIndent().lines() else rangeLines)
+    .map { "$indentToken$it" }
+    .joinToString("\n") { if (enableEscape) escapeHtml4(it) else it }
 }

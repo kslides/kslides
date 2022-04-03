@@ -12,7 +12,7 @@ authored in Markdown/HTML.
 
 [![kslides screenshot](https://pambrose.github.io/kslides/img/kslides-screenshot.png)](https://pambrose.github.io/kslides/)
 
-[This](kslides-examples/src/main/kotlin/Slides.kt) presentation is served statically from
+The [above](kslides-examples/src/main/kotlin/Slides.kt) presentation is served statically from
 [Netlify](https://kslides.netlify.app)
 and [Github Pages](https://pambrose.github.io/kslides/).
 It is also running dynamically on [Heroku](https://kslides-repo.herokuapp.com).
