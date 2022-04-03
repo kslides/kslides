@@ -40,5 +40,7 @@ enum class Effect {
   HIGHLIGHT_BLUE,
   HIGHLIGHT_CURRENT_RED,
   HIGHLIGHT_CURRENT_GREEN,
-  HIGHLIGHT_CURRENT_BLUE,
+  HIGHLIGHT_CURRENT_BLUE;
+
+  fun toOutput() = "class=\"fragment${if (this != NONE) (" " + name.toLower().replace('_', '-')) else ""}\""
 }

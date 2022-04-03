@@ -128,7 +128,7 @@ fun main() {
               </code>
             </pre>
             Notes: This slide shows animated code highlights. 
-                Indicate the lines you want to highlight by using a for loop
+            Indicate the lines you want to highlight by using a for loop
             """
           }
         }

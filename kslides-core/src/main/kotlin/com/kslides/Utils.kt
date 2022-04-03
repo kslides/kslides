@@ -1,6 +1,5 @@
 package com.kslides
 
-import com.github.pambrose.common.util.*
 import kotlinx.html.*
 
 fun githubSourceUrl(username: String, repoName: String, path: String = "", branchName: String = "master") =
@@ -11,9 +10,8 @@ fun githubRawUrl(username: String, repoName: String, path: String = "", branchNa
 
 fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
 
-fun fragment(effect: Effect = Effect.NONE, index: Int = 0) = "<!-- .element: class=\"fragment${
-  if (effect != Effect.NONE) (" " + effect.name.toLower().replace('_', '-')) else ""
-}\"${if (index > 0) " data-fragment-index=\"$index\"" else ""}-->"
+fun fragment(effect: Effect = Effect.NONE, index: Int = 0) =
+  "<!-- .element: ${effect.toOutput()}${if (index > 0) " data-fragment-index=\"$index\"" else ""} -->"
 
 fun String.nullIfBlank() = if (isNotBlank()) this else null
 
