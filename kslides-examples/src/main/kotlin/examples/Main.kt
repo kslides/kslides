@@ -389,11 +389,11 @@ fun main() {
           """
           ## Element attributes
     
-          Item 1 ${fragmentIndex(1)}
+          Item 1 ${fragment()}
     
-          Item 2 ${fragmentIndex(2)}
+          Item 2 ${fragment()}
     
-          Item 3 ${fragmentIndex(3)}
+          Item 3 ${fragment()}
           """
         }
       }

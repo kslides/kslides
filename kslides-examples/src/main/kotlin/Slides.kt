@@ -15,7 +15,7 @@ fun main() {
     presentation {
       css += """
         #intro h1 { color: #FF5533; }
-        #mdslide p { color: black; }
+        #mdslide p { color: #FF6836; }
       """
 
       presentationConfig {
@@ -45,6 +45,7 @@ fun main() {
           """
           # kslides
           ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
+          Notes: This is a note for the opening slide 📝
           """
         }
       }
@@ -61,15 +62,11 @@ fun main() {
           # Markdown Slide
           ## 🍒
           
-          Use the arrow keys to navigate ${fragmentIndex(1)}
+          Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
           
-          Press ESC to see presentation overview ${fragmentIndex(2)}
-          
-          Press S to see speaker notes ${fragmentIndex(3)}
-
-          Press M to see menu ${fragmentIndex(4)}
-          
-          Note: This is a markdown slide that describes some keystroke options
+          Press ESC to see the presentation overview ${fragment(Effect.FADE_LEFT)}
+                    
+          Notes: This is a note for the Markdown slide 📝
           """
         }
       }
@@ -79,9 +76,10 @@ fun main() {
           """
           <h1>HTML Slide</h1>
           <h2>🐦</h2>
-          <p>Use the arrow keys to navigate</p>
+          <p class="fragment fade-up">Press S to see the speaker notes</p> 
+          <p class="fragment fade-up">Press M to see the menu</p> 
           <aside class="notes">
-            These are notes for the htmlSlide 📝
+            This is a note for the HTML slide 📝
           </aside>
           """
         }
@@ -95,9 +93,10 @@ fun main() {
         content {
           h1 { +"DSL Slide" }
           h2 { +"👀" }
-          p { +"Use the arrow keys to navigate" }
+          p("fragment fade-right") { +"Press CTRL+Shift+F to search the slide content" }
+          p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
           aside("notes") {
-            +"These are notes for the dslSlide ⚾"
+            +"This is a note for the DSL slide 📝"
           }
         }
       }
@@ -109,6 +108,8 @@ fun main() {
           ```kotlin [3,7|4,6|5]
           ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
           ```
+          Note: This slide shows simple code highlights. You can specify the language and the lines 
+          you want to highlight
           """
         }
       }
@@ -120,13 +121,15 @@ fun main() {
           autoAnimate = true
           content {
             """
-              <h2>Animated Code 👇</h2>  
-              <pre data-id="code-animation" data-cc="false"> 
-                <code data-trim="" data-line-numbers="">
-                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
-                </code>
-              </pre>
-              """
+            <h2>Animated Code</h2>  
+            <pre data-id="code-animation" data-cc="false"> 
+              <code data-trim="" data-line-numbers="">
+                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+              </code>
+            </pre>
+            Notes: This slide shows animated code highlights. 
+                Indicate the lines you want to highlight by using a for loop
+            """
           }
         }
       }
@@ -150,9 +153,9 @@ fun main() {
             """
             # Vertical Markdown Slide 🦊 
             
-            [Go back to the 1st slide](#/) ${fragmentIndex(1)}
+            [Go back to the 1st slide](#/) ${fragment()}
          
-            [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
+            [Go back to the 2nd slide](#/1) ${fragment()}
             
             """
           }
@@ -253,7 +256,6 @@ fun main() {
           """
         }
       }
-
     }
     // helloworld end
   }

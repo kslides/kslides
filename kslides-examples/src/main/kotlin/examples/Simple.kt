@@ -74,9 +74,9 @@ fun main() {
           """
           # Vertical Markdown Slide 🦊 
           
-          [Go back to the 1st slide](#/0) ${fragmentIndex(1)}
+          [Go back to the 1st slide](#/0) ${fragment()}
        
-          [Go back to the 2nd slide](#/1) ${fragmentIndex(2)}
+          [Go back to the 2nd slide](#/1) ${fragment()}
           """
         }
       }
