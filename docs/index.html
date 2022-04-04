@@ -27,7 +27,7 @@
   </head>
   <body>
     <div class="reveal">
-      <a class="github-corner" href="https://github.com/pambrose/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt" target="blank" title="View presentation source on Github">
+      <a class="github-corner" href="https://github.com/pambrose/kslides/blob/master/kslides-examples" target="blank" title="View presentation source on Github">
           
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
                       
@@ -47,7 +47,7 @@ Notes: This is a note for the opening slide 📝
         <section>
           <section data-background-color="#4370A5" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" data-transition="zoom" id="mdslide">
             <script type="text/template">
-# Markdown Slide
+# A Markdown Slide
 ## 🍒
 
 Use the arrow keys to navigate 
@@ -76,7 +76,7 @@ markdownSlide {
 
   content {
     """
-    # Markdown Slide
+    # A Markdown Slide
     ## 🍒
     
     Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
@@ -98,7 +98,7 @@ markdownSlide {
         <section>
           <section data-background-color="#4370A5">
             
-            <h1>HTML Slide</h1>
+            <h1>A HTML Slide</h1>
             
             <h2>&#128038;</h2>
             
@@ -122,7 +122,7 @@ markdownSlide {
 htmlSlide {
   content {
     """
-    <h1>HTML Slide</h1>
+    <h1>A HTML Slide</h1>
     <h2>🐦</h2>
     <p class="fragment fade-up">Press S to see the speaker notes</p> 
     <p class="fragment fade-up">Press M to see the menu</p> 
@@ -142,7 +142,7 @@ htmlSlide {
         
         <section>
           <section data-background-color="#4370A5" data-transition="zoom">
-            <h1>DSL Slide</h1>
+            <h1>A DSL Slide</h1>
             <h2>&#128064;</h2>
             <p class="fragment fade-right">Press CTRL+Shift+F to search all the slides</p>
             <p class="fragment fade-right">Press Alt+click to zoom in on elements</p>
@@ -160,7 +160,7 @@ dslSlide {
   }
 
   content {
-    h1 { +"DSL Slide" }
+    h1 { +"A DSL Slide" }
     h2 { +"👀" }
     p("fragment fade-right") { +"Press CTRL+Shift+F to search all the slides" }
     p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
@@ -174,9 +174,10 @@ dslSlide {
           
         </section>
         
-        <section data-background-color="#4370A5" data-markdown="">
-          <script type="text/template">
-## Code Highlights    
+        <section>
+          <section data-background-color="#4370A5" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
+            <script type="text/template">
+## Highlighted Code    
 ```kotlin [3,7|4,6|5]
 package examples
 
@@ -186,39 +187,60 @@ fun main() {
   }
 }
 ```
-Note: This slide shows simple code highlights. You can specify the language and the lines 
-you want to highlight
+Note: This slide shows code highlights. You can specify the lines you want to highlight
 </script>
+          </section>
+          
+          <section data-background-color="#4370A5" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Highlighted Code Definition    
+```kotlin
+markdownSlide {
+  content {
+    """
+    ## Highlighted Code    
+    ```kotlin [3,7|4,6|5]
+    ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
+    ```
+    Note: This slide shows code highlights. You can specify the lines you want to highlight
+    """
+  }
+}
+```
+</script>
+          </section>
+          
         </section>
         
-        <section data-auto-animate="" data-background-color="#4370A5">
-          
-          <h2>Animated Code</h2>
+        <section>
+          <section data-auto-animate="" data-background-color="#4370A5">
             
+            <h2>Animated Code</h2>
+              
 
-          <pre data-cc="false" data-id="code-animation">
-             
+            <pre data-cc="false" data-id="code-animation">
+               
   <code data-line-numbers="" data-trim="">
     let planets = [
         {name: 'mars', diameter: 6779},
     ]
   </code>
 
-          </pre>
-          
-          <aside class="notes">
+            </pre>
+            
+            <aside class="notes">
 This slide shows animated code highlights. 
 Indicate the lines you want to highlight by using a for loop
 </aside>
-        </section>
-        
-        <section data-auto-animate="" data-background-color="#4370A5">
+          </section>
           
-          <h2>Animated Code</h2>
+          <section data-auto-animate="" data-background-color="#4370A5">
             
+            <h2>Animated Code</h2>
+              
 
-          <pre data-cc="false" data-id="code-animation">
-             
+            <pre data-cc="false" data-id="code-animation">
+               
   <code data-line-numbers="" data-trim="">
     let planets = [
         {name: 'mars', diameter: 6779},
@@ -227,21 +249,21 @@ Indicate the lines you want to highlight by using a for loop
     ]
   </code>
 
-          </pre>
-          
-          <aside class="notes">
+            </pre>
+            
+            <aside class="notes">
 This slide shows animated code highlights. 
 Indicate the lines you want to highlight by using a for loop
 </aside>
-        </section>
-        
-        <section data-auto-animate="" data-background-color="#4370A5">
+          </section>
           
-          <h2>Animated Code</h2>
+          <section data-auto-animate="" data-background-color="#4370A5">
             
+            <h2>Animated Code</h2>
+              
 
-          <pre data-cc="false" data-id="code-animation">
-             
+            <pre data-cc="false" data-id="code-animation">
+               
   <code data-line-numbers="" data-trim="">
     let circumferenceReducer = (c, planet) =&gt; {
         return c + planet.diameter * Math.PI;
@@ -256,12 +278,43 @@ Indicate the lines you want to highlight by using a for loop
     let c = planets.reduce(circumferenceReducer, 0)
   </code>
 
-          </pre>
-          
-          <aside class="notes">
+            </pre>
+            
+            <aside class="notes">
 This slide shows animated code highlights. 
 Indicate the lines you want to highlight by using a for loop
 </aside>
+          </section>
+          
+          <section data-background-color="#4370A5" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Highlighted Code Definition    
+```kotlin
+// A for loop generates a series of slides, each with a different set of lines
+// Uses the same line number syntax used by revealjs: https://revealjs.com/code/
+for (lines in lineNumbers("[5,6,9|5-9|]")) {
+  htmlSlide {
+    autoAnimate = true
+    content {
+      """
+      <h2>Animated Code</h2>  
+      <pre data-id="code-animation" data-cc="false"> 
+        <code data-trim="" data-line-numbers="">
+          ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+        </code>
+      </pre>
+      <aside class="notes">
+      This slide shows animated code highlights. 
+      Indicate the lines you want to highlight by using a for loop
+      </aside>
+      """
+    }
+  }
+}
+```
+</script>
+          </section>
+          
         </section>
         
         <section>
@@ -295,7 +348,7 @@ presentation {
   """
 
   presentationConfig {
-    githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Slides.kt")
+    githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples")
     githubCornerTitle = "View presentation source on Github"
     slideNumber = "c/t"
     history = true
@@ -338,7 +391,7 @@ presentation {
 
       content {
         """
-        # Markdown Slide
+        # A Markdown Slide
         ## 🍒
         
         Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
@@ -374,7 +427,7 @@ presentation {
     htmlSlide {
       content {
         """
-        <h1>HTML Slide</h1>
+        <h1>A HTML Slide</h1>
         <h2>🐦</h2>
         <p class="fragment fade-up">Press S to see the speaker notes</p> 
         <p class="fragment fade-up">Press M to see the menu</p> 
@@ -411,7 +464,7 @@ presentation {
       }
 
       content {
-        h1 { +"DSL Slide" }
+        h1 { +"A DSL Slide" }
         h2 { +"👀" }
         p("fragment fade-right") { +"Press CTRL+Shift+F to search all the slides" }
         p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
@@ -436,39 +489,75 @@ presentation {
     }
   }
 
-  markdownSlide {
-    content {
-      """
-      ## Code Highlights    
-      ```kotlin [3,7|4,6|5]
-      ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
-      ```
-      Note: This slide shows simple code highlights. You can specify the language and the lines 
-      you want to highlight
-      """
-    }
-  }
-
-  // We use a for loop here to generate a series of slides, each with a different set of lines
-  // We use the same syntax used by revealjs: https://revealjs.com/code/
-  for (lines in lineNumbers("[5,6,9|5-9|]")) {
-    htmlSlide {
-      autoAnimate = true
+  verticalSlides {
+    // highlights begin
+    markdownSlide {
       content {
         """
-        <h2>Animated Code</h2>  
-        <pre data-id="code-animation" data-cc="false"> 
-          <code data-trim="" data-line-numbers="">
-            ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
-          </code>
-        </pre>
-        <aside class="notes">
-        This slide shows animated code highlights. 
-        Indicate the lines you want to highlight by using a for loop
-        </aside>
+        ## Highlighted Code    
+        ```kotlin [3,7|4,6|5]
+        ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
+        ```
+        Note: This slide shows code highlights. You can specify the lines you want to highlight
         """
       }
     }
+    // highlights end
+
+    markdownSlide {
+      slideConfig {
+        markdownNotesSeparator = "^^"
+      }
+      content {
+        """
+        ## Highlighted Code Definition    
+        ```kotlin
+        ${includeFile(slides, beginToken = "highlights begin", endToken = "highlights end")}
+        ```
+        """
+      }
+    }
+  }
+
+  verticalSlides {
+    // animated begin
+    // A for loop generates a series of slides, each with a different set of lines
+    // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
+    for (lines in lineNumbers("[5,6,9|5-9|]")) {
+      htmlSlide {
+        autoAnimate = true
+        content {
+          """
+          <h2>Animated Code</h2>  
+          <pre data-id="code-animation" data-cc="false"> 
+            <code data-trim="" data-line-numbers="">
+              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+            </code>
+          </pre>
+          <aside class="notes">
+          This slide shows animated code highlights. 
+          Indicate the lines you want to highlight by using a for loop
+          </aside>
+          """
+        }
+      }
+    }
+    // animated end
+
+    markdownSlide {
+      slideConfig {
+        markdownNotesSeparator = "^^"
+      }
+      content {
+        """
+        ## Highlighted Code Definition    
+        ```kotlin
+        ${includeFile(slides, beginToken = "animated begin", endToken = "animated end")}
+        ```
+        """
+      }
+    }
+
   }
 
   verticalSlides {

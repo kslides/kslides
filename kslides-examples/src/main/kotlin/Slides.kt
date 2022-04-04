@@ -21,7 +21,7 @@ fun main() {
       """
 
       presentationConfig {
-        githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples/src/main/kotlin/Slides.kt")
+        githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples")
         githubCornerTitle = "View presentation source on Github"
         slideNumber = "c/t"
         history = true
@@ -64,7 +64,7 @@ fun main() {
 
           content {
             """
-            # Markdown Slide
+            # A Markdown Slide
             ## 🍒
             
             Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
@@ -100,7 +100,7 @@ fun main() {
         htmlSlide {
           content {
             """
-            <h1>HTML Slide</h1>
+            <h1>A HTML Slide</h1>
             <h2>🐦</h2>
             <p class="fragment fade-up">Press S to see the speaker notes</p> 
             <p class="fragment fade-up">Press M to see the menu</p> 
@@ -137,7 +137,7 @@ fun main() {
           }
 
           content {
-            h1 { +"DSL Slide" }
+            h1 { +"A DSL Slide" }
             h2 { +"👀" }
             p("fragment fade-right") { +"Press CTRL+Shift+F to search all the slides" }
             p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
@@ -162,39 +162,75 @@ fun main() {
         }
       }
 
-      markdownSlide {
-        content {
-          """
-          ## Code Highlights    
-          ```kotlin [3,7|4,6|5]
-          ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
-          ```
-          Note: This slide shows simple code highlights. You can specify the language and the lines 
-          you want to highlight
-          """
-        }
-      }
-
-      // We use a for loop here to generate a series of slides, each with a different set of lines
-      // We use the same syntax used by revealjs: https://revealjs.com/code/
-      for (lines in lineNumbers("[5,6,9|5-9|]")) {
-        htmlSlide {
-          autoAnimate = true
+      verticalSlides {
+        // highlights begin
+        markdownSlide {
           content {
             """
-            <h2>Animated Code</h2>  
-            <pre data-id="code-animation" data-cc="false"> 
-              <code data-trim="" data-line-numbers="">
-                ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
-              </code>
-            </pre>
-            <aside class="notes">
-            This slide shows animated code highlights. 
-            Indicate the lines you want to highlight by using a for loop
-            </aside>
+            ## Highlighted Code    
+            ```kotlin [3,7|4,6|5]
+            ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
+            ```
+            Note: This slide shows code highlights. You can specify the lines you want to highlight
             """
           }
         }
+        // highlights end
+
+        markdownSlide {
+          slideConfig {
+            markdownNotesSeparator = "^^"
+          }
+          content {
+            """
+            ## Highlighted Code Definition    
+            ```kotlin
+            ${includeFile(slides, beginToken = "highlights begin", endToken = "highlights end")}
+            ```
+            """
+          }
+        }
+      }
+
+      verticalSlides {
+        // animated begin
+        // A for loop generates a series of slides, each with a different set of lines
+        // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
+        for (lines in lineNumbers("[5,6,9|5-9|]")) {
+          htmlSlide {
+            autoAnimate = true
+            content {
+              """
+              <h2>Animated Code</h2>  
+              <pre data-id="code-animation" data-cc="false"> 
+                <code data-trim="" data-line-numbers="">
+                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+                </code>
+              </pre>
+              <aside class="notes">
+              This slide shows animated code highlights. 
+              Indicate the lines you want to highlight by using a for loop
+              </aside>
+              """
+            }
+          }
+        }
+        // animated end
+
+        markdownSlide {
+          slideConfig {
+            markdownNotesSeparator = "^^"
+          }
+          content {
+            """
+            ## Highlighted Code Definition    
+            ```kotlin
+            ${includeFile(slides, beginToken = "animated begin", endToken = "animated end")}
+            ```
+            """
+          }
+        }
+
       }
 
       verticalSlides {
