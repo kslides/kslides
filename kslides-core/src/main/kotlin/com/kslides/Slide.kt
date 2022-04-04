@@ -73,6 +73,11 @@ class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(
   fun content(dslBlock: SECTION.(DslSlide) -> Unit) {
     this.dslBlock = dslBlock
   }
+
+  @HtmlTagMarker
+  inline fun SectioningOrFlowContent.notes(crossinline block: ASIDE.() -> Unit = {}) =
+    ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
+
 }
 
 open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content) {
@@ -110,4 +115,8 @@ class VerticalDslSlide(presentation: Presentation, content: SlideArg) : Vertical
   fun content(dslBlock: SECTION.(VerticalDslSlide) -> Unit) {
     this.dslBlock = dslBlock
   }
+
+  @HtmlTagMarker
+  inline fun SectioningOrFlowContent.notes(crossinline block: ASIDE.() -> Unit = {}) =
+    ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }

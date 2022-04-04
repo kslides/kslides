@@ -95,7 +95,7 @@ fun main() {
           h2 { +"👀" }
           p("fragment fade-right") { +"Press CTRL+Shift+F to search the slide content" }
           p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
-          aside("notes") {
+          notes {
             +"This is a note for the DSL slide 📝"
           }
         }
