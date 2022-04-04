@@ -6,6 +6,8 @@ fun main() {
 
   kslides {
 
+    val slides = "kslides-examples/src/main/kotlin/Slides.kt"
+
     output {
       enableFileSystem = true
       enableHttp = true
@@ -28,6 +30,7 @@ fun main() {
         gaPropertyId = "G-TRY2Q243XC"
         enableSpeakerNotes = true
         enableMenu = true
+        navigationMode = "default"
 
         slideConfig {
           backgroundColor = "#4370A5"
@@ -50,53 +53,111 @@ fun main() {
         }
       }
 
-      markdownSlide {
-        id = "mdslide"
+      verticalSlides {
+        // mdslide begin
+        markdownSlide {
+          id = "mdslide"
 
-        slideConfig {
-          transition = Transition.ZOOM
+          slideConfig {
+            transition = Transition.ZOOM
+          }
+
+          content {
+            """
+            # Markdown Slide
+            ## 🍒
+            
+            Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
+            
+            Press ESC to see the presentation overview ${fragment(Effect.FADE_LEFT)}
+                      
+            Press the down arrow to see the slide definition 👇 ${fragment(Effect.FADE_LEFT)}
+
+            Notes: This is a note for the Markdown slide 📝
+            """
+          }
         }
+        // mdslide end
 
-        content {
-          """
-          # Markdown Slide
-          ## 🍒
-          
-          Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
-          
-          Press ESC to see the presentation overview ${fragment(Effect.FADE_LEFT)}
-                    
-          Notes: This is a note for the Markdown slide 📝
-          """
+        markdownSlide {
+          slideConfig {
+            markdownNotesSeparator = "^^"
+          }
+
+          content {
+            """
+            ## Markdown Slide Definition    
+            ```kotlin
+            ${includeFile(slides, beginToken = "mdslide begin", endToken = "mdslide end")}
+            ```
+            """
+          }
         }
       }
 
-      htmlSlide {
-        content {
-          """
-          <h1>HTML Slide</h1>
-          <h2>🐦</h2>
-          <p class="fragment fade-up">Press S to see the speaker notes</p> 
-          <p class="fragment fade-up">Press M to see the menu</p> 
-          <aside class="notes">
-            This is a note for the HTML slide 📝
-          </aside>
-          """
+      verticalSlides {
+        // htmlslide begin
+        htmlSlide {
+          content {
+            """
+            <h1>HTML Slide</h1>
+            <h2>🐦</h2>
+            <p class="fragment fade-up">Press S to see the speaker notes</p> 
+            <p class="fragment fade-up">Press M to see the menu</p> 
+            <p class="fragment fade-up">Press the down arrow to see the slide definition 👇</p>
+
+            <aside class="notes">
+              This is a note for the HTML slide 📝
+            </aside>
+            """
+          }
+        }
+        // htmlslide end
+
+        markdownSlide {
+          slideConfig {
+            markdownNotesSeparator = "^^"
+          }
+          content {
+            """
+            ## HTML Slide Definition    
+            ```kotlin
+            ${includeFile(slides, beginToken = "htmlslide begin", endToken = "htmlslide end")}
+            ```
+            """
+          }
         }
       }
 
-      dslSlide {
-        slideConfig {
-          transition = Transition.ZOOM
-        }
+      verticalSlides {
+        // dslslide begin
+        dslSlide {
+          slideConfig {
+            transition = Transition.ZOOM
+          }
 
-        content {
-          h1 { +"DSL Slide" }
-          h2 { +"👀" }
-          p("fragment fade-right") { +"Press CTRL+Shift+F to search the slide content" }
-          p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
-          notes {
-            +"This is a note for the DSL slide 📝"
+          content {
+            h1 { +"DSL Slide" }
+            h2 { +"👀" }
+            p("fragment fade-right") { +"Press CTRL+Shift+F to search all the slides" }
+            p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
+            p("fragment fade-right") { +"Press the down arrow to see the slide definition 👇" }
+            notes { +"This is a note for the DSL slide 📝" }
+          }
+        }
+        // dslslide end
+
+        markdownSlide {
+          slideConfig {
+            markdownNotesSeparator = "^^"
+          }
+          content {
+            """
+            ## DSL Slide Definition    
+            ```kotlin
+            ${includeFile(slides, beginToken = "dslslide begin", endToken = "dslslide end")}
+            ```
+            """
           }
         }
       }
@@ -169,13 +230,7 @@ fun main() {
           """
           ## Presentation Definition    
           ```kotlin []
-          ${
-            includeFile(
-              "kslides-examples/src/main/kotlin/Slides.kt",
-              beginToken = "readme begin",
-              endToken = "readme end"
-            )
-          }
+          ${includeFile(slides, beginToken = "readme begin", endToken = "readme end")}
           ```
           """
         }

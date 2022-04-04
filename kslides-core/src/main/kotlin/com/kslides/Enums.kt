@@ -44,3 +44,7 @@ enum class Effect {
 
   fun toOutput() = "class=\"fragment${if (this != NONE) (" " + name.toLower().replace('_', '-')) else ""}\""
 }
+
+enum class NavigationMode {
+  DEFAULT, LINEAR, GRID
+}

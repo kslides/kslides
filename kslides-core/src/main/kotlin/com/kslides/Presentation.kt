@@ -12,7 +12,6 @@ import mu.*
 fun kslides(block: KSlides.() -> Unit) {
   topLevel
     .apply {
-
       block()
 
       configBlock.invoke(globalConfig)
@@ -91,8 +90,8 @@ class Presentation(val kslides: KSlides) {
       CssFile("dist/reset.css"),
     )
   internal val presentationConfig = PresentationConfig()
-  internal val slides = mutableListOf<Slide>()
   internal lateinit var finalConfig: PresentationConfig
+  internal val slides = mutableListOf<Slide>()
 
   var path = "/"
   val css = AppendableString("")
@@ -204,13 +203,16 @@ class Presentation(val kslides: KSlides) {
     VerticalSlide(this) { div, slide ->
       div.apply {
         (slide as VerticalSlide).verticalContext
-          .also { verticalContext ->
-            block(verticalContext)
-            section(classes = verticalContext.classes.nullIfBlank()) {
-              verticalContext.id.also { if (it.isNotEmpty()) id = it }
-              verticalContext.verticalSlides
+          .also { vcontext ->
+            // Calling resetContext() is a bit of a hack. It is required because the vertical slide lambdas are executed
+            // for both http and the filesystem. Without resetting the slide context, you will end up with double the slides
+            vcontext.resetContext()
+            block(vcontext)
+            section(classes = vcontext.classes.nullIfBlank()) {
+              vcontext.id.also { if (it.isNotEmpty()) id = it }
+              vcontext.verticalSlides
                 .forEach { verticalSlide ->
-                  verticalSlide.content.invoke(div, verticalSlide)
+                  verticalSlide.content(div, verticalSlide)
                   rawHtml("\n")
                 }
             }.also { rawHtml("\n") }
@@ -250,7 +252,9 @@ class Presentation(val kslides: KSlides) {
           }.also { rawHtml("\n") }
         }
       }
-    }.also { slides += it }
+    }.also {
+      slides += it
+    }
 
   @HtmlTagMarker
   fun VerticalSlideContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
@@ -298,6 +302,10 @@ class Presentation(val kslides: KSlides) {
             // These are not applicable for vertical markdown slides
             attributes["data-separator"] = ""
             attributes["data-separator-vertical"] = ""
+
+            s.mergedConfig.apply {
+              attributes["data-separator-notes"] = markdownNotesSeparator
+            }
 
             //if (notes.isNotBlank())
             //    attributes["data-separator-notes"] = notes
@@ -461,6 +469,10 @@ class VerticalSlideContext {
   internal val verticalSlides = mutableListOf<VerticalSlide>()
   var id = ""
   var classes = ""
+
+  internal fun resetContext() {
+    verticalSlides.clear()
+  }
 }
 
 class JsFile(val filename: String)

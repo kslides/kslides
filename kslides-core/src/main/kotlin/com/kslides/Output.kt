@@ -41,10 +41,10 @@ object Output : KLogging() {
             }
         }
 
-        output.kslides.presentationMap.forEach { (key, value) ->
+        output.kslides.presentationMap.forEach { (key, p) ->
           get(key) {
             respondWith {
-              generatePage(value, value.finalConfig)
+              generatePage(p, p.finalConfig)
             }
           }
         }

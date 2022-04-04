@@ -77,7 +77,6 @@ class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(
   @HtmlTagMarker
   inline fun SectioningOrFlowContent.notes(crossinline block: ASIDE.() -> Unit = {}) =
     ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
-
 }
 
 open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content) {

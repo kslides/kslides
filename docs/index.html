@@ -44,44 +44,134 @@ Notes: This is a note for the opening slide 📝
 </script>
         </section>
         
-        <section data-background-color="#4370A5" data-markdown="" data-transition="zoom" id="mdslide">
-          <script type="text/template">
+        <section>
+          <section data-background-color="#4370A5" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" data-transition="zoom" id="mdslide">
+            <script type="text/template">
 # Markdown Slide
 ## 🍒
 
 Use the arrow keys to navigate 
-            <!-- .element: class="fragment fade-left" -->
+              <!-- .element: class="fragment fade-left" -->
 
 Press ESC to see the presentation overview 
-            <!-- .element: class="fragment fade-left" -->
+              <!-- .element: class="fragment fade-left" -->
           
+Press the down arrow to see the slide definition 👇 
+              <!-- .element: class="fragment fade-left" -->
+
 Notes: This is a note for the Markdown slide 📝
 </script>
+          </section>
+          
+          <section data-background-color="#4370A5" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Markdown Slide Definition    
+```kotlin
+markdownSlide {
+  id = "mdslide"
+
+  slideConfig {
+    transition = Transition.ZOOM
+  }
+
+  content {
+    """
+    # Markdown Slide
+    ## 🍒
+    
+    Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
+    
+    Press ESC to see the presentation overview ${fragment(Effect.FADE_LEFT)}
+              
+    Press the down arrow to see the slide definition 👇 ${fragment(Effect.FADE_LEFT)}
+
+    Notes: This is a note for the Markdown slide 📝
+    """
+  }
+}
+```
+</script>
+          </section>
+          
         </section>
         
-        <section data-background-color="#4370A5">
-          
-          <h1>HTML Slide</h1>
-          
-          <h2>&#128038;</h2>
-          
-          <p class="fragment fade-up">Press S to see the speaker notes</p>
-           
+        <section>
+          <section data-background-color="#4370A5">
+            
+            <h1>HTML Slide</h1>
+            
+            <h2>&#128038;</h2>
+            
+            <p class="fragment fade-up">Press S to see the speaker notes</p>
+             
 
-          <p class="fragment fade-up">Press M to see the menu</p>
-           
+            <p class="fragment fade-up">Press M to see the menu</p>
+             
 
-          <aside class="notes">
+            <p class="fragment fade-up">Press the down arrow to see the slide definition &#128071;</p>
+            
+            <aside class="notes">
   This is a note for the HTML slide &#128221;
 </aside>
+          </section>
+          
+          <section data-background-color="#4370A5" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## HTML Slide Definition    
+```kotlin
+htmlSlide {
+  content {
+    """
+    <h1>HTML Slide</h1>
+    <h2>🐦</h2>
+    <p class="fragment fade-up">Press S to see the speaker notes</p> 
+    <p class="fragment fade-up">Press M to see the menu</p> 
+    <p class="fragment fade-up">Press the down arrow to see the slide definition 👇</p>
+
+    <aside class="notes">
+      This is a note for the HTML slide 📝
+    </aside>
+    """
+  }
+}
+```
+</script>
+          </section>
+          
         </section>
         
-        <section data-background-color="#4370A5" data-transition="zoom">
-          <h1>DSL Slide</h1>
-          <h2>&#128064;</h2>
-          <p class="fragment fade-right">Press CTRL+Shift+F to search the slide content</p>
-          <p class="fragment fade-right">Press Alt+click to zoom in on elements</p>
-          <aside class="notes">This is a note for the DSL slide &#128221;</aside>
+        <section>
+          <section data-background-color="#4370A5" data-transition="zoom">
+            <h1>DSL Slide</h1>
+            <h2>&#128064;</h2>
+            <p class="fragment fade-right">Press CTRL+Shift+F to search all the slides</p>
+            <p class="fragment fade-right">Press Alt+click to zoom in on elements</p>
+            <p class="fragment fade-right">Press the down arrow to see the slide definition &#128071;</p>
+            <aside class="notes">This is a note for the DSL slide &#128221;</aside>
+          </section>
+          
+          <section data-background-color="#4370A5" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## DSL Slide Definition    
+```kotlin
+dslSlide {
+  slideConfig {
+    transition = Transition.ZOOM
+  }
+
+  content {
+    h1 { +"DSL Slide" }
+    h2 { +"👀" }
+    p("fragment fade-right") { +"Press CTRL+Shift+F to search all the slides" }
+    p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
+    p("fragment fade-right") { +"Press the down arrow to see the slide definition 👇" }
+    notes { +"This is a note for the DSL slide 📝" }
+  }
+}
+```
+</script>
+          </section>
+          
         </section>
         
         <section data-background-color="#4370A5" data-markdown="">
@@ -179,7 +269,7 @@ Indicate the lines you want to highlight by using a for loop
             <h1 style="color: red;">Vertical DSL Slide &#128071;</h1>
           </section>
           
-          <section data-background-color="#4370A5" data-markdown="" data-separator="" data-separator-vertical="">
+          <section data-background-color="#4370A5" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
             <script type="text/template">
 # Vertical Markdown Slide 🦊 
 
@@ -214,6 +304,7 @@ presentation {
     gaPropertyId = "G-TRY2Q243XC"
     enableSpeakerNotes = true
     enableMenu = true
+    navigationMode = "default"
 
     slideConfig {
       backgroundColor = "#4370A5"
@@ -236,53 +327,111 @@ presentation {
     }
   }
 
-  markdownSlide {
-    id = "mdslide"
+  verticalSlides {
+    // mdslide begin
+    markdownSlide {
+      id = "mdslide"
 
-    slideConfig {
-      transition = Transition.ZOOM
+      slideConfig {
+        transition = Transition.ZOOM
+      }
+
+      content {
+        """
+        # Markdown Slide
+        ## 🍒
+        
+        Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
+        
+        Press ESC to see the presentation overview ${fragment(Effect.FADE_LEFT)}
+                  
+        Press the down arrow to see the slide definition 👇 ${fragment(Effect.FADE_LEFT)}
+
+        Notes: This is a note for the Markdown slide 📝
+        """
+      }
     }
+    // mdslide end
 
-    content {
-      """
-      # Markdown Slide
-      ## 🍒
-      
-      Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
-      
-      Press ESC to see the presentation overview ${fragment(Effect.FADE_LEFT)}
-                
-      Notes: This is a note for the Markdown slide 📝
-      """
+    markdownSlide {
+      slideConfig {
+        markdownNotesSeparator = "^^"
+      }
+
+      content {
+        """
+        ## Markdown Slide Definition    
+        ```kotlin
+        ${includeFile(slides, beginToken = "mdslide begin", endToken = "mdslide end")}
+        ```
+        """
+      }
     }
   }
 
-  htmlSlide {
-    content {
-      """
-      <h1>HTML Slide</h1>
-      <h2>🐦</h2>
-      <p class="fragment fade-up">Press S to see the speaker notes</p> 
-      <p class="fragment fade-up">Press M to see the menu</p> 
-      <aside class="notes">
-        This is a note for the HTML slide 📝
-      </aside>
-      """
+  verticalSlides {
+    // htmlslide begin
+    htmlSlide {
+      content {
+        """
+        <h1>HTML Slide</h1>
+        <h2>🐦</h2>
+        <p class="fragment fade-up">Press S to see the speaker notes</p> 
+        <p class="fragment fade-up">Press M to see the menu</p> 
+        <p class="fragment fade-up">Press the down arrow to see the slide definition 👇</p>
+
+        <aside class="notes">
+          This is a note for the HTML slide 📝
+        </aside>
+        """
+      }
+    }
+    // htmlslide end
+
+    markdownSlide {
+      slideConfig {
+        markdownNotesSeparator = "^^"
+      }
+      content {
+        """
+        ## HTML Slide Definition    
+        ```kotlin
+        ${includeFile(slides, beginToken = "htmlslide begin", endToken = "htmlslide end")}
+        ```
+        """
+      }
     }
   }
 
-  dslSlide {
-    slideConfig {
-      transition = Transition.ZOOM
-    }
+  verticalSlides {
+    // dslslide begin
+    dslSlide {
+      slideConfig {
+        transition = Transition.ZOOM
+      }
 
-    content {
-      h1 { +"DSL Slide" }
-      h2 { +"👀" }
-      p("fragment fade-right") { +"Press CTRL+Shift+F to search the slide content" }
-      p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
-      notes {
-        +"This is a note for the DSL slide 📝"
+      content {
+        h1 { +"DSL Slide" }
+        h2 { +"👀" }
+        p("fragment fade-right") { +"Press CTRL+Shift+F to search all the slides" }
+        p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
+        p("fragment fade-right") { +"Press the down arrow to see the slide definition 👇" }
+        notes { +"This is a note for the DSL slide 📝" }
+      }
+    }
+    // dslslide end
+
+    markdownSlide {
+      slideConfig {
+        markdownNotesSeparator = "^^"
+      }
+      content {
+        """
+        ## DSL Slide Definition    
+        ```kotlin
+        ${includeFile(slides, beginToken = "dslslide begin", endToken = "dslslide end")}
+        ```
+        """
       }
     }
   }
@@ -355,13 +504,7 @@ presentation {
       """
       ## Presentation Definition    
       ```kotlin []
-      ${
-        includeFile(
-          "kslides-examples/src/main/kotlin/Slides.kt",
-          beginToken = "readme begin",
-          endToken = "readme end"
-        )
-      }
+      ${includeFile(slides, beginToken = "readme begin", endToken = "readme end")}
       ```
       """
     }
@@ -389,6 +532,7 @@ presentation {
 			history: true,
 			transition: 'slide',
 			transitionSpeed: 'slow',
+			navigationMode: 'default',
 
 			slideNumber: 'c/t',
 
