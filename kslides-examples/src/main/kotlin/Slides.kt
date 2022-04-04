@@ -127,8 +127,10 @@ fun main() {
                 ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
               </code>
             </pre>
-            Notes: This slide shows animated code highlights. 
+            <aside>
+            This slide shows animated code highlights. 
             Indicate the lines you want to highlight by using a for loop
+            </aside>
             """
           }
         }
