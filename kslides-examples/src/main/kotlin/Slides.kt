@@ -5,29 +5,58 @@ import kotlinx.html.*
 
 fun main() {
 
-  val slides = "kslides-examples/src/main/kotlin/Slides.kt"
-
   // slideSource begin
-  fun Presentation.slideSource(context: VerticalSlideContext, title: String, token: String, lines: String = "") {
+  @HtmlTagMarker
+  fun Presentation.slideSource(
+    source: String,
+    title: String,
+    token: String,
+    lines: String = "",
+    id: String = "",
+  ) {
+    markdownSlide {
+      if (id.isNotBlank()) this.id = id
+      slideConfig { markdownNotesSeparator = "^^" }
+      content {
+        """
+        ## $title    
+        ```kotlin $lines
+        ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
+        ```
+        """
+      }
+    }
+  }
+  // slideSource end
+
+  @HtmlTagMarker
+  fun Presentation.slideSource(
+    context: VerticalSlideContext,
+    source: String,
+    title: String,
+    token: String,
+    lines: String = "",
+    id: String = "",
+  ) {
     with(context) {
       markdownSlide {
-        slideConfig {
-          markdownNotesSeparator = "^^"
-        }
+        if (id.isNotBlank()) this.id = id
+        slideConfig { markdownNotesSeparator = "^^" }
         content {
           """
           ## $title    
           ```kotlin $lines
-          ${includeFile(slides, beginToken = "$token begin", endToken = "$token end")}
+          ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
           ```
           """
         }
       }
     }
   }
-  // slideSource end
 
   kslides {
+
+    val slides = "kslides-examples/src/main/kotlin/Slides.kt"
 
     output {
       enableFileSystem = true
@@ -83,7 +112,7 @@ fun main() {
         }
         // intro end
 
-        slideSource(this, "Intro Slide Definition", "intro")
+        slideSource(this, slides, "Intro Slide Definition", "intro")
       }
 
       verticalSlides {
@@ -108,7 +137,7 @@ fun main() {
         }
         // mdslide end
 
-        slideSource(this, "Markdown Slide Definition", "mdslide")
+        slideSource(this, slides, "Markdown Slide Definition", "mdslide")
       }
 
       verticalSlides {
@@ -131,7 +160,7 @@ fun main() {
         }
         // htmlslide end
 
-        slideSource(this, "HTML Slide Definition", "htmlslide")
+        slideSource(this, slides, "HTML Slide Definition", "htmlslide")
       }
 
       verticalSlides {
@@ -148,7 +177,7 @@ fun main() {
         }
         // dslslide end
 
-        slideSource(this, "DSL Slide Definition", "dslslide")
+        slideSource(this, slides, "DSL Slide Definition", "dslslide")
       }
 
       verticalSlides {
@@ -167,7 +196,7 @@ fun main() {
         }
         // highlights end
 
-        slideSource(this, "Highlighted Code Definition", "highlights")
+        slideSource(this, slides, "Highlighted Code Definition", "highlights")
       }
 
       verticalSlides {
@@ -196,7 +225,7 @@ fun main() {
         }
         // animated end
 
-        slideSource(this, "Animated Code Definition", "animated")
+        slideSource(this, slides, "Animated Code Definition", "animated")
       }
 
       verticalSlides {
@@ -227,7 +256,7 @@ fun main() {
         }
         // iframe end
 
-        slideSource(this, "Iframe Backgrounds Definition", "iframe")
+        slideSource(this, slides, "Iframe Backgrounds Definition", "iframe")
       }
 
       verticalSlides {
@@ -251,7 +280,7 @@ fun main() {
         }
         // transition end
 
-        slideSource(this, "Transitions Definition", "transition")
+        slideSource(this, slides, "Transitions Definition", "transition")
       }
 
       verticalSlides {
@@ -280,7 +309,7 @@ fun main() {
         }
         // themes end
 
-        slideSource(this, "Themes Definition", "themes")
+        slideSource(this, slides, "Themes Definition", "themes")
       }
 
       verticalSlides {
@@ -299,7 +328,7 @@ fun main() {
         }
         // video end
 
-        slideSource(this, "Video Definition", "video")
+        slideSource(this, slides, "Video Definition", "video")
       }
 
       verticalSlides {
@@ -309,27 +338,24 @@ fun main() {
             """
             ## Navigation Slide 🦊 
             
-            [Go back to the 1st slide](#/intro) ${fragment()}
+            [Go to the 1st slide](#/intro) ${fragment()}
          
-            [Go back to the 2nd slide](#/mdslide) ${fragment()}
+            [Go to the 2nd slide](#/mdslide) ${fragment()}
             
-            [Go back to the last slide](#/source) ${fragment()}
+            [Go to the definition slide](#/definition) ${fragment()}
             
             """
           }
         }
         // navigation end
 
-        slideSource(this, "Navigtion Definition", "navigation")
+        slideSource(this, slides, "Navigtion Definition", "navigation")
       }
 
-      verticalSlides {
-        id = "source"
 
-        slideSource(this, "Presentation Definition", "readme", "[]")
+      slideSource(slides, "Presentation Definition", "readme", "[]", "definition")
 
-        slideSource(this, "Slide Source Definition", "slideSource", "[]")
-      }
+      slideSource(slides, "Slide Source Definition", "slideSource", "[]")
     }
     // readme end
 
@@ -404,3 +430,4 @@ fun main() {
     // helloworld end
   }
 }
+

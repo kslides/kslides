@@ -517,13 +517,13 @@ dslSlide {
             <script type="text/template">
 ## Navigation Slide 🦊 
 
-[Go back to the 1st slide](#/intro) 
+[Go to the 1st slide](#/intro) 
               <!-- .element: class="fragment" -->
 
-[Go back to the 2nd slide](#/mdslide) 
+[Go to the 2nd slide](#/mdslide) 
               <!-- .element: class="fragment" -->
 
-[Go back to the last slide](#/source) 
+[Go to the definition slide](#/definition) 
               <!-- .element: class="fragment" -->
 
 </script>
@@ -538,11 +538,11 @@ markdownSlide {
     """
     ## Navigation Slide 🦊 
     
-    [Go back to the 1st slide](#/intro) ${fragment()}
+    [Go to the 1st slide](#/intro) ${fragment()}
  
-    [Go back to the 2nd slide](#/mdslide) ${fragment()}
+    [Go to the 2nd slide](#/mdslide) ${fragment()}
     
-    [Go back to the last slide](#/source) ${fragment()}
+    [Go to the definition slide](#/definition) ${fragment()}
     
     """
   }
@@ -553,9 +553,8 @@ markdownSlide {
           
         </section>
         
-        <section id="source">
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
-            <script type="text/template">
+        <section data-markdown="" id="definition">
+          <script type="text/template">
 ## Presentation Definition    
 ```kotlin []
 presentation {
@@ -606,7 +605,7 @@ presentation {
     }
     // intro end
 
-    slideSource(this, "Intro Slide Definition", "intro")
+    slideSource(this, slides, "Intro Slide Definition", "intro")
   }
 
   verticalSlides {
@@ -631,7 +630,7 @@ presentation {
     }
     // mdslide end
 
-    slideSource(this, "Markdown Slide Definition", "mdslide")
+    slideSource(this, slides, "Markdown Slide Definition", "mdslide")
   }
 
   verticalSlides {
@@ -654,7 +653,7 @@ presentation {
     }
     // htmlslide end
 
-    slideSource(this, "HTML Slide Definition", "htmlslide")
+    slideSource(this, slides, "HTML Slide Definition", "htmlslide")
   }
 
   verticalSlides {
@@ -671,7 +670,7 @@ presentation {
     }
     // dslslide end
 
-    slideSource(this, "DSL Slide Definition", "dslslide")
+    slideSource(this, slides, "DSL Slide Definition", "dslslide")
   }
 
   verticalSlides {
@@ -690,7 +689,7 @@ presentation {
     }
     // highlights end
 
-    slideSource(this, "Highlighted Code Definition", "highlights")
+    slideSource(this, slides, "Highlighted Code Definition", "highlights")
   }
 
   verticalSlides {
@@ -719,7 +718,7 @@ presentation {
     }
     // animated end
 
-    slideSource(this, "Animated Code Definition", "animated")
+    slideSource(this, slides, "Animated Code Definition", "animated")
   }
 
   verticalSlides {
@@ -750,7 +749,7 @@ presentation {
     }
     // iframe end
 
-    slideSource(this, "Iframe Backgrounds Definition", "iframe")
+    slideSource(this, slides, "Iframe Backgrounds Definition", "iframe")
   }
 
   verticalSlides {
@@ -774,7 +773,7 @@ presentation {
     }
     // transition end
 
-    slideSource(this, "Transitions Definition", "transition")
+    slideSource(this, slides, "Transitions Definition", "transition")
   }
 
   verticalSlides {
@@ -803,7 +802,7 @@ presentation {
     }
     // themes end
 
-    slideSource(this, "Themes Definition", "themes")
+    slideSource(this, slides, "Themes Definition", "themes")
   }
 
   verticalSlides {
@@ -822,7 +821,7 @@ presentation {
     }
     // video end
 
-    slideSource(this, "Video Definition", "video")
+    slideSource(this, slides, "Video Definition", "video")
   }
 
   verticalSlides {
@@ -832,57 +831,56 @@ presentation {
         """
         ## Navigation Slide 🦊 
         
-        [Go back to the 1st slide](#/intro) ${fragment()}
+        [Go to the 1st slide](#/intro) ${fragment()}
      
-        [Go back to the 2nd slide](#/mdslide) ${fragment()}
+        [Go to the 2nd slide](#/mdslide) ${fragment()}
         
-        [Go back to the last slide](#/source) ${fragment()}
+        [Go to the definition slide](#/definition) ${fragment()}
         
         """
       }
     }
     // navigation end
 
-    slideSource(this, "Navigtion Definition", "navigation")
+    slideSource(this, slides, "Navigtion Definition", "navigation")
   }
 
-  verticalSlides {
-    id = "source"
 
-    slideSource(this, "Presentation Definition", "readme", "[]")
+  slideSource(slides, "Presentation Definition", "readme", "[]", "definition")
 
-    slideSource(this, "Slide Source Definition", "slideSource", "[]")
-  }
+  slideSource(slides, "Slide Source Definition", "slideSource", "[]")
 }
 ```
 </script>
-          </section>
-          
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
-            <script type="text/template">
+        </section>
+        
+        <section data-markdown="">
+          <script type="text/template">
 ## Slide Source Definition    
 ```kotlin []
-fun Presentation.slideSource(context: VerticalSlideContext, title: String, token: String, lines: String = "") {
-  with(context) {
-    markdownSlide {
-      slideConfig {
-        markdownNotesSeparator = "^^"
-      }
-      content {
-        """
-        ## $title    
-        ```kotlin $lines
-        ${includeFile(slides, beginToken = "$token begin", endToken = "$token end")}
-        ```
-        """
-      }
+@HtmlTagMarker
+fun Presentation.slideSource(
+  source: String,
+  title: String,
+  token: String,
+  lines: String = "",
+  id: String = "",
+) {
+  markdownSlide {
+    if (id.isNotBlank()) this.id = id
+    slideConfig { markdownNotesSeparator = "^^" }
+    content {
+      """
+      ## $title    
+      ```kotlin $lines
+      ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
+      ```
+      """
     }
   }
 }
 ```
 </script>
-          </section>
-          
         </section>
         
       </div>
