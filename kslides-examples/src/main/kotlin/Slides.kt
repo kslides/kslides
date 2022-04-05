@@ -76,6 +76,7 @@ fun main() {
             """
             # kslides
             ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
+            ### 👇
             Notes: This is a note for the opening slide 📝
             """
           }
@@ -177,7 +178,7 @@ fun main() {
             autoAnimate = true
             content {
               """
-              <h2>Animated Code</h2>  
+              <h2>Animated Code 👇</h2>  
               <pre data-id="code-animation" data-cc="false"> 
                 <code data-trim="" data-line-numbers="">
                   ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
