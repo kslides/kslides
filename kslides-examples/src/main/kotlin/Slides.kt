@@ -1,3 +1,4 @@
+import com.github.pambrose.common.util.*
 import com.kslides.*
 import kotlinx.css.*
 import kotlinx.html.*
@@ -24,6 +25,7 @@ fun main() {
         githubCornerHref = githubSourceUrl("pambrose", "kslides", "kslides-examples")
         githubCornerTitle = "View presentation source on Github"
         slideNumber = "c/t"
+        hash = true
         history = true
         transition = Transition.SLIDE
         transitionSpeed = Speed.SLOW
@@ -31,9 +33,10 @@ fun main() {
         enableSpeakerNotes = true
         enableMenu = true
         navigationMode = "default"
+        theme = Theme.SOLARIZED
 
         slideConfig {
-          backgroundColor = "#4370A5"
+          // defaults for slides can be set here
         }
       }
 
@@ -42,6 +45,7 @@ fun main() {
 
         slideConfig {
           transition = Transition.ZOOM
+          // backgroundColor = "#4370A5"
         }
 
         content {
@@ -104,6 +108,7 @@ fun main() {
             <h2>🐦</h2>
             <p class="fragment fade-up">Press S to see the speaker notes</p> 
             <p class="fragment fade-up">Press M to see the menu</p> 
+            <p class="fragment fade-up">Press B or . to pause the presentation</p> 
             <p class="fragment fade-up">Press the down arrow to see the slide definition 👇</p>
 
             <aside class="notes">
@@ -230,7 +235,71 @@ fun main() {
             """
           }
         }
+      }
 
+      verticalSlides {
+        // iframe begin
+        dslSlide {
+          slideConfig {
+            backgroundIframe = "https://revealjs.com/backgrounds/#iframe-backgrounds"
+          }
+          content {
+            h1 {
+              style = "color: blue;"
+              +"Iframe Backgrounds"
+            }
+          }
+        }
+        // iframe end
+
+        markdownSlide {
+          content {
+            """
+            ## Iframe Backgrounds Definition    
+            ```kotlin
+            ${includeFile(slides, beginToken = "iframe begin", endToken = "iframe end")}
+            ```
+            """
+          }
+        }
+      }
+
+      verticalSlides {
+        // themes begin
+        dslSlide {
+          id = "themes"
+          content {
+            h2 { +"Themes" }
+            p {
+              +"reveal.js comes with some themes built in:"
+              br {}
+              // The Theme enum includes all the built in themes
+              Theme.values()
+                .forEachIndexed { index, theme ->
+                  a {
+                    href = "#/themes"
+                    onClick =
+                      "document.getElementById('theme').setAttribute('href','dist/theme/${theme.name.toLower()}.css'); return false;"
+                    +theme.name
+                  }
+                  if (index < Theme.values().size - 1)
+                    +"-"
+                }
+            }
+          }
+        }
+        // themes end
+
+        markdownSlide {
+          content {
+            """
+            ## Themes Definition    
+            ```kotlin
+            ${includeFile(slides, beginToken = "themes begin", endToken = "themes end")}
+            ```
+            """
+          }
+        }
       }
 
       verticalSlides {
