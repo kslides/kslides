@@ -160,6 +160,7 @@ fun main() {
             ```kotlin [3,7|4,6|5]
             ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
             ```
+            ### 👇 
             Note: This slide shows code highlights. You can specify the lines you want to highlight
             """
           }
@@ -178,12 +179,13 @@ fun main() {
             autoAnimate = true
             content {
               """
-              <h2>Animated Code 👇</h2>  
+              <h2>Animated Code</h2>  
               <pre data-id="code-animation" data-cc="false"> 
                 <code data-trim="" data-line-numbers="">
                   ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
                 </code>
               </pre>
+              <h2>👇</h2>  
               <aside class="notes">
               This slide shows animated code highlights. 
               Indicate the lines you want to highlight by using a for loop
