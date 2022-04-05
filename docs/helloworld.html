@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <META content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta content="yes" name="apple-mobile-web-app-capable">
     <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
@@ -66,8 +66,6 @@ presentation {
   }
 
   presentationConfig {
-    transition = Transition.FADE
-
     slideConfig {
       backgroundColor = "#2A9EEE"
     }
@@ -111,13 +109,7 @@ presentation {
       """
       ## Presentation Definition    
       ```kotlin []
-      ${
-        includeFile(
-          "kslides-examples/src/main/kotlin/Slides.kt",
-          beginToken = "helloworld begin",
-          endToken = "helloworld end"
-        )
-      }
+      ${includeFile(slides, beginToken = "helloworld begin", endToken = "helloworld end")}
       ```
       """
     }
@@ -140,8 +132,6 @@ presentation {
 
 	<script>
 		Reveal.initialize({
-			transition: 'fade',
-
 			plugins: [ RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight, CopyCode ]
 		});
 

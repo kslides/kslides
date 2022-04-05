@@ -5,9 +5,29 @@ import kotlinx.html.*
 
 fun main() {
 
-  kslides {
+  val slides = "kslides-examples/src/main/kotlin/Slides.kt"
 
-    val slides = "kslides-examples/src/main/kotlin/Slides.kt"
+  // slideSource begin
+  fun Presentation.slideSource(context: VerticalSlideContext, title: String, token: String, lines: String = "") {
+    with(context) {
+      markdownSlide {
+        slideConfig {
+          markdownNotesSeparator = "^^"
+        }
+        content {
+          """
+          ## $title    
+          ```kotlin $lines
+          ${includeFile(slides, beginToken = "$token begin", endToken = "$token end")}
+          ```
+          """
+        }
+      }
+    }
+  }
+  // slideSource end
+
+  kslides {
 
     output {
       enableFileSystem = true
@@ -19,6 +39,7 @@ fun main() {
       css += """
         #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
+        #githubCorner path { fill: #258BD2; }
       """
 
       presentationConfig {
@@ -40,31 +61,34 @@ fun main() {
         }
       }
 
-      markdownSlide {
-        id = "intro"
+      verticalSlides {
 
-        slideConfig {
-          transition = Transition.ZOOM
-          // backgroundColor = "#4370A5"
-        }
+        // intro begin
+        markdownSlide {
+          id = "intro"
 
-        content {
-          """
-          # kslides
-          ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
-          Notes: This is a note for the opening slide 📝
-          """
+          slideConfig {
+            // Config values for this slide can be set here
+            // backgroundColor = "#4370A5"
+          }
+
+          content {
+            """
+            # kslides
+            ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
+            Notes: This is a note for the opening slide 📝
+            """
+          }
         }
+        // intro end
+
+        slideSource(this, "Intro Slide Definition", "intro")
       }
 
       verticalSlides {
         // mdslide begin
         markdownSlide {
           id = "mdslide"
-
-          slideConfig {
-            transition = Transition.ZOOM
-          }
 
           content {
             """
@@ -83,20 +107,7 @@ fun main() {
         }
         // mdslide end
 
-        markdownSlide {
-          slideConfig {
-            markdownNotesSeparator = "^^"
-          }
-
-          content {
-            """
-            ## Markdown Slide Definition    
-            ```kotlin
-            ${includeFile(slides, beginToken = "mdslide begin", endToken = "mdslide end")}
-            ```
-            """
-          }
-        }
+        slideSource(this, "Markdown Slide Definition", "mdslide")
       }
 
       verticalSlides {
@@ -119,28 +130,12 @@ fun main() {
         }
         // htmlslide end
 
-        markdownSlide {
-          slideConfig {
-            markdownNotesSeparator = "^^"
-          }
-          content {
-            """
-            ## HTML Slide Definition    
-            ```kotlin
-            ${includeFile(slides, beginToken = "htmlslide begin", endToken = "htmlslide end")}
-            ```
-            """
-          }
-        }
+        slideSource(this, "HTML Slide Definition", "htmlslide")
       }
 
       verticalSlides {
         // dslslide begin
         dslSlide {
-          slideConfig {
-            transition = Transition.ZOOM
-          }
-
           content {
             h1 { +"A DSL Slide" }
             h2 { +"👀" }
@@ -152,19 +147,7 @@ fun main() {
         }
         // dslslide end
 
-        markdownSlide {
-          slideConfig {
-            markdownNotesSeparator = "^^"
-          }
-          content {
-            """
-            ## DSL Slide Definition    
-            ```kotlin
-            ${includeFile(slides, beginToken = "dslslide begin", endToken = "dslslide end")}
-            ```
-            """
-          }
-        }
+        slideSource(this, "DSL Slide Definition", "dslslide")
       }
 
       verticalSlides {
@@ -182,19 +165,7 @@ fun main() {
         }
         // highlights end
 
-        markdownSlide {
-          slideConfig {
-            markdownNotesSeparator = "^^"
-          }
-          content {
-            """
-            ## Highlighted Code Definition    
-            ```kotlin
-            ${includeFile(slides, beginToken = "highlights begin", endToken = "highlights end")}
-            ```
-            """
-          }
-        }
+        slideSource(this, "Highlighted Code Definition", "highlights")
       }
 
       verticalSlides {
@@ -222,19 +193,7 @@ fun main() {
         }
         // animated end
 
-        markdownSlide {
-          slideConfig {
-            markdownNotesSeparator = "^^"
-          }
-          content {
-            """
-            ## Highlighted Code Definition    
-            ```kotlin
-            ${includeFile(slides, beginToken = "animated begin", endToken = "animated end")}
-            ```
-            """
-          }
-        }
+        slideSource(this, "Animated Code Definition", "animated")
       }
 
       verticalSlides {
@@ -244,24 +203,52 @@ fun main() {
             backgroundIframe = "https://revealjs.com/backgrounds/#iframe-backgrounds"
           }
           content {
-            h1 {
-              style = "color: blue;"
-              +"Iframe Backgrounds"
+            div {
+              style =
+                """
+                  position: absolute; width: 40%; right: 0; 
+                  box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); 
+                  background-color: rgba(0, 0, 0, 0.9); 
+                  color: #fff; 
+                  padding: 20px; 
+                  font-size: 20px; 
+                  text-align: left;
+                """
+              h2 { +"Iframe Backgrounds" }
+              p {
+                +"""Since reveal.js runs on the web, you can easily embed other web content. Try interacting with the
+              page in the background."""
+              }
             }
           }
         }
         // iframe end
 
-        markdownSlide {
+        slideSource(this, "Iframe Backgrounds Definition", "iframe")
+      }
+
+      verticalSlides {
+        // transition begin
+        dslSlide {
+          id = "transitions"
           content {
-            """
-            ## Iframe Backgrounds Definition    
-            ```kotlin
-            ${includeFile(slides, beginToken = "iframe begin", endToken = "iframe end")}
-            ```
-            """
+            h2 { +"Transitions" }
+            p {
+              +"You can select from different transitions, like:"
+              br {}
+              // The Transition enum includes all the built-in transitions
+              Transition.values()
+                .forEachIndexed { index, transition ->
+                  a { href = "?transition=${transition.name.toLower()}#/transitions"; +transition.name }
+                  if (index < Transition.values().size - 1)
+                    +"-"
+                }
+            }
           }
         }
+        // transition end
+
+        slideSource(this, "Transitions Definition", "transition")
       }
 
       verticalSlides {
@@ -271,7 +258,7 @@ fun main() {
           content {
             h2 { +"Themes" }
             p {
-              +"reveal.js comes with some themes built in:"
+              +"reveal.js comes with some built-in themes:"
               br {}
               // The Theme enum includes all the built in themes
               Theme.values()
@@ -290,19 +277,11 @@ fun main() {
         }
         // themes end
 
-        markdownSlide {
-          content {
-            """
-            ## Themes Definition    
-            ```kotlin
-            ${includeFile(slides, beginToken = "themes begin", endToken = "themes end")}
-            ```
-            """
-          }
-        }
+        slideSource(this, "Themes Definition", "themes")
       }
 
       verticalSlides {
+        // video begin
         dslSlide {
           slideConfig {
             backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
@@ -311,34 +290,42 @@ fun main() {
           content {
             h1 {
               style = "color: red;"
-              +"Vertical DSL Slide 👇"
+              +"Video Backgrounds"
             }
           }
         }
+        // video end
 
+        slideSource(this, "Video Definition", "video")
+      }
+
+      verticalSlides {
+        // navigation begin
         markdownSlide {
           content {
             """
-            # Vertical Markdown Slide 🦊 
+            ## Navigation Slide 🦊 
             
-            [Go back to the 1st slide](#/) ${fragment()}
+            [Go back to the 1st slide](#/intro) ${fragment()}
          
-            [Go back to the 2nd slide](#/1) ${fragment()}
+            [Go back to the 2nd slide](#/mdslide) ${fragment()}
+            
+            [Go back to the last slide](#/source) ${fragment()}
             
             """
           }
         }
+        // navigation end
+
+        slideSource(this, "Navigtion Definition", "navigation")
       }
 
-      markdownSlide {
-        content {
-          """
-          ## Presentation Definition    
-          ```kotlin []
-          ${includeFile(slides, beginToken = "readme begin", endToken = "readme end")}
-          ```
-          """
-        }
+      verticalSlides {
+        id = "source"
+
+        slideSource(this, "Presentation Definition", "readme", "[]")
+
+        slideSource(this, "Slide Source Definition", "slideSource", "[]")
       }
     }
     // readme end
@@ -362,8 +349,6 @@ fun main() {
       }
 
       presentationConfig {
-        transition = Transition.FADE
-
         slideConfig {
           backgroundColor = "#2A9EEE"
         }
@@ -407,13 +392,7 @@ fun main() {
           """
           ## Presentation Definition    
           ```kotlin []
-          ${
-            includeFile(
-              "kslides-examples/src/main/kotlin/Slides.kt",
-              beginToken = "helloworld begin",
-              endToken = "helloworld end"
-            )
-          }
+          ${includeFile(slides, beginToken = "helloworld begin", endToken = "helloworld end")}
           ```
           """
         }

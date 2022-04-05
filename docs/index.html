@@ -23,29 +23,57 @@
     <style media="screen" type="text/css">
         #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
+        #githubCorner path { fill: #258BD2; }
       </style>
   </head>
   <body>
     <div class="reveal">
       <a class="github-corner" href="https://github.com/pambrose/kslides/blob/master/kslides-examples" target="blank" title="View presentation source on Github">
           
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
+        <svg xmlns="http://www.w3.org/2000/svg" id="githubCorner" viewBox="0 0 55 55">
                       
-          <path d="M27.5 11.2a16.3 16.3 0 0 0-5.1 31.7c.8.2 1.1-.3 1.1-.7v-2.8c-4.5 1-5.5-2.2-5.5-2.2-.7-1.9-1.8-2.4-1.8-2.4-1.5-1 .1-1 .1-1 1.6.1 2.5 1.7 2.5 1.7 1.5 2.5 3.8 1.8 4.7 1.4.2-1 .6-1.8 1-2.2-3.5-.4-7.3-1.8-7.3-8 0-1.8.6-3.3 1.6-4.4-.1-.5-.7-2.1.2-4.4 0 0 1.4-.4 4.5 1.7a15.6 15.6 0 0 1 8.1 0c3.1-2 4.5-1.7 4.5-1.7.9 2.3.3 4 .2 4.4 1 1 1.6 2.6 1.6 4.3 0 6.3-3.8 7.7-7.4 8 .6.6 1.1 1.6 1.1 3v4.6c0 .4.3.9 1.1.7a16.3 16.3 0 0 0-5.2-31.7" fill="currentColor"></path>
+          <path d="M27.5 11.2a16.3 16.3 0 0 0-5.1 31.7c.8.2 1.1-.3 1.1-.7v-2.8c-4.5 1-5.5-2.2-5.5-2.2-.7-1.9-1.8-2.4-1.8-2.4-1.5-1 .1-1 .1-1 1.6.1 2.5 1.7 2.5 1.7 1.5 2.5 3.8 1.8 4.7 1.4.2-1 .6-1.8 1-2.2-3.5-.4-7.3-1.8-7.3-8 0-1.8.6-3.3 1.6-4.4-.1-.5-.7-2.1.2-4.4 0 0 1.4-.4 4.5 1.7a15.6 15.6 0 0 1 8.1 0c3.1-2 4.5-1.7 4.5-1.7.9 2.3.3 4 .2 4.4 1 1 1.6 2.6 1.6 4.3 0 6.3-3.8 7.7-7.4 8 .6.6 1.1 1.6 1.1 3v4.6c0 .4.3.9 1.1.7a16.3 16.3 0 0 0-5.2-31.7" fill="currentColor" stroke="none"></path>
                     
         </svg>
                 </a>
       <div class="slides">
-        <section data-markdown="" data-transition="zoom" id="intro">
-          <script type="text/template">
+        <section>
+          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="intro">
+            <script type="text/template">
 # kslides
 ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
 Notes: This is a note for the opening slide 📝
 </script>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Intro Slide Definition    
+```kotlin 
+markdownSlide {
+  id = "intro"
+
+  slideConfig {
+    // Config values for this slide can be set here
+    // backgroundColor = "#4370A5"
+  }
+
+  content {
+    """
+    # kslides
+    ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
+    Notes: This is a note for the opening slide 📝
+    """
+  }
+}
+```
+</script>
+          </section>
+          
         </section>
         
         <section>
-          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" data-transition="zoom" id="mdslide">
+          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="mdslide">
             <script type="text/template">
 # A Markdown Slide
 ## 🍒
@@ -66,13 +94,9 @@ Notes: This is a note for the Markdown slide 📝
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Markdown Slide Definition    
-```kotlin
+```kotlin 
 markdownSlide {
   id = "mdslide"
-
-  slideConfig {
-    transition = Transition.ZOOM
-  }
 
   content {
     """
@@ -121,7 +145,7 @@ markdownSlide {
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## HTML Slide Definition    
-```kotlin
+```kotlin 
 htmlSlide {
   content {
     """
@@ -145,7 +169,7 @@ htmlSlide {
         </section>
         
         <section>
-          <section data-transition="zoom">
+          <section>
             <h1>A DSL Slide</h1>
             <h2>&#128064;</h2>
             <p class="fragment fade-right">Press CTRL+Shift+F to search all the slides</p>
@@ -157,12 +181,8 @@ htmlSlide {
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## DSL Slide Definition    
-```kotlin
+```kotlin 
 dslSlide {
-  slideConfig {
-    transition = Transition.ZOOM
-  }
-
   content {
     h1 { +"A DSL Slide" }
     h2 { +"👀" }
@@ -198,7 +218,7 @@ Note: This slide shows code highlights. You can specify the lines you want to hi
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Highlighted Code Definition    
-```kotlin
+```kotlin 
 markdownSlide {
   content {
     """
@@ -292,8 +312,8 @@ Indicate the lines you want to highlight by using a for loop
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Highlighted Code Definition    
-```kotlin
+## Animated Code Definition    
+```kotlin 
 // A for loop generates a series of slides, each with a different set of lines
 // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
 for (lines in lineNumbers("[5,6,9|5-9|]")) {
@@ -323,21 +343,83 @@ for (lines in lineNumbers("[5,6,9|5-9|]")) {
         
         <section>
           <section data-background-iframe="https://revealjs.com/backgrounds/#iframe-backgrounds">
-            <h1 style="color: blue;">Iframe Backgrounds</h1>
+            <div style="
+                  position: absolute; width: 40%; right: 0; 
+                  box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); 
+                  background-color: rgba(0, 0, 0, 0.9); 
+                  color: #fff; 
+                  padding: 20px; 
+                  font-size: 20px; 
+                  text-align: left;
+                ">
+              <h2>Iframe Backgrounds</h2>
+              <p>Since reveal.js runs on the web, you can easily embed other web content. Try interacting with the
+              page in the background.</p>
+            </div>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Iframe Backgrounds Definition    
-```kotlin
+```kotlin 
 dslSlide {
   slideConfig {
     backgroundIframe = "https://revealjs.com/backgrounds/#iframe-backgrounds"
   }
   content {
-    h1 {
-      style = "color: blue;"
-      +"Iframe Backgrounds"
+    div {
+      style =
+        """
+          position: absolute; width: 40%; right: 0; 
+          box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); 
+          background-color: rgba(0, 0, 0, 0.9); 
+          color: #fff; 
+          padding: 20px; 
+          font-size: 20px; 
+          text-align: left;
+        """
+      h2 { +"Iframe Backgrounds" }
+      p {
+        +"""Since reveal.js runs on the web, you can easily embed other web content. Try interacting with the
+      page in the background."""
+      }
+    }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section id="transitions">
+            <h2>Transitions</h2>
+            <p>
+              You can select from different transitions, like:
+              <br>
+              <a href="?transition=none#/transitions">NONE</a>-<a href="?transition=fade#/transitions">FADE</a>-<a href="?transition=slide#/transitions">SLIDE</a>-<a href="?transition=convex#/transitions">CONVEX</a>-<a href="?transition=concave#/transitions">CONCAVE</a>-<a href="?transition=zoom#/transitions">ZOOM</a>-<a href="?transition=unassigned#/transitions">UNASSIGNED</a>
+            </p>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Transitions Definition    
+```kotlin 
+dslSlide {
+  id = "transitions"
+  content {
+    h2 { +"Transitions" }
+    p {
+      +"You can select from different transitions, like:"
+      br {}
+      // The Transition enum includes all the built-in transitions
+      Transition.values()
+        .forEachIndexed { index, transition ->
+          a { href = "?transition=${transition.name.toLower()}#/transitions"; +transition.name }
+          if (index < Transition.values().size - 1)
+            +"-"
+        }
     }
   }
 }
@@ -351,22 +433,22 @@ dslSlide {
           <section id="themes">
             <h2>Themes</h2>
             <p>
-              reveal.js comes with some themes built in:
+              reveal.js comes with some built-in themes:
               <br>
               <a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/beige.css'); return false;">BEIGE</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/black.css'); return false;">BLACK</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/blood.css'); return false;">BLOOD</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/league.css'); return false;">LEAGUE</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/moon.css'); return false;">MOON</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/night.css'); return false;">NIGHT</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/serif.css'); return false;">SERIF</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/simple.css'); return false;">SIMPLE</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/sky.css'); return false;">SKY</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/solarized.css'); return false;">SOLARIZED</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/white.css'); return false;">WHITE</a>
             </p>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Themes Definition    
-```kotlin
+```kotlin 
 dslSlide {
   id = "themes"
   content {
     h2 { +"Themes" }
     p {
-      +"reveal.js comes with some themes built in:"
+      +"reveal.js comes with some built-in themes:"
       br {}
       // The Theme enum includes all the built in themes
       Theme.values()
@@ -391,32 +473,82 @@ dslSlide {
         
         <section>
           <section data-background-video="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4">
-            <h1 style="color: red;">Vertical DSL Slide &#128071;</h1>
+            <h1 style="color: red;">Video Backgrounds</h1>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-# Vertical Markdown Slide 🦊 
+## Video Definition    
+```kotlin 
+dslSlide {
+  slideConfig {
+    backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+  }
 
-[Go back to the 1st slide](#/) 
-              <!-- .element: class="fragment" -->
-
-[Go back to the 2nd slide](#/1) 
-              <!-- .element: class="fragment" -->
-
+  content {
+    h1 {
+      style = "color: red;"
+      +"Video Backgrounds"
+    }
+  }
+}
+```
 </script>
           </section>
           
         </section>
         
-        <section data-markdown="">
-          <script type="text/template">
+        <section>
+          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
+            <script type="text/template">
+## Navigation Slide 🦊 
+
+[Go back to the 1st slide](#/intro) 
+              <!-- .element: class="fragment" -->
+
+[Go back to the 2nd slide](#/mdslide) 
+              <!-- .element: class="fragment" -->
+
+[Go back to the last slide](#/source) 
+              <!-- .element: class="fragment" -->
+
+</script>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Navigtion Definition    
+```kotlin 
+markdownSlide {
+  content {
+    """
+    ## Navigation Slide 🦊 
+    
+    [Go back to the 1st slide](#/intro) ${fragment()}
+ 
+    [Go back to the 2nd slide](#/mdslide) ${fragment()}
+    
+    [Go back to the last slide](#/source) ${fragment()}
+    
+    """
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section id="source">
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
 ## Presentation Definition    
 ```kotlin []
 presentation {
   css += """
     #intro h1 { color: #FF5533; }
     #mdslide p { color: #FF6836; }
+    #githubCorner path { fill: #258BD2; }
   """
 
   presentationConfig {
@@ -438,31 +570,34 @@ presentation {
     }
   }
 
-  markdownSlide {
-    id = "intro"
+  verticalSlides {
 
-    slideConfig {
-      transition = Transition.ZOOM
-      // backgroundColor = "#4370A5"
-    }
+    // intro begin
+    markdownSlide {
+      id = "intro"
 
-    content {
-      """
-      # kslides
-      ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
-      Notes: This is a note for the opening slide 📝
-      """
+      slideConfig {
+        // Config values for this slide can be set here
+        // backgroundColor = "#4370A5"
+      }
+
+      content {
+        """
+        # kslides
+        ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
+        Notes: This is a note for the opening slide 📝
+        """
+      }
     }
+    // intro end
+
+    slideSource(this, "Intro Slide Definition", "intro")
   }
 
   verticalSlides {
     // mdslide begin
     markdownSlide {
       id = "mdslide"
-
-      slideConfig {
-        transition = Transition.ZOOM
-      }
 
       content {
         """
@@ -481,20 +616,7 @@ presentation {
     }
     // mdslide end
 
-    markdownSlide {
-      slideConfig {
-        markdownNotesSeparator = "^^"
-      }
-
-      content {
-        """
-        ## Markdown Slide Definition    
-        ```kotlin
-        ${includeFile(slides, beginToken = "mdslide begin", endToken = "mdslide end")}
-        ```
-        """
-      }
-    }
+    slideSource(this, "Markdown Slide Definition", "mdslide")
   }
 
   verticalSlides {
@@ -517,28 +639,12 @@ presentation {
     }
     // htmlslide end
 
-    markdownSlide {
-      slideConfig {
-        markdownNotesSeparator = "^^"
-      }
-      content {
-        """
-        ## HTML Slide Definition    
-        ```kotlin
-        ${includeFile(slides, beginToken = "htmlslide begin", endToken = "htmlslide end")}
-        ```
-        """
-      }
-    }
+    slideSource(this, "HTML Slide Definition", "htmlslide")
   }
 
   verticalSlides {
     // dslslide begin
     dslSlide {
-      slideConfig {
-        transition = Transition.ZOOM
-      }
-
       content {
         h1 { +"A DSL Slide" }
         h2 { +"👀" }
@@ -550,19 +656,7 @@ presentation {
     }
     // dslslide end
 
-    markdownSlide {
-      slideConfig {
-        markdownNotesSeparator = "^^"
-      }
-      content {
-        """
-        ## DSL Slide Definition    
-        ```kotlin
-        ${includeFile(slides, beginToken = "dslslide begin", endToken = "dslslide end")}
-        ```
-        """
-      }
-    }
+    slideSource(this, "DSL Slide Definition", "dslslide")
   }
 
   verticalSlides {
@@ -580,19 +674,7 @@ presentation {
     }
     // highlights end
 
-    markdownSlide {
-      slideConfig {
-        markdownNotesSeparator = "^^"
-      }
-      content {
-        """
-        ## Highlighted Code Definition    
-        ```kotlin
-        ${includeFile(slides, beginToken = "highlights begin", endToken = "highlights end")}
-        ```
-        """
-      }
-    }
+    slideSource(this, "Highlighted Code Definition", "highlights")
   }
 
   verticalSlides {
@@ -620,19 +702,7 @@ presentation {
     }
     // animated end
 
-    markdownSlide {
-      slideConfig {
-        markdownNotesSeparator = "^^"
-      }
-      content {
-        """
-        ## Highlighted Code Definition    
-        ```kotlin
-        ${includeFile(slides, beginToken = "animated begin", endToken = "animated end")}
-        ```
-        """
-      }
-    }
+    slideSource(this, "Animated Code Definition", "animated")
   }
 
   verticalSlides {
@@ -642,24 +712,52 @@ presentation {
         backgroundIframe = "https://revealjs.com/backgrounds/#iframe-backgrounds"
       }
       content {
-        h1 {
-          style = "color: blue;"
-          +"Iframe Backgrounds"
+        div {
+          style =
+            """
+              position: absolute; width: 40%; right: 0; 
+              box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); 
+              background-color: rgba(0, 0, 0, 0.9); 
+              color: #fff; 
+              padding: 20px; 
+              font-size: 20px; 
+              text-align: left;
+            """
+          h2 { +"Iframe Backgrounds" }
+          p {
+            +"""Since reveal.js runs on the web, you can easily embed other web content. Try interacting with the
+          page in the background."""
+          }
         }
       }
     }
     // iframe end
 
-    markdownSlide {
+    slideSource(this, "Iframe Backgrounds Definition", "iframe")
+  }
+
+  verticalSlides {
+    // transition begin
+    dslSlide {
+      id = "transitions"
       content {
-        """
-        ## Iframe Backgrounds Definition    
-        ```kotlin
-        ${includeFile(slides, beginToken = "iframe begin", endToken = "iframe end")}
-        ```
-        """
+        h2 { +"Transitions" }
+        p {
+          +"You can select from different transitions, like:"
+          br {}
+          // The Transition enum includes all the built-in transitions
+          Transition.values()
+            .forEachIndexed { index, transition ->
+              a { href = "?transition=${transition.name.toLower()}#/transitions"; +transition.name }
+              if (index < Transition.values().size - 1)
+                +"-"
+            }
+        }
       }
     }
+    // transition end
+
+    slideSource(this, "Transitions Definition", "transition")
   }
 
   verticalSlides {
@@ -669,7 +767,7 @@ presentation {
       content {
         h2 { +"Themes" }
         p {
-          +"reveal.js comes with some themes built in:"
+          +"reveal.js comes with some built-in themes:"
           br {}
           // The Theme enum includes all the built in themes
           Theme.values()
@@ -688,19 +786,11 @@ presentation {
     }
     // themes end
 
-    markdownSlide {
-      content {
-        """
-        ## Themes Definition    
-        ```kotlin
-        ${includeFile(slides, beginToken = "themes begin", endToken = "themes end")}
-        ```
-        """
-      }
-    }
+    slideSource(this, "Themes Definition", "themes")
   }
 
   verticalSlides {
+    // video begin
     dslSlide {
       slideConfig {
         backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
@@ -709,38 +799,73 @@ presentation {
       content {
         h1 {
           style = "color: red;"
-          +"Vertical DSL Slide 👇"
+          +"Video Backgrounds"
         }
       }
     }
+    // video end
 
+    slideSource(this, "Video Definition", "video")
+  }
+
+  verticalSlides {
+    // navigation begin
     markdownSlide {
       content {
         """
-        # Vertical Markdown Slide 🦊 
+        ## Navigation Slide 🦊 
         
-        [Go back to the 1st slide](#/) ${fragment()}
+        [Go back to the 1st slide](#/intro) ${fragment()}
      
-        [Go back to the 2nd slide](#/1) ${fragment()}
+        [Go back to the 2nd slide](#/mdslide) ${fragment()}
+        
+        [Go back to the last slide](#/source) ${fragment()}
         
         """
       }
     }
+    // navigation end
+
+    slideSource(this, "Navigtion Definition", "navigation")
   }
 
-  markdownSlide {
-    content {
-      """
-      ## Presentation Definition    
-      ```kotlin []
-      ${includeFile(slides, beginToken = "readme begin", endToken = "readme end")}
-      ```
-      """
+  verticalSlides {
+    id = "source"
+
+    slideSource(this, "Presentation Definition", "readme", "[]")
+
+    slideSource(this, "Slide Source Definition", "slideSource", "[]")
+  }
+}
+```
+</script>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Source Definition    
+```kotlin []
+fun Presentation.slideSource(context: VerticalSlideContext, title: String, token: String, lines: String = "") {
+  with(context) {
+    markdownSlide {
+      slideConfig {
+        markdownNotesSeparator = "^^"
+      }
+      content {
+        """
+        ## $title    
+        ```kotlin $lines
+        ${includeFile(slides, beginToken = "$token begin", endToken = "$token end")}
+        ```
+        """
+      }
     }
   }
 }
 ```
 </script>
+          </section>
+          
         </section>
         
       </div>
