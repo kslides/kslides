@@ -1,8 +1,8 @@
 # kslides
 
-[![Release](https://jitpack.io/v/pambrose/kslides.svg)](https://jitpack.io/#pambrose/kslides)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/pambrose/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=pambrose/kslides&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.org/pambrose/kslides.svg?branch=master)](https://travis-ci.org/pambrose/kslides)
+[![Release](https://jitpack.io/v/kslides/kslides.svg)](https://jitpack.io/#kslides/kslides)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/kslides/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=kslides/kslides&amp;utm_campaign=Badge_Grade)
+[![Build Status](https://travis-ci.org/kslides/kslides.svg?branch=master)](https://travis-ci.org/kslides/kslides)
 [![Kotlin version](https://img.shields.io/badge/kotlin-1.6.20-red?logo=kotlin)](http://kotlinlang.org)
 
 **kslides** is a [Kotlin](https://kotlinlang.org) DSL for the incredible [reveal.js](https://revealjs.com) 
@@ -10,22 +10,22 @@ presentation framework. It is meant for people who prefer working with an IDE ra
 It works particularly well for presentations with code snippets and slides
 authored in Markdown/HTML.
 
-[![kslides screenshot](https://pambrose.github.io/kslides/img/kslides-screenshot.png)](https://pambrose.github.io/kslides/)
+[![kslides screenshot](https://kslides.github.io/kslides/img/kslides-screenshot.png)](https://kslides.github.io/kslides/)
 
 The [above](kslides-examples/src/main/kotlin/Slides.kt) presentation is served statically from
 [Netlify](https://kslides.netlify.app)
-and [Github Pages](https://pambrose.github.io/kslides/).
+and [Github Pages](https://kslides.github.io/kslides/).
 It is also running dynamically on [Heroku](https://kslides-repo.herokuapp.com).
 
 ## Getting Started
 
-[![Fork](https://img.shields.io/endpoint?color=%232A9EEE&logo=github&style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2Fpambrose%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ffork.json)](https://github.com/pambrose/kslides-template/fork)
-[![Template](https://img.shields.io/endpoint?color=%232A9EEE&logo=github&style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2Fpambrose%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ftemplate.json)](https://github.com/pambrose/kslides-template/generate)
+[![Fork](https://img.shields.io/endpoint?color=%232A9EEE&logo=github&style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2Fkslides%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ffork.json)](https://github.com/kslides/kslides-template/fork)
+[![Template](https://img.shields.io/endpoint?color=%232A9EEE&logo=github&style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2Fkslides%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ftemplate.json)](https://github.com/kslides/kslides-template/generate)
 
-To create a kslides presentation, you can either [fork](https://github.com/pambrose/kslides-template/fork) 
-the [kslides-template](https://github.com/pambrose/kslides-template) repo and assign it a new name, 
-or generate a new repository using [kslides-template](https://github.com/pambrose/kslides-template)
-as a [template](https://github.com/pambrose/kslides-template/generate). The advantage of forking is you 
+To create a kslides presentation, you can either [fork](https://github.com/kslides/kslides-template/fork) 
+the [kslides-template](https://github.com/kslides/kslides-template) repo and assign it a new name, 
+or generate a new repository using [kslides-template](https://github.com/kslides/kslides-template)
+as a [template](https://github.com/kslides/kslides-template/generate). The advantage of forking is you 
 will be able to pull upstream changes and stay current with kslides-template updates. Github provides more 
 details on [templates](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
 and [forks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks).

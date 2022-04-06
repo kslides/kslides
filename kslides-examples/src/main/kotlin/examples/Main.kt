@@ -176,7 +176,7 @@ fun main() {
           """
           # Markdown Example
           ````kotlin [3,7|4,6|5]
-          ${includeUrl(githubRawUrl("pambrose", "kslides", "kslides-examples/src/test/kotlin/examples/HelloWorldK.kt"))}
+          ${includeUrl(githubRawUrl("kslides", "kslides", "kslides-examples/src/test/kotlin/examples/HelloWorldK.kt"))}
           ````
           """
         }

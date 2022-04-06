@@ -72,7 +72,7 @@ fun main() {
       """
 
       presentationConfig {
-        githubCornerHref = "https://github.com/pambrose/kslides/"
+        githubCornerHref = "https://github.com/kslides/kslides/"
         githubCornerTitle = "View presentation source on Github"
         slideNumber = "c/t"
         hash = true
