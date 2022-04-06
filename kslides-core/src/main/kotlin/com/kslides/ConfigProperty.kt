@@ -5,6 +5,7 @@ import kotlin.reflect.*
 class ConfigProperty<T>(val configMap: MutableMap<String, Any>) {
   var configName = ""
 
+  @Suppress("UNCHECKED_CAST")
   operator fun getValue(thisRef: Any?, property: KProperty<*>) =
     if (configMap.containsKey(property.name))
       configMap[property.name] as T

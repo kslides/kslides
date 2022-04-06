@@ -63,6 +63,10 @@ fun main() {
       enableHttp = true
     }
 
+    presentationDefault {
+      // Default config values for all presentationns go here
+    }
+
     // readme begin
     presentation {
       css += """
@@ -82,7 +86,6 @@ fun main() {
         gaPropertyId = "G-TRY2Q243XC"
         enableSpeakerNotes = true
         enableMenu = true
-        navigationMode = "default"
         theme = Theme.SOLARIZED
 
         slideConfig {
