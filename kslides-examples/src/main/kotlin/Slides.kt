@@ -145,7 +145,7 @@ fun main() {
         htmlSlide {
           content {
             """
-            <h1>A HTML Slide</h1>
+            <h1>An HTML Slide</h1>
             <h2>🐦</h2>
             <p class="fragment fade-up">Press S to see the speaker notes</p> 
             <p class="fragment fade-up">Press M to see the menu</p> 
