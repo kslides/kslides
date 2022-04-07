@@ -122,7 +122,7 @@ val y = 1              // NO TAB
             merge(p1)
             merge(p2)
           }
-      p3.enableMenu shouldBe true
+      p3.enableMenu shouldBe false
     }
 
     "PresentationConfig Test 2" {
