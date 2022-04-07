@@ -32,7 +32,7 @@ ext {
 
 allprojects {
     description = 'kslides'
-    group 'com.github.pambrose'
+    group 'com.github.kslides'
     version '0.7.0'
 
     apply plugin: 'application'
