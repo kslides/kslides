@@ -355,7 +355,6 @@ fun main() {
         slideSource(this, slides, "Navigtion Definition", "navigation")
       }
 
-
       slideSource(slides, "Presentation Definition", "readme", "[]", "definition")
 
       slideSource(slides, "Slide Source Definition", "slideSource", "[]")
@@ -433,4 +432,3 @@ fun main() {
     // helloworld end
   }
 }
-
