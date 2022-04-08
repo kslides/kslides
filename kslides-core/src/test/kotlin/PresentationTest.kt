@@ -158,7 +158,6 @@ class PresentationTest : StringSpec(
       kslides.presentationMap["/"]!!.css.toString() shouldBe "aaa"
     }
 
-
     "Default Css Test 3" {
       val kslides =
         kslides {
@@ -175,7 +174,6 @@ class PresentationTest : StringSpec(
       kslides.css.toString() shouldBe "aaa"
       kslides.presentationMap["/"]!!.css.toString() shouldBe "aaa\n"
     }
-
 
     "Default Css Test 4" {
       val kslides =
