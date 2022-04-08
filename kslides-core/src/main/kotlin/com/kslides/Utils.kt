@@ -145,7 +145,7 @@ fun lineNumbers(ranges: String) =
     .split("|")
     .map { if (it == "*") "" else it }
 
-class AppendableString(private var text: String) {
+class AppendableString(private var text: String = "") {
 
   operator fun plusAssign(other: String) {
     text += other
@@ -154,6 +154,10 @@ class AppendableString(private var text: String) {
   fun isNotBlank() = text.isNotBlank()
 
   fun prependIndent(indent: String) = text.indentFirstLine(indent)
+
+  fun clear() {
+    text = ""
+  }
 
   override fun toString() = text
 }

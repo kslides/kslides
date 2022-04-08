@@ -367,11 +367,12 @@ fun main() {
       path = "helloworld.html"
 
       // css styles can be specified as a string or with the kotlin css DSL
-      css += """
+      css +=
+        """
         .htmlslide h2 {
           color: yellow;
         }
-      """
+        """
 
       css {
         rule("#mdslide h2") {
@@ -390,9 +391,9 @@ fun main() {
 
         content {
           """
-        # Markdown
-        ## Hello World
-        """
+          # Markdown
+          ## Hello World
+          """
         }
       }
 
@@ -405,9 +406,9 @@ fun main() {
 
         content {
           """
-        <h1>HTML</h1>
-        <h2>Hello World</h2>
-        """
+          <h1>HTML</h1>
+          <h2>Hello World</h2>
+          """
         }
       }
 

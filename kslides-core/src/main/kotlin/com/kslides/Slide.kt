@@ -20,7 +20,6 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
   }
 
   internal fun processSlide(section: SECTION) {
-
     if (id.isNotBlank())
       section.id = id
 
@@ -44,17 +43,20 @@ abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : 
 
 class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
   internal var htmlBlock: () -> String = { "" }
+  internal var htmlAssigned = false
   var indentToken = INDENT_TOKEN
   var disableTrimIndent = false
 
   @HtmlTagMarker
   fun content(htmlBlock: () -> String) {
     this.htmlBlock = htmlBlock
+    this.htmlAssigned = true
   }
 }
 
 class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
   internal var markdownBlock: () -> String = { "" }
+  internal var markdownAssigned = false
   var filename = ""
   var charset = ""
   var indentToken = INDENT_TOKEN
@@ -63,15 +65,18 @@ class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalS
   @HtmlTagMarker
   fun content(markdownBlock: () -> String) {
     this.markdownBlock = markdownBlock
+    this.markdownAssigned = true
   }
 }
 
 class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
   internal var dslBlock: SECTION.(DslSlide) -> Unit = { }
+  internal var dslAssigned = false
 
   @HtmlTagMarker
   fun content(dslBlock: SECTION.(DslSlide) -> Unit) {
     this.dslBlock = dslBlock
+    this.dslAssigned = true
   }
 
   @HtmlTagMarker
@@ -85,17 +90,20 @@ open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(
 
 class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
   internal var htmlBlock: () -> String = { "" }
+  internal var htmlAssigned = false
   var indentToken = INDENT_TOKEN
   var disableTrimIndent = false
 
   @HtmlTagMarker
   fun content(htmlBlock: () -> String) {
     this.htmlBlock = htmlBlock
+    this.htmlAssigned = true
   }
 }
 
 class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
   internal var markdownBlock: () -> String = { "" }
+  internal var markdownAssigned = false
   var filename = ""
   var charset = ""
   var indentToken = INDENT_TOKEN
@@ -104,15 +112,18 @@ class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : Ver
   @HtmlTagMarker
   fun content(markdownBlock: () -> String) {
     this.markdownBlock = markdownBlock
+    this.markdownAssigned = true
   }
 }
 
 class VerticalDslSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
   internal var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
+  internal var dslAssigned = false
 
   @HtmlTagMarker
   fun content(dslBlock: SECTION.(VerticalDslSlide) -> Unit) {
     this.dslBlock = dslBlock
+    this.dslAssigned = true
   }
 
   @HtmlTagMarker

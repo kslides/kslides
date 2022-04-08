@@ -10,7 +10,7 @@ presentation framework. It is meant for people who prefer working with an IDE ra
 It works particularly well for presentations with code snippets and slides
 authored in Markdown/HTML.
 
-[![kslides screenshot](https://kslides.github.io/kslides/img/kslides-screenshot.png)](https://kslides.github.io/kslides/)
+[![kslides screenshot](https://kslides.github.io/kslides/imgs/kslides-screenshot.png)](https://kslides.github.io/kslides/)
 
 The [above](kslides-examples/src/main/kotlin/Slides.kt) presentation is served statically from
 [Netlify](https://kslides.netlify.app)

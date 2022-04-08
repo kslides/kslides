@@ -6,8 +6,8 @@ import kotlinx.html.dom.*
 
 internal object Page {
 
-  fun generatePage(p: Presentation, config: PresentationConfig, prefix: String = "/"): String {
-    //p.slides.removeAll { true }
+  fun generatePage(p: Presentation, prefix: String = "/"): String {
+    val config = p.finalConfig
     val document =
       document {
         append.html {

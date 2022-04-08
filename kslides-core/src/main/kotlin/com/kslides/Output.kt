@@ -44,7 +44,7 @@ object Output : KLogging() {
         output.kslides.presentationMap.forEach { (key, p) ->
           get(key) {
             respondWith {
-              generatePage(p, p.finalConfig)
+              generatePage(p)
             }
           }
         }
@@ -74,7 +74,7 @@ object Output : KLogging() {
             }
           }
         logger.info { "Writing presentation $key to $file" }
-        file.writeText(generatePage(p, p.finalConfig, prefix))
+        file.writeText(generatePage(p, prefix))
       }
   }
 }

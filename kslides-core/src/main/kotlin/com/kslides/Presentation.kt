@@ -1,87 +1,16 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
-import com.kslides.KSlides.Companion.topLevel
-import com.kslides.Output.runHttpServer
-import com.kslides.Output.writeToFileSystem
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
 
-@HtmlTagMarker
-fun kslides(block: KSlides.() -> Unit) {
-  topLevel
-    .apply {
-      block()
-
-      configBlock.invoke(globalConfig)
-
-      presentationBlocks.forEach { block ->
-        Presentation(this)
-          .apply {
-            block.invoke(this)
-            validatePath()
-
-            finalConfig =
-              PresentationConfig()
-                .apply {
-                  merge(kslides.globalConfig)
-                  merge(presentationConfig)
-                }
-
-            assignCssFiles()
-            assignJsFiles()
-            assignPlugins()
-            assignDependencies()
-          }
-      }
-
-      outputBlock.invoke(presentationOutput)
-
-      if (presentationOutput.enableFileSystem)
-        writeToFileSystem(presentationOutput)
-
-      if (presentationOutput.enableHttp)
-        runHttpServer(presentationOutput)
-
-      if (!presentationOutput.enableFileSystem && !presentationOutput.enableHttp)
-        KSlides.logger.warn { "Set enableHttp or enableFileSystem to true in the output block" }
-    }
-}
-
-class KSlides {
-  internal val globalConfig = PresentationConfig(true)
-  internal val presentationOutput = PresentationOutput(this)
-  internal var configBlock: PresentationConfig.() -> Unit = {}
-  internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
-  internal var outputBlock: PresentationOutput.() -> Unit = {}
-  internal val presentationMap = mutableMapOf<String, Presentation>()
-
-  val staticRoots = mutableListOf("assets", "css", "dist", "js", "plugin")
-
-  @HtmlTagMarker
-  fun presentationDefault(block: PresentationConfig.() -> Unit) {
-    configBlock = block
-  }
-
-  @HtmlTagMarker
-  fun output(outputBlock: PresentationOutput.() -> Unit) {
-    this.outputBlock = outputBlock
-  }
-
-  @HtmlTagMarker
-  fun presentation(block: Presentation.() -> Unit) {
-    presentationBlocks += block
-  }
-
-  companion object : KLogging() {
-    internal val topLevel = KSlides()
-  }
-}
-
 class Presentation(val kslides: KSlides) {
   internal val plugins = mutableListOf<String>()
   internal val dependencies = mutableListOf<String>()
+  internal val presentationConfig = PresentationConfig()
+  internal lateinit var finalConfig: PresentationConfig
+  internal val slides = mutableListOf<Slide>()
 
   internal val jsFiles = mutableListOf(JsFile("dist/reveal.js"))
   internal val cssFiles =
@@ -89,21 +18,18 @@ class Presentation(val kslides: KSlides) {
       CssFile("dist/reveal.css"),
       CssFile("dist/reset.css"),
     )
-  internal val presentationConfig = PresentationConfig()
-  internal lateinit var finalConfig: PresentationConfig
-  internal val slides = mutableListOf<Slide>()
 
+  // Initialize css with the global css value
+  val css by lazy { AppendableString(kslides.css.let { if (it.isNotBlank()) "$it\n" else "" }) }
   var path = "/"
-  val css = AppendableString("")
 
   internal fun validatePath() {
-    if (path.removePrefix("/") in kslides.staticRoots)
-      throw IllegalArgumentException("Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"")
+    require(path.removePrefix("/") !in kslides.staticRoots) { "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"" }
 
-    val adjustedPath = if (path.startsWith("/")) path else "/$path"
-    if (kslides.presentationMap.containsKey(adjustedPath))
-      throw IllegalArgumentException("Presentation path already defined: \"$adjustedPath\"")
-    kslides.presentationMap[adjustedPath] = this
+    (if (path.startsWith("/")) path else "/$path").also { adjustedPath ->
+      require(!kslides.presentationMap.containsKey(adjustedPath)) { "Presentation path already defined: \"$adjustedPath\"" }
+      kslides.presentationMap[adjustedPath] = this
+    }
   }
 
   internal fun assignCssFiles() {
@@ -191,12 +117,12 @@ class Presentation(val kslides: KSlides) {
   }
 
   @HtmlTagMarker
-  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
-
-  @HtmlTagMarker
   fun css(block: CssBuilder.() -> Unit) {
     css += "${CssBuilder().apply(block)}\n"
   }
+
+  @HtmlTagMarker
+  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
 
   @HtmlTagMarker
   fun verticalSlides(block: VerticalSlideContext.() -> Unit) =
@@ -228,6 +154,7 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
+            require(s.htmlAssigned) { "htmlSlide missing content { } section" }
             s.htmlBlock()
               .indentInclude(s.indentToken)
               .let { if (!s.disableTrimIndent) it.trimIndent() else it }
@@ -245,6 +172,7 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
+            require(s.htmlAssigned) { "htmlSlide missing content { } section" }
             s.htmlBlock()
               .indentInclude(s.indentToken)
               .let { if (!s.disableTrimIndent) it.trimIndent() else it }
@@ -264,6 +192,7 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
+            require(s.dslAssigned) { "dslSlide missing content { } section" }
             s.dslBlock.invoke(this, s)
           }.also { rawHtml("\n") }
         }
@@ -278,6 +207,7 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
+            require(s.dslAssigned) { "dslSlide missing content { } section" }
             s.dslBlock.invoke(this, s)
           }.also { rawHtml("\n") }
         }
@@ -292,7 +222,7 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
-
+            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
@@ -334,6 +264,7 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
+            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
