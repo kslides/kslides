@@ -6,7 +6,7 @@ import kotlinx.html.*
 fun main() {
 
   // slideSource begin
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun Presentation.slideSource(
     source: String,
     title: String,
@@ -29,7 +29,7 @@ fun main() {
   }
   // slideSource end
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun Presentation.slideSource(
     context: VerticalSlideContext,
     source: String,
@@ -69,11 +69,12 @@ fun main() {
 
     // readme begin
     presentation {
-      css += """
+      css +=
+        """
         #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
         #githubCorner path { fill: #258BD2; }
-      """
+        """
 
       presentationConfig {
         githubCornerHref = "https://github.com/kslides/kslides/"
@@ -361,7 +362,6 @@ fun main() {
     }
     // readme end
 
-    // helloworld begin
     presentation {
       // Makes this presentation available at helloworld.html
       path = "helloworld.html"
@@ -380,12 +380,17 @@ fun main() {
         }
       }
 
+      // These values will be the default values for all the slides
       presentationConfig {
+        transition = Transition.FADE
+
+        // slideConfig values override the presentationConfig values
         slideConfig {
           backgroundColor = "#2A9EEE"
         }
       }
 
+      // Slide that uses Markdown
       markdownSlide {
         id = "mdslide"
 
@@ -397,6 +402,7 @@ fun main() {
         }
       }
 
+      // Slide that uses HTML
       htmlSlide {
         classes = "htmlslide"
 
@@ -412,24 +418,13 @@ fun main() {
         }
       }
 
+      // Slide that uses the Kotlin HTML DSL
       dslSlide {
         content {
           h1 { +"DSL" }
           h2 { +"Hello World" }
         }
       }
-
-      markdownSlide {
-        content {
-          """
-          ## Presentation Definition    
-          ```kotlin []
-          ${includeFile(slides, beginToken = "helloworld begin", endToken = "helloworld end")}
-          ```
-          """
-        }
-      }
     }
-    // helloworld end
   }
 }

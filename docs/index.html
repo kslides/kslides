@@ -24,7 +24,7 @@
         #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
         #githubCorner path { fill: #258BD2; }
-      </style>
+        </style>
   </head>
   <body>
     <div class="reveal">
@@ -558,11 +558,12 @@ markdownSlide {
 ## Presentation Definition    
 ```kotlin []
 presentation {
-  css += """
+  css +=
+    """
     #intro h1 { color: #FF5533; }
     #mdslide p { color: #FF6836; }
     #githubCorner path { fill: #258BD2; }
-  """
+    """
 
   presentationConfig {
     githubCornerHref = "https://github.com/kslides/kslides/"
@@ -856,7 +857,7 @@ presentation {
           <script type="text/template">
 ## Slide Source Definition    
 ```kotlin []
-@HtmlTagMarker
+@KSlidesDslMarker
 fun Presentation.slideSource(
   source: String,
   title: String,

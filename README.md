@@ -14,7 +14,7 @@ authored in Markdown/HTML.
 
 The [above](kslides-examples/src/main/kotlin/Slides.kt) presentation is served statically from
 [Netlify](https://kslides.netlify.app)
-and [Github Pages](https://kslides.github.io/kslides/).
+and [GitHub Pages](https://kslides.github.io/kslides/).
 It is also running dynamically on [Heroku](https://kslides-repo.herokuapp.com).
 
 ## Getting Started
@@ -26,7 +26,7 @@ To create a kslides presentation, you can either [fork](https://github.com/kslid
 the [kslides-template](https://github.com/kslides/kslides-template) repo and assign it a new name, 
 or generate a new repository using [kslides-template](https://github.com/kslides/kslides-template)
 as a [template](https://github.com/kslides/kslides-template/generate). The advantage of forking is you 
-will be able to pull upstream changes and stay current with kslides-template updates. Github provides more 
+will be able to pull upstream changes and stay current with kslides-template updates. GitHub provides more 
 details on [templates](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
 and [forks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks).
 
@@ -40,6 +40,9 @@ It requires a minimal knowledge of Kotlin to use.
 kslides {
 
   output {
+    // Writes the presentation to a file
+    enableFilSystem = true
+    // Serves up the presentation via HTTP
     enableHttp = true
   }
 
@@ -48,11 +51,12 @@ kslides {
     path = "helloworld.html"
 
     // css styles can be specified as a string or with the kotlin css DSL
-    css += """
+    css += 
+      """
       .htmlslide h2 {
         color: yellow;
       }
-    """
+      """
 
     css {
       rule("#mdslide h2") {
@@ -60,25 +64,29 @@ kslides {
       }
     }
 
+    // These values will be the default values for all the slides
     presentationConfig {
       transition = Transition.FADE
 
+      // slideConfig values override the presentationConfig values
       slideConfig {
         backgroundColor = "#2A9EEE"
       }
     }
 
+    // Slide that uses Markdown
     markdownSlide {
       id = "mdslide"
 
       content {
         """
-      # Markdown
-      ## Hello World
-      """
+        # Markdown
+        ## Hello World
+        """
       }
     }
 
+    // Slide that uses HTML
     htmlSlide {
       classes = "htmlslide"
 
@@ -88,42 +96,96 @@ kslides {
 
       content {
         """
-      <h1>HTML</h1>
-      <h2>Hello World</h2>
-      """
+        <h1>HTML</h1>
+        <h2>Hello World</h2>
+        """
       }
     }
 
+    // Slide that uses the Kotlin HTML DSL
     dslSlide {
       content {
         h1 { +"DSL" }
         h2 { +"Hello World" }
       }
     }
-
-    markdownSlide {
-      content {
-        """
-        ## Presentation Definition    
-        ```kotlin []
-        ${
-          includeFile(
-            "kslides-examples/src/main/kotlin/Slides.kt",
-            beginToken = "helloworld begin",
-            endToken = "helloworld end"
-          )
-        }
-        ```
-        """
-      }
-    }
-
   }
 }
 ```
 
+## Sections
+
+### kslides
+
+A _kslides_ declaration contains:
+* an _output_ section
+* a _css_ section
+* a _presentationDefault_ section
+* and one or more _presentation_ sections
+
+```kotlin
+kslides {
+  output {}                 
+  css {}                    // Optional
+  presentationDefault {}    // Optional
+  presentation {}           // One or more presentations
+}
+```
+
+### output
+
+An _output_ section defines how slide content is made available.
+This _output_ section would write slide content to html files in the _/docs_ directory and serve 
+the slide content via HTTP on port 8080.
+
+```kotlin
+output {
+  enableFileSystem = true  
+  outputDir = "docs"
+  
+  enableHttp = true
+  httpPort = 8080
+}
+```
+
+### css
+
+### presentationDefault
 
 
+### presentation
+
+Each presentation declaration contains:
+* a _css_ section
+* a _presentationConfig_ section
+* and one or more _slide_ sections
+
+```kotlin
+presentation {
+  css {}
+  presentationConfig {
+    menuConfig {}
+    copyCodeConfig {}
+    slideConfig {}
+  }
+  markdownSlide {
+    slideConfig {}
+    output {}
+  }
+  verticalSlides {
+    htmlSlide {
+      slideConfig {}
+      output {}
+    }
+    dslSlide {
+      slideConfig {}
+      output {}
+    }
+  }
+}
+
+
+```
 
 ## Misc Notes
 

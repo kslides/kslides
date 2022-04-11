@@ -116,15 +116,15 @@ class Presentation(val kslides: KSlides) {
     //   dependencies += "plugin/toolbar/toolbar.js"
   }
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
     css += "${CssBuilder().apply(block)}\n"
   }
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun verticalSlides(block: VerticalSlideContext.() -> Unit) =
     VerticalSlide(this) { div, slide ->
       div.apply {
@@ -146,117 +146,7 @@ class Presentation(val kslides: KSlides) {
       }
     }.also { slides += it }
 
-  @HtmlTagMarker
-  fun VerticalSlideContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
-    VerticalHtmlSlide(this@Presentation) { div, slide ->
-      div.apply {
-        (slide as VerticalHtmlSlide).also { s ->
-          slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
-            s.processSlide(this)
-            require(s.htmlAssigned) { "htmlSlide missing content { } section" }
-            s.htmlBlock()
-              .indentInclude(s.indentToken)
-              .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-              .also { rawHtml("\n$it") }
-          }.also { rawHtml("\n") }
-        }
-      }
-    }.also { verticalSlides += it }
-
-  @HtmlTagMarker
-  fun htmlSlide(slideContent: HtmlSlide.() -> Unit) =
-    HtmlSlide(this) { div, slide ->
-      div.apply {
-        (slide as HtmlSlide).also { s ->
-          slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
-            s.processSlide(this)
-            require(s.htmlAssigned) { "htmlSlide missing content { } section" }
-            s.htmlBlock()
-              .indentInclude(s.indentToken)
-              .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-              .also { rawHtml("\n$it") }
-          }.also { rawHtml("\n") }
-        }
-      }
-    }.also {
-      slides += it
-    }
-
-  @HtmlTagMarker
-  fun VerticalSlideContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
-    VerticalDslSlide(this@Presentation) { div, slide ->
-      div.apply {
-        (slide as VerticalDslSlide).also { s ->
-          slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
-            s.processSlide(this)
-            require(s.dslAssigned) { "dslSlide missing content { } section" }
-            s.dslBlock.invoke(this, s)
-          }.also { rawHtml("\n") }
-        }
-      }
-    }.also { verticalSlides += it }
-
-  @HtmlTagMarker
-  fun dslSlide(slideContent: DslSlide.() -> Unit) =
-    DslSlide(this) { div, slide ->
-      div.apply {
-        (slide as DslSlide).also { s ->
-          slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
-            s.processSlide(this)
-            require(s.dslAssigned) { "dslSlide missing content { } section" }
-            s.dslBlock.invoke(this, s)
-          }.also { rawHtml("\n") }
-        }
-      }
-    }.also { slides += it }
-
-  @HtmlTagMarker
-  fun VerticalSlideContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
-    VerticalMarkdownSlide(this@Presentation) { div, slide ->
-      div.apply {
-        (slide as VerticalMarkdownSlide).also { s ->
-          slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
-            s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
-            // If this value is == "" it means read content inline
-            attributes["data-markdown"] = s.filename
-
-            if (s.charset.isNotBlank())
-              attributes["data-charset"] = s.charset
-
-            // These are not applicable for vertical markdown slides
-            attributes["data-separator"] = ""
-            attributes["data-separator-vertical"] = ""
-
-            s.mergedConfig.apply {
-              attributes["data-separator-notes"] = markdownNotesSeparator
-            }
-
-            //if (notes.isNotBlank())
-            //    attributes["data-separator-notes"] = notes
-
-            if (s.filename.isEmpty()) {
-              s.markdownBlock().also { markdown ->
-                if (markdown.isNotBlank())
-                  script("text/template") {
-                    markdown
-                      .indentInclude(s.indentToken)
-                      .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-                      .also { rawHtml("\n$it\n") }
-                  }
-              }
-            }
-          }.also { rawHtml("\n") }
-        }
-      }
-    }.also { verticalSlides += it }
-
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun markdownSlide(slideContent: MarkdownSlide.() -> Unit = {}) =
     MarkdownSlide(this) { div, slide ->
       div.apply {
@@ -300,6 +190,116 @@ class Presentation(val kslides: KSlides) {
         }
       }
     }.also { slides += it }
+
+  @KSlidesDslMarker
+  fun VerticalSlideContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
+    VerticalMarkdownSlide(this@Presentation) { div, slide ->
+      div.apply {
+        (slide as VerticalMarkdownSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfBlank()) {
+            s.processSlide(this)
+            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
+            // If this value is == "" it means read content inline
+            attributes["data-markdown"] = s.filename
+
+            if (s.charset.isNotBlank())
+              attributes["data-charset"] = s.charset
+
+            // These are not applicable for vertical markdown slides
+            attributes["data-separator"] = ""
+            attributes["data-separator-vertical"] = ""
+
+            s.mergedConfig.apply {
+              attributes["data-separator-notes"] = markdownNotesSeparator
+            }
+
+            //if (notes.isNotBlank())
+            //    attributes["data-separator-notes"] = notes
+
+            if (s.filename.isEmpty()) {
+              s.markdownBlock().also { markdown ->
+                if (markdown.isNotBlank())
+                  script("text/template") {
+                    markdown
+                      .indentInclude(s.indentToken)
+                      .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+                      .also { rawHtml("\n$it\n") }
+                  }
+              }
+            }
+          }.also { rawHtml("\n") }
+        }
+      }
+    }.also { verticalSlides += it }
+
+  @KSlidesDslMarker
+  fun dslSlide(slideContent: DslSlide.() -> Unit) =
+    DslSlide(this) { div, slide ->
+      div.apply {
+        (slide as DslSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfBlank()) {
+            s.processSlide(this)
+            require(s.dslAssigned) { "dslSlide missing content { } section" }
+            s.dslBlock.invoke(this, s)
+          }.also { rawHtml("\n") }
+        }
+      }
+    }.also { slides += it }
+
+  @KSlidesDslMarker
+  fun VerticalSlideContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
+    VerticalDslSlide(this@Presentation) { div, slide ->
+      div.apply {
+        (slide as VerticalDslSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfBlank()) {
+            s.processSlide(this)
+            require(s.dslAssigned) { "dslSlide missing content { } section" }
+            s.dslBlock.invoke(this, s)
+          }.also { rawHtml("\n") }
+        }
+      }
+    }.also { verticalSlides += it }
+
+  @KSlidesDslMarker
+  fun htmlSlide(slideContent: HtmlSlide.() -> Unit) =
+    HtmlSlide(this) { div, slide ->
+      div.apply {
+        (slide as HtmlSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfBlank()) {
+            s.processSlide(this)
+            require(s.htmlAssigned) { "htmlSlide missing content { } section" }
+            s.htmlBlock()
+              .indentInclude(s.indentToken)
+              .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+              .also { rawHtml("\n$it") }
+          }.also { rawHtml("\n") }
+        }
+      }
+    }.also {
+      slides += it
+    }
+
+  @KSlidesDslMarker
+  fun VerticalSlideContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
+    VerticalHtmlSlide(this@Presentation) { div, slide ->
+      div.apply {
+        (slide as VerticalHtmlSlide).also { s ->
+          slideContent(s)
+          section(classes = s.classes.nullIfBlank()) {
+            s.processSlide(this)
+            require(s.htmlAssigned) { "htmlSlide missing content { } section" }
+            s.htmlBlock()
+              .indentInclude(s.indentToken)
+              .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+              .also { rawHtml("\n$it") }
+          }.also { rawHtml("\n") }
+        }
+      }
+    }.also { verticalSlides += it }
 
   private fun toJsValue(key: String, value: Any) =
     when (value) {

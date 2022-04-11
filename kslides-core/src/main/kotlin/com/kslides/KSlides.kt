@@ -1,12 +1,24 @@
 package com.kslides
 
-import com.kslides.Output.runHttpServer
-import com.kslides.Output.writeToFileSystem
+import com.github.pambrose.common.response.*
+import com.github.pambrose.common.util.*
+import com.kslides.KSlides.Companion.runHttpServer
+import com.kslides.KSlides.Companion.writeToFileSystem
+import com.kslides.Page.generatePage
+import io.ktor.server.application.*
+import io.ktor.server.cio.*
+import io.ktor.server.engine.*
+import io.ktor.server.http.content.*
+import io.ktor.server.plugins.*
+import io.ktor.server.routing.*
 import kotlinx.css.*
-import kotlinx.html.*
 import mu.*
+import java.io.*
 
-@HtmlTagMarker
+@DslMarker
+annotation class KSlidesDslMarker
+
+@KSlidesDslMarker
 fun kslides(kslidesBlock: KSlides.() -> Unit) =
   KSlides()
     .apply {
@@ -56,29 +68,95 @@ class KSlides {
   internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
   internal val presentationMap = mutableMapOf<String, Presentation>()
   internal val presentations get() = presentationMap.values
-  internal fun presentation(name: String) = presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
+  internal fun presentation(name: String) =
+    presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
+
   val staticRoots = mutableListOf("assets", "css", "dist", "js", "plugin")
   val css = AppendableString()
 
-  @HtmlTagMarker
-  fun css(block: CssBuilder.() -> Unit) {
+  @KSlidesDslMarker
+  inline fun css(block: CssBuilder.() -> Unit) {
     css += "${CssBuilder().apply(block)}\n"
   }
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun presentationDefault(block: PresentationConfig.() -> Unit) {
     configBlock = block
   }
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun output(outputBlock: PresentationOutput.() -> Unit) {
     this.outputBlock = outputBlock
   }
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun presentation(block: Presentation.() -> Unit) {
     presentationBlocks += block
   }
 
-  companion object : KLogging()
+  companion object : KLogging() {
+    internal fun runHttpServer(output: PresentationOutput) {
+      val port = System.getenv("PORT")?.toInt() ?: output.httpPort
+
+      embeddedServer(CIO, port = port) {
+
+        // By embedding this logic here, rather than in an Application.module() call, we are not able to use auto-reload
+        install(CallLogging) { level = output.logLevel }
+        install(DefaultHeaders) { header("X-Engine", "Ktor") }
+        install(Compression) {
+          gzip { priority = 1.0 }
+          deflate { priority = 10.0; minimumSize(1024) /* condition*/ }
+        }
+
+        routing {
+          if (output.defaultHttpRoot.isNotBlank())
+            static("/") {
+              staticBasePackage = output.defaultHttpRoot
+              resources(".")
+            }
+
+          output.kslides.staticRoots.forEach {
+            if (it.isNotBlank())
+              static("/$it") {
+                resources(it)
+              }
+          }
+
+          output.kslides.presentationMap.forEach { (key, p) ->
+            get(key) {
+              respondWith {
+                generatePage(p)
+              }
+            }
+          }
+        }
+      }.start(wait = true)
+    }
+
+    internal fun writeToFileSystem(output: PresentationOutput) {
+      require(output.outputDir.isNotBlank()) { "outputDir value must not be empty" }
+
+      val outputDir = output.outputDir
+      val srcPrefix = output.staticRootDir.ensureSuffix("/")
+
+      File(outputDir).mkdir()
+      output.kslides.presentationMap
+        .forEach { (key, p) ->
+          val (file, prefix) =
+            when {
+              key == "/" -> File("$outputDir/index.html") to srcPrefix
+              key.endsWith(".html") -> File("$outputDir/$key") to srcPrefix
+              else -> {
+                val pathElems = "$outputDir/$key".split("/").filter { it.isNotEmpty() }
+                val path = pathElems.joinToString("/")
+                val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
+                File(path).mkdir()
+                File("$path/index.html") to "$dotDot$srcPrefix"
+              }
+            }
+          logger.info { "Writing presentation $key to $file" }
+          file.writeText(generatePage(p, prefix))
+        }
+    }
+  }
 }

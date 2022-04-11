@@ -35,7 +35,7 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
     mergedConfig.applyConfig(section)
   }
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
 }
 
@@ -47,7 +47,7 @@ class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide
   var indentToken = INDENT_TOKEN
   var disableTrimIndent = false
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun content(htmlBlock: () -> String) {
     this.htmlBlock = htmlBlock
     this.htmlAssigned = true
@@ -62,7 +62,7 @@ class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalS
   var indentToken = INDENT_TOKEN
   var disableTrimIndent = false
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun content(markdownBlock: () -> String) {
     this.markdownBlock = markdownBlock
     this.markdownAssigned = true
@@ -73,13 +73,13 @@ class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(
   internal var dslBlock: SECTION.(DslSlide) -> Unit = { }
   internal var dslAssigned = false
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun content(dslBlock: SECTION.(DslSlide) -> Unit) {
     this.dslBlock = dslBlock
     this.dslAssigned = true
   }
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   inline fun SectioningOrFlowContent.notes(crossinline block: ASIDE.() -> Unit = {}) =
     ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }
@@ -94,7 +94,7 @@ class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : Vertica
   var indentToken = INDENT_TOKEN
   var disableTrimIndent = false
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun content(htmlBlock: () -> String) {
     this.htmlBlock = htmlBlock
     this.htmlAssigned = true
@@ -109,7 +109,7 @@ class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : Ver
   var indentToken = INDENT_TOKEN
   var disableTrimIndent = false
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun content(markdownBlock: () -> String) {
     this.markdownBlock = markdownBlock
     this.markdownAssigned = true
@@ -120,13 +120,13 @@ class VerticalDslSlide(presentation: Presentation, content: SlideArg) : Vertical
   internal var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
   internal var dslAssigned = false
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun content(dslBlock: SECTION.(VerticalDslSlide) -> Unit) {
     this.dslBlock = dslBlock
     this.dslAssigned = true
   }
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   inline fun SectioningOrFlowContent.notes(crossinline block: ASIDE.() -> Unit = {}) =
     ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }

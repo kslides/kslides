@@ -1,7 +1,5 @@
 package com.kslides
 
-import kotlinx.html.*
-
 class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   internal val menuConfig = MenuConfig()
   internal val copyCodeConfig = CopyCodeConfig()
@@ -313,12 +311,12 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
     this.slideConfig.combine(other.slideConfig)
   }
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun menuConfig(block: MenuConfig.() -> Unit) = block.invoke(menuConfig)
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun copyCodeConfig(block: CopyCodeConfig.() -> Unit) = block.invoke(copyCodeConfig)
 
-  @HtmlTagMarker
+  @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = block.invoke(slideConfig)
 }

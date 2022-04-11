@@ -44,82 +44,6 @@ color: green;
           <h2>Hello World</h2>
         </section>
         
-        <section data-background-color="#2A9EEE" data-markdown="">
-          <script type="text/template">
-## Presentation Definition    
-```kotlin []
-presentation {
-  // Makes this presentation available at helloworld.html
-  path = "helloworld.html"
-
-  // css styles can be specified as a string or with the kotlin css DSL
-  css +=
-    """
-    .htmlslide h2 {
-      color: yellow;
-    }
-    """
-
-  css {
-    rule("#mdslide h2") {
-      color = Color.green
-    }
-  }
-
-  presentationConfig {
-    slideConfig {
-      backgroundColor = "#2A9EEE"
-    }
-  }
-
-  markdownSlide {
-    id = "mdslide"
-
-    content {
-      """
-      # Markdown
-      ## Hello World
-      """
-    }
-  }
-
-  htmlSlide {
-    classes = "htmlslide"
-
-    slideConfig {
-      backgroundColor = "red"
-    }
-
-    content {
-      """
-      <h1>HTML</h1>
-      <h2>Hello World</h2>
-      """
-    }
-  }
-
-  dslSlide {
-    content {
-      h1 { +"DSL" }
-      h2 { +"Hello World" }
-    }
-  }
-
-  markdownSlide {
-    content {
-      """
-      ## Presentation Definition    
-      ```kotlin []
-      ${includeFile(slides, beginToken = "helloworld begin", endToken = "helloworld end")}
-      ```
-      """
-    }
-  }
-}
-```
-</script>
-        </section>
-        
       </div>
     </div>
     	
@@ -133,6 +57,8 @@ presentation {
 
 	<script>
 		Reveal.initialize({
+			transition: 'fade',
+
 			plugins: [ RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight, CopyCode ]
 		});
 
