@@ -128,6 +128,6 @@ subprojects {
         ignoreFailures = false
         reporters = ['checkstyle', 'plain']
         experimentalRules = false
-        disabledRules = ["no-wildcard-imports", "indent", "final-newline", "comment-spacing", "max-line-length", "no-multi-spaces"]
+        disabledRules = ["no-wildcard-imports", "indent", "final-newline", "comment-spacing", "max-line-length", "no-multi-spaces", "wrapping"]
     }
 }

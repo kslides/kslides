@@ -88,7 +88,8 @@ private fun processCode(
       lines.size
     else {
       val endRegex = "$commentPrefix\\s*$endToken".toRegex()
-      (lines.reversed()
+      (lines
+        .reversed()
         .asSequence()
         .mapIndexed { i, s -> (lines.size - i - 1) to s }
         .firstOrNull { it.second.contains(endRegex) }?.first
