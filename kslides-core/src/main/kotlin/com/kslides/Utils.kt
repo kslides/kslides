@@ -13,7 +13,7 @@ fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" --
 fun fragment(effect: Effect = Effect.NONE, index: Int = 0) =
   "<!-- .element: ${effect.toOutput()}${if (index > 0) " data-fragment-index=\"$index\"" else ""} -->"
 
-fun String.nullIfBlank() = if (isNotBlank()) this else null
+fun String.nullIfBlank() = ifBlank { null }
 
 fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
 

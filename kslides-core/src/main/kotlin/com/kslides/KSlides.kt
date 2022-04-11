@@ -1,6 +1,5 @@
 package com.kslides
 
-import com.kslides.KSlides.Companion.topLevel
 import com.kslides.Output.runHttpServer
 import com.kslides.Output.writeToFileSystem
 import kotlinx.css.*
@@ -9,8 +8,7 @@ import mu.*
 
 @HtmlTagMarker
 fun kslides(kslidesBlock: KSlides.() -> Unit) =
-  topLevel
-    .also { it.reset() } // This is for testing. Required because topLevel is a singleton.
+  KSlides()
     .apply {
       kslidesBlock()
       require(presentationBlocks.isNotEmpty()) { "At least one presentation must be defined" }
@@ -57,7 +55,8 @@ class KSlides {
   internal var outputBlock: PresentationOutput.() -> Unit = {}
   internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
   internal val presentationMap = mutableMapOf<String, Presentation>()
-
+  internal val presentations get() = presentationMap.values
+  internal fun presentation(name: String) = presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
   val staticRoots = mutableListOf("assets", "css", "dist", "js", "plugin")
   val css = AppendableString()
 
@@ -81,15 +80,5 @@ class KSlides {
     presentationBlocks += block
   }
 
-  internal fun reset() {
-    configBlock = {}
-    outputBlock = {}
-    presentationBlocks.clear()
-    presentationMap.clear()
-    css.clear()
-  }
-
-  companion object : KLogging() {
-    internal val topLevel = KSlides()
-  }
+  companion object : KLogging()
 }

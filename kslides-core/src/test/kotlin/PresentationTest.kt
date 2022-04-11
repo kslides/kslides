@@ -1,7 +1,6 @@
 package com.github.readingbat
 
 import com.kslides.*
-import com.kslides.KSlides.Companion.topLevel
 import com.kslides.Page.generatePage
 import io.kotest.assertions.throwables.*
 import io.kotest.core.spec.style.*
@@ -67,7 +66,7 @@ class PresentationTest : StringSpec(
     }
 
     "Simple presentation tests5" {
-      topLevel.staticRoots.forEach {
+      KSlides().staticRoots.forEach {
         shouldThrowExactly<IllegalArgumentException> {
           kslides {
             presentation {
@@ -100,7 +99,7 @@ class PresentationTest : StringSpec(
       shouldThrowExactly<IllegalArgumentException> {
         kslides {
           presentation { markdownSlide { } }
-        }.presentationMap.forEach { _, p ->
+        }.presentations.forEach { p ->
           generatePage(p)
         }
       }
@@ -110,7 +109,7 @@ class PresentationTest : StringSpec(
       shouldThrowExactly<IllegalArgumentException> {
         kslides {
           presentation { htmlSlide { } }
-        }.presentationMap.forEach { _, p ->
+        }.presentations.forEach { p ->
           generatePage(p)
         }
       }
@@ -120,7 +119,7 @@ class PresentationTest : StringSpec(
       shouldThrowExactly<IllegalArgumentException> {
         kslides {
           presentation { dslSlide { } }
-        }.presentationMap.forEach { _, p ->
+        }.presentations.forEach { p ->
           generatePage(p)
         }
       }
@@ -133,13 +132,13 @@ class PresentationTest : StringSpec(
             dslSlide { content { } }
           }
         }.apply {
-          presentationMap.forEach { _, p ->
+          presentations.forEach { p ->
             generatePage(p)
           }
         }
 
       kslides.css.toString() shouldBe ""
-      kslides.presentationMap["/"]!!.css.toString() shouldBe ""
+      kslides.presentation("/").css.toString() shouldBe ""
     }
 
     "Default Css Test 2" {
@@ -149,13 +148,13 @@ class PresentationTest : StringSpec(
             dslSlide { css += "aaa"; content { } }
           }
         }.apply {
-          presentationMap.forEach { _, p ->
+          presentations.forEach { p ->
             generatePage(p)
           }
         }
 
       kslides.css.toString() shouldBe ""
-      kslides.presentationMap["/"]!!.css.toString() shouldBe "aaa"
+      kslides.presentation("/").css.toString() shouldBe "aaa"
     }
 
     "Default Css Test 3" {
@@ -166,13 +165,13 @@ class PresentationTest : StringSpec(
             dslSlide { content { } }
           }
         }.apply {
-          presentationMap.forEach { _, p ->
+          presentations.forEach { p ->
             generatePage(p)
           }
         }
 
       kslides.css.toString() shouldBe "aaa"
-      kslides.presentationMap["/"]!!.css.toString() shouldBe "aaa\n"
+      kslides.presentation("/").css.toString() shouldBe "aaa\n"
     }
 
     "Default Css Test 4" {
@@ -183,12 +182,12 @@ class PresentationTest : StringSpec(
             dslSlide { css += "bbb"; content { } }
           }
         }.apply {
-          presentationMap.forEach { _, p ->
+          presentations.forEach { p ->
             generatePage(p)
           }
         }
 
       kslides.css.toString() shouldBe "aaa"
-      kslides.presentationMap["/"]!!.css.toString() shouldBe "aaa\nbbb"
+      kslides.presentation("/").css.toString() shouldBe "aaa\nbbb"
     }
   })

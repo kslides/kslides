@@ -3,7 +3,7 @@ plugins {
     id 'application'
     id 'maven-publish'
     id 'org.jetbrains.kotlin.jvm' version '1.6.20' apply false
-    id 'org.jmailen.kotlinter' version "3.9.0" apply false
+    id 'org.jmailen.kotlinter' version "3.10.0" apply false
     id "com.github.ben-manes.versions" version '0.42.0' apply false
     id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
 }
@@ -126,7 +126,6 @@ subprojects {
 
     kotlinter {
         ignoreFailures = false
-        indentSize = 2
         reporters = ['checkstyle', 'plain']
         experimentalRules = false
         disabledRules = ["no-wildcard-imports", "indent", "final-newline", "comment-spacing", "max-line-length", "no-multi-spaces"]

@@ -14,7 +14,6 @@ import java.io.*
 
 object Output : KLogging() {
   internal fun runHttpServer(output: PresentationOutput) {
-
     val port = System.getenv("PORT")?.toInt() ?: output.httpPort
 
     embeddedServer(CIO, port = port) {
