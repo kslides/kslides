@@ -30,11 +30,15 @@ will be able to pull upstream changes and stay current with kslides-template upd
 details on [templates](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
 and [forks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks).
 
+The [kslides-template](https://github.com/kslides/kslides-template) repo describes how to generate slide content once
+you have created your new kslides repo.
 
-### Presentation Structure
+## Defining a Presentation
 
 A presentation is created using a [Kotlin DSL](https://medium.com/adobetech/building-elegant-dsls-with-kotlin-707726c5ed21). 
-It requires a minimal knowledge of Kotlin to use. 
+Defining a presentation requires a minimal knowledge of Kotlin. 
+
+The following _kslides_ definition can be seen [here](https://kslides.github.io/kslides/helloworld.html).
 
 ```kotlin
 kslides {
@@ -86,27 +90,30 @@ kslides {
       }
     }
 
-    // Slide that uses HTML
-    htmlSlide {
-      classes = "htmlslide"
+    // Two vertical slides
+    verticalSlides {
+      // Slide that uses HTML
+      htmlSlide {
+        classes = "htmlslide"
 
-      slideConfig {
-        backgroundColor = "red"
+        slideConfig {
+          backgroundColor = "red"
+        }
+
+        content {
+          """
+          <h1>HTML</h1>
+          <h2>Hello World</h2>
+          """
+        }
       }
 
-      content {
-        """
-        <h1>HTML</h1>
-        <h2>Hello World</h2>
-        """
-      }
-    }
-
-    // Slide that uses the Kotlin HTML DSL
-    dslSlide {
-      content {
-        h1 { +"DSL" }
-        h2 { +"Hello World" }
+      // Slide that uses the Kotlin HTML DSL
+      dslSlide {
+        content {
+          h1 { +"DSL" }
+          h2 { +"Hello World" }
+        }
       }
     }
   }
@@ -117,7 +124,7 @@ kslides {
 
 ### kslides
 
-A _kslides_ declaration contains:
+A _kslides_ section contains:
 * an _output_ section
 * a _css_ section
 * a _presentationDefault_ section
@@ -152,10 +159,9 @@ output {
 
 ### presentationDefault
 
-
 ### presentation
 
-Each presentation declaration contains:
+Each presentation section contains:
 * a _css_ section
 * a _presentationConfig_ section
 * and one or more _slide_ sections

@@ -402,27 +402,30 @@ fun main() {
         }
       }
 
-      // Slide that uses HTML
-      htmlSlide {
-        classes = "htmlslide"
+      // Two vertical slides
+      verticalSlides {
+        // Slide that uses HTML
+        htmlSlide {
+          classes = "htmlslide"
 
-        slideConfig {
-          backgroundColor = "red"
+          slideConfig {
+            backgroundColor = "red"
+          }
+
+          content {
+            """
+            <h1>HTML</h1>
+            <h2>Hello World</h2>
+            """
+          }
         }
 
-        content {
-          """
-          <h1>HTML</h1>
-          <h2>Hello World</h2>
-          """
-        }
-      }
-
-      // Slide that uses the Kotlin HTML DSL
-      dslSlide {
-        content {
-          h1 { +"DSL" }
-          h2 { +"Hello World" }
+        // Slide that uses the Kotlin HTML DSL
+        dslSlide {
+          content {
+            h1 { +"DSL" }
+            h2 { +"Hello World" }
+          }
         }
       }
     }
