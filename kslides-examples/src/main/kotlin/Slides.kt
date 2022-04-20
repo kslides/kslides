@@ -363,11 +363,9 @@ fun main() {
     // readme end
 
     presentation {
-      // Makes this presentation available at helloworld.html
-      path = "helloworld.html"
+      path = "helloworld.html"               // Make this presentation available at helloworld.html
 
-      // css styles can be specified as a string or with the kotlin css DSL
-      css +=
+      css +=                                 // css styles can be specified as a string or with the kotlin css DSL
         """
         .htmlslide h2 {
           color: yellow;
@@ -380,18 +378,15 @@ fun main() {
         }
       }
 
-      // These values will be the default values for all the slides
-      presentationConfig {
+      presentationConfig {                   // These values will be the default values for all the slides
         transition = Transition.FADE
 
-        // slideConfig values override the presentationConfig values
-        slideConfig {
+        slideConfig {                        // slideConfig values here override the presentationDefault values
           backgroundColor = "#2A9EEE"
         }
       }
 
-      // Slide that uses Markdown
-      markdownSlide {
+      markdownSlide {                        // Slide that uses Markdown
         id = "mdslide"
 
         content {
@@ -402,13 +397,11 @@ fun main() {
         }
       }
 
-      // Two vertical slides
-      verticalSlides {
-        // Slide that uses HTML
-        htmlSlide {
+      verticalSlides {                       // Two vertical slides
+        htmlSlide {                          // Slide that uses HTML
           classes = "htmlslide"
 
-          slideConfig {
+          slideConfig {                      // slideConfig values here override the presentationDefault values
             backgroundColor = "red"
           }
 
@@ -420,8 +413,7 @@ fun main() {
           }
         }
 
-        // Slide that uses the Kotlin HTML DSL
-        dslSlide {
+        dslSlide {                           // Slide that uses the Kotlin HTML DSL
           content {
             h1 { +"DSL" }
             h2 { +"Hello World" }

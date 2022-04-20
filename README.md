@@ -3,7 +3,7 @@
 [![Release](https://jitpack.io/v/kslides/kslides.svg)](https://jitpack.io/#kslides/kslides)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/kslides/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=kslides/kslides&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://app.travis-ci.com/kslides/kslides.svg?branch=master)](https://app.travis-ci.com/kslides/kslides)
-[![Kotlin version](https://img.shields.io/badge/kotlin-1.6.20-red?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin version](https://img.shields.io/badge/kotlin-1.6.21-red?logo=kotlin)](http://kotlinlang.org)
 
 **kslides** is a [Kotlin](https://kotlinlang.org) DSL for the incredible [reveal.js](https://revealjs.com) 
 presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint. 
@@ -51,11 +51,9 @@ kslides {
   }
 
   presentation {
-    // Makes this presentation available at helloworld.html
-    path = "helloworld.html"
+    path = "helloworld.html"               // Make this presentation available at helloworld.html
 
-    // css styles can be specified as a string or with the kotlin css DSL
-    css += 
+    css +=                                 // css styles can be specified as a string or with the kotlin css DSL
       """
       .htmlslide h2 {
         color: yellow;
@@ -68,18 +66,15 @@ kslides {
       }
     }
 
-    // These values will be the default values for all the slides
-    presentationConfig {
+    presentationConfig {                   // These values will be the default values for all the slides
       transition = Transition.FADE
 
-      // slideConfig values override the presentationConfig values
-      slideConfig {
+      slideConfig {                        // slideConfig values here override the presentationDefault values
         backgroundColor = "#2A9EEE"
       }
     }
 
-    // Slide that uses Markdown
-    markdownSlide {
+    markdownSlide {                        // Slide that uses Markdown
       id = "mdslide"
 
       content {
@@ -90,13 +85,11 @@ kslides {
       }
     }
 
-    // Two vertical slides
-    verticalSlides {
-      // Slide that uses HTML
-      htmlSlide {
+    verticalSlides {                       // Two vertical slides
+      htmlSlide {                          // Slide that uses HTML
         classes = "htmlslide"
 
-        slideConfig {
+        slideConfig {                      // slideConfig values here override the presentationDefault values
           backgroundColor = "red"
         }
 
@@ -108,8 +101,7 @@ kslides {
         }
       }
 
-      // Slide that uses the Kotlin HTML DSL
-      dslSlide {
+      dslSlide {                           // Slide that uses the Kotlin HTML DSL
         content {
           h1 { +"DSL" }
           h2 { +"Hello World" }

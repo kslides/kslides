@@ -13,8 +13,6 @@ fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" --
 fun fragment(effect: Effect = Effect.NONE, index: Int = 0) =
   "<!-- .element: ${effect.toOutput()}${if (index > 0) " data-fragment-index=\"$index\"" else ""} -->"
 
-fun String.nullIfBlank() = ifBlank { null }
-
 fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
 
 fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
@@ -153,7 +151,7 @@ class AppendableString(private var text: String = "") {
 
   fun isNotBlank() = text.isNotBlank()
 
-  fun prependIndent(indent: String) = text.indentFirstLine(indent)
+  fun prependIndent(indentToken: String) = text.indentFirstLine(indentToken)
 
   fun clear() {
     text = ""
