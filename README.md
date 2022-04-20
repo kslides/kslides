@@ -51,9 +51,11 @@ kslides {
   }
 
   presentation {
-    path = "helloworld.html"               // Make this presentation available at helloworld.html
+    // Make this presentation available at helloworld.html
+    path = "helloworld.html"
 
-    css +=                                 // css styles can be specified as a string or with the kotlin css DSL
+    // css styles can be specified as a string or with the kotlin css DSL
+    css +=
       """
       .htmlslide h2 {
         color: yellow;
@@ -66,15 +68,18 @@ kslides {
       }
     }
 
-    presentationConfig {                   // These values will be the default values for all the slides
+    // presentationConfig values are the default values for all slides in a presentation
+    presentationConfig {
       transition = Transition.FADE
 
-      slideConfig {                        // slideConfig values here override the presentationDefault values
+      // slideConfig values here override the presentationDefault slideConfig values
+      slideConfig {
         backgroundColor = "#2A9EEE"
       }
     }
 
-    markdownSlide {                        // Slide that uses Markdown
+    // Slide that uses Markdown for content
+    markdownSlide {
       id = "mdslide"
 
       content {
@@ -85,11 +90,14 @@ kslides {
       }
     }
 
-    verticalSlides {                       // Two vertical slides
-      htmlSlide {                          // Slide that uses HTML
+    // Two vertical slides
+    verticalSlides {
+      // Slide that uses HTML for content
+      htmlSlide {
         classes = "htmlslide"
 
-        slideConfig {                      // slideConfig values here override the presentationDefault values
+        // slideConfig values here override the presentationConfig slideConfig values
+        slideConfig {
           backgroundColor = "red"
         }
 
@@ -101,7 +109,8 @@ kslides {
         }
       }
 
-      dslSlide {                           // Slide that uses the Kotlin HTML DSL
+      // Slide that uses the Kotlin HTML DSL for content
+      dslSlide {
         content {
           h1 { +"DSL" }
           h2 { +"Hello World" }
