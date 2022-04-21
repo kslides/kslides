@@ -24,6 +24,7 @@
         #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
         #githubCorner path { fill: #258BD2; }
+        img[alt=slide] { width: 150px; }
         </style>
   </head>
   <body>
@@ -41,6 +42,8 @@
           <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="intro">
             <script type="text/template">
 # kslides
+![slide](images/slide-transparent.png)
+
 ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
 ### 👇
 Notes: This is a note for the opening slide 📝
@@ -62,6 +65,8 @@ markdownSlide {
   content {
     """
     # kslides
+    ![slide](images/slide-transparent.png)
+
     ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
     ### 👇
     Notes: This is a note for the opening slide 📝
@@ -563,6 +568,7 @@ presentation {
     #intro h1 { color: #FF5533; }
     #mdslide p { color: #FF6836; }
     #githubCorner path { fill: #258BD2; }
+    img[alt=slide] { width: 150px; }
     """
 
   presentationConfig {
@@ -597,6 +603,8 @@ presentation {
       content {
         """
         # kslides
+        ![slide](images/slide-transparent.png)
+
         ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
         ### 👇
         Notes: This is a note for the opening slide 📝

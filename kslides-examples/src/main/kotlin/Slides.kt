@@ -74,6 +74,7 @@ fun main() {
         #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
         #githubCorner path { fill: #258BD2; }
+        img[alt=slide] { width: 150px; }
         """
 
       presentationConfig {
@@ -108,6 +109,8 @@ fun main() {
           content {
             """
             # kslides
+            ![slide](images/slide-transparent.png)
+
             ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
             ### 👇
             Notes: This is a note for the opening slide 📝
