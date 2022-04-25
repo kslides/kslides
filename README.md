@@ -193,9 +193,18 @@ presentation {
 
 ## Misc Notes
 
+### Formatting
+Do not instruct IntelliJ to automatically format your code when you commit your code. The presentation
+html files are space-sensitive and might not work if they are formatted.
+
 ### Images
 * Presentations served by HTTP pull static files from ```/src/main/resources/public```. whereas 
 filesystem presentations pull from ```/docs```.
+
+### Code Slides
+Rather than embedding code directly in markdownSlides, it is much better to use the
+`includeCode()` and `includeUrl()` calls. You are likely to have space issues if you embed code directly,
+If you have to embed code, remove all indentation of the `content{}` block.
 
 ### Local Development
 * Speaker Notes do not work properly when running locally.
