@@ -3,6 +3,7 @@ package com.github.readingbat
 import com.kslides.*
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
+import io.kotest.matchers.string.*
 
 class UtilsTest : StringSpec(
   {
@@ -169,6 +170,86 @@ val y = 1              // NO TAB
             merge(p2)
           }
       p3.enableMenu shouldBe false
+    }
+
+    "From/To Test" {
+      val text = """
+        1
+        2
+        3
+        4
+        5
+      """
+
+      val lines = text.lines().filter { it.trim().isNotEmpty() }
+
+      lines.fromTo("", "").size shouldBe 5
+
+      lines.fromTo("", "", false).size shouldBe 5
+
+      lines.fromTo("1", "").size shouldBe 4
+
+      lines.fromTo("1", "", false).size shouldBe 5
+
+      lines.fromTo("", "5").size shouldBe 4
+
+      lines.fromTo("", "5", false).size shouldBe 5
+
+      lines.fromTo("1", "2").size shouldBe 0
+
+      lines.fromTo("1", "2", false).size shouldBe 2
+
+      lines.fromTo("1", "3").also {
+        it.size shouldBe 1
+        it[0] shouldContain "2"
+      }
+
+      lines.fromTo("1", "3", false).also {
+        it.size shouldBe 3
+        it[0] shouldContain "1"
+        it[1] shouldContain "2"
+        it[2] shouldContain "3"
+      }
+
+      lines.fromTo("2", "5").size shouldBe 2
+
+      lines.fromTo("2", "5", false).size shouldBe 4
+    }
+
+    "Lines Test" {
+      val text = """
+        1
+        2
+        3
+        4
+        5
+      """
+
+      val lines = text.lines().filter { it.trim().isNotEmpty() }
+
+      lines.lineNumbers("").size shouldBe 5
+
+      lines.lineNumbers("1-5").also {
+        it.size shouldBe 5
+        it[0] shouldContain "1"
+        it[1] shouldContain "2"
+        it[2] shouldContain "3"
+        it[3] shouldContain "4"
+        it[4] shouldContain "5"
+      }
+
+      lines.lineNumbers("1,5").also {
+        it.size shouldBe 2
+        it[0] shouldContain "1"
+        it[1] shouldContain "5"
+      }
+
+      lines.lineNumbers("1,3, 5").also {
+        it.size shouldBe 3
+        it[0] shouldContain "1"
+        it[1] shouldContain "3"
+        it[2] shouldContain "5"
+      }
     }
   }
 )

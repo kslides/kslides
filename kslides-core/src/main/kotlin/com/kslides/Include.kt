@@ -14,22 +14,18 @@ fun includeFile(
   lineNumbers: String = "",
   beginToken: String = "",
   endToken: String = "",
+  exclusive: Boolean = true,
   indentToken: String = INDENT_TOKEN,
-  commentPrefix: String = "//",
   enableEscape: Boolean = true,
   enableTrimIndent: Boolean = true,
 ) =
   try {
-    processCode(
-      File("${System.getProperty("user.dir")}/$path").readLines(),
-      lineNumbers,
-      beginToken,
-      endToken,
-      indentToken,
-      commentPrefix,
-      enableEscape,
-      enableTrimIndent,
-    )
+    val file = File("${System.getProperty("user.dir")}/$path")
+    file
+      .readLines()
+      .fromTo(beginToken, endToken, exclusive)
+      .lineNumbers(lineNumbers)
+      .fixIndents(indentToken, enableEscape, enableTrimIndent)
   } catch (e: Exception) {
     Include.logger.warn(e) { "Unable to read $path" }
     ""
@@ -40,73 +36,65 @@ fun includeUrl(
   lineNumbers: String = "",
   beginToken: String = "",
   endToken: String = "",
+  exclusive: Boolean = true,
   indentToken: String = INDENT_TOKEN,
-  commentPrefix: String = "//",
   enableEscape: Boolean = true,
   enableTrimIndent: Boolean = true,
 ) =
   try {
-    processCode(
-      URL(url).readText().lines(),
-      lineNumbers,
-      beginToken,
-      endToken,
-      indentToken,
-      commentPrefix,
-      enableEscape,
-      enableTrimIndent,
-    )
+    URL(url)
+      .readText()
+      .lines()
+      .fromTo(beginToken, endToken, exclusive)
+      .lineNumbers(lineNumbers)
+      .fixIndents(indentToken, enableEscape, enableTrimIndent)
   } catch (e: Exception) {
     Include.logger.warn(e) { "Unable to read $url" }
     ""
   }
 
-private fun processCode(
-  lines: List<String>,
-  lineNumbers: String,
-  beginToken: String,
-  endToken: String,
-  indentToken: String,
-  commentPrefix: String,
-  enableEscape: Boolean,
-  enableTrimIndent: Boolean,
-): String {
-  val startIndex =
-    if (beginToken.isBlank())
-      0
-    else {
-      val beginRegex = "$commentPrefix\\s*$beginToken".toRegex()
-      (lines
+internal fun List<String>.fromTo(
+  beginToken: String = "",
+  endToken: String = "",
+  exclusive: Boolean = true
+): List<String> {
+  val beginIndex =
+    if (beginToken.isNotBlank())
+      (this
         .asSequence()
         .mapIndexed { i, s -> i to s }
-        .firstOrNull { it.second.contains(beginRegex) }?.first
-        ?: throw IllegalArgumentException("beginToken not found: $commentPrefix $beginToken")) + 1
-    }
+        .firstOrNull { it.second.contains(beginToken) }?.first
+        ?: throw IllegalArgumentException("Begin token not found: $beginToken")) + (if (exclusive) 1 else 0)
+    else
+      0
 
   val endIndex =
-    if (endToken.isBlank())
-      lines.size
-    else {
-      val endRegex = "$commentPrefix\\s*$endToken".toRegex()
-      (lines
+    if (endToken.isNotBlank())
+      (this
         .reversed()
         .asSequence()
-        .mapIndexed { i, s -> (lines.size - i - 1) to s }
-        .firstOrNull { it.second.contains(endRegex) }?.first
-        ?: throw IllegalArgumentException("endToken not found: $commentPrefix $endToken"))
-    }
+        .mapIndexed { i, s -> (this.size - i - (if (exclusive) 1 else 0)) to s }
+        .firstOrNull { it.second.contains(endToken) }?.first
+        ?: throw IllegalArgumentException("End token not found: $endToken"))
+    else
+      this.size
 
-  val begEndLines = if (beginToken.isBlank() && endToken.isBlank()) lines else lines.subList(startIndex, endIndex)
+  return if (beginToken.isNotBlank() || endToken.isNotBlank()) this.subList(beginIndex, endIndex) else this
+}
 
-  val rangeLines =
-    if (lineNumbers.isNotBlank()) {
-      val lineNums = lineNumbers.toIntList()
-      begEndLines.filterIndexed { i, _ -> i + 1 in lineNums }
-    } else {
-      begEndLines
-    }
+internal fun List<String>.lineNumbers(lineNumbers: String) =
+  if (lineNumbers.isNotBlank()) {
+    val lineNums = lineNumbers.toIntList()
+    filterIndexed { i, _ -> i + 1 in lineNums }
+  } else {
+    this
+  }
 
-  return (if (enableTrimIndent) rangeLines.joinToString("\n").trimIndent().lines() else rangeLines)
+internal fun List<String>.fixIndents(
+  indentToken: String,
+  enableEscape: Boolean,
+  enableTrimIndent: Boolean,
+) =
+  (if (enableTrimIndent) joinToString("\n").trimIndent().lines() else this)
     .map { "$indentToken$it" }
     .joinToString("\n") { if (enableEscape) escapeHtml4(it) else it }
-}

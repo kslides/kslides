@@ -218,7 +218,7 @@ fun main() {
               <h2>Animated Code</h2>  
               <pre data-id="code-animation" data-cc="false"> 
                 <code data-trim="" data-line-numbers="">
-                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lineNumbers = lines)}
                 </code>
               </pre>
               <h2>👇</h2>  
@@ -387,7 +387,7 @@ fun main() {
       presentationConfig {
         transition = Transition.FADE
 
-        // slideConfig values here override the presentationDefault slideConfig values
+        // slideConfig values override the presentationDefault slideConfig values
         slideConfig {
           backgroundColor = "#2A9EEE"
         }
@@ -411,7 +411,7 @@ fun main() {
         htmlSlide {
           classes = "htmlslide"
 
-          // slideConfig values here override the presentationConfig slideConfig values
+          // slideConfig values override the presentationConfig slideConfig values
           slideConfig {
             backgroundColor = "red"
           }

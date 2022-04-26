@@ -71,7 +71,7 @@ kslides {
     presentationConfig {
       transition = Transition.FADE
 
-      // slideConfig values here override the presentationDefault slideConfig values
+      // slideConfig values override the presentationDefault slideConfig values
       slideConfig {
         backgroundColor = "#2A9EEE"
       }
@@ -95,7 +95,7 @@ kslides {
       htmlSlide {
         classes = "htmlslide"
 
-        // slideConfig values here override the presentationConfig slideConfig values
+        // slideConfig values override the presentationConfig slideConfig values
         slideConfig {
           backgroundColor = "red"
         }
