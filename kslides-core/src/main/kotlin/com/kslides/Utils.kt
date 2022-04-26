@@ -143,6 +143,42 @@ fun lineNumbers(ranges: String) =
     .split("|")
     .map { if (it == "*") "" else it }
 
+fun DIV.unorderedList(vararg items: String, block: UL.() -> Unit = {}) {
+  ul {
+    block()
+    items.forEach {
+      li { +it }
+    }
+  }
+}
+
+fun DIV.orderedList(vararg items: String, block: OL.() -> Unit = {}) {
+  ol {
+    block()
+    items.forEach {
+      li { +it }
+    }
+  }
+}
+
+fun DIV.unorderedList(vararg items: LI.() -> Unit, block: UL.() -> Unit = {}) {
+  ul {
+    block()
+    items.forEach {
+      li { it() }
+    }
+  }
+}
+
+fun DIV.orderedList(vararg items: LI.() -> Unit, block: OL.() -> Unit = {}) {
+  ol {
+    block()
+    items.forEach {
+      li { it() }
+    }
+  }
+}
+
 class AppendableString(private var text: String = "") {
 
   operator fun plusAssign(other: String) {
