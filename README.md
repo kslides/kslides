@@ -5,7 +5,7 @@
 [![Build Status](https://app.travis-ci.com/kslides/kslides.svg?branch=master)](https://app.travis-ci.com/kslides/kslides)
 [![Kotlin version](https://img.shields.io/badge/kotlin-1.6.21-red?logo=kotlin)](http://kotlinlang.org)
 
-**kslides** is a [Kotlin](https://kotlinlang.org) DSL for the incredible [reveal.js](https://revealjs.com) 
+**kslides** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com) 
 presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint. 
 It works particularly well for presentations with code snippets and slides
 authored in Markdown/HTML.
@@ -19,18 +19,13 @@ It is also running dynamically on [Heroku](https://kslides-repo.herokuapp.com).
 
 ## Getting Started
 
-[![Fork](https://img.shields.io/endpoint?color=%232A9EEE&logo=github&style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2Fkslides%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ffork.json)](https://github.com/kslides/kslides-template/fork)
+[![Template](https://img.shields.io/endpoint?color=%232A9EEE&logo=github&style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2Fkslides%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ftemplate.json)](https://github.com/kslides/kslides-template/generate)
 
-To create a kslides presentation, you can either [fork](https://github.com/kslides/kslides-template/fork) 
-the [kslides-template](https://github.com/kslides/kslides-template) repo and assign it a new name, 
-or generate a new repository using [kslides-template](https://github.com/kslides/kslides-template)
-as a [template](https://github.com/kslides/kslides-template/generate). The advantage of forking is you 
-will be able to pull upstream changes and stay current with kslides-template updates. GitHub provides more 
-details on [templates](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
-and [forks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/about-forks).
+To create a kslides presentation, generate a new repository using [kslides-template](https://github.com/kslides/kslides-template)
+as a [template](https://github.com/kslides/kslides-template/generate). 
 
-The [kslides-template](https://github.com/kslides/kslides-template) repo describes how to generate slide content once
-you have created your new kslides repo.
+The kslides-template [README.md](https://github.com/kslides/kslides-template/README.md) describes how to generate 
+and publish slide content once you have created your new kslides repo.
 
 ## Defining a Presentation
 
