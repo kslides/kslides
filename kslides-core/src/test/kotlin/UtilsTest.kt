@@ -236,6 +236,52 @@ val y = 1              // NO TAB
       }
     }
 
+    "From/To Test 3" {
+      val text = """
+      verticalSlides {
+        // image begin
+        markdownSlide {
+          // Size of image is controlled by css above
+          content {
+            ""${'"'}
+            ## Images 
+                
+            ![revealjs-image](images/revealjs.png)
+            ""${'"'}
+          }
+        }
+        // image end
+
+        markdownSlide {
+          content {
+            ""${'"'}            
+            ## Images Slide Description    
+            ```kotlin []
+            includeFile(slides, beginToken = "image begin", endToken = "image end")
+            ```
+            ""${'"'}
+          }
+        }
+      }
+      """
+
+      val quoted = Regex("image end\"")
+      val nonquoted = Regex("image end")
+
+      """endToken = "image end")""".also {
+        it.contains(quoted) shouldBe true
+        it.contains(nonquoted) shouldBe true
+      }
+      "// image end".also {
+        it.contains(quoted) shouldBe false
+        it.contains(nonquoted) shouldBe true
+      }
+
+      val lines = text.lines()
+
+      lines.fromTo("image begin", "image end").size shouldBe 10
+    }
+
     "Lines Test" {
       val text = """
         1

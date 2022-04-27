@@ -60,12 +60,13 @@ internal fun List<String>.fromTo(
 ): List<String> {
   val beginIndex =
     if (beginToken.isNotBlank()) {
-      // Include trailing quote to avoid matching calling token in the same file
-      val beginRegex = Regex("$beginToken[^\"]??")
+      // Do not match calling token in the same file
+      val unquotedBegin = Regex(beginToken)
+      val quotedBegin = Regex("$beginToken\"")
       (this
         .asSequence()
         .mapIndexed { i, s -> i to s }
-        .firstOrNull { it.second.contains(beginRegex) }?.first
+        .firstOrNull { it.second.contains(unquotedBegin) && !it.second.contains(quotedBegin) }?.first
         ?: throw IllegalArgumentException("Begin token not found: $beginToken")) + (if (exclusive) 1 else 0)
     } else {
       0
@@ -73,19 +74,20 @@ internal fun List<String>.fromTo(
 
   val endIndex =
     if (endToken.isNotBlank()) {
-      // Include trailing quote to avoid matching calling token in the same file
-      val endRegex = Regex("$endToken[^\"]??")
+      // Do not match calling token in the same file
+      val unquotedEnd = Regex(endToken)
+      val quotedEnd = Regex("$endToken\"")
       (this
         .reversed()
         .asSequence()
         .mapIndexed { i, s -> (this.size - i - (if (exclusive) 1 else 0)) to s }
-        .firstOrNull { it.second.contains(endRegex) }?.first
+        .firstOrNull { it.second.contains(unquotedEnd) && !it.second.contains(quotedEnd) }?.first
         ?: throw IllegalArgumentException("End token not found: $endToken"))
     } else {
       this.size
     }
 
-  return if (beginToken.isNotBlank() || endToken.isNotBlank()) subList(beginIndex, endIndex) else this
+  return if (beginIndex == 0 && endIndex == this.size) this else subList(beginIndex, endIndex)
 }
 
 internal fun List<String>.lineNumbers(lineNumbers: String) =
