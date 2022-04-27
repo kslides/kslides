@@ -228,7 +228,7 @@ val y = 1              // NO TAB
 
       val lines = text.lines().filter { it.trim().isNotEmpty() }
 
-      lines.fromTo("1", "3").also {
+      lines.fromTo("1", "3", false).also {
         it.size shouldBe 3
         it[0] shouldContain "1"
         it[1] shouldContain "2"
