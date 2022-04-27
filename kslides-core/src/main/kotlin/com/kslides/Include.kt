@@ -59,27 +59,33 @@ internal fun List<String>.fromTo(
   exclusive: Boolean = true
 ): List<String> {
   val beginIndex =
-    if (beginToken.isNotBlank())
+    if (beginToken.isNotBlank()) {
+      // Include trailing quote to avoid matching calling token in the same file
+      val beginRegex = Regex("$beginToken[^\"]??")
       (this
         .asSequence()
         .mapIndexed { i, s -> i to s }
-        .firstOrNull { it.second.contains(beginToken) }?.first
+        .firstOrNull { it.second.contains(beginRegex) }?.first
         ?: throw IllegalArgumentException("Begin token not found: $beginToken")) + (if (exclusive) 1 else 0)
-    else
+    } else {
       0
+    }
 
   val endIndex =
-    if (endToken.isNotBlank())
+    if (endToken.isNotBlank()) {
+      // Include trailing quote to avoid matching calling token in the same file
+      val endRegex = Regex("$endToken[^\"]??")
       (this
         .reversed()
         .asSequence()
         .mapIndexed { i, s -> (this.size - i - (if (exclusive) 1 else 0)) to s }
-        .firstOrNull { it.second.contains(endToken) }?.first
+        .firstOrNull { it.second.contains(endRegex) }?.first
         ?: throw IllegalArgumentException("End token not found: $endToken"))
-    else
+    } else {
       this.size
+    }
 
-  return if (beginToken.isNotBlank() || endToken.isNotBlank()) this.subList(beginIndex, endIndex) else this
+  return if (beginToken.isNotBlank() || endToken.isNotBlank()) subList(beginIndex, endIndex) else this
 }
 
 internal fun List<String>.lineNumbers(lineNumbers: String) =

@@ -172,7 +172,7 @@ val y = 1              // NO TAB
       p3.enableMenu shouldBe false
     }
 
-    "From/To Test" {
+    "From/To Test 1" {
       val text = """
         1
         2
@@ -214,6 +214,26 @@ val y = 1              // NO TAB
       lines.fromTo("2", "5").size shouldBe 2
 
       lines.fromTo("2", "5", false).size shouldBe 4
+    }
+
+    // This tests for the case where you are matching for a token in the same file and you want to avoid matching the invocation
+    "From/To Test 2" {
+      val text = """
+        "1"
+        1
+        2
+        3
+        "3"
+      """
+
+      val lines = text.lines().filter { it.trim().isNotEmpty() }
+
+      lines.fromTo("1", "3").also {
+        it.size shouldBe 3
+        it[0] shouldContain "1"
+        it[1] shouldContain "2"
+        it[2] shouldContain "3"
+      }
     }
 
     "Lines Test" {

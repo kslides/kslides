@@ -144,40 +144,30 @@ fun lineNumbers(ranges: String) =
     .map { if (it == "*") "" else it }
 
 fun DIV.unorderedList(vararg items: String, block: UL.() -> Unit = {}) {
-  ul {
-    block()
-    items.forEach {
-      li { +it }
-    }
-  }
+  val funcs: List<LI.() -> Unit> = items.map { { +it } }
+  unorderedList(*funcs.toTypedArray(), block = block)
 }
 
 fun DIV.orderedList(vararg items: String, block: OL.() -> Unit = {}) {
-  ol {
-    block()
-    items.forEach {
-      li { +it }
-    }
-  }
+  val funcs: List<LI.() -> Unit> = items.map { { +it } }
+  orderedList(*funcs.toTypedArray(), block = block)
 }
 
-fun DIV.unorderedList(vararg items: LI.() -> Unit, block: UL.() -> Unit = {}) {
+fun DIV.unorderedList(vararg items: LI.() -> Unit, block: UL.() -> Unit = {}) =
   ul {
     block()
     items.forEach {
       li { it() }
     }
   }
-}
 
-fun DIV.orderedList(vararg items: LI.() -> Unit, block: OL.() -> Unit = {}) {
+fun DIV.orderedList(vararg items: LI.() -> Unit, block: OL.() -> Unit = {}) =
   ol {
     block()
     items.forEach {
       li { it() }
     }
   }
-}
 
 class AppendableString(private var text: String = "") {
 
