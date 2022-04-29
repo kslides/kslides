@@ -13,6 +13,7 @@ fun main() {
     token: String,
     lines: String = "",
     id: String = "",
+    language: String = "kotlin",
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
@@ -20,7 +21,7 @@ fun main() {
       content {
         """
         ## $title    
-        ```kotlin $lines
+        ```$language $lines
         ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
         ```
         """
@@ -37,6 +38,7 @@ fun main() {
     token: String,
     lines: String = "",
     id: String = "",
+    language: String = "kotlin",
   ) {
     with(context) {
       markdownSlide {
@@ -45,7 +47,7 @@ fun main() {
         content {
           """
           ## $title    
-          ```kotlin $lines
+          ```$language $lines
           ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
           ```
           """

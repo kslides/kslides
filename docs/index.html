@@ -872,6 +872,7 @@ fun Presentation.slideSource(
   token: String,
   lines: String = "",
   id: String = "",
+  language: String = "kotlin",
 ) {
   markdownSlide {
     if (id.isNotBlank()) this.id = id
@@ -879,7 +880,7 @@ fun Presentation.slideSource(
     content {
       """
       ## $title    
-      ```kotlin $lines
+      ```$language $lines
       ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
       ```
       """
