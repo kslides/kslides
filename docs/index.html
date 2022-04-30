@@ -518,6 +518,34 @@ dslSlide {
         </section>
         
         <section>
+          <section>
+            <h2>Embed Web Content</h2>
+            <iframe data-autoplay="true" height="540" src="https://slides.com/news/auto-animate/embed" width="700"></iframe>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Embed Web Content Definition    
+```kotlin 
+dslSlide {
+  content {
+    h2 { +"Embed Web Content" }
+    iframe {
+      attributes["data-autoplay"] = "true"
+      //frameborder = "0"
+      height = "540"
+      src = "https://slides.com/news/auto-animate/embed"
+      width = "700"
+    }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
           <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
             <script type="text/template">
 ## Navigation Slide 🦊 
@@ -536,7 +564,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Navigtion Definition    
+## Navigation Definition    
 ```kotlin 
 markdownSlide {
   content {
@@ -833,6 +861,26 @@ presentation {
   }
 
   verticalSlides {
+
+    // webcontent begin
+    dslSlide {
+      content {
+        h2 { +"Embed Web Content" }
+        iframe {
+          attributes["data-autoplay"] = "true"
+          //frameborder = "0"
+          height = "540"
+          src = "https://slides.com/news/auto-animate/embed"
+          width = "700"
+        }
+      }
+    }
+    // webcontent end
+
+    slideSource(this, slides, "Embed Web Content Definition", "webcontent")
+  }
+
+  verticalSlides {
     // navigation begin
     markdownSlide {
       content {
@@ -850,7 +898,7 @@ presentation {
     }
     // navigation end
 
-    slideSource(this, slides, "Navigtion Definition", "navigation")
+    slideSource(this, slides, "Navigation Definition", "navigation")
   }
 
   slideSource(slides, "Presentation Definition", "readme", "[]", "definition")

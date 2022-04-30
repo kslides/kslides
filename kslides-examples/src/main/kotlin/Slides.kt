@@ -341,6 +341,25 @@ fun main() {
       }
 
       verticalSlides {
+
+        // webcontent begin
+        dslSlide {
+          content {
+            h2 { +"Embed Web Content" }
+            iframe {
+              src = "https://slides.com/news/auto-animate/embed"
+              attributes["data-autoplay"] = "true"
+              height = "540"
+              width = "700"
+            }
+          }
+        }
+        // webcontent end
+
+        slideSource(this, slides, "Embed Web Content Definition", "webcontent")
+      }
+
+      verticalSlides {
         // navigation begin
         markdownSlide {
           content {
@@ -358,7 +377,7 @@ fun main() {
         }
         // navigation end
 
-        slideSource(this, slides, "Navigtion Definition", "navigation")
+        slideSource(this, slides, "Navigation Definition", "navigation")
       }
 
       slideSource(slides, "Presentation Definition", "readme", "[]", "definition")

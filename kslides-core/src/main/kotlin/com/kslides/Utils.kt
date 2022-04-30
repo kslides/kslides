@@ -169,7 +169,7 @@ fun DIV.orderedList(vararg items: LI.() -> Unit, block: OL.() -> Unit = {}) =
     }
   }
 
-fun LI.linkHref(url: String, block: A.() -> Unit = {}) {
+fun LI.listHref(url: String, block: A.() -> Unit = {}) {
   a {
     block()
     href = url; +url
