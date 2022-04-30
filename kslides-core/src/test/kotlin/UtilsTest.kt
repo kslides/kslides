@@ -293,9 +293,9 @@ val y = 1              // NO TAB
 
       val lines = text.lines().filter { it.trim().isNotEmpty() }
 
-      lines.lineNumbers("").size shouldBe 5
+      lines.toLineRanges("").size shouldBe 5
 
-      lines.lineNumbers("1-5").also {
+      lines.toLineRanges("1-5").also {
         it.size shouldBe 5
         it[0] shouldContain "1"
         it[1] shouldContain "2"
@@ -304,13 +304,13 @@ val y = 1              // NO TAB
         it[4] shouldContain "5"
       }
 
-      lines.lineNumbers("1,5").also {
+      lines.toLineRanges("1,5").also {
         it.size shouldBe 2
         it[0] shouldContain "1"
         it[1] shouldContain "5"
       }
 
-      lines.lineNumbers("1,3, 5").also {
+      lines.toLineRanges("1,3, 5").also {
         it.size shouldBe 3
         it[0] shouldContain "1"
         it[1] shouldContain "3"

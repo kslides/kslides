@@ -1,5 +1,6 @@
 package com.kslides
 
+import kotlinx.html.*
 import mu.*
 import org.apache.commons.text.StringEscapeUtils.escapeHtml4
 import java.io.*
@@ -16,20 +17,44 @@ fun includeFile(
   endToken: String = "",
   exclusive: Boolean = true,
   indentToken: String = INDENT_TOKEN,
-  enableEscape: Boolean = true,
   enableTrimIndent: Boolean = true,
+  enableEscape: Boolean = true,
 ) =
   try {
     val file = File("${System.getProperty("user.dir")}/$path")
     file
       .readLines()
       .fromTo(beginToken, endToken, exclusive)
-      .lineNumbers(lineNumbers)
-      .fixIndents(indentToken, enableEscape, enableTrimIndent)
+      .toLineRanges(lineNumbers)
+      .fixIndents(indentToken, enableTrimIndent, enableEscape)
   } catch (e: Exception) {
     Include.logger.warn(e) { "Unable to read $path" }
     ""
   }
+
+// When called from a dslSlide, you no longer need the indentToken and you want to add newlines to front and back
+fun CODE.includeFile(
+  path: String,
+  lineNumbers: String = "",
+  beginToken: String = "",
+  endToken: String = "",
+  exclusive: Boolean = true,
+  indentToken: String = "",
+  enableTrimIndent: Boolean = true,
+  enableEscape: Boolean = true,
+) =
+  "\n${
+    com.kslides.includeFile(
+      path,
+      lineNumbers,
+      beginToken,
+      endToken,
+      exclusive,
+      indentToken,
+      enableTrimIndent,
+      enableEscape
+    )
+  }\n"
 
 fun includeUrl(
   url: String,
@@ -38,20 +63,43 @@ fun includeUrl(
   endToken: String = "",
   exclusive: Boolean = true,
   indentToken: String = INDENT_TOKEN,
-  enableEscape: Boolean = true,
   enableTrimIndent: Boolean = true,
+  enableEscape: Boolean = true,
 ) =
   try {
     URL(url)
       .readText()
       .lines()
       .fromTo(beginToken, endToken, exclusive)
-      .lineNumbers(lineNumbers)
-      .fixIndents(indentToken, enableEscape, enableTrimIndent)
+      .toLineRanges(lineNumbers)
+      .fixIndents(indentToken, enableTrimIndent, enableEscape)
   } catch (e: Exception) {
     Include.logger.warn(e) { "Unable to read $url" }
     ""
   }
+
+fun CODE.includeUrl(
+  url: String,
+  lineNumbers: String = "",
+  beginToken: String = "",
+  endToken: String = "",
+  exclusive: Boolean = true,
+  indentToken: String = "",
+  enableTrimIndent: Boolean = true,
+  enableEscape: Boolean = true,
+) =
+  "\n${
+    com.kslides.includeUrl(
+      url,
+      lineNumbers,
+      beginToken,
+      endToken,
+      exclusive,
+      indentToken,
+      enableTrimIndent,
+      enableEscape
+    )
+  }\n"
 
 internal fun List<String>.fromTo(
   beginToken: String = "",
@@ -90,18 +138,19 @@ internal fun List<String>.fromTo(
   return if (beginIndex == 0 && endIndex == this.size) this else subList(beginIndex, endIndex)
 }
 
-internal fun List<String>.lineNumbers(lineNumbers: String) =
-  if (lineNumbers.isNotBlank()) {
-    val lineNums = lineNumbers.toIntList()
-    filterIndexed { i, _ -> i + 1 in lineNums }
-  } else {
-    this
+internal fun List<String>.toLineRanges(text: String): List<String> =
+  when {
+    text.isNotBlank() ->
+      text.toIntList().let { lineNums ->
+        filterIndexed { i, _ -> i + 1 in lineNums }
+      }
+    else -> this
   }
 
 internal fun List<String>.fixIndents(
   indentToken: String,
-  enableEscape: Boolean,
   enableTrimIndent: Boolean,
+  enableEscape: Boolean,
 ) =
   (if (enableTrimIndent) joinToString("\n").trimIndent().lines() else this)
     .map { "$indentToken$it" }

@@ -122,7 +122,7 @@ class Presentation(val kslides: KSlides) {
   }
 
   @KSlidesDslMarker
-  fun presentationConfig(block: PresentationConfig.() -> Unit) = block.invoke(presentationConfig)
+  fun presentationConfig(block: PresentationConfig.() -> Unit) = block(presentationConfig)
 
   @KSlidesDslMarker
   fun verticalSlides(block: VerticalSlideContext.() -> Unit) =
@@ -244,7 +244,7 @@ class Presentation(val kslides: KSlides) {
               style = s.style
             s.processSlide(this)
             require(s.dslAssigned) { "dslSlide missing content { } section" }
-            s.dslBlock.invoke(this, s)
+            s.dslBlock(this, s)
           }.also { rawHtml("\n") }
         }
       }
@@ -261,7 +261,7 @@ class Presentation(val kslides: KSlides) {
               style = s.style
             s.processSlide(this)
             require(s.dslAssigned) { "dslSlide missing content { } section" }
-            s.dslBlock.invoke(this, s)
+            s.dslBlock(this, s)
           }.also { rawHtml("\n") }
         }
       }

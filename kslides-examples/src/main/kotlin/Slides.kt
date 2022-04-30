@@ -144,7 +144,7 @@ fun main() {
           content {
             """
             ## Highlighted Code    
-            ```kotlin [3,7|4,6|5]
+            ```kotlin [|3,7|4,6| 5 | 4-6]
             ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
             ```
             ### 👇 
@@ -158,49 +158,65 @@ fun main() {
       }
 
       verticalSlides {
-        // animated begin
+        // animated-html begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (lines in lineNumbers("[5,6,9|5-9|]")) {
+        for (lines in lineNumbers("[5,6,9|5-9|]"))
           htmlSlide {
             autoAnimate = true
             content {
               """
-              <h2>Animated Code</h2>  
-              <pre data-id="code-animation" data-cc="false"> 
+              <h2>Animated Code with an htmlSlide</h2>
+              <pre data-id="code-animation" data-cc="false">
                 <code data-trim="" data-line-numbers="">
                   ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lineNumbers = lines)}
                 </code>
               </pre>
-              <h2>👇</h2>  
+              <h2>👇</h2>
               <aside class="notes">
-              This slide shows animated code highlights. 
-              Indicate the lines you want to highlight by using a for loop
+              This slide shows animated code highlights.
               </aside>
               """
             }
           }
-        }
-        // animated end
+        // animated-html end
 
-        slideSource(slides, "animated")
+        slideSource(slides, "animated-html")
       }
 
-      fun <T> List<T>.orderBy(vararg orders: List<Int>): Sequence<List<T>> =
-        sequence {
-          orders
-            .forEach { order ->
-              yield(
-                buildList {
-                  order.forEach { this@buildList += this@orderBy[it] }
-                })
+      verticalSlides {
+        // animated-dsl begin
+        // A for loop generates a series of slides, each with a different set of lines
+        // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
+        for (lines in lineNumbers("[5,6,9|5-9|]"))
+          dslSlide {
+            autoAnimate = true
+            content {
+              h2 { +"Animated Code with a `dslSlide`" }
+              pre {
+                attributes["data-id"] = "code-animation"
+                attributes["data-cc"] = "false"
+                code {
+                  attributes["data-trim"] = ""
+                  attributes["data-line-numbers"] = ""
+                  +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lineNumbers = lines)
+                }
+              }
+              h2 { +"👇" }
+              aside("notes") {
+                +"This slide shows animated code highlights."
+              }
             }
-        }
+          }
+        // animated-dsl end
+
+        slideSource(slides, "animated-dsl")
+      }
 
       verticalSlides {
         // swapping begin
         listOf("One", "Two", "Three", "Four")
-          .orderBy(
+          .permuteBy(
             listOf(0, 1),
             listOf(0, 1, 2),
             listOf(0, 1, 2, 3),
@@ -629,11 +645,6 @@ fun main() {
         // fit-text2 end
 
         slideSource(slides, "fit-text2")
-      }
-
-      verticalSlides {
-
-
       }
     }
 

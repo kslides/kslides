@@ -143,3 +143,14 @@ fun lineNumbers(ranges: String) =
     .trimEnd(']', ')')
     .split("|")
     .map { if (it == "*") "" else it }
+
+fun <T> List<T>.permuteBy(vararg orders: List<Int>): Sequence<List<T>> =
+  sequence {
+    orders
+      .forEach { order ->
+        yield(
+          buildList {
+            order.forEach { this@buildList += this@permuteBy[it] }
+          })
+      }
+  }
