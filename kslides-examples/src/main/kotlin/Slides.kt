@@ -417,7 +417,6 @@ fun main() {
         }
       }
 
-
       verticalSlides {
         // tabular begin
         dslSlide {

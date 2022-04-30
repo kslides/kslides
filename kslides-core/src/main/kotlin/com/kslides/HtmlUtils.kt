@@ -16,7 +16,6 @@ inline fun DIV.unorderedList(vararg items: String, crossinline block: UL.() -> U
   unorderedList(*funcs.toTypedArray(), block = block)
 }
 
-
 @HtmlTagMarker
 inline fun DIV.unorderedList(vararg items: LI.() -> Unit, crossinline block: UL.() -> Unit = {}) =
   ul {
