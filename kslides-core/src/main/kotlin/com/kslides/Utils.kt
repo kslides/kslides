@@ -169,19 +169,9 @@ fun DIV.orderedList(vararg items: LI.() -> Unit, block: OL.() -> Unit = {}) =
     }
   }
 
-class AppendableString(private var text: String = "") {
-
-  operator fun plusAssign(other: String) {
-    text += other
+fun LI.linkHref(url: String, block: A.() -> Unit = {}) {
+  a {
+    block()
+    href = url; +url
   }
-
-  fun isNotBlank() = text.isNotBlank()
-
-  fun prependIndent(indentToken: String) = text.indentFirstLine(indentToken)
-
-  fun clear() {
-    text = ""
-  }
-
-  override fun toString() = text
 }
