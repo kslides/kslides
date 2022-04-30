@@ -44,6 +44,7 @@ abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : 
 class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
   internal var htmlBlock: () -> String = { "" }
   internal var htmlAssigned = false
+  var style = ""
   var indentToken = INDENT_TOKEN
   var disableTrimIndent = false
 
@@ -72,6 +73,7 @@ class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalS
 class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
   internal var dslBlock: SECTION.(DslSlide) -> Unit = { }
   internal var dslAssigned = false
+   var style = ""
 
   @KSlidesDslMarker
   fun content(dslBlock: SECTION.(DslSlide) -> Unit) {
@@ -91,6 +93,7 @@ open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(
 class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
   internal var htmlBlock: () -> String = { "" }
   internal var htmlAssigned = false
+   var style = ""
   var indentToken = INDENT_TOKEN
   var disableTrimIndent = false
 
@@ -119,6 +122,7 @@ class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : Ver
 class VerticalDslSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
   internal var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
   internal var dslAssigned = false
+   var style = ""
 
   @KSlidesDslMarker
   fun content(dslBlock: SECTION.(VerticalDslSlide) -> Unit) {

@@ -9,8 +9,8 @@ fun main() {
   @KSlidesDslMarker
   fun Presentation.slideSource(
     source: String,
-    title: String,
     token: String,
+    title: String = "Slide Definition",
     lines: String = "",
     id: String = "",
     language: String = "kotlin",
@@ -34,8 +34,8 @@ fun main() {
   fun Presentation.slideSource(
     context: VerticalSlideContext,
     source: String,
-    title: String,
     token: String,
+    title: String = "Slide Definition",
     lines: String = "",
     id: String = "",
     language: String = "kotlin",
@@ -121,7 +121,7 @@ fun main() {
         }
         // intro end
 
-        slideSource(this, slides, "Intro Slide Definition", "intro")
+        slideSource(this, slides, "intro")
       }
 
       verticalSlides {
@@ -146,7 +146,7 @@ fun main() {
         }
         // mdslide end
 
-        slideSource(this, slides, "Markdown Slide Definition", "mdslide")
+        slideSource(this, slides, "mdslide")
       }
 
       verticalSlides {
@@ -169,7 +169,7 @@ fun main() {
         }
         // htmlslide end
 
-        slideSource(this, slides, "HTML Slide Definition", "htmlslide")
+        slideSource(this, slides, "htmlslide")
       }
 
       verticalSlides {
@@ -186,7 +186,7 @@ fun main() {
         }
         // dslslide end
 
-        slideSource(this, slides, "DSL Slide Definition", "dslslide")
+        slideSource(this, slides, "dslslide")
       }
 
       verticalSlides {
@@ -205,7 +205,7 @@ fun main() {
         }
         // highlights end
 
-        slideSource(this, slides, "Highlighted Code Definition", "highlights")
+        slideSource(this, slides, "highlights")
       }
 
       verticalSlides {
@@ -234,7 +234,246 @@ fun main() {
         }
         // animated end
 
-        slideSource(this, slides, "Animated Code Definition", "animated")
+        slideSource(this, slides, "animated")
+      }
+
+      fun <T> List<T>.orderBy(vararg orders: List<Int>): Sequence<List<T>> =
+        sequence {
+          orders
+            .forEach { order ->
+              yield(
+                buildList {
+                  order.forEach { this@buildList += this@orderBy[it] }
+                })
+            }
+        }
+
+      verticalSlides {
+        // swapping begin
+        listOf("One", "Two", "Three", "Four")
+          .orderBy(
+            listOf(0, 1),
+            listOf(0, 1, 2),
+            listOf(0, 1, 2, 3),
+            listOf(1, 0, 3, 2),
+            listOf(1, 2, 0, 3),
+            listOf(1, 2, 3, 0),
+            listOf(0, 3, 2, 1),
+          )
+          .forEach { items ->
+            dslSlide {
+              autoAnimate = true
+              content {
+                h2 { +"Animated List Items 👇" }
+                unorderedList(*items.toTypedArray())
+              }
+            }
+          }
+        // swapping end
+
+        slideSource(this, slides, "swapping")
+      }
+
+      verticalSlides {
+
+        dslSlide {
+          style = "height: 600px"
+          autoAnimate = true
+
+          content {
+            h4 {
+              attributes["data-id"] = "slidenum"
+              style = "opacity: 0.75;"
+              +"Slide 1"
+            }
+            h2 {
+              attributes["data-id"] = "title"
+              style = "margin-top: 250px;"
+              +"Animate Anything 👇"
+            }
+            div {
+              attributes["data-id"] = "1"
+              style = "background: cyan; position: absolute; top: 150px; left: 16%; width: 60px; height: 60px;"
+            }
+            div {
+              attributes["data-id"] = "2"
+              style = "background: magenta; position: absolute; top: 150px; left: 36%; width: 60px; height: 60px;"
+            }
+            div {
+              attributes["data-id"] = "3"
+              style = "background: yellow; position: absolute; top: 150px; left: 56%; width: 60px; height: 60px;"
+            }
+            div {
+              attributes["data-id"] = "4"
+              style = "background: red; position: absolute; top: 150px; left: 76%; width: 60px; height: 60px;"
+            }
+          }
+        }
+
+        dslSlide {
+          style = "height: 600px"
+          autoAnimate = true
+
+          content {
+            h4 {
+              attributes["data-id"] = "slidenum"
+              style = "opacity: 0.75;"
+              +"Slide 2"
+            }
+            h2 {
+              attributes["data-id"] = "title"
+              style = "margin-top: 450px"
+              +"With Auto Animate 👇"
+            }
+            div {
+              attributes["data-id"] = "1"
+              style = "background: cyan; position: absolute; bottom: 190px; left: 16%; width: 60px; height: 60px;"
+            }
+            div {
+              attributes["data-id"] = "2"
+              style = "background: magenta; position: absolute; bottom: 190px; left: 36%; width: 60px; height: 160px;"
+            }
+            div {
+              attributes["data-id"] = "3"
+              style = "background: yellow; position: absolute; bottom: 190px; left: 56%; width: 60px; height: 260px;"
+            }
+            div {
+              attributes["data-id"] = "4"
+              style = "background: red; position: absolute; bottom: 190px; left: 76%; width: 60px; height: 360px;"
+            }
+          }
+        }
+
+        dslSlide {
+          style = "height: 600px"
+          autoAnimate = true
+
+          content {
+            h4 {
+              attributes["data-id"] = "slidenum"
+              style = "opacity: 0.75;"
+              +"Slide 3"
+            }
+            h2 {
+              attributes["data-id"] = "title"
+              style = "margin-top: 500px; opacity: 0.5;"
+              +"With Auto Animate 👇"
+            }
+            div {
+              attributes["data-id"] = "1"
+              style =
+                "background: cyan; position: absolute; top: 50%; left: 50%; width: 400px; height: 400px; margin: -200px 0 0 -200px; border-radius: 400px;"
+            }
+            div {
+              attributes["data-id"] = "2"
+              style =
+                "background: magenta; position: absolute; top: 50%; left: 50%; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 400px;"
+            }
+            div {
+              attributes["data-id"] = "3"
+              style =
+                "background: yellow; position: absolute; top: 50%; left: 50%; width: 200px; height: 200px; margin: -100px 0 0 -100px; border-radius: 400px;"
+            }
+            div {
+              attributes["data-id"] = "4"
+              style =
+                "background: red; position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; margin: -50px 0 0 -50px; border-radius: 400px;"
+            }
+          }
+        }
+
+        dslSlide {
+          style = "height: 600px"
+          autoAnimate = true
+
+          content {
+            h4 {
+              attributes["data-id"] = "slidenum"
+              style = "opacity: 0.75;"
+              +"Slide 4"
+            }
+            h2 {
+              attributes["data-id"] = "title"
+              style = "margin-top: 300px; opacity: 0.25;"
+              +"With Auto Animate"
+            }
+            div {
+              attributes["data-id"] = "1"
+              style = "background: cyan; position: absolute; top: 250px; left: 16%; width: 60px; height: 60px;"
+            }
+            div {
+              attributes["data-id"] = "2"
+              style = "background: magenta; position: absolute; top: 250px; left: 36%; width: 60px; height: 60px;"
+            }
+            div {
+              attributes["data-id"] = "3"
+              style = "background: yellow; position: absolute; top: 250px; left: 56%; width: 60px; height: 60px;"
+            }
+            div {
+              attributes["data-id"] = "4"
+              style = "background: red; position: absolute; top: 250px; left: 76%; width: 60px; height: 60px;"
+            }
+          }
+        }
+      }
+
+
+      verticalSlides {
+        // tabular begin
+        dslSlide {
+          content {
+            h2 { +"Tabular Tables" }
+            table {
+              thead {
+                headRow("Item", "Value", "Quantity")
+              }
+              tbody {
+                bodyRow("Apples", "$1", "7")
+                bodyRow("Lemonade", "$2", "18")
+                // Or use the verbose form
+                tr {
+                  td { +"Bread" }
+                  td { +"$3" }
+                  td { +"2" }
+                }
+              }
+            }
+          }
+        }
+        // tabular end
+
+        slideSource(this, slides, "tabular")
+      }
+
+      verticalSlides {
+
+        // fragment begin
+        dslSlide {
+          content {
+            h2 { +"Fragment Styles" }
+            p { +"There are different types of fragments, like:" }
+            p("fragment grow") { +"grow" }
+            p("fragment shrink") { +"shrink" }
+            p("fragment fade-out") { +"fade-out" }
+            p {
+              span("fragment fade-right") { style = "display: inline-block;"; +"fade-right," }
+              span("fragment fade-up") { style = "display: inline-block;"; +"up," }
+              span("fragment fade-down") { style = "display: inline-block;"; +"down," }
+              span("fragment fade-left") { style = "display: inline-block;"; +"left" }
+            }
+            p("fragment fade-in-then-out") { +"fade-in-then-out" }
+            p("fragment fade-in-then-semi-out") { +"fade-in-then-semi-out" }
+            p {
+              +"Highlight"
+              span("fragment highlight-red") { +"red" }
+              span("fragment highlight-blue") { +"blue" }
+              span("fragment highlight-green") { +"green" }
+            }
+          }
+        }
+        // fragment end
+
+        slideSource(this, slides, "fragment")
       }
 
       verticalSlides {
@@ -265,7 +504,7 @@ fun main() {
         }
         // iframe end
 
-        slideSource(this, slides, "Iframe Backgrounds Definition", "iframe")
+        slideSource(this, slides, "iframe")
       }
 
       verticalSlides {
@@ -289,7 +528,7 @@ fun main() {
         }
         // transition end
 
-        slideSource(this, slides, "Transitions Definition", "transition")
+        slideSource(this, slides, "transition")
       }
 
       verticalSlides {
@@ -318,7 +557,7 @@ fun main() {
         }
         // themes end
 
-        slideSource(this, slides, "Themes Definition", "themes")
+        slideSource(this, slides, "themes")
       }
 
       verticalSlides {
@@ -329,15 +568,12 @@ fun main() {
           }
 
           content {
-            h1 {
-              style = "color: red;"
-              +"Video Backgrounds"
-            }
+            h1 { style = "color: red;"; +"Video Backgrounds" }
           }
         }
         // video end
 
-        slideSource(this, slides, "Video Definition", "video")
+        slideSource(this, slides, "video")
       }
 
       verticalSlides {
@@ -356,7 +592,7 @@ fun main() {
         }
         // webcontent end
 
-        slideSource(this, slides, "Embed Web Content Definition", "webcontent")
+        slideSource(this, slides, "webcontent")
       }
 
       verticalSlides {
@@ -377,12 +613,12 @@ fun main() {
         }
         // navigation end
 
-        slideSource(this, slides, "Navigation Definition", "navigation")
+        slideSource(this, slides, "navigation")
       }
 
-      slideSource(slides, "Presentation Definition", "readme", "[]", "definition")
+      slideSource(slides, "readme", "Presentation Definition", "[]", "definition")
 
-      slideSource(slides, "Slide Source Definition", "slideSource", "[]")
+      slideSource(slides, "slideSource", "Slide Source Definition", "[]")
     }
     // readme end
 

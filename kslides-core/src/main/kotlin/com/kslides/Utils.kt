@@ -137,41 +137,9 @@ internal fun String.toIntList() =
   }
 
 fun lineNumbers(ranges: String) =
-  ranges.replace(whiteSpace, "")
+  ranges
+    .replace(whiteSpace, "")
     .trimStart('[', '(')
     .trimEnd(']', ')')
     .split("|")
     .map { if (it == "*") "" else it }
-
-fun DIV.unorderedList(vararg items: String, block: UL.() -> Unit = {}) {
-  val funcs: List<LI.() -> Unit> = items.map { { +it } }
-  unorderedList(*funcs.toTypedArray(), block = block)
-}
-
-fun DIV.orderedList(vararg items: String, block: OL.() -> Unit = {}) {
-  val funcs: List<LI.() -> Unit> = items.map { { +it } }
-  orderedList(*funcs.toTypedArray(), block = block)
-}
-
-fun DIV.unorderedList(vararg items: LI.() -> Unit, block: UL.() -> Unit = {}) =
-  ul {
-    block()
-    items.forEach {
-      li { it() }
-    }
-  }
-
-fun DIV.orderedList(vararg items: LI.() -> Unit, block: OL.() -> Unit = {}) =
-  ol {
-    block()
-    items.forEach {
-      li { it() }
-    }
-  }
-
-fun LI.listHref(url: String, block: A.() -> Unit = {}) {
-  a {
-    block()
-    href = url; +url
-  }
-}

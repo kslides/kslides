@@ -240,6 +240,8 @@ class Presentation(val kslides: KSlides) {
         (slide as DslSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
+            if (s.style.isNotBlank())
+              style = s.style
             s.processSlide(this)
             require(s.dslAssigned) { "dslSlide missing content { } section" }
             s.dslBlock.invoke(this, s)
@@ -255,6 +257,8 @@ class Presentation(val kslides: KSlides) {
         (slide as VerticalDslSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
+            if (s.style.isNotBlank())
+              style = s.style
             s.processSlide(this)
             require(s.dslAssigned) { "dslSlide missing content { } section" }
             s.dslBlock.invoke(this, s)
@@ -270,6 +274,8 @@ class Presentation(val kslides: KSlides) {
         (slide as HtmlSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
+            if (s.style.isNotBlank())
+              style = s.style
             s.processSlide(this)
             require(s.htmlAssigned) { "htmlSlide missing content { } section" }
             s.htmlBlock()
@@ -290,6 +296,8 @@ class Presentation(val kslides: KSlides) {
         (slide as VerticalHtmlSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
+            if (s.style.isNotBlank())
+              style = s.style
             s.processSlide(this)
             require(s.htmlAssigned) { "htmlSlide missing content { } section" }
             s.htmlBlock()
