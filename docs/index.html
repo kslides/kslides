@@ -498,7 +498,7 @@ listOf("One", "Two", "Three", "Four")
         
         <section>
           <section>
-            <h2>Tabular Tables</h2>
+            <h2>Tables</h2>
             <table>
               <thead>
                 <tr>
@@ -525,7 +525,7 @@ listOf("One", "Two", "Three", "Four")
 ```kotlin 
 dslSlide {
   content {
-    h2 { +"Tabular Tables" }
+    h2 { +"Tables" }
     table {
       thead {
         headRow("Item", "Value", "Quantity")
@@ -824,7 +824,7 @@ markdownSlide {
         <section data-markdown="" id="definition">
           <script type="text/template">
 ## Presentation Definition    
-```kotlin []
+```kotlin 
 presentation {
   css +=
     """
@@ -876,7 +876,7 @@ presentation {
     }
     // intro end
 
-    slideSource(this, slides, "intro")
+    slideSource(slides, "intro")
   }
 
   verticalSlides {
@@ -901,7 +901,7 @@ presentation {
     }
     // mdslide end
 
-    slideSource(this, slides, "mdslide")
+    slideSource(slides, "mdslide")
   }
 
   verticalSlides {
@@ -924,7 +924,7 @@ presentation {
     }
     // htmlslide end
 
-    slideSource(this, slides, "htmlslide")
+    slideSource(slides, "htmlslide")
   }
 
   verticalSlides {
@@ -941,7 +941,7 @@ presentation {
     }
     // dslslide end
 
-    slideSource(this, slides, "dslslide")
+    slideSource(slides, "dslslide")
   }
 
   verticalSlides {
@@ -960,7 +960,7 @@ presentation {
     }
     // highlights end
 
-    slideSource(this, slides, "highlights")
+    slideSource(slides, "highlights")
   }
 
   verticalSlides {
@@ -989,7 +989,7 @@ presentation {
     }
     // animated end
 
-    slideSource(this, slides, "animated")
+    slideSource(slides, "animated")
   }
 
   fun <T> List<T>.orderBy(vararg orders: List<Int>): Sequence<List<T>> =
@@ -1026,7 +1026,7 @@ presentation {
       }
     // swapping end
 
-    slideSource(this, slides, "swapping")
+    slideSource(slides, "swapping")
   }
 
   verticalSlides {
@@ -1176,7 +1176,7 @@ presentation {
     // tabular begin
     dslSlide {
       content {
-        h2 { +"Tabular Tables" }
+        h2 { +"Tables" }
         table {
           thead {
             headRow("Item", "Value", "Quantity")
@@ -1196,7 +1196,7 @@ presentation {
     }
     // tabular end
 
-    slideSource(this, slides, "tabular")
+    slideSource(slides, "tabular")
   }
 
   verticalSlides {
@@ -1227,7 +1227,7 @@ presentation {
     }
     // fragment end
 
-    slideSource(this, slides, "fragment")
+    slideSource(slides, "fragment")
   }
 
   verticalSlides {
@@ -1258,7 +1258,7 @@ presentation {
     }
     // iframe end
 
-    slideSource(this, slides, "iframe")
+    slideSource(slides, "iframe")
   }
 
   verticalSlides {
@@ -1282,7 +1282,7 @@ presentation {
     }
     // transition end
 
-    slideSource(this, slides, "transition")
+    slideSource(slides, "transition")
   }
 
   verticalSlides {
@@ -1311,7 +1311,7 @@ presentation {
     }
     // themes end
 
-    slideSource(this, slides, "themes")
+    slideSource(slides, "themes")
   }
 
   verticalSlides {
@@ -1327,7 +1327,7 @@ presentation {
     }
     // video end
 
-    slideSource(this, slides, "video")
+    slideSource(slides, "video")
   }
 
   verticalSlides {
@@ -1346,7 +1346,7 @@ presentation {
     }
     // webcontent end
 
-    slideSource(this, slides, "webcontent")
+    slideSource(slides, "webcontent")
   }
 
   verticalSlides {
@@ -1367,12 +1367,12 @@ presentation {
     }
     // navigation end
 
-    slideSource(this, slides, "navigation")
+    slideSource(slides, "navigation")
   }
 
-  slideSource(slides, "readme", "Presentation Definition", "[]", "definition")
+  slideSource(slides, "readme", "Presentation Definition", id = "definition")
 
-  slideSource(slides, "slideSource", "Slide Source Definition", "[]")
+  slideSource("kslides-core/src/main/kotlin/com/kslides/Presentation.kt", "slideSource", "Slide Source Definition")
 }
 ```
 </script>
@@ -1381,9 +1381,8 @@ presentation {
         <section data-markdown="">
           <script type="text/template">
 ## Slide Source Definition    
-```kotlin []
-@KSlidesDslMarker
-fun Presentation.slideSource(
+```kotlin 
+fun slideSource(
   source: String,
   token: String,
   title: String = "Slide Definition",

@@ -5,57 +5,6 @@ import kotlinx.html.*
 
 fun main() {
 
-  // slideSource begin
-  @KSlidesDslMarker
-  fun Presentation.slideSource(
-    source: String,
-    token: String,
-    title: String = "Slide Definition",
-    lines: String = "",
-    id: String = "",
-    language: String = "kotlin",
-  ) {
-    markdownSlide {
-      if (id.isNotBlank()) this.id = id
-      slideConfig { markdownNotesSeparator = "^^" }
-      content {
-        """
-        ## $title    
-        ```$language $lines
-        ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
-        ```
-        """
-      }
-    }
-  }
-  // slideSource end
-
-  @KSlidesDslMarker
-  fun Presentation.slideSource(
-    context: VerticalSlideContext,
-    source: String,
-    token: String,
-    title: String = "Slide Definition",
-    lines: String = "",
-    id: String = "",
-    language: String = "kotlin",
-  ) {
-    with(context) {
-      markdownSlide {
-        if (id.isNotBlank()) this.id = id
-        slideConfig { markdownNotesSeparator = "^^" }
-        content {
-          """
-          ## $title    
-          ```$language $lines
-          ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
-          ```
-          """
-        }
-      }
-    }
-  }
-
   kslides {
 
     val slides = "kslides-examples/src/main/kotlin/Slides.kt"
@@ -121,7 +70,7 @@ fun main() {
         }
         // intro end
 
-        slideSource(this, slides, "intro")
+        slideSource(slides, "intro")
       }
 
       verticalSlides {
@@ -146,7 +95,7 @@ fun main() {
         }
         // mdslide end
 
-        slideSource(this, slides, "mdslide")
+        slideSource(slides, "mdslide")
       }
 
       verticalSlides {
@@ -169,7 +118,7 @@ fun main() {
         }
         // htmlslide end
 
-        slideSource(this, slides, "htmlslide")
+        slideSource(slides, "htmlslide")
       }
 
       verticalSlides {
@@ -186,7 +135,7 @@ fun main() {
         }
         // dslslide end
 
-        slideSource(this, slides, "dslslide")
+        slideSource(slides, "dslslide")
       }
 
       verticalSlides {
@@ -205,7 +154,7 @@ fun main() {
         }
         // highlights end
 
-        slideSource(this, slides, "highlights")
+        slideSource(slides, "highlights")
       }
 
       verticalSlides {
@@ -234,7 +183,7 @@ fun main() {
         }
         // animated end
 
-        slideSource(this, slides, "animated")
+        slideSource(slides, "animated")
       }
 
       fun <T> List<T>.orderBy(vararg orders: List<Int>): Sequence<List<T>> =
@@ -271,7 +220,7 @@ fun main() {
           }
         // swapping end
 
-        slideSource(this, slides, "swapping")
+        slideSource(slides, "swapping")
       }
 
       verticalSlides {
@@ -421,7 +370,7 @@ fun main() {
         // tabular begin
         dslSlide {
           content {
-            h2 { +"Tabular Tables" }
+            h2 { +"Tables" }
             table {
               thead {
                 headRow("Item", "Value", "Quantity")
@@ -441,7 +390,7 @@ fun main() {
         }
         // tabular end
 
-        slideSource(this, slides, "tabular")
+        slideSource(slides, "tabular")
       }
 
       verticalSlides {
@@ -472,7 +421,7 @@ fun main() {
         }
         // fragment end
 
-        slideSource(this, slides, "fragment")
+        slideSource(slides, "fragment")
       }
 
       verticalSlides {
@@ -503,7 +452,7 @@ fun main() {
         }
         // iframe end
 
-        slideSource(this, slides, "iframe")
+        slideSource(slides, "iframe")
       }
 
       verticalSlides {
@@ -527,7 +476,7 @@ fun main() {
         }
         // transition end
 
-        slideSource(this, slides, "transition")
+        slideSource(slides, "transition")
       }
 
       verticalSlides {
@@ -556,7 +505,7 @@ fun main() {
         }
         // themes end
 
-        slideSource(this, slides, "themes")
+        slideSource(slides, "themes")
       }
 
       verticalSlides {
@@ -572,7 +521,7 @@ fun main() {
         }
         // video end
 
-        slideSource(this, slides, "video")
+        slideSource(slides, "video")
       }
 
       verticalSlides {
@@ -591,7 +540,7 @@ fun main() {
         }
         // webcontent end
 
-        slideSource(this, slides, "webcontent")
+        slideSource(slides, "webcontent")
       }
 
       verticalSlides {
@@ -612,14 +561,81 @@ fun main() {
         }
         // navigation end
 
-        slideSource(this, slides, "navigation")
+        slideSource(slides, "navigation")
       }
 
-      slideSource(slides, "readme", "Presentation Definition", "[]", "definition")
+      slideSource(slides, "readme", "Presentation Definition", id = "definition")
 
-      slideSource(slides, "slideSource", "Slide Source Definition", "[]")
+      slideSource("kslides-core/src/main/kotlin/com/kslides/Presentation.kt", "slideSource", "Slide Source Definition")
     }
     // readme end
+
+    presentation {
+      path = "layouts.html"
+
+      verticalSlides {
+        // layouts begin
+        dslSlide {
+          content {
+            h2 { +"Layout Examples" }
+            unorderedList(
+              { listHref("#/fit-text", "Fit Text") },
+              { listHref("#/stretch", "Stretch") },
+              { listHref("#/stack", "Stack") },
+              { listHref("#/hstack", "HStack") },
+              { listHref("#/vstack", "VStack") },
+            )
+          }
+        }
+        // layouts end
+
+        slideSource(slides, "layouts")
+      }
+
+      verticalSlides {
+        dslSlide {
+          id = "fit-text"
+          content {
+            h2 { +"Fit Text" }
+            p { +"Resizes text to be as large as possible within its container." }
+            pre {
+              code("html") {
+                attributes["data-trim"] = "true"
+                attributes["data-line-numbers"] = "true"
+                h2("r-fit-text") { +"FIT" }
+              }
+            }
+            p { +"👇" }
+          }
+        }
+
+        // fit-text1 begin
+        dslSlide {
+          content {
+            h2("r-fit-text") { +"FIT" }
+          }
+        }
+        // fit-text1 end
+
+        slideSource(slides, "fit-text1")
+
+        // fit-text2 begin
+        dslSlide {
+          content {
+            h2("r-fit-text") { +"HELLO WORLD" }
+            h2("r-fit-text") { +"BOTH THESE TITLES USE FIT-TEXT" }
+          }
+        }
+        // fit-text2 end
+
+        slideSource(slides, "fit-text2")
+      }
+
+      verticalSlides {
+
+
+      }
+    }
 
     presentation {
       // Make this presentation available at helloworld.html

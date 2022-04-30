@@ -3,10 +3,10 @@ package com.kslides
 import kotlinx.html.*
 
 @HtmlTagMarker
-inline fun LI.listHref(url: String, crossinline block: A.() -> Unit = {}) {
+inline fun LI.listHref(url: String, text: String = "", crossinline block: A.() -> Unit = {}) {
   a {
     block()
-    href = url; +url
+    href = url; +(if (text.isBlank()) url else text)
   }
 }
 

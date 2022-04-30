@@ -309,6 +309,54 @@ class Presentation(val kslides: KSlides) {
       }
     }.also { verticalSlides += it }
 
+  @KSlidesDslMarker
+  // slideSource begin
+  fun slideSource(
+    source: String,
+    token: String,
+    title: String = "Slide Definition",
+    lines: String = "",
+    id: String = "",
+    language: String = "kotlin",
+  ) {
+    markdownSlide {
+      if (id.isNotBlank()) this.id = id
+      slideConfig { markdownNotesSeparator = "^^" }
+      content {
+        """
+        ## $title    
+        ```$language $lines
+        ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
+        ```
+        """
+      }
+    }
+  }
+  // slideSource end
+
+  @KSlidesDslMarker
+  fun VerticalSlideContext.slideSource(
+    source: String,
+    token: String,
+    title: String = "Slide Definition",
+    lines: String = "",
+    id: String = "",
+    language: String = "kotlin",
+  ) {
+    markdownSlide {
+      if (id.isNotBlank()) this.id = id
+      slideConfig { markdownNotesSeparator = "^^" }
+      content {
+        """
+        ## $title    
+        ```$language $lines
+        ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
+        ```
+        """
+      }
+    }
+  }
+
   private fun toJsValue(key: String, value: Any) =
     when (value) {
       is Boolean, is Number -> "$key: $value"

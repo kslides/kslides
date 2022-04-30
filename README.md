@@ -188,13 +188,20 @@ presentation {
 
 ## Misc Notes
 
+### Using dslSlides
+
+[This](https://plugins.jetbrains.com/plugin/12205-html-to-kotlinx-html) plugin makes it much easier to work with 
+HTML. Just copy some HTML into your copy buffer, and when you paste it, it will give you
+the option to convert it to the appropriate Kotlin HTML DSL code. Install it by going to "Plugins" and searching for
+`HTML to kotlinx.html` in "Marketplace"
+
 ### Formatting
 Do not instruct IntelliJ to automatically format your code when you commit your code. The presentation
 html files are space-sensitive and might not work if they are formatted.
 
 ### Images
-* Presentations served by HTTP pull static files from ```/src/main/resources/public```. whereas 
-filesystem presentations pull from ```/docs```.
+* Presentations served by HTTP load static files from `/src/main/resources/public`, whereas 
+filesystem presentations load from `/docs`.
 
 ### Code Slides
 Rather than embedding code directly in markdownSlides, it is much better to use the
