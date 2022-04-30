@@ -208,7 +208,7 @@ dslSlide {
         <section>
           <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
             <script type="text/template">
-## Highlighted Code    
+## Highlighted Code with a markdownSlide   
 ```kotlin [|3,7|4,6| 5 | 4-6]
 package examples
 
@@ -230,7 +230,7 @@ Note: This slide shows code highlights. You can specify the lines you want to hi
 markdownSlide {
   content {
     """
-    ## Highlighted Code    
+    ## Highlighted Code with a markdownSlide   
     ```kotlin [|3,7|4,6| 5 | 4-6]
     ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
     ```
@@ -263,7 +263,6 @@ markdownSlide {
             
             <aside class="notes">
 This slide shows animated code highlights.
-Indicate the lines you want to highlight by using a for loop
 </aside>
           </section>
           
@@ -286,7 +285,6 @@ Indicate the lines you want to highlight by using a for loop
             
             <aside class="notes">
 This slide shows animated code highlights.
-Indicate the lines you want to highlight by using a for loop
 </aside>
           </section>
           
@@ -315,7 +313,6 @@ Indicate the lines you want to highlight by using a for loop
             
             <aside class="notes">
 This slide shows animated code highlights.
-Indicate the lines you want to highlight by using a for loop
 </aside>
           </section>
           
@@ -339,7 +336,6 @@ for (lines in lineNumbers("[5,6,9|5-9|]"))
       <h2>👇</h2>
       <aside class="notes">
       This slide shows animated code highlights.
-      Indicate the lines you want to highlight by using a for loop
       </aside>
       """
     }
@@ -352,7 +348,7 @@ for (lines in lineNumbers("[5,6,9|5-9|]"))
         
         <section>
           <section data-auto-animate="">
-            <h2>Animated Code with a `dslSlide`</h2>
+            <h2>Animated Code with a dslSlide</h2>
             <pre data-cc="false" data-id="code-animation">
               <code data-line-numbers="" data-trim="">
 let planets = [
@@ -361,14 +357,11 @@ let planets = [
 </code>
             </pre>
             <h2>&#128071;</h2>
-            <aside class="notes">
-                  This slide shows animated code highlights. 
-                  Indicate the lines you want to highlight by using a for loop
-                 </aside>
+            <aside class="notes">This slide shows animated code highlights.</aside>
           </section>
           
           <section data-auto-animate="">
-            <h2>Animated Code with a `dslSlide`</h2>
+            <h2>Animated Code with a dslSlide</h2>
             <pre data-cc="false" data-id="code-animation">
               <code data-line-numbers="" data-trim="">
 let planets = [
@@ -379,14 +372,11 @@ let planets = [
 </code>
             </pre>
             <h2>&#128071;</h2>
-            <aside class="notes">
-                  This slide shows animated code highlights. 
-                  Indicate the lines you want to highlight by using a for loop
-                 </aside>
+            <aside class="notes">This slide shows animated code highlights.</aside>
           </section>
           
           <section data-auto-animate="">
-            <h2>Animated Code with a `dslSlide`</h2>
+            <h2>Animated Code with a dslSlide</h2>
             <pre data-cc="false" data-id="code-animation">
               <code data-line-numbers="" data-trim="">
 let circumferenceReducer = (c, planet) =&amp;gt; {
@@ -403,10 +393,7 @@ let c = planets.reduce(circumferenceReducer, 0)
 </code>
             </pre>
             <h2>&#128071;</h2>
-            <aside class="notes">
-                  This slide shows animated code highlights. 
-                  Indicate the lines you want to highlight by using a for loop
-                 </aside>
+            <aside class="notes">This slide shows animated code highlights.</aside>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -419,7 +406,7 @@ for (lines in lineNumbers("[5,6,9|5-9|]"))
   dslSlide {
     autoAnimate = true
     content {
-      h2 { +"Animated Code with a `dslSlide`" }
+      h2 { +"Animated Code with a dslSlide" }
       pre {
         attributes["data-id"] = "code-animation"
         attributes["data-cc"] = "false"
@@ -431,10 +418,7 @@ for (lines in lineNumbers("[5,6,9|5-9|]"))
       }
       h2 { +"👇" }
       aside("notes") {
-        +"""
-          This slide shows animated code highlights. 
-          Indicate the lines you want to highlight by using a for loop
-         """
+        +"This slide shows animated code highlights."
       }
     }
   }
@@ -1033,7 +1017,7 @@ presentation {
     markdownSlide {
       content {
         """
-        ## Highlighted Code    
+        ## Highlighted Code with a markdownSlide   
         ```kotlin [|3,7|4,6| 5 | 4-6]
         ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
         ```
@@ -1065,7 +1049,6 @@ presentation {
           <h2>👇</h2>
           <aside class="notes">
           This slide shows animated code highlights.
-          Indicate the lines you want to highlight by using a for loop
           </aside>
           """
         }
@@ -1083,7 +1066,7 @@ presentation {
       dslSlide {
         autoAnimate = true
         content {
-          h2 { +"Animated Code with a `dslSlide`" }
+          h2 { +"Animated Code with a dslSlide" }
           pre {
             attributes["data-id"] = "code-animation"
             attributes["data-cc"] = "false"
@@ -1095,10 +1078,7 @@ presentation {
           }
           h2 { +"👇" }
           aside("notes") {
-            +"""
-              This slide shows animated code highlights. 
-              Indicate the lines you want to highlight by using a for loop
-             """
+            +"This slide shows animated code highlights."
           }
         }
       }

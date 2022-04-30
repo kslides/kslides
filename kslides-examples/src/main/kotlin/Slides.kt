@@ -143,7 +143,7 @@ fun main() {
         markdownSlide {
           content {
             """
-            ## Highlighted Code    
+            ## Highlighted Code with a markdownSlide   
             ```kotlin [|3,7|4,6| 5 | 4-6]
             ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
             ```
@@ -192,7 +192,7 @@ fun main() {
           dslSlide {
             autoAnimate = true
             content {
-              h2 { +"Animated Code with a `dslSlide`" }
+              h2 { +"Animated Code with a dslSlide" }
               pre {
                 attributes["data-id"] = "code-animation"
                 attributes["data-cc"] = "false"
@@ -645,6 +645,38 @@ fun main() {
         // fit-text2 end
 
         slideSource(slides, "fit-text2")
+      }
+
+      verticalSlides {
+        dslSlide {
+          id = "stretch"
+          content {
+            h2 { +"Stretch" }
+            p { +"Makes an element as tall as possible while remaining within the slide bounds." }
+            pre {
+              code("html") {
+                attributes["data-trim"] = "true"
+                attributes["data-line-numbers"] = "true"
+                h2 { +"Stretch Example" }
+                img(classes = "r-stretch") {
+                  src = "../../examples/assets/image2.png"
+                }
+                p { +"Image byline" }
+              }
+            }
+          }
+        }
+
+        dslSlide {
+          content {
+            h2 { +"Stretch Example" }
+            img(classes = "r-stretch") {
+              src = "../../examples/assets/image2.png"
+            }
+            p { +"Image byline" }
+          }
+        }
+        //slideSource(slides, "stretch")
       }
     }
 
