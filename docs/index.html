@@ -755,8 +755,8 @@ dslSlide {
         
         <section>
           <section>
-            <h2>Embed Web Content</h2>
-            <iframe data-autoplay="true" height="540" src="https://slides.com/news/auto-animate/embed" width="700"></iframe>
+            <h2>Embedded Web Content</h2>
+            <iframe height="540" src="https://slides.com/news/auto-animate/embed" style="border:none;" width="700"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -765,12 +765,12 @@ dslSlide {
 ```kotlin 
 dslSlide {
   content {
-    h2 { +"Embed Web Content" }
+    h2 { +"Embedded Web Content" }
     iframe {
       src = "https://slides.com/news/auto-animate/embed"
-      attributes["data-autoplay"] = "true"
       height = "540"
       width = "700"
+      style = "border:none;"
     }
   }
 }
@@ -1336,12 +1336,12 @@ presentation {
     // webcontent begin
     dslSlide {
       content {
-        h2 { +"Embed Web Content" }
+        h2 { +"Embedded Web Content" }
         iframe {
           src = "https://slides.com/news/auto-animate/embed"
-          attributes["data-autoplay"] = "true"
           height = "540"
           width = "700"
+          style = "border:none;"
         }
       }
     }

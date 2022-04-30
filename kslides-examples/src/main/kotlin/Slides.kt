@@ -581,12 +581,12 @@ fun main() {
         // webcontent begin
         dslSlide {
           content {
-            h2 { +"Embed Web Content" }
+            h2 { +"Embedded Web Content" }
             iframe {
               src = "https://slides.com/news/auto-animate/embed"
-              attributes["data-autoplay"] = "true"
               height = "540"
               width = "700"
+              style = "border:none;"
             }
           }
         }
