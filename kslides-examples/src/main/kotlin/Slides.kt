@@ -21,7 +21,7 @@ fun main() {
 
       topRightHref = "/"
       topRightTitle = "Go to 1st Slide"
-      topRightText = "Home"//"🏠"
+      topRightText = "🏠"
 
       slideNumber = "c/t"
       hash = true
