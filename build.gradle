@@ -33,7 +33,7 @@ ext {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.7.8'
+    version '0.8.0'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
