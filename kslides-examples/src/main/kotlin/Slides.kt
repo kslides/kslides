@@ -595,7 +595,6 @@ fun main() {
               { listHref("#/hstack", "HStack") },
               { listHref("#/vstack", "VStack") },
             )
-            p { a { href = "/"; +"Return to Home" } }
             p { +"👇" }
           }
         }
