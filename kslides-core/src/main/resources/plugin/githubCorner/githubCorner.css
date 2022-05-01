@@ -9,3 +9,7 @@ a.github-corner {
 a.github-corner:hover {
     color: white;
 }
+
+#githubCorner path {
+    fill: #258BD2;
+}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <META content="text/html; charset=UTF-8" http-equiv="Content-Type">
     <meta charset="utf-8">
     <meta content="yes" name="apple-mobile-web-app-capable">
     <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
@@ -20,15 +20,6 @@
     <link href="revealjs/plugin/copycode/copycode.css" rel="stylesheet">
     <link href="revealjs/plugin/githubCorner/githubCorner.css" rel="stylesheet">
     <link href="revealjs/css/custom.css" rel="stylesheet">
-    <style media="screen" type="text/css">
-        .htmlslide h2 {
-          color: yellow;
-        }
-        #mdslide h2 {
-color: green;
-}
-
-</style>
   </head>
   <body>
     <div class="reveal">
@@ -41,24 +32,58 @@ color: green;
         </svg>
                 </a>
       <div class="slides">
-        <section data-background-color="#2A9EEE" data-markdown="" id="mdslide">
-          <script type="text/template">
-# Markdown
-## Hello World
-</script>
-        </section>
-        
         <section>
-          <section class="htmlslide" data-background-color="red">
-            
-            <h1>HTML</h1>
-            
-            <h2>Hello World</h2>
+          <section>
+            <div class="rtopcorner">
+              <a href="/">&#127968;</a>
+            </div>
+            <h2>Fragment Styles</h2>
+            <p>There are different types of fragments, like: &#128071;</p>
+            <p class="fragment grow">grow</p>
+            <p class="fragment shrink">shrink</p>
+            <p class="fragment fade-out">fade-out</p>
+            <p>
+              <span class="fragment fade-right" style="display: inline-block;">fade-right, </span><span class="fragment fade-up" style="display: inline-block;">up, </span><span class="fragment fade-down" style="display: inline-block;">down, </span><span class="fragment fade-left" style="display: inline-block;">left</span>
+            </p>
+            <p class="fragment fade-in-then-out">fade-in-then-out</p>
+            <p class="fragment fade-in-then-semi-out">fade-in-then-semi-out</p>
+            <p>
+              Highlight <span class="fragment highlight-red">red </span><span class="fragment highlight-blue">blue </span><span class="fragment highlight-green">green </span>
+            </p>
           </section>
           
-          <section data-background-color="#2A9EEE">
-            <h1>DSL</h1>
-            <h2>Hello World</h2>
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+dslSlide {
+  content {
+    div("rtopcorner") {
+      a { href = "/"; +"🏠" }
+    }
+    h2 { +"Fragment Styles" }
+    p { +"There are different types of fragments, like: 👇" }
+    p("fragment grow") { +"grow" }
+    p("fragment shrink") { +"shrink" }
+    p("fragment fade-out") { +"fade-out" }
+    p {
+      span("fragment fade-right") { style = "display: inline-block;"; +"fade-right, " }
+      span("fragment fade-up") { style = "display: inline-block;"; +"up, " }
+      span("fragment fade-down") { style = "display: inline-block;"; +"down, " }
+      span("fragment fade-left") { style = "display: inline-block;"; +"left" }
+    }
+    p("fragment fade-in-then-out") { +"fade-in-then-out" }
+    p("fragment fade-in-then-semi-out") { +"fade-in-then-semi-out" }
+    p {
+      +"Highlight "
+      span("fragment highlight-red") { +"red " }
+      span("fragment highlight-blue") { +"blue " }
+      span("fragment highlight-green") { +"green " }
+    }
+  }
+}
+```
+</script>
           </section>
           
         </section>
@@ -80,7 +105,7 @@ color: green;
 		Reveal.initialize({
 			hash: true,
 			history: true,
-			transition: 'fade',
+			transition: 'slide',
 			transitionSpeed: 'slow',
 			center: true,
 

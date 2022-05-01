@@ -23,7 +23,6 @@
     <style media="screen" type="text/css">
         #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
-        #githubCorner path { fill: #258BD2; }
         img[alt=slide] { width: 150px; }
         </style>
   </head>
@@ -618,56 +617,6 @@ dslSlide {
         </section>
         
         <section>
-          <section>
-            <h2>Fragment Styles</h2>
-            <p>There are different types of fragments, like:</p>
-            <p class="fragment grow">grow</p>
-            <p class="fragment shrink">shrink</p>
-            <p class="fragment fade-out">fade-out</p>
-            <p>
-              <span class="fragment fade-right" style="display: inline-block;">fade-right,</span><span class="fragment fade-up" style="display: inline-block;">up,</span><span class="fragment fade-down" style="display: inline-block;">down,</span><span class="fragment fade-left" style="display: inline-block;">left</span>
-            </p>
-            <p class="fragment fade-in-then-out">fade-in-then-out</p>
-            <p class="fragment fade-in-then-semi-out">fade-in-then-semi-out</p>
-            <p>
-              Highlight<span class="fragment highlight-red">red</span><span class="fragment highlight-blue">blue</span><span class="fragment highlight-green">green</span>
-            </p>
-          </section>
-          
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
-            <script type="text/template">
-## Slide Definition    
-```kotlin 
-dslSlide {
-  content {
-    h2 { +"Fragment Styles" }
-    p { +"There are different types of fragments, like:" }
-    p("fragment grow") { +"grow" }
-    p("fragment shrink") { +"shrink" }
-    p("fragment fade-out") { +"fade-out" }
-    p {
-      span("fragment fade-right") { style = "display: inline-block;"; +"fade-right," }
-      span("fragment fade-up") { style = "display: inline-block;"; +"up," }
-      span("fragment fade-down") { style = "display: inline-block;"; +"down," }
-      span("fragment fade-left") { style = "display: inline-block;"; +"left" }
-    }
-    p("fragment fade-in-then-out") { +"fade-in-then-out" }
-    p("fragment fade-in-then-semi-out") { +"fade-in-then-semi-out" }
-    p {
-      +"Highlight"
-      span("fragment highlight-red") { +"red" }
-      span("fragment highlight-blue") { +"blue" }
-      span("fragment highlight-green") { +"green" }
-    }
-  }
-}
-```
-</script>
-          </section>
-          
-        </section>
-        
-        <section>
           <section data-background-iframe="https://revealjs.com/backgrounds/#iframe-backgrounds">
             <div style="
                   position: absolute; width: 40%; right: 0; 
@@ -851,6 +800,42 @@ dslSlide {
         <section>
           <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
             <script type="text/template">
+## Other Features 🚡
+
+[Layouts](/layouts.html) 
+              <!-- .element: class="fragment" -->
+
+[Fragments](/fragments.html) 
+              <!-- .element: class="fragment" -->
+            
+</script>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+markdownSlide {
+  content {
+    """
+    ## Other Features 🚡
+    
+    [Layouts](/layouts.html) ${fragment()}
+ 
+    [Fragments](/fragments.html) ${fragment()}
+                
+    """
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
+            <script type="text/template">
 ## Navigation Slide 🦊 
 
 [Go to the 1st slide](#/intro) 
@@ -859,9 +844,8 @@ dslSlide {
 [Go to the 2nd slide](#/mdslide) 
               <!-- .element: class="fragment" -->
 
-[Go to the definition slide](#/definition) 
+[Go to the presentation definition slide](#/definition) 
               <!-- .element: class="fragment" -->
-
 </script>
           </section>
           
@@ -878,8 +862,7 @@ markdownSlide {
  
     [Go to the 2nd slide](#/mdslide) ${fragment()}
     
-    [Go to the definition slide](#/definition) ${fragment()}
-    
+    [Go to the presentation definition slide](#/definition) ${fragment()}
     """
   }
 }
@@ -898,7 +881,6 @@ presentation {
     """
     #intro h1 { color: #FF5533; }
     #mdslide p { color: #FF6836; }
-    #githubCorner path { fill: #258BD2; }
     img[alt=slide] { width: 150px; }
     """
 
@@ -1273,37 +1255,6 @@ presentation {
   }
 
   verticalSlides {
-
-    // fragment begin
-    dslSlide {
-      content {
-        h2 { +"Fragment Styles" }
-        p { +"There are different types of fragments, like:" }
-        p("fragment grow") { +"grow" }
-        p("fragment shrink") { +"shrink" }
-        p("fragment fade-out") { +"fade-out" }
-        p {
-          span("fragment fade-right") { style = "display: inline-block;"; +"fade-right," }
-          span("fragment fade-up") { style = "display: inline-block;"; +"up," }
-          span("fragment fade-down") { style = "display: inline-block;"; +"down," }
-          span("fragment fade-left") { style = "display: inline-block;"; +"left" }
-        }
-        p("fragment fade-in-then-out") { +"fade-in-then-out" }
-        p("fragment fade-in-then-semi-out") { +"fade-in-then-semi-out" }
-        p {
-          +"Highlight"
-          span("fragment highlight-red") { +"red" }
-          span("fragment highlight-blue") { +"blue" }
-          span("fragment highlight-green") { +"green" }
-        }
-      }
-    }
-    // fragment end
-
-    slideSource(slides, "fragment")
-  }
-
-  verticalSlides {
     // iframe begin
     dslSlide {
       slideConfig {
@@ -1423,6 +1374,25 @@ presentation {
   }
 
   verticalSlides {
+    // other begin
+    markdownSlide {
+      content {
+        """
+        ## Other Features 🚡
+        
+        [Layouts](/layouts.html) ${fragment()}
+     
+        [Fragments](/fragments.html) ${fragment()}
+                    
+        """
+      }
+    }
+    // other end
+
+    slideSource(slides, "other")
+  }
+
+  verticalSlides {
     // navigation begin
     markdownSlide {
       content {
@@ -1433,8 +1403,7 @@ presentation {
      
         [Go to the 2nd slide](#/mdslide) ${fragment()}
         
-        [Go to the definition slide](#/definition) ${fragment()}
-        
+        [Go to the presentation definition slide](#/definition) ${fragment()}
         """
       }
     }
@@ -1499,6 +1468,7 @@ fun slideSource(
 			history: true,
 			transition: 'slide',
 			transitionSpeed: 'slow',
+			center: true,
 
 			slideNumber: 'c/t',
 

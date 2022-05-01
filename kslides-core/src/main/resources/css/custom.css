@@ -7,3 +7,9 @@
 .reveal h6 {
     text-transform: none;
 }
+
+.rtopcorner{
+    position:absolute;
+    top:0;
+    right:0;
+}

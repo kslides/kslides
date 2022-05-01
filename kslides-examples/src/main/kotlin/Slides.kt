@@ -27,6 +27,7 @@ fun main() {
       enableSpeakerNotes = true
       enableMenu = true
       theme = Theme.SOLARIZED
+      center = true
     }
 
     // readme begin
@@ -35,7 +36,6 @@ fun main() {
         """
         #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
-        #githubCorner path { fill: #258BD2; }
         img[alt=slide] { width: 150px; }
         """
 
@@ -410,37 +410,6 @@ fun main() {
       }
 
       verticalSlides {
-
-        // fragment begin
-        dslSlide {
-          content {
-            h2 { +"Fragment Styles" }
-            p { +"There are different types of fragments, like:" }
-            p("fragment grow") { +"grow" }
-            p("fragment shrink") { +"shrink" }
-            p("fragment fade-out") { +"fade-out" }
-            p {
-              span("fragment fade-right") { style = "display: inline-block;"; +"fade-right," }
-              span("fragment fade-up") { style = "display: inline-block;"; +"up," }
-              span("fragment fade-down") { style = "display: inline-block;"; +"down," }
-              span("fragment fade-left") { style = "display: inline-block;"; +"left" }
-            }
-            p("fragment fade-in-then-out") { +"fade-in-then-out" }
-            p("fragment fade-in-then-semi-out") { +"fade-in-then-semi-out" }
-            p {
-              +"Highlight"
-              span("fragment highlight-red") { +"red" }
-              span("fragment highlight-blue") { +"blue" }
-              span("fragment highlight-green") { +"green" }
-            }
-          }
-        }
-        // fragment end
-
-        slideSource(slides, "fragment")
-      }
-
-      verticalSlides {
         // iframe begin
         dslSlide {
           slideConfig {
@@ -560,6 +529,25 @@ fun main() {
       }
 
       verticalSlides {
+        // other begin
+        markdownSlide {
+          content {
+            """
+            ## Other Features 🚡
+            
+            [Layouts](/layouts.html) ${fragment()}
+         
+            [Fragments](/fragments.html) ${fragment()}
+                        
+            """
+          }
+        }
+        // other end
+
+        slideSource(slides, "other")
+      }
+
+      verticalSlides {
         // navigation begin
         markdownSlide {
           content {
@@ -570,8 +558,7 @@ fun main() {
          
             [Go to the 2nd slide](#/mdslide) ${fragment()}
             
-            [Go to the definition slide](#/definition) ${fragment()}
-            
+            [Go to the presentation definition slide](#/definition) ${fragment()}
             """
           }
         }
@@ -601,6 +588,8 @@ fun main() {
               { listHref("#/hstack", "HStack") },
               { listHref("#/vstack", "VStack") },
             )
+            p { a { href = "/"; +"Return to Home" } }
+            p { +"👇" }
           }
         }
         // layouts end
@@ -613,7 +602,21 @@ fun main() {
           id = "fit-text"
           content {
             h2 { +"Fit Text" }
-            p { +"Resizes text to be as large as possible within its container." }
+            p { +"Resizes text to be as large as possible within its container. 👇" }
+            pre {
+              code("html") {
+                attributes["data-trim"] = "true"
+                attributes["data-line-numbers"] = "true"
+                +includeFile(
+                  slides,
+                  "3",
+                  beginToken = "fit-text1 begin",
+                  endToken = "fit-text1 end",
+                  enableEscape = false
+                )
+              }
+            }
+            p { +"or" }
             pre {
               code("html") {
                 attributes["data-trim"] = "true"
@@ -621,7 +624,6 @@ fun main() {
                 h2("r-fit-text") { +"FIT" }
               }
             }
-            p { +"👇" }
           }
         }
 
@@ -652,7 +654,7 @@ fun main() {
           id = "stretch"
           content {
             h2 { +"Stretch" }
-            p { +"Makes an element as tall as possible while remaining within the slide bounds." }
+            p { +"Makes an element as tall as possible while remaining within the slide bounds. 👇" }
             pre {
               code("kotlin") {
                 attributes["data-trim"] = "true"
@@ -676,6 +678,7 @@ fun main() {
                   src = "images/image2.png"
                 }
                 p { +"Image byline" }
+                p { +"👇" }
               }
             }
           }
@@ -689,14 +692,184 @@ fun main() {
               src = "images/image2.png"
             }
             p { +"Image byline" }
+            p { +"👇" }
           }
         }
         // stretch end
 
         slideSource(slides, "stretch")
       }
+
+      verticalSlides {
+        dslSlide {
+          id = "stack"
+          content {
+            h2 { +"Stack" }
+            p { +"Stacks multiple elements on top of each other, for use with fragments. 👇" }
+            pre {
+              code("kotlin") {
+                attributes["data-trim"] = "true"
+                attributes["data-line-numbers"] = "true"
+                +includeFile(
+                  slides,
+                  "3-26",
+                  beginToken = "stack begin",
+                  endToken = "stack end",
+                  enableEscape = false
+                )
+              }
+            }
+          }
+        }
+
+        // stack begin
+        dslSlide {
+          content {
+            h2 { +"Stack Example" }
+            div("r-stack") {
+              p("fragment fade-in-then-out") { +"One" }
+              p("fragment fade-in-then-out") { +"Two" }
+              p("fragment fade-in-then-out") { +"Three" }
+              p("fragment fade-in-then-out") { +"Four" }
+            }
+            div("r-stack") {
+              img(classes = "fragment") {
+                src = "https://placekitten.com/450/300"
+                width = "450"
+                height = "300"
+              }
+              img(classes = "fragment") {
+                src = "https://placekitten.com/300/450"
+                width = "300"
+                height = "450"
+              }
+              img(classes = "fragment") {
+                src = "https://placekitten.com/400/400"
+                width = "400"
+                height = "400"
+              }
+            }
+          }
+        }
+        // stack end
+
+        slideSource(slides, "stack")
+      }
+
+      verticalSlides {
+        dslSlide {
+          id = "hstack"
+          content {
+            h2 { +"HStack 👇" }
+            p { +"Stacks multiple elements horizontally." }
+            pre {
+              code("kotlin") {
+                attributes["data-trim"] = "true"
+                attributes["data-line-numbers"] = "true"
+                +includeFile(
+                  slides,
+                  "3-8",
+                  beginToken = "hstack begin",
+                  endToken = "hstack end",
+                  enableEscape = false
+                )
+              }
+            }
+          }
+        }
+
+        // hstack begin
+        dslSlide {
+          content {
+            h2 { +"HStack Example 👇" }
+            div("r-hstack") {
+              p { +"One"; style = "padding: 0.50em; background: #eee; margin: 0.25em" }
+              p { +"Two"; style = "padding: 0.75em; background: #eee; margin: 0.25em" }
+              p { +"Three"; style = "padding: 1.00em; background: #eee; margin: 0.25em" }
+            }
+          }
+        }
+        // hstack end
+
+        slideSource(slides, "hstack")
+      }
+
+      verticalSlides {
+        dslSlide {
+          id = "vstack"
+          content {
+            h2 { +"VStack 👇" }
+            p { +"Stacks multiple elements vertically." }
+            pre {
+              code("kotlin") {
+                attributes["data-trim"] = "true"
+                attributes["data-line-numbers"] = "true"
+                +includeFile(
+                  slides,
+                  "3-8",
+                  beginToken = "vstack begin",
+                  endToken = "vstack end",
+                  enableEscape = false
+                )
+              }
+            }
+          }
+        }
+
+        // vstack begin
+        dslSlide {
+          content {
+            h2 { +"VStack Example 👇" }
+            div("r-vstack") {
+              p { +"One"; style = "padding: 0.50em; background: #eee; margin: 0.25em" }
+              p { +"Two"; style = "padding: 0.75em; background: #eee; margin: 0.25em" }
+              p { +"Three"; style = "padding: 1.00em; background: #eee; margin: 0.25em" }
+            }
+          }
+        }
+        // vstack end
+
+        slideSource(slides, "vstack")
+      }
     }
 
+    presentation {
+      path = "fragments.html"
+
+      verticalSlides {
+
+        // fragment begin
+        dslSlide {
+          content {
+            div("rtopcorner") {
+              a { href = "/"; +"🏠" }
+            }
+            h2 { +"Fragment Styles" }
+            p { +"There are different types of fragments, like: 👇" }
+            p("fragment grow") { +"grow" }
+            p("fragment shrink") { +"shrink" }
+            p("fragment fade-out") { +"fade-out" }
+            p {
+              span("fragment fade-right") { style = "display: inline-block;"; +"fade-right, " }
+              span("fragment fade-up") { style = "display: inline-block;"; +"up, " }
+              span("fragment fade-down") { style = "display: inline-block;"; +"down, " }
+              span("fragment fade-left") { style = "display: inline-block;"; +"left" }
+            }
+            p("fragment fade-in-then-out") { +"fade-in-then-out" }
+            p("fragment fade-in-then-semi-out") { +"fade-in-then-semi-out" }
+            p {
+              +"Highlight "
+              span("fragment highlight-red") { +"red " }
+              span("fragment highlight-blue") { +"blue " }
+              span("fragment highlight-green") { +"green " }
+            }
+          }
+        }
+        // fragment end
+
+        slideSource(slides, "fragment")
+      }
+    }
     presentation {
       // Make this presentation available at helloworld.html
       path = "helloworld.html"
