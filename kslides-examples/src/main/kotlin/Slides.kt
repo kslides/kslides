@@ -539,6 +539,8 @@ fun main() {
          
             [Fragments](/fragments.html) ${fragment()}
                         
+            👇 ${fragment()}
+
             """
           }
         }
@@ -552,7 +554,7 @@ fun main() {
         markdownSlide {
           content {
             """
-            ## Navigation Slide 🦊 
+            ## Presentation Navigation 🦊 
             
             [Go to the 1st slide](#/intro) ${fragment()}
          
