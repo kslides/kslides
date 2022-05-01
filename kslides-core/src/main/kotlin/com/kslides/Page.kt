@@ -3,6 +3,7 @@ package com.kslides
 import com.github.pambrose.common.util.*
 import kotlinx.html.*
 import kotlinx.html.dom.*
+import java.io.*
 
 internal object Page {
 
@@ -78,12 +79,12 @@ internal object Page {
       rawHtml("\n")
       style("text/css") {
         media = "screen"
-        rawHtml(Page::class.java.classLoader.getResource("custom.css")
+        rawHtml(Page::class.java.classLoader.getResource("slides.css")
                   ?.readText()
                   ?.lines()
                   ?.map { "\t\t$it" }
                   ?.joinToString("\n")
-                  ?: error("Missing resources/custom.css"))
+                  ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"))
       }
 
       if (p.css.isNotBlank()) {

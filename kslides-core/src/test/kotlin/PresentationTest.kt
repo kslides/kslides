@@ -52,7 +52,6 @@ class PresentationTest : StringSpec(
     }
 
     "Simple presentation tests4" {
-
       shouldThrowExactly<IllegalArgumentException> {
         kslides {
           presentation {
