@@ -330,7 +330,7 @@ for (lines in lineNumbers("[5,6,9|5-9|]"))
       <h2>Animated Code with an htmlSlide</h2>
       <pre data-id="code-animation" data-cc="false">
         <code data-trim="" data-line-numbers="">
-          ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lineNumbers = lines)}
+          ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
         </code>
       </pre>
       <h2>👇</h2>
@@ -413,7 +413,7 @@ for (lines in lineNumbers("[5,6,9|5-9|]"))
         code {
           attributes["data-trim"] = ""
           attributes["data-line-numbers"] = ""
-          +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lineNumbers = lines)
+          +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)
         }
       }
       h2 { +"👇" }
@@ -903,20 +903,9 @@ presentation {
     """
 
   presentationConfig {
-    githubCornerHref = "https://github.com/kslides/kslides/"
-    githubCornerTitle = "View presentation source on Github"
-    slideNumber = "c/t"
-    hash = true
-    history = true
-    transition = Transition.SLIDE
-    transitionSpeed = Speed.SLOW
-    gaPropertyId = "G-TRY2Q243XC"
-    enableSpeakerNotes = true
-    enableMenu = true
-    theme = Theme.SOLARIZED
-
+    // presentation-sepecific confurations go here
     slideConfig {
-      // defaults for slides can be set here
+      // defaults for slides go here
     }
   }
 
@@ -1043,7 +1032,7 @@ presentation {
           <h2>Animated Code with an htmlSlide</h2>
           <pre data-id="code-animation" data-cc="false">
             <code data-trim="" data-line-numbers="">
-              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lineNumbers = lines)}
+              ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
             </code>
           </pre>
           <h2>👇</h2>
@@ -1073,7 +1062,7 @@ presentation {
             code {
               attributes["data-trim"] = ""
               attributes["data-line-numbers"] = ""
-              +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lineNumbers = lines)
+              +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)
             }
           }
           h2 { +"👇" }

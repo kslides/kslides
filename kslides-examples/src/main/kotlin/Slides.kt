@@ -15,7 +15,18 @@ fun main() {
     }
 
     presentationDefault {
-      // Default config values for all presentationns go here
+      // Default config values for all presentations go here
+      githubCornerHref = "https://github.com/kslides/kslides/"
+      githubCornerTitle = "View presentation source on Github"
+      slideNumber = "c/t"
+      hash = true
+      history = true
+      transition = Transition.SLIDE
+      transitionSpeed = Speed.SLOW
+      gaPropertyId = "G-TRY2Q243XC"
+      enableSpeakerNotes = true
+      enableMenu = true
+      theme = Theme.SOLARIZED
     }
 
     // readme begin
@@ -29,20 +40,9 @@ fun main() {
         """
 
       presentationConfig {
-        githubCornerHref = "https://github.com/kslides/kslides/"
-        githubCornerTitle = "View presentation source on Github"
-        slideNumber = "c/t"
-        hash = true
-        history = true
-        transition = Transition.SLIDE
-        transitionSpeed = Speed.SLOW
-        gaPropertyId = "G-TRY2Q243XC"
-        enableSpeakerNotes = true
-        enableMenu = true
-        theme = Theme.SOLARIZED
-
+        // presentation-sepecific confurations go here
         slideConfig {
-          // defaults for slides can be set here
+          // defaults for slides go here
         }
       }
 
@@ -169,7 +169,7 @@ fun main() {
               <h2>Animated Code with an htmlSlide</h2>
               <pre data-id="code-animation" data-cc="false">
                 <code data-trim="" data-line-numbers="">
-                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lineNumbers = lines)}
+                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
                 </code>
               </pre>
               <h2>👇</h2>
@@ -199,7 +199,7 @@ fun main() {
                 code {
                   attributes["data-trim"] = ""
                   attributes["data-line-numbers"] = ""
-                  +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lineNumbers = lines)
+                  +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)
                 }
               }
               h2 { +"👇" }
@@ -654,12 +654,26 @@ fun main() {
             h2 { +"Stretch" }
             p { +"Makes an element as tall as possible while remaining within the slide bounds." }
             pre {
+              code("kotlin") {
+                attributes["data-trim"] = "true"
+                attributes["data-line-numbers"] = "true"
+                +includeFile(
+                  slides,
+                  "3-7",
+                  beginToken = "stretch begin",
+                  endToken = "stretch end",
+                  enableEscape = false
+                )
+              }
+            }
+            p { +"or" }
+            pre {
               code("html") {
                 attributes["data-trim"] = "true"
                 attributes["data-line-numbers"] = "true"
                 h2 { +"Stretch Example" }
                 img(classes = "r-stretch") {
-                  src = "../../examples/assets/image2.png"
+                  src = "images/image2.png"
                 }
                 p { +"Image byline" }
               }
@@ -667,16 +681,19 @@ fun main() {
           }
         }
 
+        // stretch begin
         dslSlide {
           content {
             h2 { +"Stretch Example" }
             img(classes = "r-stretch") {
-              src = "../../examples/assets/image2.png"
+              src = "images/image2.png"
             }
             p { +"Image byline" }
           }
         }
-        //slideSource(slides, "stretch")
+        // stretch end
+
+        slideSource(slides, "stretch")
       }
     }
 
