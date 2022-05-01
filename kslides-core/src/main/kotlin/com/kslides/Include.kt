@@ -21,8 +21,7 @@ fun includeFile(
   enableEscape: Boolean = true,
 ) =
   try {
-    val file = File("${System.getProperty("user.dir")}/$path")
-    file
+    File("${System.getProperty("user.dir")}/$path")
       .readLines()
       .fromTo(beginToken, endToken, exclusive)
       .toLineRanges(lineNumbers)

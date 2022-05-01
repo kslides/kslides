@@ -16,8 +16,13 @@ fun main() {
 
     presentationDefault {
       // Default config values for all presentations go here
-      githubCornerHref = "https://github.com/kslides/kslides/"
-      githubCornerTitle = "View presentation source on Github"
+      topLeftHref = "https://github.com/kslides/kslides/"
+      topLeftTitle = "View presentation source on Github"
+
+      topRightHref = "/"
+      topRightTitle = "Go to 1st Slide"
+      topRightText = "Home"//"🏠"
+
       slideNumber = "c/t"
       hash = true
       history = true
@@ -843,8 +848,11 @@ fun main() {
         // fragment begin
         dslSlide {
           content {
-            div("rtopcorner") {
-              a { href = "/"; +"🏠" }
+            div("top-right") {
+              a {
+                href = "/"
+                title = "Go back to 1st slide"
+                +"🏠" }
             }
             h2 { +"Fragment Styles" }
             p { +"There are different types of fragments, like: 👇" }

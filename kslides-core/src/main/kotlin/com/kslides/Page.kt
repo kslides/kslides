@@ -66,6 +66,7 @@ internal object Page {
         }
       }
 
+      rawHtml("\n")
       p.cssFiles.forEach {
         link(rel = "stylesheet") {
           href = if (it.filename.startsWith("http")) it.filename else "$srcPrefix${it.filename}"
@@ -74,7 +75,19 @@ internal object Page {
         }
       }
 
+      rawHtml("\n")
+      style("text/css") {
+        media = "screen"
+        rawHtml(Page::class.java.classLoader.getResource("custom.css")
+                  ?.readText()
+                  ?.lines()
+                  ?.map { "\t\t$it" }
+                  ?.joinToString("\n")
+                  ?: error("Missing resources/custom.css"))
+      }
+
       if (p.css.isNotBlank()) {
+        rawHtml("\n")
         style("text/css") {
           media = "screen"
           rawHtml(p.css.prependIndent("\t\t"))
@@ -85,13 +98,30 @@ internal object Page {
   fun HTML.generateBody(p: Presentation, config: PresentationConfig, srcPrefix: String) =
     body {
       div("reveal") {
-        if (config.githubCornerHref.isNotBlank()) {
-          a(config.githubCornerHref, "blank", classes = "github-corner") {
-            title = config.githubCornerTitle
-            rawHtml(config.githubCornerSvg)
+        if (config.topLeftHref.isNotBlank()) {
+          a(href = config.topLeftHref, target = "_blank", classes = "top-left") {
+            if (config.topLeftTitle.isNotBlank())
+              title = config.topLeftTitle
+            if (config.topLeftSvg.isNotBlank())
+              rawHtml(config.topLeftSvg)
+            if (config.topLeftText.isNotBlank())
+              +config.topLeftText
           }
         }
 
+        if (config.topRightHref.isNotBlank()) {
+          rawHtml("\n\t\t\t")
+          a(href = config.topRightHref, classes = "top-right") {
+            if (config.topRightTitle.isNotBlank())
+              title = config.topRightTitle
+            if (config.topRightSvg.isNotBlank())
+              rawHtml(config.topRightSvg)
+            if (config.topRightText.isNotBlank())
+              +config.topRightText
+          }
+        }
+
+        rawHtml("\n")
         div("slides") {
           p.slides.forEach { slide -> slide.content(this, slide) }
         }

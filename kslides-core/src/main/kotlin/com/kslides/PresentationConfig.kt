@@ -28,9 +28,14 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   var enableMathJax3 by ConfigProperty<Boolean>(managedValues)
   var enableCodeCopy by ConfigProperty<Boolean>(managedValues)
   var enableMenu by ConfigProperty<Boolean>(managedValues)
-  var githubCornerHref by ConfigProperty<String>(managedValues)
-  var githubCornerTitle by ConfigProperty<String>(managedValues)
-  var githubCornerSvg by ConfigProperty<String>(managedValues)
+  var topLeftHref by ConfigProperty<String>(managedValues)
+  var topLeftTitle by ConfigProperty<String>(managedValues)
+  var topLeftSvg by ConfigProperty<String>(managedValues)
+  var topLeftText by ConfigProperty<String>(managedValues)
+  var topRightHref by ConfigProperty<String>(managedValues)
+  var topRightTitle by ConfigProperty<String>(managedValues)
+  var topRightSvg by ConfigProperty<String>(managedValues)
+  var topRightText by ConfigProperty<String>(managedValues)
   var gaPropertyId by ConfigProperty<String>(managedValues)
 
   // Controls automatic progression to the next slide
@@ -68,14 +73,20 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       enableCodeCopy = true
       enableMenu = false
 
-      githubCornerHref = ""
-      githubCornerTitle = "View source on Github"
-      githubCornerSvg =
+      topLeftHref = ""
+      topLeftTitle = "View source on Github"
+      topLeftSvg =
         """
-          <svg xmlns="http://www.w3.org/2000/svg" id="githubCorner" viewBox="0 0 55 55">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
             <path fill="currentColor" stroke="none" d="M27.5 11.2a16.3 16.3 0 0 0-5.1 31.7c.8.2 1.1-.3 1.1-.7v-2.8c-4.5 1-5.5-2.2-5.5-2.2-.7-1.9-1.8-2.4-1.8-2.4-1.5-1 .1-1 .1-1 1.6.1 2.5 1.7 2.5 1.7 1.5 2.5 3.8 1.8 4.7 1.4.2-1 .6-1.8 1-2.2-3.5-.4-7.3-1.8-7.3-8 0-1.8.6-3.3 1.6-4.4-.1-.5-.7-2.1.2-4.4 0 0 1.4-.4 4.5 1.7a15.6 15.6 0 0 1 8.1 0c3.1-2 4.5-1.7 4.5-1.7.9 2.3.3 4 .2 4.4 1 1 1.6 2.6 1.6 4.3 0 6.3-3.8 7.7-7.4 8 .6.6 1.1 1.6 1.1 3v4.6c0 .4.3.9 1.1.7a16.3 16.3 0 0 0-5.2-31.7"></path>
           </svg>
         """
+      topLeftText = ""
+
+      topRightHref = ""
+      topLeftTitle = ""
+      topRightSvg = ""
+      topRightText = ""
 
       gaPropertyId = ""
 

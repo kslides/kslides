@@ -38,12 +38,6 @@ class Presentation(val kslides: KSlides) {
 
     if (finalConfig.enableCodeCopy)
       cssFiles += CssFile("plugin/copycode/copycode.css")
-
-    if (finalConfig.githubCornerHref.isNotBlank())
-      cssFiles += CssFile("plugin/githubCorner/githubCorner.css")
-
-    // Add this last so it does not get overridden
-    cssFiles += CssFile("css/custom.css")
   }
 
   internal fun assignJsFiles() {
