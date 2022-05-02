@@ -8,6 +8,7 @@ class SlideConfig : AbstractConfig() {
   var transitionIn by ConfigProperty<Transition>(unmanagedValues)
   var transitionOut by ConfigProperty<Transition>(unmanagedValues)
   var transitionSpeed by ConfigProperty<Speed>(unmanagedValues)
+  var background by ConfigProperty<String>(unmanagedValues)
   var backgroundColor by ConfigProperty<String>(unmanagedValues)
   var backgroundIframe by ConfigProperty<String>(unmanagedValues)
   var backgroundInteractive by ConfigProperty<Boolean>(unmanagedValues)
@@ -21,6 +22,7 @@ class SlideConfig : AbstractConfig() {
     transitionIn = Transition.UNASSIGNED
     transitionOut = Transition.UNASSIGNED
     transitionSpeed = Speed.UNASSIGNED
+    background = ""
     backgroundColor = ""
     backgroundIframe = ""
     backgroundInteractive = false
@@ -44,6 +46,9 @@ class SlideConfig : AbstractConfig() {
 
     if (transitionSpeed != Speed.UNASSIGNED)
       section.attributes["data-transition-speed"] = transitionSpeed.name.toLower()
+
+    if (background.isNotBlank())
+      section.attributes["data-background"] = background
 
     if (backgroundColor.isNotBlank())
       section.attributes["data-background-color"] = backgroundColor

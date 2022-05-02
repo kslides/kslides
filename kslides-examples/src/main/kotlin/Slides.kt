@@ -545,6 +545,8 @@ fun main() {
          
             [Fragments](/fragments.html) ${fragment()}
                         
+            [Backgrounds](/backgrounds.html) ${fragment()}
+
             👇 ${fragment()}
 
             """
@@ -907,6 +909,80 @@ fun main() {
         // fragment-md end
 
         slideSource(slides, "fragment-md")
+      }
+    }
+
+    presentation {
+      path = "backgrounds.html"
+
+      presentationConfig {
+        topRightHref = "/#/features"
+        topRightTitle = "Go to main presentation"
+        topRightText = "🔙"
+
+        theme = Theme.SERIF
+      }
+
+      verticalSlides {
+        dslSlide {
+          slideConfig {
+            background = "#00ffff"
+          }
+          content {
+            h2 { +"data-background: #00ffff" }
+          }
+        }
+      }
+
+      verticalSlides {
+        dslSlide {
+          slideConfig {
+            background = "#bb00bb"
+          }
+          content {
+            h2 { +"data-background: #bb00bb" }
+          }
+        }
+      }
+
+      verticalSlides {
+        dslSlide {
+          slideConfig {
+            backgroundColor = "lightblue"
+          }
+          content {
+            h2 { +"data-background-color: lightblue" }
+          }
+        }
+      }
+
+      verticalSlides {
+        dslSlide {
+          slideConfig {
+            background = "#ff0000"
+          }
+          content {
+            h2 { +"data-background: #ff0000" }
+          }
+        }
+
+        dslSlide {
+          slideConfig {
+            background = "rgba(0, 0, 0, 0.2)"
+          }
+          content {
+            h2 { +"data-background: rgba(0, 0, 0, 0.2)" }
+          }
+        }
+
+        dslSlide {
+          slideConfig {
+            background = "salmon"
+          }
+          content {
+            h2 { +"data-background: salmon" }
+          }
+        }
       }
     }
 
