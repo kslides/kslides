@@ -130,6 +130,11 @@ class Presentation(val kslides: KSlides) {
             block(vcontext)
             section(classes = vcontext.classes.nullIfBlank()) {
               vcontext.id.also { if (it.isNotEmpty()) id = it }
+
+              // Apply config items for all the slides in the vertical slide
+              vcontext.slideConfig.applyConfig(this)
+              vcontext.slideConfig.applyMarkdownItems(this)
+
               vcontext.verticalSlides
                 .forEach { verticalSlide ->
                   verticalSlide.content(div, verticalSlide)
@@ -156,18 +161,7 @@ class Presentation(val kslides: KSlides) {
             if (s.charset.isNotBlank())
               attributes["data-charset"] = s.charset
 
-            s.mergedConfig.apply {
-              if (markdownSeparator.isNotBlank())
-                this@section.attributes["data-separator"] = markdownSeparator
-
-              if (markdownVerticalSeparator.isNotBlank())
-                this@section.attributes["data-separator-vertical"] = markdownVerticalSeparator
-
-              // If any of the data-separator values are defined, then plain --- in markdown will not work
-              // So do not define data-separator-notes unless using other data-separator values
-              if (markdownNotesSeparator.isNotBlank() && markdownSeparator.isNotBlank() && markdownVerticalSeparator.isNotBlank())
-                this@section.attributes["data-separator-notes"] = markdownNotesSeparator
-            }
+            s.mergedConfig.applyMarkdownItems(this)
 
             if (s.filename.isEmpty()) {
               s.markdownBlock().also { markdown ->
@@ -304,8 +298,8 @@ class Presentation(val kslides: KSlides) {
     }.also { verticalSlides += it }
 
   @KSlidesDslMarker
-  // slideSource begin
-  fun slideSource(
+  // slideDefinition begin
+  fun slideDefinition(
     source: String,
     token: String,
     title: String = "Slide Definition",
@@ -326,10 +320,10 @@ class Presentation(val kslides: KSlides) {
       }
     }
   }
-  // slideSource end
+  // slideDefinition end
 
   @KSlidesDslMarker
-  fun VerticalSlideContext.slideSource(
+  fun VerticalSlideContext.slideDefinition(
     source: String,
     token: String,
     title: String = "Slide Definition",
@@ -447,9 +441,13 @@ class Presentation(val kslides: KSlides) {
 }
 
 class VerticalSlideContext {
+  internal val slideConfig = SlideConfig().apply { init() }
   internal val verticalSlides = mutableListOf<VerticalSlide>()
   var id = ""
   var classes = ""
+
+  @KSlidesDslMarker
+  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
 
   internal fun resetContext() {
     verticalSlides.clear()

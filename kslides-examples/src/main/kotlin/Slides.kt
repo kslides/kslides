@@ -75,7 +75,7 @@ fun main() {
         }
         // intro end
 
-        slideSource(slides, "intro")
+        slideDefinition(slides, "intro")
       }
 
       verticalSlides {
@@ -100,7 +100,7 @@ fun main() {
         }
         // mdslide end
 
-        slideSource(slides, "mdslide")
+        slideDefinition(slides, "mdslide")
       }
 
       verticalSlides {
@@ -123,7 +123,7 @@ fun main() {
         }
         // htmlslide end
 
-        slideSource(slides, "htmlslide")
+        slideDefinition(slides, "htmlslide")
       }
 
       verticalSlides {
@@ -140,7 +140,7 @@ fun main() {
         }
         // dslslide end
 
-        slideSource(slides, "dslslide")
+        slideDefinition(slides, "dslslide")
       }
 
       verticalSlides {
@@ -159,7 +159,7 @@ fun main() {
         }
         // highlights end
 
-        slideSource(slides, "highlights")
+        slideDefinition(slides, "highlights")
       }
 
       verticalSlides {
@@ -186,7 +186,7 @@ fun main() {
           }
         // animated-html end
 
-        slideSource(slides, "animated-html")
+        slideDefinition(slides, "animated-html")
       }
 
       verticalSlides {
@@ -215,14 +215,14 @@ fun main() {
           }
         // animated-dsl end
 
-        slideSource(slides, "animated-dsl")
+        slideDefinition(slides, "animated-dsl")
       }
 
       verticalSlides {
         // swapping begin
-        listOf("One", "Two", "Three", "Four")
+        listOf("One", "Two", "Three", "Four", "👇")
           .permuteBy(
-            listOf(0, 1),
+            listOf(0, 1, 4),
             listOf(0, 1, 2),
             listOf(0, 1, 2, 3),
             listOf(1, 0, 3, 2),
@@ -234,14 +234,14 @@ fun main() {
             dslSlide {
               autoAnimate = true
               content {
-                h2 { +"Animated List Items 👇" }
+                h2 { +"Animated List Items" }
                 unorderedList(*items.toTypedArray())
               }
             }
           }
         // swapping end
 
-        slideSource(slides, "swapping")
+        slideDefinition(slides, "swapping")
       }
 
       verticalSlides {
@@ -411,7 +411,7 @@ fun main() {
         }
         // tabular end
 
-        slideSource(slides, "tabular")
+        slideDefinition(slides, "tabular")
       }
 
       verticalSlides {
@@ -442,7 +442,7 @@ fun main() {
         }
         // iframe end
 
-        slideSource(slides, "iframe")
+        slideDefinition(slides, "iframe")
       }
 
       verticalSlides {
@@ -466,7 +466,7 @@ fun main() {
         }
         // transition end
 
-        slideSource(slides, "transition")
+        slideDefinition(slides, "transition")
       }
 
       verticalSlides {
@@ -495,7 +495,7 @@ fun main() {
         }
         // themes end
 
-        slideSource(slides, "themes")
+        slideDefinition(slides, "themes")
       }
 
       verticalSlides {
@@ -511,7 +511,7 @@ fun main() {
         }
         // video end
 
-        slideSource(slides, "video")
+        slideDefinition(slides, "video")
       }
 
       verticalSlides {
@@ -530,7 +530,7 @@ fun main() {
         }
         // webcontent end
 
-        slideSource(slides, "webcontent")
+        slideDefinition(slides, "webcontent")
       }
 
       verticalSlides {
@@ -541,11 +541,11 @@ fun main() {
             """
             ## Other Features 🚡
             
-            [Layouts](/layouts.html) ${fragment()}
+            [Layouts](/layouts.html) 
          
-            [Fragments](/fragments.html) ${fragment()}
+            [Fragments](/fragments.html) 
                         
-            [Backgrounds](/backgrounds.html) ${fragment()}
+            [Backgrounds](/backgrounds.html) 
 
             👇 ${fragment()}
 
@@ -554,7 +554,7 @@ fun main() {
         }
         // other end
 
-        slideSource(slides, "other")
+        slideDefinition(slides, "other")
       }
 
       verticalSlides {
@@ -574,12 +574,16 @@ fun main() {
         }
         // navigation end
 
-        slideSource(slides, "navigation")
+        slideDefinition(slides, "navigation")
       }
 
-      slideSource(slides, "readme", "Presentation Definition", id = "definition")
+      slideDefinition(slides, "readme", "Presentation Definition", id = "definition")
 
-      slideSource("kslides-core/src/main/kotlin/com/kslides/Presentation.kt", "slideSource", "Slide Source Definition")
+      slideDefinition(
+        "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+        "slideDefinition",
+        "Slide Source Definition"
+      )
     }
     // readme end
 
@@ -609,7 +613,7 @@ fun main() {
         }
         // layouts end
 
-        slideSource(slides, "layouts")
+        slideDefinition(slides, "layouts")
       }
 
       verticalSlides {
@@ -650,7 +654,7 @@ fun main() {
         }
         // fit-text1 end
 
-        slideSource(slides, "fit-text1")
+        slideDefinition(slides, "fit-text1")
 
         // fit-text2 begin
         dslSlide {
@@ -661,7 +665,7 @@ fun main() {
         }
         // fit-text2 end
 
-        slideSource(slides, "fit-text2")
+        slideDefinition(slides, "fit-text2")
       }
 
       verticalSlides {
@@ -690,7 +694,7 @@ fun main() {
                 attributes["data-line-numbers"] = "true"
                 h2 { +"Stretch Example" }
                 img(classes = "r-stretch") {
-                  src = "images/image2.png"
+                  src = "revealjs/assets/image2.png"
                 }
                 p { +"Image byline" }
                 p { +"👇" }
@@ -704,7 +708,7 @@ fun main() {
           content {
             h2 { +"Stretch Example" }
             img(classes = "r-stretch") {
-              src = "images/image2.png"
+              src = "revealjs/assets/image2.png"
             }
             p { +"Image byline" }
             p { +"👇" }
@@ -712,7 +716,7 @@ fun main() {
         }
         // stretch end
 
-        slideSource(slides, "stretch")
+        slideDefinition(slides, "stretch")
       }
 
       verticalSlides {
@@ -763,7 +767,7 @@ fun main() {
         }
         // stack end
 
-        slideSource(slides, "stack")
+        slideDefinition(slides, "stack")
       }
 
       verticalSlides {
@@ -801,7 +805,7 @@ fun main() {
         }
         // hstack end
 
-        slideSource(slides, "hstack")
+        slideDefinition(slides, "hstack")
       }
 
       verticalSlides {
@@ -839,7 +843,7 @@ fun main() {
         }
         // vstack end
 
-        slideSource(slides, "vstack")
+        slideDefinition(slides, "vstack")
       }
     }
 
@@ -882,7 +886,7 @@ fun main() {
         }
         // fragment-styles end
 
-        slideSource(slides, "fragment-styles")
+        slideDefinition(slides, "fragment-styles")
       }
 
       verticalSlides {
@@ -908,7 +912,7 @@ fun main() {
         }
         // fragment-md end
 
-        slideSource(slides, "fragment-md")
+        slideDefinition(slides, "fragment-md")
       }
     }
 
@@ -924,6 +928,7 @@ fun main() {
       }
 
       verticalSlides {
+        // background1 begin
         dslSlide {
           slideConfig {
             background = "#00ffff"
@@ -932,9 +937,13 @@ fun main() {
             h2 { +"data-background: #00ffff" }
           }
         }
+        // background1 end
+
+        slideDefinition(slides, "background1")
       }
 
       verticalSlides {
+        // background2 begin
         dslSlide {
           slideConfig {
             background = "#bb00bb"
@@ -943,9 +952,13 @@ fun main() {
             h2 { +"data-background: #bb00bb" }
           }
         }
+        // background2 end
+
+        slideDefinition(slides, "background2")
       }
 
       verticalSlides {
+        // background3 begin
         dslSlide {
           slideConfig {
             backgroundColor = "lightblue"
@@ -954,9 +967,14 @@ fun main() {
             h2 { +"data-background-color: lightblue" }
           }
         }
+        // background3 end
+
+        slideDefinition(slides, "background3")
       }
 
       verticalSlides {
+
+        // background4 begin
         dslSlide {
           slideConfig {
             background = "#ff0000"
@@ -983,6 +1001,105 @@ fun main() {
             h2 { +"data-background: salmon" }
           }
         }
+        // background4 end
+
+        slideDefinition(slides, "background4")
+      }
+
+      // vertical-config begin
+      verticalSlides {
+        slideConfig {
+          background = "rgba(0, 100, 100, 0.2)"
+        }
+
+        dslSlide {
+          content {
+            h2 { +"Background applied to stack (1/2)" }
+          }
+        }
+
+        dslSlide {
+          content {
+            h2 { +"Background applied to stack (2/2)" }
+          }
+        }
+
+        dslSlide {
+          slideConfig {
+            background = "rgb(66, 66, 66)"
+          }
+          content {
+            h2 { +"Background applied to slide inside of stack" }
+          }
+        }
+
+        slideDefinition(slides, "vertical-config")
+      }
+      // vertical-config end
+
+      verticalSlides {
+        // background-image begin
+        dslSlide {
+          slideConfig {
+            backgroundTransition = Transition.SLIDE
+            background = "revealjs/assets/image1.png"
+          }
+          content {
+            h2 { +"Background image" }
+          }
+        }
+        // background-image end
+
+        slideDefinition(slides, "background-image")
+      }
+
+      verticalSlides {
+        // repeat begin
+        dslSlide {
+          slideConfig {
+            background = "revealjs/assets/image2.png"
+            backgroundSize = "100px"
+            backgroundRepeat = "repeat"
+            backgroundColor = "#111"
+          }
+          content {
+            h2 { +"Background repeat" }
+          }
+        }
+        // repeat end
+
+        slideDefinition(slides, "repeat")
+      }
+
+      verticalSlides {
+        // background-video begin
+        dslSlide {
+          slideConfig {
+            val aws = "https://s3.amazonaws.com/static.slid.es/site/homepage/v1"
+            backgroundVideo = "$aws/homepage-video-editor.mp4,$aws/homepage-video-editor.webm"
+          }
+          content {
+            h2 { +"Video background" }
+          }
+        }
+        // background-video end
+
+        slideDefinition(slides, "background-video")
+      }
+
+      verticalSlides {
+        // background-iframe begin
+        dslSlide {
+          slideConfig {
+            backgroundIframe =
+              "https://slides.com/news/make-better-presentations/embed?style=hidden&autoSlide=4000"
+          }
+          content {
+            h2 { +"Iframe background" }
+          }
+        }
+        // background-iframe end
+        slideDefinition(slides, "background-iframe")
       }
     }
 

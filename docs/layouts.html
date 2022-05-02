@@ -74,19 +74,19 @@
             <h2>Layout Examples</h2>
             <ul>
               <li>
-                <a class="" href="#/fit-text">Fit Text</a>
+                <a href="#/fit-text">Fit Text</a>
               </li>
               <li>
-                <a class="" href="#/stretch">Stretch</a>
+                <a href="#/stretch">Stretch</a>
               </li>
               <li>
-                <a class="" href="#/stack">Stack</a>
+                <a href="#/stack">Stack</a>
               </li>
               <li>
-                <a class="" href="#/hstack">HStack</a>
+                <a href="#/hstack">HStack</a>
               </li>
               <li>
-                <a class="" href="#/vstack">VStack</a>
+                <a href="#/vstack">VStack</a>
               </li>
             </ul>
             <p>&#128071;</p>
@@ -178,7 +178,7 @@ dslSlide {
               <code class="kotlin" data-line-numbers="true" data-trim="true">
 h2 { +"Stretch Example" }
 img(classes = "r-stretch") {
-  src = "images/image2.png"
+  src = "revealjs/assets/image2.png"
 }
 p { +"Image byline" }
 </code>
@@ -187,7 +187,7 @@ p { +"Image byline" }
             <pre>
               <code class="html" data-line-numbers="true" data-trim="true">
                 <h2>Stretch Example</h2>
-                <img class="r-stretch" src="images/image2.png">
+                <img class="r-stretch" src="revealjs/assets/image2.png">
                 <p>Image byline</p>
                 <p>&#128071;</p>
               </code>
@@ -196,7 +196,7 @@ p { +"Image byline" }
           
           <section>
             <h2>Stretch Example</h2>
-            <img class="r-stretch" src="images/image2.png">
+            <img class="r-stretch" src="revealjs/assets/image2.png">
             <p>Image byline</p>
             <p>&#128071;</p>
           </section>
@@ -209,7 +209,7 @@ dslSlide {
   content {
     h2 { +"Stretch Example" }
     img(classes = "r-stretch") {
-      src = "images/image2.png"
+      src = "revealjs/assets/image2.png"
     }
     p { +"Image byline" }
     p { +"👇" }
@@ -292,7 +292,7 @@ div("r-stack") {
   }
   // stack end
 
-  slideSource(slides, "stack")
+  slideDefinition(slides, "stack")
 }
 
 verticalSlides {
@@ -330,7 +330,7 @@ verticalSlides {
   }
   // hstack end
 
-  slideSource(slides, "hstack")
+  slideDefinition(slides, "hstack")
 }
 
 verticalSlides {

@@ -1,5 +1,6 @@
 package com.kslides
 
+import com.github.pambrose.common.util.*
 import kotlinx.html.*
 
 @HtmlTagMarker
@@ -10,7 +11,7 @@ inline fun LI.listHref(
   newWindow: Boolean = false,
   crossinline block: A.() -> Unit = {}
 ) {
-  a(classes = classes) {
+  a(classes = classes.nullIfBlank()) {
     if (newWindow) target = "_blank"
     href = url
     block()

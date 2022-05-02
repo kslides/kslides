@@ -5,7 +5,7 @@ import kotlinx.html.*
 typealias SlideArg = (DIV, Slide) -> Unit
 
 abstract class Slide(internal val presentation: Presentation, internal val content: SlideArg) {
-  private val slideConfig = SlideConfig()
+  private val slideConfig = SlideConfig() // Do not call init on this because it is merged with the presentation config
   var id = ""
   var classes = ""
   var hidden = false

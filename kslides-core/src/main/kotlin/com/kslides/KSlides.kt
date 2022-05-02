@@ -73,7 +73,7 @@ class KSlides {
   internal fun presentation(name: String) =
     presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
-  val staticRoots = mutableListOf("assets", "css", "dist", "js", "plugin")
+  val staticRoots = mutableListOf("assets", "css", "dist", "js", "plugin", "revealjs")
   val css = AppendableString()
 
   @KSlidesDslMarker

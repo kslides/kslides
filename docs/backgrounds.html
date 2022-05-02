@@ -74,6 +74,22 @@
             <h2>data-background: #00ffff</h2>
           </section>
           
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+dslSlide {
+  slideConfig {
+    background = "#00ffff"
+  }
+  content {
+    h2 { +"data-background: #00ffff" }
+  }
+}
+```
+</script>
+          </section>
+          
         </section>
         
         <section>
@@ -81,11 +97,43 @@
             <h2>data-background: #bb00bb</h2>
           </section>
           
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+dslSlide {
+  slideConfig {
+    background = "#bb00bb"
+  }
+  content {
+    h2 { +"data-background: #bb00bb" }
+  }
+}
+```
+</script>
+          </section>
+          
         </section>
         
         <section>
           <section data-background-color="lightblue">
             <h2>data-background-color: lightblue</h2>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+dslSlide {
+  slideConfig {
+    backgroundColor = "lightblue"
+  }
+  content {
+    h2 { +"data-background-color: lightblue" }
+  }
+}
+```
+</script>
           </section>
           
         </section>
@@ -101,6 +149,189 @@
           
           <section data-background="salmon">
             <h2>data-background: salmon</h2>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+dslSlide {
+  slideConfig {
+    background = "#ff0000"
+  }
+  content {
+    h2 { +"data-background: #ff0000" }
+  }
+}
+
+dslSlide {
+  slideConfig {
+    background = "rgba(0, 0, 0, 0.2)"
+  }
+  content {
+    h2 { +"data-background: rgba(0, 0, 0, 0.2)" }
+  }
+}
+
+dslSlide {
+  slideConfig {
+    background = "salmon"
+  }
+  content {
+    h2 { +"data-background: salmon" }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section data-background="rgba(0, 100, 100, 0.2)">
+          <section>
+            <h2>Background applied to stack (1/2)</h2>
+          </section>
+          
+          <section>
+            <h2>Background applied to stack (2/2)</h2>
+          </section>
+          
+          <section data-background="rgb(66, 66, 66)">
+            <h2>Background applied to slide inside of stack</h2>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+verticalSlides {
+  slideConfig {
+    background = "rgba(0, 100, 100, 0.2)"
+  }
+
+  dslSlide {
+    content {
+      h2 { +"Background applied to stack (1/2)" }
+    }
+  }
+
+  dslSlide {
+    content {
+      h2 { +"Background applied to stack (2/2)" }
+    }
+  }
+
+  dslSlide {
+    slideConfig {
+      background = "rgb(66, 66, 66)"
+    }
+    content {
+      h2 { +"Background applied to slide inside of stack" }
+    }
+  }
+
+  slideDefinition(slides, "vertical-config")
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section data-background="revealjs/assets/image1.png" data-background-transition="slide">
+            <h2>Background image</h2>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+dslSlide {
+  slideConfig {
+    backgroundTransition = Transition.SLIDE
+    background = "revealjs/assets/image1.png"
+  }
+  content {
+    h2 { +"Background image" }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section data-background="revealjs/assets/image2.png" data-background-color="#111" data-background-repeat="repeat" data-background-size="100px">
+            <h2>Background repeat</h2>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+dslSlide {
+  slideConfig {
+    background = "revealjs/assets/image2.png"
+    backgroundSize = "100px"
+    backgroundRepeat = "repeat"
+    backgroundColor = "#111"
+  }
+  content {
+    h2 { +"Background repeat" }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm">
+            <h2>Video background</h2>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+dslSlide {
+  slideConfig {
+    val aws = "https://s3.amazonaws.com/static.slid.es/site/homepage/v1"
+    backgroundVideo = "$aws/homepage-video-editor.mp4,$aws/homepage-video-editor.webm"
+  }
+  content {
+    h2 { +"Video background" }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section data-background-iframe="https://slides.com/news/make-better-presentations/embed?style=hidden&amp;autoSlide=4000">
+            <h2>Iframe background</h2>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+dslSlide {
+  slideConfig {
+    backgroundIframe =
+      "https://slides.com/news/make-better-presentations/embed?style=hidden&autoSlide=4000"
+  }
+  content {
+    h2 { +"Iframe background" }
+  }
+}
+```
+</script>
           </section>
           
         </section>
