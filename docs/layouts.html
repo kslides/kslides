@@ -66,7 +66,7 @@
                     
         </svg>
                 </a>
-			<a class="top-right" href="/" title="Go to 1st Slide">&#127968;</a>
+			<a class="top-right" href="/#/features" title="Go to main presentation">&#128281;</a>
 
       <div class="slides">
         <section>
@@ -89,9 +89,6 @@
                 <a class="" href="#/vstack">VStack</a>
               </li>
             </ul>
-            <p>
-              <a href="/">Return to Home</a>
-            </p>
             <p>&#128071;</p>
           </section>
           
@@ -109,7 +106,6 @@ dslSlide {
       { listHref("#/hstack", "HStack") },
       { listHref("#/vstack", "VStack") },
     )
-    p { a { href = "/"; +"Return to Home" } }
     p { +"👇" }
   }
 }
@@ -239,20 +235,15 @@ div("r-stack") {
   p("fragment fade-in-then-out") { +"Four" }
 }
 div("r-stack") {
+  val kitten = "https://placekitten.com"
   img(classes = "fragment") {
-    src = "https://placekitten.com/450/300"
-    width = "450"
-    height = "300"
+    src = "$kitten/450/300"; width = "450"; height = "300"
   }
   img(classes = "fragment") {
-    src = "https://placekitten.com/300/450"
-    width = "300"
-    height = "450"
+    src = "$kitten/300/450"; width = "300"; height = "450"
   }
   img(classes = "fragment") {
-    src = "https://placekitten.com/400/400"
-    width = "400"
-    height = "400"
+    src = "$kitten/400/400"; width = "400"; height = "400"
   }
 }
 </code>
@@ -286,20 +277,15 @@ div("r-stack") {
         p("fragment fade-in-then-out") { +"Four" }
       }
       div("r-stack") {
+        val kitten = "https://placekitten.com"
         img(classes = "fragment") {
-          src = "https://placekitten.com/450/300"
-          width = "450"
-          height = "300"
+          src = "$kitten/450/300"; width = "450"; height = "300"
         }
         img(classes = "fragment") {
-          src = "https://placekitten.com/300/450"
-          width = "300"
-          height = "450"
+          src = "$kitten/300/450"; width = "300"; height = "450"
         }
         img(classes = "fragment") {
-          src = "https://placekitten.com/400/400"
-          width = "400"
-          height = "400"
+          src = "$kitten/400/400"; width = "400"; height = "400"
         }
       }
     }

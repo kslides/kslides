@@ -536,6 +536,7 @@ fun main() {
       verticalSlides {
         // other begin
         markdownSlide {
+          id = "features"
           content {
             """
             ## Other Features 🚡
@@ -582,6 +583,12 @@ fun main() {
 
     presentation {
       path = "layouts.html"
+
+      presentationConfig {
+        topRightHref = "/#/features"
+        topRightTitle = "Go to main presentation"
+        topRightText = "🔙"
+      }
 
       verticalSlides {
         // layouts begin
@@ -718,7 +725,7 @@ fun main() {
                 attributes["data-line-numbers"] = "true"
                 +includeFile(
                   slides,
-                  "3-26",
+                  "3-21",
                   beginToken = "stack begin",
                   endToken = "stack end",
                   enableEscape = false
@@ -739,20 +746,15 @@ fun main() {
               p("fragment fade-in-then-out") { +"Four" }
             }
             div("r-stack") {
+              val kitten = "https://placekitten.com"
               img(classes = "fragment") {
-                src = "https://placekitten.com/450/300"
-                width = "450"
-                height = "300"
+                src = "$kitten/450/300"; width = "450"; height = "300"
               }
               img(classes = "fragment") {
-                src = "https://placekitten.com/300/450"
-                width = "300"
-                height = "450"
+                src = "$kitten/300/450"; width = "300"; height = "450"
               }
               img(classes = "fragment") {
-                src = "https://placekitten.com/400/400"
-                width = "400"
-                height = "400"
+                src = "$kitten/400/400"; width = "400"; height = "400"
               }
             }
           }
@@ -842,27 +844,29 @@ fun main() {
     presentation {
       path = "fragments.html"
 
-      verticalSlides {
+      presentationConfig {
+        topRightHref = "/#/features"
+        topRightTitle = "Go to main presentation"
+        topRightText = "🔙"
+      }
 
-        // fragment begin
+      verticalSlides {
+        // fragment-styles begin
         dslSlide {
           content {
-            div("top-right") {
-              a {
-                href = "/"
-                title = "Go back to 1st slide"
-                +"🏠" }
-            }
             h2 { +"Fragment Styles" }
             p { +"There are different types of fragments, like: 👇" }
             p("fragment grow") { +"grow" }
             p("fragment shrink") { +"shrink" }
             p("fragment fade-out") { +"fade-out" }
             p {
-              span("fragment fade-right") { style = "display: inline-block;"; +"fade-right, " }
-              span("fragment fade-up") { style = "display: inline-block;"; +"up, " }
-              span("fragment fade-down") { style = "display: inline-block;"; +"down, " }
-              span("fragment fade-left") { style = "display: inline-block;"; +"left" }
+              span("fragment fade-right") { style = "display: inline-block;"; +"fade-right," }
+              +" "
+              span("fragment fade-up") { style = "display: inline-block;"; +"fade-up," }
+              +" "
+              span("fragment fade-down") { style = "display: inline-block;"; +"fade-down, " }
+              +" "
+              span("fragment fade-left") { style = "display: inline-block;"; +"fade-left" }
             }
             p("fragment fade-in-then-out") { +"fade-in-then-out" }
             p("fragment fade-in-then-semi-out") { +"fade-in-then-semi-out" }
@@ -874,11 +878,38 @@ fun main() {
             }
           }
         }
-        // fragment end
+        // fragment-styles end
 
-        slideSource(slides, "fragment")
+        slideSource(slides, "fragment-styles")
+      }
+
+      verticalSlides {
+
+        // fragment-md begin
+        markdownSlide {
+          content {
+            """
+            ## Markdown Slide with Fragments
+
+            highlight-red ${fragment(Effect.HIGHLIGHT_RED)}
+            
+            fade-in-then-semi-out ${fragment(Effect.FADE_IN_THEN_SEMI_OUT)}
+            
+            fade-left ${fragment(Effect.FADE_LEFT)}
+
+            fade-right ${fragment(Effect.FADE_RIGHT)}
+            
+            fade-up 👇 ${fragment(Effect.FADE_UP)}
+           
+            """
+          }
+        }
+        // fragment-md end
+
+        slideSource(slides, "fragment-md")
       }
     }
+
     presentation {
       // Make this presentation available at helloworld.html
       path = "helloworld.html"

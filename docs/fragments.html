@@ -66,21 +66,18 @@
                     
         </svg>
                 </a>
-			<a class="top-right" href="/" title="Go to 1st Slide">&#127968;</a>
+			<a class="top-right" href="/#/features" title="Go to main presentation">&#128281;</a>
 
       <div class="slides">
         <section>
           <section>
-            <div class="top-right">
-              <a href="/" title="Go back to 1st slide">&#127968;</a>
-            </div>
             <h2>Fragment Styles</h2>
             <p>There are different types of fragments, like: &#128071;</p>
             <p class="fragment grow">grow</p>
             <p class="fragment shrink">shrink</p>
             <p class="fragment fade-out">fade-out</p>
             <p>
-              <span class="fragment fade-right" style="display: inline-block;">fade-right, </span><span class="fragment fade-up" style="display: inline-block;">up, </span><span class="fragment fade-down" style="display: inline-block;">down, </span><span class="fragment fade-left" style="display: inline-block;">left</span>
+              <span class="fragment fade-right" style="display: inline-block;">fade-right,</span> <span class="fragment fade-up" style="display: inline-block;">fade-up,</span> <span class="fragment fade-down" style="display: inline-block;">fade-down, </span> <span class="fragment fade-left" style="display: inline-block;">fade-left</span>
             </p>
             <p class="fragment fade-in-then-out">fade-in-then-out</p>
             <p class="fragment fade-in-then-semi-out">fade-in-then-semi-out</p>
@@ -95,22 +92,19 @@
 ```kotlin 
 dslSlide {
   content {
-    div("top-right") {
-      a {
-        href = "/"
-        title = "Go back to 1st slide"
-        +"🏠" }
-    }
     h2 { +"Fragment Styles" }
     p { +"There are different types of fragments, like: 👇" }
     p("fragment grow") { +"grow" }
     p("fragment shrink") { +"shrink" }
     p("fragment fade-out") { +"fade-out" }
     p {
-      span("fragment fade-right") { style = "display: inline-block;"; +"fade-right, " }
-      span("fragment fade-up") { style = "display: inline-block;"; +"up, " }
-      span("fragment fade-down") { style = "display: inline-block;"; +"down, " }
-      span("fragment fade-left") { style = "display: inline-block;"; +"left" }
+      span("fragment fade-right") { style = "display: inline-block;"; +"fade-right," }
+      +" "
+      span("fragment fade-up") { style = "display: inline-block;"; +"fade-up," }
+      +" "
+      span("fragment fade-down") { style = "display: inline-block;"; +"fade-down, " }
+      +" "
+      span("fragment fade-left") { style = "display: inline-block;"; +"fade-left" }
     }
     p("fragment fade-in-then-out") { +"fade-in-then-out" }
     p("fragment fade-in-then-semi-out") { +"fade-in-then-semi-out" }
@@ -120,6 +114,57 @@ dslSlide {
       span("fragment highlight-blue") { +"blue " }
       span("fragment highlight-green") { +"green " }
     }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
+            <script type="text/template">
+## Markdown Slide with Fragments
+
+highlight-red 
+              <!-- .element: class="fragment highlight-red" -->
+
+fade-in-then-semi-out 
+              <!-- .element: class="fragment fade-in-then-semi-out" -->
+
+fade-left 
+              <!-- .element: class="fragment fade-left" -->
+
+fade-right 
+              <!-- .element: class="fragment fade-right" -->
+
+fade-up 👇 
+              <!-- .element: class="fragment fade-up" -->
+
+</script>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin 
+markdownSlide {
+  content {
+    """
+    ## Markdown Slide with Fragments
+
+    highlight-red ${fragment(Effect.HIGHLIGHT_RED)}
+    
+    fade-in-then-semi-out ${fragment(Effect.FADE_IN_THEN_SEMI_OUT)}
+    
+    fade-left ${fragment(Effect.FADE_LEFT)}
+
+    fade-right ${fragment(Effect.FADE_RIGHT)}
+    
+    fade-up 👇 ${fragment(Effect.FADE_UP)}
+   
+    """
   }
 }
 ```
