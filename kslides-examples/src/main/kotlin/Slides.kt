@@ -163,33 +163,6 @@ fun main() {
       }
 
       verticalSlides {
-        // animated-html begin
-        // A for loop generates a series of slides, each with a different set of lines
-        // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (lines in lineNumbers("[5,6,9|5-9|]"))
-          htmlSlide {
-            autoAnimate = true
-            content {
-              """
-              <h2>Animated Code with an htmlSlide</h2>
-              <pre data-id="code-animation" data-cc="false">
-                <code data-trim="" data-line-numbers="">
-                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
-                </code>
-              </pre>
-              <h2>👇</h2>
-              <aside class="notes">
-              This slide shows animated code highlights.
-              </aside>
-              """
-            }
-          }
-        // animated-html end
-
-        slideDefinition(slides, "animated-html")
-      }
-
-      verticalSlides {
         // animated-dsl begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
@@ -201,7 +174,7 @@ fun main() {
               pre {
                 attributes["data-id"] = "code-animation"
                 attributes["data-cc"] = "false"
-                code {
+                code("javascript") {
                   attributes["data-trim"] = ""
                   attributes["data-line-numbers"] = ""
                   +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)
@@ -216,6 +189,33 @@ fun main() {
         // animated-dsl end
 
         slideDefinition(slides, "animated-dsl")
+      }
+
+      verticalSlides {
+        // animated-html begin
+        // A for loop generates a series of slides, each with a different set of lines
+        // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
+        for (lines in lineNumbers("[5,6,9|5-9|]"))
+          htmlSlide {
+            autoAnimate = true
+            content {
+              """
+              <h2>Animated Code with an htmlSlide</h2>
+              <pre data-id="code-animation" data-cc="false">
+                <code class="javascript" data-trim="" data-line-numbers="">
+                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+                </code>
+              </pre>
+              <h2>👇</h2>
+              <aside class="notes">
+              This slide shows animated code highlights.
+              </aside>
+              """
+            }
+          }
+        // animated-html end
+
+        slideDefinition(slides, "animated-html")
       }
 
       verticalSlides {
@@ -499,7 +499,7 @@ fun main() {
       }
 
       verticalSlides {
-        // video begin
+        // video1 begin
         dslSlide {
           slideConfig {
             backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
@@ -509,9 +509,9 @@ fun main() {
             h1 { style = "color: red;"; +"Video Backgrounds" }
           }
         }
-        // video end
+        // video1 end
 
-        slideDefinition(slides, "video")
+        slideDefinition(slides, "video1")
       }
 
       verticalSlides {
@@ -676,8 +676,8 @@ fun main() {
             p { +"Makes an element as tall as possible while remaining within the slide bounds. 👇" }
             pre {
               code("kotlin") {
-                attributes["data-trim"] = "true"
-                attributes["data-line-numbers"] = "true"
+                attributes["data-trim"] = ""
+                attributes["data-line-numbers"] = ""
                 +includeFile(
                   slides,
                   "3-7",
@@ -690,8 +690,8 @@ fun main() {
             p { +"or" }
             pre {
               code("html") {
-                attributes["data-trim"] = "true"
-                attributes["data-line-numbers"] = "true"
+                attributes["data-trim"] = ""
+                attributes["data-line-numbers"] = ""
                 h2 { +"Stretch Example" }
                 img(classes = "r-stretch") {
                   src = "revealjs/assets/image2.png"
