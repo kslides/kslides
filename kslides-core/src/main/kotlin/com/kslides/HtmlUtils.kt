@@ -11,7 +11,7 @@ fun FlowContent.codeSnippet(
   lineOffSet: Int = -1,
   dataId: String = "",        // For animation
   trim: Boolean = true,
-  escapeHtml: Boolean = true,
+  escapeHtml: Boolean = false,
   copyButton: Boolean = true,  // Adds COPY button
   copyButtonText: String = "",
   copyButtonMsg: String = "",
@@ -41,7 +41,6 @@ fun FlowContent.codeSnippet(
       //}
     }
   }
-
 }
 
 @HtmlTagMarker

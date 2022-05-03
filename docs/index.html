@@ -286,7 +286,7 @@ markdownSlide {
           <section>
             <h2>Highlighted Code with a dslSlide</h2>
             <pre data-cc="true">
-              <code class="kotlin" data-line-numbers="[|3,7|4,6|5|4-6]" data-trim="">package examples
+              <code class="kotlin" data-line-numbers="[|3,7|4,6|5|4-6]" data-noescape="" data-trim="">package examples
 
 fun main() {
   for (i in (0..5)) {
@@ -327,7 +327,7 @@ dslSlide {
           <section data-auto-animate="">
             <h2>Animated Code with a dslSlide</h2>
             <pre data-cc="true" data-id="code-animation">
-              <code class="javascript" data-line-numbers="" data-trim="">let planets = [
+              <code class="javascript" data-line-numbers="" data-noescape="" data-trim="">let planets = [
     {name: 'mars', diameter: 6779},
 ];</code>
             </pre>
@@ -338,7 +338,7 @@ dslSlide {
           <section data-auto-animate="">
             <h2>Animated Code with a dslSlide</h2>
             <pre data-cc="true" data-id="code-animation">
-              <code class="javascript" data-line-numbers="" data-trim="">let planets = [
+              <code class="javascript" data-line-numbers="" data-noescape="" data-trim="">let planets = [
     {name: 'mars', diameter: 6779},
     {name: 'earth', diameter: 12742},
     {name: 'jupiter', diameter: 139820}
@@ -351,7 +351,7 @@ dslSlide {
           <section data-auto-animate="">
             <h2>Animated Code with a dslSlide</h2>
             <pre data-cc="true" data-id="code-animation">
-              <code class="javascript" data-line-numbers="" data-trim="">let circumferenceReducer = (c, planet) =&gt; {
+              <code class="javascript" data-line-numbers="" data-noescape="" data-trim="">let circumferenceReducer = (c, planet) =&gt; {
     return c + planet.diameter * Math.PI;
 };
 
@@ -916,7 +916,14 @@ presentation {
         p { +"Resizes text to be as large as possible within its container. 👇" }
         codeSnippet(
           "kotlin",
-          includeFile(slides, "3", beginToken = "ft1 begin", endToken = "ft1 end", indentToken = "", escapeHtml = false),
+          includeFile(
+            slides,
+            "3",
+            beginToken = "ft1 begin",
+            endToken = "ft1 end",
+            indentToken = "",
+            escapeHtml = false
+          ),
           lineNumbers = "none",
         )
         p { +"or" }
