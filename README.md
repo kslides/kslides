@@ -196,7 +196,7 @@ the option to convert it to the appropriate Kotlin HTML DSL code. Install it by 
 `HTML to kotlinx.html` in "Marketplace"
 
 ### Formatting
-Disable IntelliJ automatic formatting your code when you commit. The presentation
+Disable the IntelliJ `Reformat code` option when you commit. The presentation
 html files are space-sensitive and might not work if they are formatted.
 
 ### Images

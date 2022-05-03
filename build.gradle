@@ -8,28 +8,6 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
 }
 
-ext {
-    libraries = [
-            coroutines_core: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version",
-
-            css            : "org.jetbrains.kotlin-wrappers:kotlin-css:$css_version",
-
-            ktor_core      : "io.ktor:ktor-server:$ktor_version",
-            ktor_cio       : "io.ktor:ktor-server-cio:$ktor_version",
-            ktor_sessions  : "io.ktor:ktor-server-sessions:$ktor_version",
-
-            html_builder   : "io.ktor:ktor-server-html-builder:$ktor_version",
-
-            core_utils     : "com.github.pambrose.common-utils:core-utils:$utils_version",
-            server_utils   : "com.github.pambrose.common-utils:ktor-server-utils:$utils_version",
-
-            commons_text   : 'org.apache.commons:commons-text:$text_version',
-
-            logging        : "io.github.microutils:kotlin-logging:$logging_version",
-            logback        : "ch.qos.logback:logback-classic:$logback_version"
-    ]
-}
-
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
@@ -81,6 +59,7 @@ subprojects {
         implementation "io.ktor:ktor-server-html-builder:$ktor_version"
         implementation "io.ktor:ktor-server-call-logging:$ktor_version"
         implementation "io.ktor:ktor-server-compression:$ktor_version"
+        //implementation "io.ktor:ktor-server-locations:$ktor_version"
 
         implementation "com.github.pambrose.common-utils:core-utils:$utils_version"
         implementation "com.github.pambrose.common-utils:ktor-server-utils:$utils_version"
@@ -100,15 +79,15 @@ subprojects {
 
     compileKotlin {
         kotlinOptions {
-            useIR = true
             jvmTarget = '1.8'
-            freeCompilerArgs += ['-Xbackend-threads=8']
+            freeCompilerArgs += ['-Xbackend-threads=8',
+                                 //'-opt-in=io.ktor.server.locations.KtorExperimentalLocationsAPI',
+            ]
         }
     }
 
     compileTestKotlin {
         kotlinOptions {
-            useIR = true
             jvmTarget = '1.8'
             freeCompilerArgs += ['-Xbackend-threads=8']
         }

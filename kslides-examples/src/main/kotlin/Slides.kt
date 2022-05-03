@@ -57,6 +57,40 @@ fun main() {
         }
       }
 
+      @KSlidesDslMarker
+      fun SECTION.playground(
+        source: String,
+        supplement: String = "",
+        args: String = "",
+        autoIndent: Boolean = false,
+        indent: Int = 4,
+        highlightOnTheFly: Boolean = false,
+      ) {
+        fun String.adjust() = replace("/", "---___---").encode()
+
+        iframe {
+          src =
+            "http://0.0.0.0:8080/kotlin-code?source=${source.adjust()}&supp=${supplement.adjust()}&lines=true&theme=darcula&highlight-on-fly=${highlightOnTheFly.toString()}&indent=$indent&args=${args.encode()}&auto-indent=${autoIndent.toString()}"
+          width = "75%"
+          height = "500px"
+          style = "border: 2px solid red;"
+        }
+
+      }
+
+      dslSlide {
+        content {
+          playground("playground/HelloCat.kt", supplement = "playground.Cat")
+        }
+      }
+
+      dslSlide {
+        content {
+          playground("playground/HelloWorld.kt", args = "1 2 3")
+        }
+      }
+
+
       verticalSlides {
 
         // intro begin
@@ -174,11 +208,7 @@ fun main() {
           content {
             h2 { +"Highlighted Code with a dslSlide" }
             val file = "kslides-examples/src/main/kotlin/examples/HelloWorldK.kt"
-            codeSnippet(
-              "kotlin",
-              includeFile(file, indentToken = "", escapeHtml = false),
-              "[|3,7|4,6|5|4-6]",
-            )
+            codeSnippet("kotlin", includeFile(file), "[|3,7|4,6|5|4-6]")
             h2 { +"👇" }
             aside("notes") {
               +"This slide shows highlighted code. You can specify the lines you want to highlight."
@@ -200,11 +230,7 @@ fun main() {
             content {
               h2 { +"Animated Code with a dslSlide" }
               val file = "kslides-examples/src/main/kotlin/examples/assign.js"
-              codeSnippet(
-                "javascript",
-                includeFile(file, lines, indentToken = "", escapeHtml = false),
-                dataId = "code-animation"
-              )
+              codeSnippet("javascript", includeFile(file, lines), dataId = "code-animation")
               h2 { +"👇" }
               aside("notes") {
                 +"This slide shows animated code highlights."
@@ -647,16 +673,10 @@ fun main() {
           content {
             h2 { +"Fit Text" }
             p { +"Resizes text to be as large as possible within its container. 👇" }
+            val token = "ft1"
             codeSnippet(
               "kotlin",
-              includeFile(
-                slides,
-                "3",
-                beginToken = "ft1 begin",
-                endToken = "ft1 end",
-                indentToken = "",
-                escapeHtml = false
-              ),
+              includeFile(slides, "3", beginToken = "$token begin", endToken = "$token end"),
               linePattern = "none",
             )
             p { +"or" }
@@ -699,14 +719,7 @@ fun main() {
             p { +"Makes an element as tall as possible while remaining within the slide bounds. 👇" }
             codeSnippet(
               "kotlin",
-              includeFile(
-                slides,
-                "3-7",
-                beginToken = "stretch begin",
-                endToken = "stretch end",
-                indentToken = "",
-                escapeHtml = false,
-              ),
+              includeFile(slides, "3-7", beginToken = "stretch begin", endToken = "stretch end"),
               linePattern = "none",
             )
             p { +"or" }
@@ -750,13 +763,7 @@ fun main() {
               code("kotlin") {
                 attributes["data-trim"] = "true"
                 val token = "stack1" // Using a variable prevents false begin/end match
-                +includeFile(
-                  slides,
-                  "3-21",
-                  beginToken = "$token begin",
-                  endToken = "$token end",
-                  escapeHtml = false
-                )
+                +includeFile(slides, "3-21", beginToken = "$token begin", endToken = "$token end")
               }
             }
           }
@@ -801,13 +808,7 @@ fun main() {
               code("kotlin") {
                 attributes["data-trim"] = "true"
                 val token = "hstack"
-                +includeFile(
-                  slides,
-                  "3-8",
-                  beginToken = "$token begin",
-                  endToken = "$token end",
-                  escapeHtml = false
-                )
+                +includeFile(slides, "3-8", beginToken = "$token begin", endToken = "$token end")
               }
             }
           }
@@ -839,13 +840,7 @@ fun main() {
               code("kotlin") {
                 attributes["data-trim"] = "true"
                 val token = "vstack"
-                +includeFile(
-                  slides,
-                  "3-8",
-                  beginToken = "$token begin",
-                  endToken = "$token end",
-                  escapeHtml = false
-                )
+                +includeFile(slides, "3-8", beginToken = "$token begin", endToken = "$token end")
               }
             }
           }

@@ -5,6 +5,7 @@ import com.github.pambrose.common.util.*
 import com.kslides.KSlides.Companion.runHttpServer
 import com.kslides.KSlides.Companion.writeToFileSystem
 import com.kslides.Page.generatePage
+import com.kslides.Playground.playgroundFiles
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -111,6 +112,9 @@ class KSlides {
         }
 
         routing {
+
+          playgroundFiles()
+
           if (output.defaultHttpRoot.isNotBlank())
             static("/") {
               staticBasePackage = output.defaultHttpRoot

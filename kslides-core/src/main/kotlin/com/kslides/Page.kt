@@ -8,9 +8,9 @@ import java.io.*
 internal object Page {
 
   fun generatePage(p: Presentation, prefix: String = "/"): String {
-    val config = p.finalConfig
     val document =
       document {
+        val config = p.finalConfig
         append.html {
           generateHead(p, config, prefix.ensureSuffix("/"))
           generateBody(p, config, prefix.ensureSuffix("/"))
