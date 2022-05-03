@@ -70,12 +70,11 @@ fun main() {
 
         iframe {
           src =
-            "http://0.0.0.0:8080/kotlin-code?source=${source.adjust()}&supp=${supplement.adjust()}&lines=true&theme=darcula&highlight-on-fly=${highlightOnTheFly.toString()}&indent=$indent&args=${args.encode()}&auto-indent=${autoIndent.toString()}"
+            "http://0.0.0.0:8080/kotlin-code?source=${source.adjust()}&supp=${supplement.adjust()}&lines=true&theme=darcula&highlight-on-fly=$highlightOnTheFly&indent=$indent&args=${args.encode()}&auto-indent=$autoIndent"
           width = "75%"
           height = "500px"
           style = "border: 2px solid red;"
         }
-
       }
 
       dslSlide {
@@ -89,7 +88,6 @@ fun main() {
           playground("playground/HelloWorld.kt", args = "1 2 3")
         }
       }
-
 
       verticalSlides {
 

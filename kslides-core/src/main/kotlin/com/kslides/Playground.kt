@@ -5,10 +5,6 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import kotlinx.html.*
 import kotlinx.html.dom.*
-import kotlin.collections.filter
-import kotlin.collections.forEach
-import kotlin.collections.listOf
-import kotlin.collections.map
 import kotlin.collections.set
 
 object Playground {
@@ -66,7 +62,6 @@ object Playground {
                       textArea(classes = "hidden-dependency") {
                         +this@code.includeFile("kslides-examples/src/main/kotlin/${suppCode.toFileName()}")
                       }
-
                   }
               }
             }
