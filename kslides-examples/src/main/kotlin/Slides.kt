@@ -171,7 +171,7 @@ fun main() {
             codeSnippet(
               "kotlin",
               includeFile(file, indentToken = "", escapeHtml = false),
-              lineNumbers = "[|3,7|4,6|5|4-6]",
+              "[|3,7|4,6|5|4-6]",
             )
             h2 { +"👇" }
             aside("notes") {
@@ -651,13 +651,12 @@ fun main() {
                 indentToken = "",
                 escapeHtml = false
               ),
-              lineNumbers = "none",
+              linePattern = "none",
             )
             p { +"or" }
             pre {
               code("html") {
                 attributes["data-trim"] = ""
-                attributes["data-line-numbers"] = ""
                 h2("r-fit-text") { +"FIT" }
               }
             }
@@ -692,24 +691,22 @@ fun main() {
           content {
             h2 { +"Stretch" }
             p { +"Makes an element as tall as possible while remaining within the slide bounds. 👇" }
-            pre {
-              code("kotlin") {
-                attributes["data-trim"] = ""
-                attributes["data-line-numbers"] = ""
-                +includeFile(
-                  slides,
-                  "3-7",
-                  beginToken = "stretch begin",
-                  endToken = "stretch end",
-                  escapeHtml = false
-                )
-              }
-            }
+            codeSnippet(
+              "kotlin",
+              includeFile(
+                slides,
+                "3-7",
+                beginToken = "stretch begin",
+                endToken = "stretch end",
+                indentToken = "",
+                escapeHtml = false,
+              ),
+              linePattern = "none",
+            )
             p { +"or" }
             pre {
               code("html") {
                 attributes["data-trim"] = ""
-                attributes["data-line-numbers"] = ""
                 h2 { +"Stretch Example" }
                 img(classes = "r-stretch") {
                   src = "revealjs/assets/image2.png"
@@ -746,12 +743,12 @@ fun main() {
             pre {
               code("kotlin") {
                 attributes["data-trim"] = "true"
-                attributes["data-line-numbers"] = "true"
+                val token = "stack1" // Using a variable prevents false begin/end match
                 +includeFile(
                   slides,
                   "3-21",
-                  beginToken = "stack begin",
-                  endToken = "stack end",
+                  beginToken = "$token begin",
+                  endToken = "$token end",
                   escapeHtml = false
                 )
               }
@@ -759,7 +756,7 @@ fun main() {
           }
         }
 
-        // stack begin
+        // stack1 begin
         dslSlide {
           content {
             h2 { +"Stack Example" }
@@ -783,9 +780,9 @@ fun main() {
             }
           }
         }
-        // stack end
+        // stack1 end
 
-        slideDefinition(slides, "stack")
+        slideDefinition(slides, "stack1")
       }
 
       verticalSlides {
@@ -797,12 +794,12 @@ fun main() {
             pre {
               code("kotlin") {
                 attributes["data-trim"] = "true"
-                attributes["data-line-numbers"] = "true"
+                val token = "hstack"
                 +includeFile(
                   slides,
                   "3-8",
-                  beginToken = "hstack begin",
-                  endToken = "hstack end",
+                  beginToken = "$token begin",
+                  endToken = "$token end",
                   escapeHtml = false
                 )
               }
@@ -835,12 +832,12 @@ fun main() {
             pre {
               code("kotlin") {
                 attributes["data-trim"] = "true"
-                attributes["data-line-numbers"] = "true"
+                val token = "vstack"
                 +includeFile(
                   slides,
                   "3-8",
-                  beginToken = "vstack begin",
-                  endToken = "vstack end",
+                  beginToken = "$token begin",
+                  endToken = "$token end",
                   escapeHtml = false
                 )
               }

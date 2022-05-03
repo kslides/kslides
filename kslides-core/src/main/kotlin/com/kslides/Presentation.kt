@@ -303,17 +303,19 @@ class Presentation(val kslides: KSlides) {
     source: String,
     token: String,
     title: String = "Slide Definition",
-    lines: String = "",
+    linePattern: String = "",
     id: String = "",
     language: String = "kotlin",
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
-      slideConfig { markdownNotesSeparator = "^^" }
+      slideConfig {
+        markdownNotesSeparator = "^^"
+      }
       content {
         """
         ## $title    
-        ```$language $lines
+        ```$language $linePattern
         ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
         ```
         """
@@ -327,17 +329,19 @@ class Presentation(val kslides: KSlides) {
     source: String,
     token: String,
     title: String = "Slide Definition",
-    lines: String = "",
+    linePattern: String = "[]",
     id: String = "",
     language: String = "kotlin",
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
-      slideConfig { markdownNotesSeparator = "^^" }
+      slideConfig {
+        markdownNotesSeparator = "^^"
+      }
       content {
         """
         ## $title    
-        ```$language $lines
+        ```$language $linePattern
         ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
         ```
         """

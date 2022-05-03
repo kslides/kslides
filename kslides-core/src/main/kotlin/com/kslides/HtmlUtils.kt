@@ -6,8 +6,8 @@ import kotlinx.html.*
 @HtmlTagMarker
 fun FlowContent.codeSnippet(
   language: String,
-  code: String,
-  lineNumbers: String = "",   // none will turn off line numbers
+  text: String,
+  linePattern: String = "",   // none will turn off line numbers
   lineOffSet: Int = -1,
   dataId: String = "",        // For animation
   trim: Boolean = true,
@@ -27,8 +27,8 @@ fun FlowContent.codeSnippet(
       attributes["data-cc-copied"] = copyButtonMsg
 
     code(language.nullIfBlank()) {
-      if (lineNumbers.toLower() != "none")
-        attributes["data-line-numbers"] = lineNumbers
+      if (linePattern.toLower() != "none")
+        attributes["data-line-numbers"] = linePattern
       if (lineOffSet != -1)
         attributes["data-ln-start-from"] = lineOffSet.toString()
       if (trim)
@@ -37,7 +37,7 @@ fun FlowContent.codeSnippet(
         attributes["data-noescape"] = ""
       //script { // This will allow unwrapped html
       //type = "text/template"
-      +code
+      +text
       //}
     }
   }
