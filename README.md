@@ -196,7 +196,7 @@ the option to convert it to the appropriate Kotlin HTML DSL code. Install it by 
 `HTML to kotlinx.html` in "Marketplace"
 
 ### Formatting
-Do not instruct IntelliJ to automatically format your code when you commit your code. The presentation
+Disable IntelliJ automatic formatting your code when you commit. The presentation
 html files are space-sensitive and might not work if they are formatted.
 
 ### Images
@@ -213,7 +213,7 @@ If you have to embed code, remove all indentation of the `content{}` block.
 
 ### Heroku 
 
-* Add a Config Var: `GRADLE_TASK=-Pprod=true uberjar`
+* Add a config var: `GRADLE_TASK=-Pprod=true uberjar`
 
 ### MarkDown Slide 
 

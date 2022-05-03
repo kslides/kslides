@@ -14,8 +14,8 @@ fun main() {
       enableHttp = true
     }
 
+    // Default config values for all presentations go here
     presentationDefault {
-      // Default config values for all presentations go here
       topLeftHref = "https://github.com/kslides/kslides/"
       topLeftTitle = "View presentation source on Github"
 
@@ -33,6 +33,12 @@ fun main() {
       enableMenu = true
       theme = Theme.SOLARIZED
       center = true
+
+      copyCodeConfig {
+        timeout = 2000
+        copy = "Copy"
+        copied = "Copied!"
+      }
     }
 
     // readme begin
@@ -611,7 +617,7 @@ fun main() {
 
       presentationConfig {
         topRightHref = "/#/features"
-        topRightTitle = "Go to main presentation"
+        topRightTitle = "Go back to main presentation"
         topRightText = "🔙"
       }
 

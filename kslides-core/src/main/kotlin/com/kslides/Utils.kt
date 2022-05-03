@@ -136,8 +136,8 @@ internal fun String.toIntList() =
       }
   }
 
-fun lineSeries(ranges: String) =
-  ranges
+fun lineSeries(linePattern: String) =
+  linePattern
     .replace(whiteSpace, "")
     .trimStart('[', '(')
     .trimEnd(']', ')')

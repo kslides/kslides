@@ -884,7 +884,7 @@ presentation {
 
   presentationConfig {
     topRightHref = "/#/features"
-    topRightTitle = "Go to main presentation"
+    topRightTitle = "Go back to main presentation"
     topRightText = "🔙"
   }
 
@@ -2235,6 +2235,12 @@ fun slideDefinition(
 
 			slideNumber: 'c/t',
 
+			copycode: {
+				timeout: 2000,
+				copy: 'Copy',
+				copied: 'Copied!'
+			},
+			
 			plugins: [ RevealNotes, RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight, RevealMenu, CopyCode ]
 		});
 
