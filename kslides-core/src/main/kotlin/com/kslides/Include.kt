@@ -12,20 +12,20 @@ object Include : KLogging()
 
 fun includeFile(
   path: String,
-  lineNumbers: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   indentToken: String = INDENT_TOKEN,
-  enableTrimIndent: Boolean = true,
-  enableEscape: Boolean = true,
+  trimIndent: Boolean = true,
+  escapeHtml: Boolean = true,
 ) =
   try {
     File("${System.getProperty("user.dir")}/$path")
       .readLines()
       .fromTo(beginToken, endToken, exclusive)
-      .toLineRanges(lineNumbers)
-      .fixIndents(indentToken, enableTrimIndent, enableEscape)
+      .toLineRanges(linePattern)
+      .fixIndents(indentToken, trimIndent, escapeHtml)
   } catch (e: Exception) {
     Include.logger.warn(e) { "Unable to read $path" }
     ""
@@ -34,44 +34,44 @@ fun includeFile(
 // When called from a dslSlide, you no longer need the indentToken and you want to add newlines to front and back
 fun CODE.includeFile(
   path: String,
-  lineNumbers: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   indentToken: String = "",
-  enableTrimIndent: Boolean = true,
-  enableEscape: Boolean = true,
+  trimIndent: Boolean = true,
+  escapeHtml: Boolean = true,
 ) =
   "\n${
     com.kslides.includeFile(
       path,
-      lineNumbers,
+      linePattern,
       beginToken,
       endToken,
       exclusive,
       indentToken,
-      enableTrimIndent,
-      enableEscape
+      trimIndent,
+      escapeHtml
     )
   }\n"
 
 fun includeUrl(
   url: String,
-  lineNumbers: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   indentToken: String = INDENT_TOKEN,
-  enableTrimIndent: Boolean = true,
-  enableEscape: Boolean = true,
+  trimIndent: Boolean = true,
+  escapeHtml: Boolean = true,
 ) =
   try {
     URL(url)
       .readText()
       .lines()
       .fromTo(beginToken, endToken, exclusive)
-      .toLineRanges(lineNumbers)
-      .fixIndents(indentToken, enableTrimIndent, enableEscape)
+      .toLineRanges(linePattern)
+      .fixIndents(indentToken, trimIndent, escapeHtml)
   } catch (e: Exception) {
     Include.logger.warn(e) { "Unable to read $url" }
     ""
@@ -79,24 +79,24 @@ fun includeUrl(
 
 fun CODE.includeUrl(
   url: String,
-  lineNumbers: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   indentToken: String = "",
-  enableTrimIndent: Boolean = true,
-  enableEscape: Boolean = true,
+  trimIndent: Boolean = true,
+  escapeHtml: Boolean = true,
 ) =
   "\n${
     com.kslides.includeUrl(
       url,
-      lineNumbers,
+      linePattern,
       beginToken,
       endToken,
       exclusive,
       indentToken,
-      enableTrimIndent,
-      enableEscape
+      trimIndent,
+      escapeHtml
     )
   }\n"
 
@@ -148,9 +148,9 @@ internal fun List<String>.toLineRanges(text: String): List<String> =
 
 internal fun List<String>.fixIndents(
   indentToken: String,
-  enableTrimIndent: Boolean,
-  enableEscape: Boolean,
+  trimIndent: Boolean,
+  escapeHtml: Boolean,
 ) =
-  (if (enableTrimIndent) joinToString("\n").trimIndent().lines() else this)
+  (if (trimIndent) joinToString("\n").trimIndent().lines() else this)
     .map { "$indentToken$it" }
-    .joinToString("\n") { if (enableEscape) escapeHtml4(it) else it }
+    .joinToString("\n") { if (escapeHtml) escapeHtml4(it) else it }

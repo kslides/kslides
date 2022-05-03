@@ -144,58 +144,77 @@ fun main() {
       }
 
       verticalSlides {
-        // highlights begin
+        // highlights1 begin
         markdownSlide {
           content {
             """
             ## Highlighted Code with a markdownSlide   
-            ```kotlin [|3,7|4,6| 5 | 4-6]
+            ```kotlin [|3,7|4,6|5|4-6]
             ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
             ```
             ### 👇 
-            Note: This slide shows code highlights. You can specify the lines you want to highlight
+            Note: This slide shows code highlights. You can specify the lines you want to highlight.
             """
           }
         }
-        // highlights end
+        // highlights1 end
 
-        slideDefinition(slides, "highlights")
+        slideDefinition(slides, "highlights1")
       }
 
       verticalSlides {
-        // animated-dsl begin
+        // highlights2 begin
+        dslSlide {
+          content {
+            h2 { +"Highlighted Code with a dslSlide" }
+            val file = "kslides-examples/src/main/kotlin/examples/HelloWorldK.kt"
+            codeSnippet(
+              "kotlin",
+              includeFile(file, indentToken = "", escapeHtml = false),
+              lineNumbers = "[|3,7|4,6|5|4-6]",
+            )
+            h2 { +"👇" }
+            aside("notes") {
+              +"This slide shows highlighted code. You can specify the lines you want to highlight."
+            }
+          }
+        }
+        // highlights2 end
+
+        slideDefinition(slides, "highlights2")
+      }
+
+      verticalSlides {
+        // animated1 begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (lines in lineNumbers("[5,6,9|5-9|]"))
+        for (lines in lineSeries("[5,6,9|5-9|]"))
           dslSlide {
             autoAnimate = true
             content {
               h2 { +"Animated Code with a dslSlide" }
-              pre {
-                attributes["data-id"] = "code-animation"
-                attributes["data-cc"] = "false"
-                code("javascript") {
-                  attributes["data-trim"] = ""
-                  attributes["data-line-numbers"] = ""
-                  +includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)
-                }
-              }
+              val file = "kslides-examples/src/main/kotlin/examples/assign.js"
+              codeSnippet(
+                "javascript",
+                includeFile(file, lines, indentToken = "", escapeHtml = false),
+                dataId = "code-animation"
+              )
               h2 { +"👇" }
               aside("notes") {
                 +"This slide shows animated code highlights."
               }
             }
           }
-        // animated-dsl end
+        // animated1 end
 
-        slideDefinition(slides, "animated-dsl")
+        slideDefinition(slides, "animated1")
       }
 
       verticalSlides {
-        // animated-html begin
+        // animated2 begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (lines in lineNumbers("[5,6,9|5-9|]"))
+        for (lines in lineSeries("[5,6,9|5-9|]"))
           htmlSlide {
             autoAnimate = true
             content {
@@ -213,9 +232,9 @@ fun main() {
               """
             }
           }
-        // animated-html end
+        // animated2 end
 
-        slideDefinition(slides, "animated-html")
+        slideDefinition(slides, "animated2")
       }
 
       verticalSlides {
@@ -622,39 +641,38 @@ fun main() {
           content {
             h2 { +"Fit Text" }
             p { +"Resizes text to be as large as possible within its container. 👇" }
-            pre {
-              code("html") {
-                attributes["data-trim"] = "true"
-                attributes["data-line-numbers"] = "true"
-                +includeFile(
-                  slides,
-                  "3",
-                  beginToken = "fit-text1 begin",
-                  endToken = "fit-text1 end",
-                  enableEscape = false
-                )
-              }
-            }
+            codeSnippet(
+              "kotlin",
+              includeFile(
+                slides,
+                "3",
+                beginToken = "ft1 begin",
+                endToken = "ft1 end",
+                indentToken = "",
+                escapeHtml = false
+              ),
+              lineNumbers = "none",
+            )
             p { +"or" }
             pre {
               code("html") {
-                attributes["data-trim"] = "true"
-                attributes["data-line-numbers"] = "true"
+                attributes["data-trim"] = ""
+                attributes["data-line-numbers"] = ""
                 h2("r-fit-text") { +"FIT" }
               }
             }
           }
         }
 
-        // fit-text1 begin
+        // ft1 begin
         dslSlide {
           content {
             h2("r-fit-text") { +"FIT" }
           }
         }
-        // fit-text1 end
+        // ft1 end
 
-        slideDefinition(slides, "fit-text1")
+        slideDefinition(slides, "ft1")
 
         // fit-text2 begin
         dslSlide {
@@ -683,7 +701,7 @@ fun main() {
                   "3-7",
                   beginToken = "stretch begin",
                   endToken = "stretch end",
-                  enableEscape = false
+                  escapeHtml = false
                 )
               }
             }
@@ -734,7 +752,7 @@ fun main() {
                   "3-21",
                   beginToken = "stack begin",
                   endToken = "stack end",
-                  enableEscape = false
+                  escapeHtml = false
                 )
               }
             }
@@ -785,7 +803,7 @@ fun main() {
                   "3-8",
                   beginToken = "hstack begin",
                   endToken = "hstack end",
-                  enableEscape = false
+                  escapeHtml = false
                 )
               }
             }
@@ -823,7 +841,7 @@ fun main() {
                   "3-8",
                   beginToken = "vstack begin",
                   endToken = "vstack end",
-                  enableEscape = false
+                  escapeHtml = false
                 )
               }
             }

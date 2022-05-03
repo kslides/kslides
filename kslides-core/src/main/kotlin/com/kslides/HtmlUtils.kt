@@ -4,6 +4,47 @@ import com.github.pambrose.common.util.*
 import kotlinx.html.*
 
 @HtmlTagMarker
+fun FlowContent.codeSnippet(
+  language: String,
+  code: String,
+  lineNumbers: String = "",   // none will turn off line numbers
+  lineOffSet: Int = -1,
+  dataId: String = "",        // For animation
+  trim: Boolean = true,
+  escapeHtml: Boolean = true,
+  copyButton: Boolean = true,  // Adds COPY button
+  copyButtonText: String = "",
+  copyButtonMsg: String = "",
+) {
+  pre {
+    if (dataId.isNotBlank())
+      attributes["data-id"] = dataId
+
+    attributes["data-cc"] = copyButton.toString()
+    if (copyButtonText.isNotBlank())
+      attributes["data-cc-copy"] = copyButtonText
+    if (copyButtonMsg.isNotBlank())
+      attributes["data-cc-copied"] = copyButtonMsg
+
+    code(language.nullIfBlank()) {
+      if (lineNumbers.toLower() != "none")
+        attributes["data-line-numbers"] = lineNumbers
+      if (lineOffSet != -1)
+        attributes["data-ln-start-from"] = lineOffSet.toString()
+      if (trim)
+        attributes["data-trim"] = ""
+      if (!escapeHtml)
+        attributes["data-noescape"] = ""
+      //script { // This will allow unwrapped html
+      //type = "text/template"
+      +code
+      //}
+    }
+  }
+
+}
+
+@HtmlTagMarker
 inline fun LI.listHref(
   url: String,
   text: String = "",
