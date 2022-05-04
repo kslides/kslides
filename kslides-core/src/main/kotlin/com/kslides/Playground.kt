@@ -12,8 +12,6 @@ object Playground {
   fun Routing.playgroundFiles() {
 
     get("kotlin-code") {
-      fun String.toFileName() =
-        replace("---___---", "/")
 
       respondWith {
         document {
@@ -54,19 +52,19 @@ object Playground {
                   .forEach { attributes[it.first] = it.second }
 
                 val path = params["source"] ?: throw IllegalArgumentException("Missing playground filename")
-                +includeFile("kslides-examples/src/main/kotlin/${path.toFileName()}")
+                +includeFile("kslides-examples/src/main/kotlin/$path")
 
                 (params["supp"] ?: "")
                   .also { suppCode ->
                     if (suppCode.isNotBlank())
                       textArea(classes = "hidden-dependency") {
-                        +this@code.includeFile("kslides-examples/src/main/kotlin/${suppCode.toFileName()}")
+                        +this@code.includeFile("kslides-examples/src/main/kotlin/$suppCode")
                       }
                   }
               }
             }
           }
-        }.serialize()
+        }.serialize().also {println(it)}
       }
     }
   }

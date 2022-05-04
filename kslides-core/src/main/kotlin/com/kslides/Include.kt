@@ -15,7 +15,7 @@ private fun String.pad() = "\n$this\n"
 // This will cover htmlSlide and markdownSlide
 fun includeFile(
   path: String,
-  pattern: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
@@ -27,7 +27,7 @@ fun includeFile(
     File("${System.getProperty("user.dir")}/$path")
       .readLines()
       .fromTo(beginToken, endToken, exclusive)
-      .toLineRanges(pattern)
+      .toLineRanges(linePattern)
       .fixIndents(indentToken, trimIndent, escapeHtml)
   } catch (e: Exception) {
     Include.logger.warn(e) { "Unable to read $path" }
@@ -37,37 +37,37 @@ fun includeFile(
 // When called from a code block, turn off indentToken and escaping
 fun CODE.includeFile(
   path: String,
-  pattern: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = includeFile(path, pattern, beginToken, endToken, exclusive, false, "", false).pad()
+) = includeFile(path, linePattern, beginToken, endToken, exclusive, false, "", false).pad()
 
 // When called from a DslSlide, turn off indentToken and escaping
 fun DslSlide.includeFile(
   path: String,
-  pattern: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = includeFile(path, pattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 // When called from a vertical DslSlide, turn off indentToken and escaping
 fun VerticalDslSlide.includeFile(
   path: String,
-  pattern: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = includeFile(path, pattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 // This will cover htmlSlide and markdownSlide
 fun includeUrl(
   url: String,
-  pattern: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
@@ -80,7 +80,7 @@ fun includeUrl(
       .readText()
       .lines()
       .fromTo(beginToken, endToken, exclusive)
-      .toLineRanges(pattern)
+      .toLineRanges(linePattern)
       .fixIndents(indentToken, trimIndent, escapeHtml)
   } catch (e: Exception) {
     Include.logger.warn(e) { "Unable to read $url" }
@@ -90,32 +90,32 @@ fun includeUrl(
 // When called from a code block, turn off indentToken and escaping
 fun CODE.includeUrl(
   url: String,
-  pattern: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = includeUrl(url, pattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+) = includeUrl(url, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 // When called from a DslSlide, turn off indentToken and escaping
 fun DslSlide.includeUrl(
   url: String,
-  pattern: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = includeUrl(url, pattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+) = includeUrl(url, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 // When called from a vertical DslSlide, turn off indentToken and escaping
 fun VerticalDslSlide.includeUrl(
   url: String,
-  pattern: String = "",
+  linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = includeUrl(url, pattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+) = includeUrl(url, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 internal fun List<String>.fromTo(
   beginToken: String = "",
@@ -154,10 +154,10 @@ internal fun List<String>.fromTo(
   return if (beginIndex == 0 && endIndex == this.size) this else subList(beginIndex, endIndex)
 }
 
-internal fun List<String>.toLineRanges(pattern: String): List<String> =
+internal fun List<String>.toLineRanges(linePattern: String): List<String> =
   when {
-    pattern.isNotBlank() ->
-      pattern.toIntList().let { lineNums ->
+    linePattern.isNotBlank() ->
+      linePattern.toIntList().let { lineNums ->
         filterIndexed { i, _ -> i + 1 in lineNums }
       }
     else -> this

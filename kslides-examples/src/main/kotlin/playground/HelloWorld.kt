@@ -1,8 +1,8 @@
 package playground
 
 fun main(args: Array<String>) {
-  //sampleStart
+//sampleStart
   for (arg in args)
     println("Hello World $arg")
-  //sampleEnd
+//sampleEnd
 }

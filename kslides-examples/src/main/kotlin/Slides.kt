@@ -66,11 +66,10 @@ fun main() {
         indent: Int = 4,
         highlightOnTheFly: Boolean = false,
       ) {
-        fun String.adjust() = replace("/", "---___---").encode()
 
         iframe {
           src =
-            "http://0.0.0.0:8080/kotlin-code?source=${source.adjust()}&supp=${supplement.adjust()}&lines=true&theme=darcula&highlight-on-fly=$highlightOnTheFly&indent=$indent&args=${args.encode()}&auto-indent=$autoIndent"
+            "kotlin-code?source=${source.encode()}&supp=${supplement.encode()}&lines=true&theme=darcula&highlight-on-fly=$highlightOnTheFly&indent=$indent&args=${args.encode()}&auto-indent=$autoIndent"
           width = "75%"
           height = "500px"
           style = "border: 2px solid red;"
@@ -79,7 +78,7 @@ fun main() {
 
       dslSlide {
         content {
-          playground("playground/HelloCat.kt", supplement = "playground.Cat")
+          playground("playground/HelloCat.kt", supplement = "playground/Cat.kt")
         }
       }
 

@@ -76,11 +76,11 @@
 
       <div class="slides">
         <section>
-          <iframe height="500px" src="http://0.0.0.0:8080/kotlin-code?source=playground---___---HelloCat.kt&amp;supp=playground.Cat&amp;lines=true&amp;theme=darcula&amp;highlight-on-fly=false&amp;indent=4&amp;args=&amp;auto-indent=false" style="border: 2px solid red;" width="75%"></iframe>
+          <iframe height="500px" src="kotlin-code?source=playground%2FHelloCat.kt&amp;supp=playground%2FCat.kt&amp;lines=true&amp;theme=darcula&amp;highlight-on-fly=false&amp;indent=4&amp;args=&amp;auto-indent=false" style="border: 2px solid red;" width="75%"></iframe>
         </section>
         
         <section>
-          <iframe height="500px" src="http://0.0.0.0:8080/kotlin-code?source=playground---___---HelloWorld.kt&amp;supp=&amp;lines=true&amp;theme=darcula&amp;highlight-on-fly=false&amp;indent=4&amp;args=1+2+3&amp;auto-indent=false" style="border: 2px solid red;" width="75%"></iframe>
+          <iframe height="500px" src="kotlin-code?source=playground%2FHelloWorld.kt&amp;supp=&amp;lines=true&amp;theme=darcula&amp;highlight-on-fly=false&amp;indent=4&amp;args=1+2+3&amp;auto-indent=false" style="border: 2px solid red;" width="75%"></iframe>
         </section>
         
         <section>
@@ -1610,21 +1610,19 @@ presentation {
     indent: Int = 4,
     highlightOnTheFly: Boolean = false,
   ) {
-    fun String.adjust() = replace("/", "---___---").encode()
 
     iframe {
       src =
-        "http://0.0.0.0:8080/kotlin-code?source=${source.adjust()}&supp=${supplement.adjust()}&lines=true&theme=darcula&highlight-on-fly=${highlightOnTheFly.toString()}&indent=$indent&args=${args.encode()}&auto-indent=${autoIndent.toString()}"
+        "kotlin-code?source=${source.encode()}&supp=${supplement.encode()}&lines=true&theme=darcula&highlight-on-fly=$highlightOnTheFly&indent=$indent&args=${args.encode()}&auto-indent=$autoIndent"
       width = "75%"
       height = "500px"
       style = "border: 2px solid red;"
     }
-
   }
 
   dslSlide {
     content {
-      playground("playground/HelloCat.kt", supplement = "playground.Cat")
+      playground("playground/HelloCat.kt", supplement = "playground/Cat.kt")
     }
   }
 
@@ -1633,7 +1631,6 @@ presentation {
       playground("playground/HelloWorld.kt", args = "1 2 3")
     }
   }
-
 
   verticalSlides {
 

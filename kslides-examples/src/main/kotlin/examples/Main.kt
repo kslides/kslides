@@ -78,7 +78,7 @@ fun main() {
         content {
           """
           <pre data-id="code-animation"><code data-trim="" data-line-numbers="">
-          ${includeFile("src/test/kotlin/examples/assign.js", pattern = "4-9")}
+          ${includeFile("src/test/kotlin/examples/assign.js", linePattern = "4-9")}
           </code></pre>
           """
         }
