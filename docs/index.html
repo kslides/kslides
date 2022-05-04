@@ -520,8 +520,8 @@ dslSlide {
           </section>
           
           <section>
-            <h2>Playground </h2>
-            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloCat.kt&amp;supp=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FCat.kt&amp;theme=idea&amp;lines=true&amp;data-target-platform=js-ir" style="border:none;" width="100%"></iframe>
+            <h2>Playground with Additional Code</h2>
+            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloCat.kt&amp;supp=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FCat.kt&amp;theme=idea&amp;lines=true" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -530,10 +530,9 @@ dslSlide {
 ```kotlin []
 dslSlide {
   content {
-    h2 { +"Playground " }
+    h2 { +"Playground with Additional Code" }
     playground("$root/HelloCat.kt", "$root/Cat.kt") {
       theme = PlaygroundTheme.IDEA
-      dataTargetPlatform = TargetPlatform.JSIR
     }
   }
 }
@@ -565,7 +564,7 @@ dslSlide {
           
           <section>
             <h2>Playground Using Kotlin/JS</h2>
-            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FJsPlayground.txt&amp;supp=&amp;theme=darcula&amp;lines=true&amp;data-target-platform=js&amp;data-js-libs=https%3A%2F%2Funpkg.com%2Fmoment%402" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FJsPlayground.txt&amp;supp=&amp;theme=idea&amp;lines=true&amp;data-target-platform=js&amp;data-js-libs=https%3A%2F%2Funpkg.com%2Fmoment%402" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -576,6 +575,7 @@ dslSlide {
   content {
     h2 { +"Playground Using Kotlin/JS" }
     playground("$root/JsPlayground.txt") {
+      theme = PlaygroundTheme.IDEA
       dataTargetPlatform = TargetPlatform.JS
       dataJsLibs = "https://unpkg.com/moment@2"
     }
@@ -1886,10 +1886,9 @@ presentation {
     // pg2 begin
     dslSlide {
       content {
-        h2 { +"Playground " }
+        h2 { +"Playground with Additional Code" }
         playground("$root/HelloCat.kt", "$root/Cat.kt") {
           theme = PlaygroundTheme.IDEA
-          dataTargetPlatform = TargetPlatform.JSIR
         }
       }
     }
@@ -1916,6 +1915,7 @@ presentation {
       content {
         h2 { +"Playground Using Kotlin/JS" }
         playground("$root/JsPlayground.txt") {
+          theme = PlaygroundTheme.IDEA
           dataTargetPlatform = TargetPlatform.JS
           dataJsLibs = "https://unpkg.com/moment@2"
         }

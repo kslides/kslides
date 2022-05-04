@@ -268,10 +268,9 @@ fun main() {
         // pg2 begin
         dslSlide {
           content {
-            h2 { +"Playground " }
+            h2 { +"Playground with Additional Code" }
             playground("$root/HelloCat.kt", "$root/Cat.kt") {
               theme = PlaygroundTheme.IDEA
-              dataTargetPlatform = TargetPlatform.JSIR
             }
           }
         }
@@ -298,6 +297,7 @@ fun main() {
           content {
             h2 { +"Playground Using Kotlin/JS" }
             playground("$root/JsPlayground.txt") {
+              theme = PlaygroundTheme.IDEA
               dataTargetPlatform = TargetPlatform.JS
               dataJsLibs = "https://unpkg.com/moment@2"
             }

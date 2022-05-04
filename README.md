@@ -211,6 +211,9 @@ If you have to embed code, remove all indentation of the `content{}` block.
 ### Local Development
 * Speaker Notes do not work properly when running locally.
 
+### Kotlin Playground
+Playground code using `dataTargetPlatform = JUNIT` should not hae a `package` decl. 
+
 ### Heroku 
 
 * Add a config var: `GRADLE_TASK=-Pprod=true uberjar`
