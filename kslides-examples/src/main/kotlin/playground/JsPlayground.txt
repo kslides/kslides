@@ -1,0 +1,6 @@
+external fun moment(): dynamic
+
+fun main() {
+  val startOfDay = moment().startOf("day").fromNow()
+  println("The start of the day was $startOfDay")
+}

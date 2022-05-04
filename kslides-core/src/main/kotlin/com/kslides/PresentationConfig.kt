@@ -17,7 +17,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   var controlsLayout by ConfigProperty<String>(unmanagedValues) // 'bottom-right'
 
   var title by ConfigProperty<String>(managedValues)
-  var theme by ConfigProperty<Theme>(managedValues)
+  var theme by ConfigProperty<PresentationTheme>(managedValues)
   var highlight by ConfigProperty<Highlight>(managedValues)
   var enableSpeakerNotes by ConfigProperty<Boolean>(managedValues)
   var enableZoom by ConfigProperty<Boolean>(managedValues)
@@ -61,7 +61,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
     // Only the default config is initialized with default values
     if (init) {
       title = ""
-      theme = Theme.BLACK
+      theme = PresentationTheme.BLACK
       highlight = Highlight.MONOKAI
       enableSpeakerNotes = false
       enableZoom = true

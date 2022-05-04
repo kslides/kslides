@@ -76,14 +76,6 @@
 
       <div class="slides">
         <section>
-          <iframe src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloCat.kt&amp;supp=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FCat.kt" style="border: 2px solid yellow;"></iframe>
-        </section>
-        
-        <section>
-          <section>
-            <iframe height="500px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloWorld.kt&amp;supp=&amp;lines=false&amp;args=1+2+3" style="border: 2px solid green;" width="75%"></iframe>
-          </section>
-          
           <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="intro">
             <script type="text/template">
 # kslides
@@ -506,6 +498,96 @@ for (lines in lineSeries("[5,6,9|5-9|]"))
         </section>
         
         <section>
+          <section>
+            <h2>Kotlin Playground Support</h2>
+            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloWorld.kt&amp;supp=&amp;theme=darcula&amp;lines=true&amp;args=1+2+3" style="border:none;" width="100%"></iframe>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"Kotlin Playground Support" }
+    playground("$root/HelloWorld.kt") {
+      args = "1 2 3"
+    }
+  }
+}
+```
+</script>
+          </section>
+          
+          <section>
+            <h2>Playground </h2>
+            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloCat.kt&amp;supp=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FCat.kt&amp;theme=idea&amp;lines=true&amp;data-target-platform=js-ir" style="border:none;" width="100%"></iframe>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"Playground " }
+    playground("$root/HelloCat.kt", "$root/Cat.kt") {
+      theme = PlaygroundTheme.IDEA
+      dataTargetPlatform = TargetPlatform.JSIR
+    }
+  }
+}
+```
+</script>
+          </section>
+          
+          <section>
+            <h2>Playground Using JUnit</h2>
+            <iframe height="450px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FTestLambdas.kt&amp;supp=&amp;theme=darcula&amp;lines=true&amp;data-target-platform=junit" style="border:none;" width="100%"></iframe>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"Playground Using JUnit" }
+    playground("$root/TestLambdas.kt") {
+      height = "450px"
+      dataTargetPlatform = TargetPlatform.JUNIT
+    }
+  }
+}
+```
+</script>
+          </section>
+          
+          <section>
+            <h2>Playground Using Kotlin/JS</h2>
+            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FJsPlayground.txt&amp;supp=&amp;theme=darcula&amp;lines=true&amp;data-target-platform=js&amp;data-js-libs=https%3A%2F%2Funpkg.com%2Fmoment%402" style="border:none;" width="100%"></iframe>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"Playground Using Kotlin/JS" }
+    playground("$root/JsPlayground.txt") {
+      dataTargetPlatform = TargetPlatform.JS
+      dataJsLibs = "https://unpkg.com/moment@2"
+    }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
           <section data-auto-animate="">
             <h2>Animated List Items</h2>
             <ul>
@@ -779,7 +861,7 @@ dslSlide {
           +"reveal.js comes with some built-in themes:"
           br {}
           // The Theme enum includes all the built in themes
-          Theme.values()
+          PresentationTheme.values()
             .forEachIndexed { index, theme ->
               a {
                 href = "#/themes"
@@ -787,7 +869,7 @@ dslSlide {
                   "document.getElementById('theme').setAttribute('href','dist/theme/${theme.name.toLower()}.css'); return false;"
                 +theme.name
               }
-              if (index < Theme.values().size - 1)
+              if (index < PresentationTheme.values().size - 1)
                 +"-"
             }
         }
@@ -966,9 +1048,10 @@ presentation {
       content {
         h2 { +"Stretch" }
         p { +"Makes an element as tall as possible while remaining within the slide bounds. 👇" }
+        val token = "stretch"
         codeSnippet(
           "kotlin",
-          includeFile(slides, "3-7", beginToken = "stretch begin", endToken = "stretch end"),
+          includeFile(slides, "3-7", beginToken = "$token begin", endToken = "$token end"),
           linePattern = "none",
         )
         p { +"or" }
@@ -1189,7 +1272,7 @@ presentation {
     topRightTitle = "Go to main presentation"
     topRightText = "🔙"
 
-    theme = Theme.SERIF
+    theme = PresentationTheme.SERIF
   }
 
   verticalSlides {
@@ -1428,7 +1511,7 @@ dslSlide {
       +"reveal.js comes with some built-in themes:"
       br {}
       // The Theme enum includes all the built in themes
-      Theme.values()
+      PresentationTheme.values()
         .forEachIndexed { index, theme ->
           a {
             href = "#/themes"
@@ -1436,7 +1519,7 @@ dslSlide {
               "document.getElementById('theme').setAttribute('href','dist/theme/${theme.name.toLower()}.css'); return false;"
             +theme.name
           }
-          if (index < Theme.values().size - 1)
+          if (index < PresentationTheme.values().size - 1)
             +"-"
         }
     }
@@ -1602,34 +1685,10 @@ presentation {
     }
 
     playgroundConfig {
-      style = "border: 2px solid blue;"
-    }
-  }
-
-  val base = "kslides-examples/src/main/kotlin/playground"
-
-  dslSlide {
-    content {
-      playground("$base/HelloCat.kt", additionalCode = "$base/Cat.kt") {
-        style = "border: 2px solid yellow;"
-      }
     }
   }
 
   verticalSlides {
-
-    dslSlide {
-      content {
-        playground("$base/HelloWorld.kt") {
-          width = "75%"
-          height = "500px"
-          style = "border: 2px solid green;"
-
-          lines = false
-          args = "1 2 3"
-        }
-      }
-    }
 
     // intro begin
     markdownSlide {
@@ -1805,6 +1864,66 @@ presentation {
     // animated2 end
 
     slideDefinition(slides, "animated2")
+  }
+
+  verticalSlides {
+
+    val root = "kslides-examples/src/main/kotlin/playground"
+
+    // pg1 begin
+    dslSlide {
+      content {
+        h2 { +"Kotlin Playground Support" }
+        playground("$root/HelloWorld.kt") {
+          args = "1 2 3"
+        }
+      }
+    }
+    // pg1 end
+
+    slideDefinition(slides, "pg1")
+
+    // pg2 begin
+    dslSlide {
+      content {
+        h2 { +"Playground " }
+        playground("$root/HelloCat.kt", "$root/Cat.kt") {
+          theme = PlaygroundTheme.IDEA
+          dataTargetPlatform = TargetPlatform.JSIR
+        }
+      }
+    }
+    // pg2 end
+
+    slideDefinition(slides, "pg2")
+
+    // pg3 begin
+    dslSlide {
+      content {
+        h2 { +"Playground Using JUnit" }
+        playground("$root/TestLambdas.kt") {
+          height = "450px"
+          dataTargetPlatform = TargetPlatform.JUNIT
+        }
+      }
+    }
+    // pg3 end
+
+    slideDefinition(slides, "pg3")
+
+    // pg4 begin
+    dslSlide {
+      content {
+        h2 { +"Playground Using Kotlin/JS" }
+        playground("$root/JsPlayground.txt") {
+          dataTargetPlatform = TargetPlatform.JS
+          dataJsLibs = "https://unpkg.com/moment@2"
+        }
+      }
+    }
+    // pg4 end
+
+    slideDefinition(slides, "pg4")
   }
 
   verticalSlides {
@@ -2068,7 +2187,7 @@ presentation {
           +"reveal.js comes with some built-in themes:"
           br {}
           // The Theme enum includes all the built in themes
-          Theme.values()
+          PresentationTheme.values()
             .forEachIndexed { index, theme ->
               a {
                 href = "#/themes"
@@ -2076,7 +2195,7 @@ presentation {
                   "document.getElementById('theme').setAttribute('href','dist/theme/${theme.name.toLower()}.css'); return false;"
                 +theme.name
               }
-              if (index < Theme.values().size - 1)
+              if (index < PresentationTheme.values().size - 1)
                 +"-"
             }
         }

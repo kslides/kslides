@@ -6,7 +6,7 @@ enum class Highlight {
   MONOKAI, ZENBURN
 }
 
-enum class Theme {
+enum class PresentationTheme {
   BEIGE, BLACK, BLOOD, LEAGUE, MOON, NIGHT, SERIF, SIMPLE, SKY, SOLARIZED, WHITE
 }
 
@@ -47,4 +47,32 @@ enum class Effect {
 
 enum class NavigationMode {
   DEFAULT, LINEAR, GRID
+}
+
+enum class TargetPlatform(s: String = "") {
+  JUNIT, CANVAS, JS, JSIR("js-ir"), JAVA;
+
+  val queryVal: String
+
+  init {
+    this.queryVal = if (s.isEmpty()) this.name.lowercase() else s
+  }
+}
+
+enum class PlaygroundTheme {
+  DEFAULT, IDEA, DARCULA
+}
+
+enum class PlaygroundMode(s: String = "") {
+  KOTLIN, JS, JAVA, GROOVY, XML, C, SHELL, SWIFT, OBJC("obj-c");
+
+  val queryVal: String
+
+  init {
+    this.queryVal = if (s.isEmpty()) this.name.lowercase() else s
+  }
+}
+
+enum class Crosslink {
+  ENABLED, DISABLED
 }

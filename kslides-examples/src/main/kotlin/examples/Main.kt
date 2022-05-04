@@ -46,7 +46,7 @@ fun main() {
 
       presentationConfig {
         title = "markdown Demo"
-        theme = Theme.MOON
+        theme = PresentationTheme.MOON
         hash = true
         history = true
         transition = Transition.SLIDE

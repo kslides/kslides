@@ -68,6 +68,7 @@ subprojects {
 
         implementation "io.github.microutils:kotlin-logging:$logging_version"
         implementation "ch.qos.logback:logback-classic:$logback_version"
+        implementation "junit:junit:$junit_version" // for junit playgrounds
 
         testImplementation "io.kotest:kotest-runner-junit5:$kotest_version"
     }
