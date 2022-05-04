@@ -15,14 +15,11 @@ fun playground(
   additionalCode: String = "",
   block: PlaygroundConfig.() -> Unit = {},
 ) {
-  val playgroundConfig = PlaygroundConfig().also { block(it) }
-
-  val mergedConfig by lazy {
+  val mergedConfig =
     PlaygroundConfig()
-      .apply { combine(kslides.globalConfig.playgroundConfig) }
-      .apply { combine(presentationConfig.playgroundConfig) }
-      .apply { combine(playgroundConfig) }
-  }
+      .apply { merge(kslides.globalConfig.playgroundConfig) }
+      .apply { merge(presentationConfig.playgroundConfig) }
+      .apply { merge(PlaygroundConfig().also { block(it) }) }
 
   val encSrc = source.encode()
   val supp = additionalCode.encode()
@@ -32,20 +29,10 @@ fun playground(
     logger.info { "Query string: $qs" }
     src = "$playgroundEndpoint?source=$encSrc&supp=$supp$qs"
 
-    mergedConfig.width.also {
-      if (it.isNotEmpty())
-        width = it
-    }
-
-    mergedConfig.height.also {
-      if (it.isNotEmpty())
-        height = it
-    }
-
-    mergedConfig.style.also {
-      if (it.isNotEmpty())
-        style = it
-    }
+    mergedConfig.width.also { if (it.isNotEmpty()) width = it }
+    mergedConfig.height.also { if (it.isNotEmpty()) height = it }
+    mergedConfig.style.also { if (it.isNotEmpty()) style = it }
+    mergedConfig.title.also { if (it.isNotEmpty()) title = it }
   }
 }
 

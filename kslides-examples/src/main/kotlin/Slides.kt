@@ -41,7 +41,9 @@ fun main() {
       }
 
       playgroundConfig {
+        lines = true
         style = "border: 2px solid red;"
+        //style="border:none;"
       }
     }
 
@@ -71,7 +73,7 @@ fun main() {
       dslSlide {
         content {
           playground("$base/HelloCat.kt", additionalCode = "$base/Cat.kt") {
-            //style = "border: 2px solid red;"
+            style = "border: 2px solid yellow;"
           }
         }
       }
@@ -81,9 +83,7 @@ fun main() {
           playground("$base/HelloWorld.kt") {
             width = "75%"
             height = "500px"
-            style = "border: 2px solid green;"
 
-            lines = false
             args = "1 2 3"
           }
         }

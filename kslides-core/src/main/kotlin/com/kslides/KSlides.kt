@@ -40,8 +40,8 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
             finalConfig =
               PresentationConfig()
                 .apply {
-                  merge(kslides.globalConfig)
-                  merge(presentationConfig)
+                  mergeConfig(kslides.globalConfig)
+                  mergeConfig(presentationConfig)
                 }
 
             assignCssFiles()

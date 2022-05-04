@@ -120,8 +120,8 @@ val y = 1              // NO TAB
       val p3 =
         PresentationConfig()
           .apply {
-            merge(p1)
-            merge(p2)
+            mergeConfig(p1)
+            mergeConfig(p2)
           }
       p3.enableMenu shouldBe false
     }
@@ -134,8 +134,8 @@ val y = 1              // NO TAB
       val p3 =
         PresentationConfig()
           .apply {
-            merge(p1)
-            merge(p2)
+            mergeConfig(p1)
+            mergeConfig(p2)
           }
       p3.enableMenu shouldBe false
     }
@@ -150,8 +150,8 @@ val y = 1              // NO TAB
       val p3 =
         PresentationConfig()
           .apply {
-            merge(p1)
-            merge(p2)
+            mergeConfig(p1)
+            mergeConfig(p2)
           }
       p3.enableMenu shouldBe true
     }
@@ -166,8 +166,8 @@ val y = 1              // NO TAB
       val p3 =
         PresentationConfig()
           .apply {
-            merge(p1)
-            merge(p2)
+            mergeConfig(p1)
+            mergeConfig(p2)
           }
       p3.enableMenu shouldBe false
     }

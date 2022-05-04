@@ -76,14 +76,14 @@
 
       <div class="slides">
         <section>
-          <iframe src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloCat.kt&amp;supp=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FCat.kt" style="border: 2px solid blue;"></iframe>
+          <iframe src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloCat.kt&amp;supp=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FCat.kt" style="border: 2px solid yellow;"></iframe>
         </section>
         
         <section>
-          <iframe height="500px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloWorld.kt&amp;supp=&amp;lines=false&amp;args=1+2+3" style="border: 2px solid green;" width="75%"></iframe>
-        </section>
-        
-        <section>
+          <section>
+            <iframe height="500px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloWorld.kt&amp;supp=&amp;lines=false&amp;args=1+2+3" style="border: 2px solid green;" width="75%"></iframe>
+          </section>
+          
           <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="intro">
             <script type="text/template">
 # kslides
@@ -1611,25 +1611,25 @@ presentation {
   dslSlide {
     content {
       playground("$base/HelloCat.kt", additionalCode = "$base/Cat.kt") {
-        //style = "border: 2px solid red;"
-      }
-    }
-  }
-
-  dslSlide {
-    content {
-      playground("$base/HelloWorld.kt") {
-        width = "75%"
-        height = "500px"
-        style = "border: 2px solid green;"
-
-        lines = false
-        args = "1 2 3"
+        style = "border: 2px solid yellow;"
       }
     }
   }
 
   verticalSlides {
+
+    dslSlide {
+      content {
+        playground("$base/HelloWorld.kt") {
+          width = "75%"
+          height = "500px"
+          style = "border: 2px solid green;"
+
+          lines = false
+          args = "1 2 3"
+        }
+      }
+    }
 
     // intro begin
     markdownSlide {

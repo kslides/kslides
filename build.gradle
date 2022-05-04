@@ -82,7 +82,6 @@ subprojects {
             jvmTarget = '1.8'
             freeCompilerArgs += ['-Xbackend-threads=8',
                                  '-Xcontext-receivers',
-                                 //'-opt-in=io.ktor.server.locations.KtorExperimentalLocationsAPI',
             ]
         }
     }
@@ -90,7 +89,9 @@ subprojects {
     compileTestKotlin {
         kotlinOptions {
             jvmTarget = '1.8'
-            freeCompilerArgs += ['-Xbackend-threads=8']
+            freeCompilerArgs += ['-Xbackend-threads=8',
+                                 '-Xcontext-receivers',
+            ]
         }
     }
 

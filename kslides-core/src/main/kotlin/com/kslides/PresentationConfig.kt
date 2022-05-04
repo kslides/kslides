@@ -316,12 +316,12 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   // Time before the cursor is hidden (in ms)
   var hideCursorTime by ConfigProperty<Int>(unmanagedValues) // 5000
 
-  internal fun merge(other: PresentationConfig) {
-    this.combine(other)
-    this.menuConfig.combine(other.menuConfig)
-    this.copyCodeConfig.combine(other.copyCodeConfig)
-    this.slideConfig.combine(other.slideConfig)
-    this.playgroundConfig.combine(other.playgroundConfig)
+  internal fun mergeConfig(other: PresentationConfig) {
+    this.merge(other)
+    this.menuConfig.merge(other.menuConfig)
+    this.copyCodeConfig.merge(other.copyCodeConfig)
+    this.slideConfig.merge(other.slideConfig)
+    this.playgroundConfig.merge(other.playgroundConfig)
   }
 
   @KSlidesDslMarker

@@ -444,20 +444,6 @@ class Presentation(val kslides: KSlides) {
   companion object : KLogging()
 }
 
-class VerticalSlideContext {
-  internal val slideConfig = SlideConfig().apply { init() }
-  internal val verticalSlides = mutableListOf<VerticalSlide>()
-  var id = ""
-  var classes = ""
-
-  @KSlidesDslMarker
-  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
-
-  internal fun resetContext() {
-    verticalSlides.clear()
-  }
-}
-
 class JsFile(val filename: String)
 
 class CssFile(val filename: String, val id: String = "")

@@ -1,0 +1,16 @@
+package com.kslides
+
+class VerticalSlideContext {
+  // This slideConfig is not overridden by the global and presentation slideConfig
+  internal val slideConfig = SlideConfig().apply { init() }
+  internal val verticalSlides = mutableListOf<VerticalSlide>()
+  var id = ""
+  var classes = ""
+
+  @KSlidesDslMarker
+  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
+
+  internal fun resetContext() {
+    verticalSlides.clear()
+  }
+}

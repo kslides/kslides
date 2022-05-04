@@ -7,6 +7,7 @@ class PlaygroundConfig : AbstractConfig() {
   var width by ConfigProperty<String>(managedValues)
   var height by ConfigProperty<String>(managedValues)
   var style by ConfigProperty<String>(managedValues)
+  var title by ConfigProperty<String>(managedValues) // For screen readers
 
   var args by ConfigProperty<String>(unmanagedValues)
   var dataTargetPlatform by ConfigProperty<String>(unmanagedValues)
@@ -33,6 +34,7 @@ class PlaygroundConfig : AbstractConfig() {
     width = ""
     height = ""
     style = ""
+    title = ""
   }
 
   private fun String.toPropertyName() =
