@@ -5,14 +5,40 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import kotlinx.html.*
 import kotlinx.html.dom.*
+import mu.*
 import kotlin.collections.set
 
-object Playground {
+object Playground : KLogging() {
+
+  const val playgroundEndpoint = "kotlin-file"
+
+  private val playgroundAttributes =
+    listOf(
+      "args",
+      "data-target-platform",
+      "data-highlight-only",
+      "folded-button",
+      "data-js-libs",
+      "auto-indent",
+      "theme",
+      "mode",
+      "data-min-compiler-version",
+      "data-autocomplete",
+      "highlight-on-fly",
+      "indent",
+      "lines",
+      "from",
+      "to",
+      "data-output-height",
+      "match-brackets",
+      "data-crosslink",
+      "data-shorter-height",
+      "data-scrollbar-style",
+    )
 
   fun Routing.playgroundFiles() {
 
-    get("kotlin-code") {
-
+    get(playgroundEndpoint) {
       respondWith {
         document {
           append.html {
@@ -25,46 +51,24 @@ object Playground {
             body {
               val params = call.request.queryParameters
               code {
-                listOf(
-                  "args",
-                  "data-target-platform",
-                  "data-highlight-only",
-                  "folded-button",
-                  "data-js-libs",
-                  "auto-indent",
-                  "theme",
-                  "mode",
-                  "data-min-compiler-version",
-                  "data-autocomplete",
-                  "highlight-on-fly",
-                  "indent",
-                  "lines",
-                  "from",
-                  "to",
-                  "data-output-height",
-                  "match-brackets",
-                  "data-crosslink",
-                  "data-shorter-height",
-                  "data-scrollbar-style",
-                )
+                playgroundAttributes
                   .map { attrib -> attrib to (params[attrib] ?: "") }
                   .filter { it.second.isNotBlank() }
                   .forEach { attributes[it.first] = it.second }
 
                 val path = params["source"] ?: throw IllegalArgumentException("Missing playground filename")
-                +includeFile("kslides-examples/src/main/kotlin/$path")
+                +includeFile(path)
 
-                (params["supp"] ?: "")
-                  .also { suppCode ->
-                    if (suppCode.isNotBlank())
-                      textArea(classes = "hidden-dependency") {
-                        +this@code.includeFile("kslides-examples/src/main/kotlin/$suppCode")
-                      }
-                  }
+                (params["supp"] ?: "").also { suppFile ->
+                  if (suppFile.isNotBlank())
+                    textArea(classes = "hidden-dependency") {
+                      +this@code.includeFile(suppFile)
+                    }
+                }
               }
             }
           }
-        }.serialize().also {println(it)}
+        }.serialize().also { logger.info { "\n$it" } }
       }
     }
   }

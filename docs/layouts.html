@@ -227,25 +227,25 @@ dslSlide {
             <p>Stacks multiple elements on top of each other, for use with fragments. &#128071;</p>
             <pre>
               <code class="kotlin" data-trim="true">
-            h2 { +"Stack Example" }
-            div("r-stack") {
-              p("fragment fade-in-then-out") { +"One" }
-              p("fragment fade-in-then-out") { +"Two" }
-              p("fragment fade-in-then-out") { +"Three" }
-              p("fragment fade-in-then-out") { +"Four" }
-            }
-            div("r-stack") {
-              val kitten = "https://placekitten.com"
-              img(classes = "fragment") {
-                src = "$kitten/450/300"; width = "450"; height = "300"
-              }
-              img(classes = "fragment") {
-                src = "$kitten/300/450"; width = "300"; height = "450"
-              }
-              img(classes = "fragment") {
-                src = "$kitten/400/400"; width = "400"; height = "400"
-              }
-            }
+h2 { +"Stack Example" }
+div("r-stack") {
+  p("fragment fade-in-then-out") { +"One" }
+  p("fragment fade-in-then-out") { +"Two" }
+  p("fragment fade-in-then-out") { +"Three" }
+  p("fragment fade-in-then-out") { +"Four" }
+}
+div("r-stack") {
+  val kitten = "https://placekitten.com"
+  img(classes = "fragment") {
+    src = "$kitten/450/300"; width = "450"; height = "300"
+  }
+  img(classes = "fragment") {
+    src = "$kitten/300/450"; width = "300"; height = "450"
+  }
+  img(classes = "fragment") {
+    src = "$kitten/400/400"; width = "400"; height = "400"
+  }
+}
 </code>
             </pre>
           </section>
@@ -302,12 +302,12 @@ dslSlide {
             <p>Stacks multiple elements horizontally.</p>
             <pre>
               <code class="kotlin" data-trim="true">
-            h2 { +"HStack Example &#128071;" }
-            div("r-hstack") {
-              p { +"One"; style = "padding: 0.50em; background: #eee; margin: 0.25em" }
-              p { +"Two"; style = "padding: 0.75em; background: #eee; margin: 0.25em" }
-              p { +"Three"; style = "padding: 1.00em; background: #eee; margin: 0.25em" }
-            }
+h2 { +"HStack Example &#128071;" }
+div("r-hstack") {
+  p { +"One"; style = "padding: 0.50em; background: #eee; margin: 0.25em" }
+  p { +"Two"; style = "padding: 0.75em; background: #eee; margin: 0.25em" }
+  p { +"Three"; style = "padding: 1.00em; background: #eee; margin: 0.25em" }
+}
 </code>
             </pre>
           </section>
@@ -347,12 +347,12 @@ dslSlide {
             <p>Stacks multiple elements vertically.</p>
             <pre>
               <code class="kotlin" data-trim="true">
-            h2 { +"VStack Example &#128071;" }
-            div("r-vstack") {
-              p { +"One"; style = "padding: 0.50em; background: #eee; margin: 0.25em" }
-              p { +"Two"; style = "padding: 0.75em; background: #eee; margin: 0.25em" }
-              p { +"Three"; style = "padding: 1.00em; background: #eee; margin: 0.25em" }
-            }
+h2 { +"VStack Example &#128071;" }
+div("r-vstack") {
+  p { +"One"; style = "padding: 0.50em; background: #eee; margin: 0.25em" }
+  p { +"Two"; style = "padding: 0.75em; background: #eee; margin: 0.25em" }
+  p { +"Three"; style = "padding: 1.00em; background: #eee; margin: 0.25em" }
+}
 </code>
             </pre>
           </section>

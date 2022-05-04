@@ -42,7 +42,7 @@ fun CODE.includeFile(
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = includeFile(path, linePattern, beginToken, endToken, exclusive, false, "", false).pad()
+) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 // When called from a DslSlide, turn off indentToken and escaping
 fun DslSlide.includeFile(

@@ -76,11 +76,11 @@
 
       <div class="slides">
         <section>
-          <iframe height="500px" src="kotlin-code?source=playground%2FHelloCat.kt&amp;supp=playground%2FCat.kt&amp;lines=true&amp;theme=darcula&amp;highlight-on-fly=false&amp;indent=4&amp;args=&amp;auto-indent=false" style="border: 2px solid red;" width="75%"></iframe>
+          <iframe src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloCat.kt&amp;supp=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FCat.kt" style="border: 2px solid blue;"></iframe>
         </section>
         
         <section>
-          <iframe height="500px" src="kotlin-code?source=playground%2FHelloWorld.kt&amp;supp=&amp;lines=true&amp;theme=darcula&amp;highlight-on-fly=false&amp;indent=4&amp;args=1+2+3&amp;auto-indent=false" style="border: 2px solid red;" width="75%"></iframe>
+          <iframe height="500px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloWorld.kt&amp;supp=&amp;lines=false&amp;args=1+2+3" style="border: 2px solid green;" width="75%"></iframe>
         </section>
         
         <section>
@@ -1595,40 +1595,37 @@ presentation {
     """
 
   presentationConfig {
-    // presentation-sepecific confurations go here
+    // presentation-specific configurations
+
     slideConfig {
-      // defaults for slides go here
+      // defaults for slides
+    }
+
+    playgroundConfig {
+      style = "border: 2px solid blue;"
     }
   }
 
-  @KSlidesDslMarker
-  fun SECTION.playground(
-    source: String,
-    supplement: String = "",
-    args: String = "",
-    autoIndent: Boolean = false,
-    indent: Int = 4,
-    highlightOnTheFly: Boolean = false,
-  ) {
+  val base = "kslides-examples/src/main/kotlin/playground"
 
-    iframe {
-      src =
-        "kotlin-code?source=${source.encode()}&supp=${supplement.encode()}&lines=true&theme=darcula&highlight-on-fly=$highlightOnTheFly&indent=$indent&args=${args.encode()}&auto-indent=$autoIndent"
-      width = "75%"
-      height = "500px"
-      style = "border: 2px solid red;"
+  dslSlide {
+    content {
+      playground("$base/HelloCat.kt", additionalCode = "$base/Cat.kt") {
+        //style = "border: 2px solid red;"
+      }
     }
   }
 
   dslSlide {
     content {
-      playground("playground/HelloCat.kt", supplement = "playground/Cat.kt")
-    }
-  }
+      playground("$base/HelloWorld.kt") {
+        width = "75%"
+        height = "500px"
+        style = "border: 2px solid green;"
 
-  dslSlide {
-    content {
-      playground("playground/HelloWorld.kt", args = "1 2 3")
+        lines = false
+        args = "1 2 3"
+      }
     }
   }
 

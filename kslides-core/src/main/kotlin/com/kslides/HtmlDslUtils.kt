@@ -1,7 +1,53 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
+import com.kslides.HtmlDslUtils.logger
+import com.kslides.Playground.playgroundEndpoint
 import kotlinx.html.*
+import mu.*
+
+object HtmlDslUtils : KLogging()
+
+context(Presentation, SECTION)
+    @KSlidesDslMarker
+fun playground(
+  source: String,
+  additionalCode: String = "",
+  block: PlaygroundConfig.() -> Unit = {},
+) {
+  val playgroundConfig = PlaygroundConfig().also { block(it) }
+
+  val mergedConfig by lazy {
+    PlaygroundConfig()
+      .apply { combine(kslides.globalConfig.playgroundConfig) }
+      .apply { combine(presentationConfig.playgroundConfig) }
+      .apply { combine(playgroundConfig) }
+  }
+
+  val encSrc = source.encode()
+  val supp = additionalCode.encode()
+  val qs = mergedConfig.toQueryString()
+
+  iframe {
+    logger.info { "Query string: $qs" }
+    src = "$playgroundEndpoint?source=$encSrc&supp=$supp$qs"
+
+    mergedConfig.width.also {
+      if (it.isNotEmpty())
+        width = it
+    }
+
+    mergedConfig.height.also {
+      if (it.isNotEmpty())
+        height = it
+    }
+
+    mergedConfig.style.also {
+      if (it.isNotEmpty())
+        style = it
+    }
+  }
+}
 
 @HtmlTagMarker
 fun FlowContent.codeSnippet(

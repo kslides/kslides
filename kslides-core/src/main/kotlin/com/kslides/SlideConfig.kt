@@ -28,7 +28,7 @@ class SlideConfig : AbstractConfig() {
   var markdownVerticalSeparator by ConfigProperty<String>(unmanagedValues)
   var markdownNotesSeparator by ConfigProperty<String>(unmanagedValues)
 
-  fun init() {
+  internal fun init() {
     transition = Transition.UNASSIGNED
     transitionIn = Transition.UNASSIGNED
     transitionOut = Transition.UNASSIGNED

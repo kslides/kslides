@@ -39,6 +39,10 @@ fun main() {
         copy = "Copy"
         copied = "Copied!"
       }
+
+      playgroundConfig {
+        style = "border: 2px solid red;"
+      }
     }
 
     // readme begin
@@ -51,40 +55,37 @@ fun main() {
         """
 
       presentationConfig {
-        // presentation-sepecific confurations go here
+        // presentation-specific configurations
+
         slideConfig {
-          // defaults for slides go here
+          // defaults for slides
+        }
+
+        playgroundConfig {
+          style = "border: 2px solid blue;"
         }
       }
 
-      @KSlidesDslMarker
-      fun SECTION.playground(
-        source: String,
-        supplement: String = "",
-        args: String = "",
-        autoIndent: Boolean = false,
-        indent: Int = 4,
-        highlightOnTheFly: Boolean = false,
-      ) {
+      val base = "kslides-examples/src/main/kotlin/playground"
 
-        iframe {
-          src =
-            "kotlin-code?source=${source.encode()}&supp=${supplement.encode()}&lines=true&theme=darcula&highlight-on-fly=$highlightOnTheFly&indent=$indent&args=${args.encode()}&auto-indent=$autoIndent"
-          width = "75%"
-          height = "500px"
-          style = "border: 2px solid red;"
+      dslSlide {
+        content {
+          playground("$base/HelloCat.kt", additionalCode = "$base/Cat.kt") {
+            //style = "border: 2px solid red;"
+          }
         }
       }
 
       dslSlide {
         content {
-          playground("playground/HelloCat.kt", supplement = "playground/Cat.kt")
-        }
-      }
+          playground("$base/HelloWorld.kt") {
+            width = "75%"
+            height = "500px"
+            style = "border: 2px solid green;"
 
-      dslSlide {
-        content {
-          playground("playground/HelloWorld.kt", args = "1 2 3")
+            lines = false
+            args = "1 2 3"
+          }
         }
       }
 

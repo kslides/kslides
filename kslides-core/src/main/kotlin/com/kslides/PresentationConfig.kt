@@ -4,6 +4,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   internal val menuConfig = MenuConfig()
   internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
+  internal val playgroundConfig = PlaygroundConfig()
 
   // Display presentation control arrows
   var controls by ConfigProperty<Boolean>(unmanagedValues) // true
@@ -93,8 +94,8 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       autoSlide = 0
       slideNumber = false
 
-      // Initialize the slide config
       slideConfig.init()
+      playgroundConfig.init()
     }
   }
 
@@ -320,6 +321,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
     this.menuConfig.combine(other.menuConfig)
     this.copyCodeConfig.combine(other.copyCodeConfig)
     this.slideConfig.combine(other.slideConfig)
+    this.playgroundConfig.combine(other.playgroundConfig)
   }
 
   @KSlidesDslMarker
@@ -330,4 +332,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
 
   @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = block.invoke(slideConfig)
+
+  @KSlidesDslMarker
+  fun playgroundConfig(block: PlaygroundConfig.() -> Unit) = block.invoke(playgroundConfig)
 }
