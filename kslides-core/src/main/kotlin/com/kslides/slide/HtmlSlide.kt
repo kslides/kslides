@@ -13,7 +13,7 @@ interface HtmlSlide {
   fun processSlide(section: SECTION)
 }
 
-class HorizontalHtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content),
+class HorizontalHtmlSlide(presentation: Presentation, content: SlideArgs) : HorizontalSlide(presentation, content),
   HtmlSlide {
   override var _htmlBlock: () -> String = { "" }
   override var _htmlAssigned = false
@@ -29,7 +29,7 @@ class HorizontalHtmlSlide(presentation: Presentation, content: SlideArg) : Horiz
   }
 }
 
-class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content),
+class VerticalHtmlSlide(presentation: Presentation, content: SlideArgs) : VerticalSlide(presentation, content),
   HtmlSlide {
   override var _htmlBlock: () -> String = { "" }
   override var _htmlAssigned = false

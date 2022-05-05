@@ -13,4 +13,6 @@ class OutputConfig(val kslides: KSlides) {
   var httpPort = 8080
   var defaultHttpRoot = "public"
   var logLevel = Level.INFO
+
+  internal val port: Int get() = System.getenv("PORT")?.toInt() ?: httpPort
 }

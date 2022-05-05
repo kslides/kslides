@@ -24,6 +24,8 @@ class Presentation(val kslides: KSlides) {
   val css by lazy { AppendableString(kslides.css.let { if (it.isNotBlank()) "$it\n" else "" }) }
   var path = "/"
 
+  internal val playgroundPath by lazy { kslides.outputConfig.playgroundDir.ensureSuffix("/") }
+
   internal fun validatePath() {
     require(path.removePrefix("/") !in kslides.staticRoots) { "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"" }
 
@@ -121,7 +123,7 @@ class Presentation(val kslides: KSlides) {
 
   @KSlidesDslMarker
   fun verticalSlides(block: VerticalSlideContext.() -> Unit) =
-    VerticalSlide(this) { div, slide ->
+    VerticalSlide(this) { div, slide, useHttp ->
       div.apply {
         (slide as VerticalSlide).verticalContext
           .also { vcontext ->
@@ -138,7 +140,7 @@ class Presentation(val kslides: KSlides) {
 
               vcontext.verticalSlides
                 .forEach { verticalSlide ->
-                  verticalSlide.content(div, verticalSlide)
+                  verticalSlide.content(div, verticalSlide, useHttp)
                   rawHtml("\n")
                 }
             }.also { rawHtml("\n") }
@@ -163,7 +165,7 @@ class Presentation(val kslides: KSlides) {
 
   @KSlidesDslMarker
   fun markdownSlide(slideContent: HortizontalMarkdownSlide.() -> Unit = {}) =
-    HortizontalMarkdownSlide(this) { div, slide ->
+    HortizontalMarkdownSlide(this) { div, slide, _ ->
       div.apply {
         (slide as HortizontalMarkdownSlide).also { s ->
           slideContent(s)
@@ -187,7 +189,7 @@ class Presentation(val kslides: KSlides) {
 
   @KSlidesDslMarker
   fun VerticalSlideContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
-    VerticalMarkdownSlide(this@Presentation) { div, slide ->
+    VerticalMarkdownSlide(this@Presentation) { div, slide, _ ->
       div.apply {
         (slide as VerticalMarkdownSlide).also { s ->
           slideContent(s)
@@ -226,10 +228,11 @@ class Presentation(val kslides: KSlides) {
 
   @KSlidesDslMarker
   fun dslSlide(slideContent: HorizontalDslSlide.() -> Unit) =
-    HorizontalDslSlide(this) { div, slide ->
+    HorizontalDslSlide(this) { div, slide, useHttp ->
       div.apply {
         (slide as HorizontalDslSlide)
           .also { s ->
+            s._useHttp = useHttp
             slideContent(s)
             section(classes = s.classes.nullIfBlank()) {
               processDsl(s)
@@ -241,10 +244,11 @@ class Presentation(val kslides: KSlides) {
 
   @KSlidesDslMarker
   fun VerticalSlideContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
-    VerticalDslSlide(this@Presentation) { div, slide ->
+    VerticalDslSlide(this@Presentation) { div, slide, useHttp ->
       div.apply {
         (slide as VerticalDslSlide)
           .also { s ->
+            s._useHttp = useHttp
             slideContent(s)
             section(classes = s.classes.nullIfBlank()) {
               processDsl(s)
@@ -269,7 +273,7 @@ class Presentation(val kslides: KSlides) {
 
   @KSlidesDslMarker
   fun htmlSlide(slideContent: HorizontalHtmlSlide.() -> Unit) =
-    HorizontalHtmlSlide(this) { div, slide ->
+    HorizontalHtmlSlide(this) { div, slide, _ ->
       div.apply {
         (slide as HorizontalHtmlSlide)
           .also { s ->
@@ -281,7 +285,7 @@ class Presentation(val kslides: KSlides) {
 
   @KSlidesDslMarker
   fun VerticalSlideContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
-    VerticalHtmlSlide(this@Presentation) { div, slide ->
+    VerticalHtmlSlide(this@Presentation) { div, slide, _ ->
       div.apply {
         (slide as VerticalHtmlSlide)
           .also { s ->
@@ -436,7 +440,6 @@ class Presentation(val kslides: KSlides) {
     }
 
   companion object : KLogging()
-
 }
 
 class JsFile(val filename: String)

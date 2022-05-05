@@ -1,17 +1,20 @@
 package com.kslides
 
 import kotlinx.html.*
+import java.util.concurrent.atomic.*
 
-typealias SlideArg = (DIV, Slide) -> Unit
+typealias SlideArgs = (DIV, Slide, Boolean) -> Unit
 
-abstract class Slide(internal val presentation: Presentation, internal val content: SlideArg) {
+abstract class Slide(private val presentation: Presentation, internal val content: SlideArgs) {
   private val slideConfig = SlideConfig() // Do not call init on this because it is merged with the presentation config
+  val _slideName = "${presentation.playgroundPath}slide-${slideCount.incrementAndGet()}.html"
   internal val mergedConfig by lazy {
     SlideConfig()
       .apply { merge(presentation.kslides.globalConfig.slideConfig) }
       .apply { merge(presentation.presentationConfig.slideConfig) }
       .apply { merge(slideConfig) }
   }
+
   // User-accessible
   var id = ""
   var classes = ""
@@ -37,10 +40,14 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
 
   @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
+
+  companion object {
+    val slideCount = AtomicInteger(0)
+  }
 }
 
-abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content)
+abstract class HorizontalSlide(presentation: Presentation, content: SlideArgs) : Slide(presentation, content)
 
-open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content) {
+open class VerticalSlide(presentation: Presentation, content: SlideArgs) : Slide(presentation, content) {
   val verticalContext = VerticalSlideContext()
 }

@@ -3,15 +3,19 @@ package com.kslides
 import kotlinx.html.*
 
 interface DslSlide {
+  val _slideName: String
+  var _useHttp: Boolean
   var _dslAssigned: Boolean
+  // User-accessible
   var style: String
 
   fun processSlide(section: SECTION)
 }
 
-class HorizontalDslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content),
+class HorizontalDslSlide(presentation: Presentation, content: SlideArgs) : HorizontalSlide(presentation, content),
   DslSlide {
   internal var dslBlock: SECTION.(HorizontalDslSlide) -> Unit = { }
+  override var _useHttp: Boolean = false
   override var _dslAssigned = false
   // User-accessible
   override var style = ""
@@ -27,9 +31,10 @@ class HorizontalDslSlide(presentation: Presentation, content: SlideArg) : Horizo
     ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }
 
-class VerticalDslSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content),
+class VerticalDslSlide(presentation: Presentation, content: SlideArgs) : VerticalSlide(presentation, content),
   DslSlide {
   internal var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
+  override var _useHttp: Boolean = false
   override var _dslAssigned = false
   // User-accessible
   override var style = ""

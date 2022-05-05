@@ -55,7 +55,7 @@ object Playground : KLogging() {
               }
             }
           }
-        }.serialize().also { logger.info { "\n$it" } }
+        }.serialize() //.also { logger.info { "\n$it" } }
       }
     }
   }

@@ -1,7 +1,7 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
-import com.kslides.HtmlDslUtils.logger
+import com.kslides.KSlidesDsl.logger
 import com.kslides.Playground.otherNames
 import com.kslides.Playground.playgroundEndpoint
 import com.kslides.Playground.sourceName
@@ -9,7 +9,7 @@ import com.kslides.config.*
 import kotlinx.html.*
 import mu.*
 
-object HtmlDslUtils : KLogging()
+object KSlidesDsl : KLogging()
 
 context(Presentation, DslSlide, SECTION)
     @KSlidesDslMarker
@@ -24,7 +24,7 @@ fun playground(
       .apply { merge(presentationConfig.playgroundConfig) }
       .apply { merge(PlaygroundConfig().also { block(it) }) }
 
-  val url =
+  val buildUrl =
     buildString {
       append("$playgroundEndpoint?")
       append("$sourceName=${source.encode()}")
@@ -33,11 +33,12 @@ fun playground(
       append(config.toQueryString())
     }
 
-  val content = com.kslides.includeUrl("http://0.0.0.0:8080/$url")
-  logger.info { "Content: $content" }
+  if (!_useHttp)
+    kslides.playgroundUrls += _slideName to buildUrl
 
+  val url = if (_useHttp) buildUrl else _slideName
+  logger.info { "Query string: $url" }
   iframe {
-    logger.info { "Query string: $url" }
     src = url
     config.width.also { if (it.isNotBlank()) width = it }
     config.height.also { if (it.isNotBlank()) height = it }

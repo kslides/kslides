@@ -7,7 +7,7 @@ interface MarkdownSlide {
   var disableTrimIndent: Boolean
 }
 
-class HortizontalMarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content),
+class HortizontalMarkdownSlide(presentation: Presentation, content: SlideArgs) : HorizontalSlide(presentation, content),
   MarkdownSlide {
   internal var markdownAssigned = false
   override var _markdownBlock: () -> String = { "" }
@@ -24,7 +24,7 @@ class HortizontalMarkdownSlide(presentation: Presentation, content: SlideArg) : 
   }
 }
 
-class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content),
+class VerticalMarkdownSlide(presentation: Presentation, content: SlideArgs) : VerticalSlide(presentation, content),
   MarkdownSlide {
   internal var markdownAssigned = false
   override var _markdownBlock: () -> String = { "" }

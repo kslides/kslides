@@ -8,13 +8,13 @@ import java.io.*
 
 internal object Page {
 
-  fun generatePage(p: Presentation, toFileSystem: Boolean = false, prefix: String = "/"): String {
+  fun generatePage(p: Presentation, useHttp: Boolean = true, prefix: String = "/"): String {
     val document =
       document {
         val config = p.finalConfig
         append.html {
           generateHead(p, config, prefix.ensureSuffix("/"))
-          generateBody(p, config, prefix.ensureSuffix("/"))
+          generateBody(p, config, prefix.ensureSuffix("/"), useHttp)
         }
       }
 
@@ -97,7 +97,7 @@ internal object Page {
       }
     }
 
-  private fun HTML.generateBody(p: Presentation, config: PresentationConfig, srcPrefix: String) =
+  private fun HTML.generateBody(p: Presentation, config: PresentationConfig, srcPrefix: String, useHttp: Boolean) =
     body {
       div("reveal") {
         if (config.topLeftHref.isNotBlank()) {
@@ -125,7 +125,7 @@ internal object Page {
 
         rawHtml("\n")
         div("slides") {
-          p.slides.forEach { slide -> slide.content(this, slide) }
+          p.slides.forEach { slide -> slide.content(this, slide, useHttp) }
         }
       }
 
