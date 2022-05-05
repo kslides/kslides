@@ -716,10 +716,9 @@ fun main() {
           content {
             h2 { +"Fit Text" }
             p { +"Resizes text to be as large as possible within its container. 👇" }
-            val token = "ft1"
             codeSnippet(
               "kotlin",
-              includeFile(slides, "3", beginToken = "$token begin", endToken = "$token end"),
+              includeFile(slides, "3", beginToken = "ft1 begin", endToken = "ft1 end"),
               linePattern = "none",
             )
             p { +"or" }
@@ -760,10 +759,9 @@ fun main() {
           content {
             h2 { +"Stretch" }
             p { +"Makes an element as tall as possible while remaining within the slide bounds. 👇" }
-            val token = "stretch"
             codeSnippet(
               "kotlin",
-              includeFile(slides, "3-7", beginToken = "$token begin", endToken = "$token end"),
+              includeFile(slides, "3-7", beginToken = "stretch begin", endToken = "stretch end"),
               linePattern = "none",
             )
             p { +"or" }
@@ -806,8 +804,7 @@ fun main() {
             pre {
               code("kotlin") {
                 attributes["data-trim"] = "true"
-                val token = "stack1" // Using a variable prevents false begin/end match
-                +includeFile(slides, "3-21", beginToken = "$token begin", endToken = "$token end")
+                +includeFile(slides, "3-21", beginToken = "stack1 begin", endToken = "stack1 end")
               }
             }
           }
@@ -851,8 +848,7 @@ fun main() {
             pre {
               code("kotlin") {
                 attributes["data-trim"] = "true"
-                val token = "hstack"
-                +includeFile(slides, "3-8", beginToken = "$token begin", endToken = "$token end")
+                +includeFile(slides, "3-8", beginToken = "hstack begin", endToken = "hstack end")
               }
             }
           }
@@ -883,8 +879,7 @@ fun main() {
             pre {
               code("kotlin") {
                 attributes["data-trim"] = "true"
-                val token = "vstack"
-                +includeFile(slides, "3-8", beginToken = "$token begin", endToken = "$token end")
+                +includeFile(slides, "3-8", beginToken = "vstack begin", endToken = "vstack end")
               }
             }
           }

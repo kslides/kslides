@@ -11,7 +11,7 @@ plugins {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.8.3'
+    version '0.8.4'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
@@ -59,7 +59,6 @@ subprojects {
         implementation "io.ktor:ktor-server-html-builder:$ktor_version"
         implementation "io.ktor:ktor-server-call-logging:$ktor_version"
         implementation "io.ktor:ktor-server-compression:$ktor_version"
-        //implementation "io.ktor:ktor-server-locations:$ktor_version"
 
         implementation "com.github.pambrose.common-utils:core-utils:$utils_version"
         implementation "com.github.pambrose.common-utils:ktor-server-utils:$utils_version"
@@ -68,7 +67,7 @@ subprojects {
 
         implementation "io.github.microutils:kotlin-logging:$logging_version"
         implementation "ch.qos.logback:logback-classic:$logback_version"
-        implementation "junit:junit:$junit_version" // for junit playgrounds
+        implementation "junit:junit:$junit_version" // for junit playgrounds, which are in main
 
         testImplementation "io.kotest:kotest-runner-junit5:$kotest_version"
     }
@@ -81,8 +80,11 @@ subprojects {
     compileKotlin {
         kotlinOptions {
             jvmTarget = '1.8'
+            languageVersion = '1.7'
+            apiVersion = '1.7'
             freeCompilerArgs += ['-Xbackend-threads=8',
                                  '-Xcontext-receivers',
+                                 '-Xskip-prerelease-check',
             ]
         }
     }
@@ -90,8 +92,11 @@ subprojects {
     compileTestKotlin {
         kotlinOptions {
             jvmTarget = '1.8'
+            languageVersion = '1.7'
+            apiVersion = '1.7'
             freeCompilerArgs += ['-Xbackend-threads=8',
                                  '-Xcontext-receivers',
+                                 '-Xskip-prerelease-check',
             ]
         }
     }
