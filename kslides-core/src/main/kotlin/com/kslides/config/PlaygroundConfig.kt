@@ -1,6 +1,7 @@
-package com.kslides
+package com.kslides.config
 
 import com.github.pambrose.common.util.*
+import com.kslides.*
 import kotlin.reflect.full.*
 
 class PlaygroundConfig : AbstractConfig() {
@@ -10,6 +11,7 @@ class PlaygroundConfig : AbstractConfig() {
   var style by ConfigProperty<String>(managedValues)
   var title by ConfigProperty<String>(managedValues) // For screen readers
 
+  // These have to be kept in sync with the playgroundAttributes value below
   var args by ConfigProperty<String>(unmanagedValues)
   var dataTargetPlatform by ConfigProperty<TargetPlatform>(unmanagedValues)
   var dataHighlightOnly by ConfigProperty<Boolean>(unmanagedValues)
@@ -61,4 +63,30 @@ class PlaygroundConfig : AbstractConfig() {
         .let { "&$it" }
     else
       ""
+
+  companion object {
+    internal val playgroundAttributes =
+      listOf(
+        "args",
+        "data-target-platform",
+        "data-highlight-only",
+        "folded-button",
+        "data-js-libs",
+        "auto-indent",
+        "theme",
+        "mode",
+        "data-min-compiler-version",
+        "data-autocomplete",
+        "highlight-on-fly",
+        "indent",
+        "lines",
+        "from",
+        "to",
+        "data-output-height",
+        "match-brackets",
+        "data-crosslink",
+        "data-shorter-height",
+        "data-scrollbar-style",
+      )
+  }
 }

@@ -4,6 +4,10 @@ import kotlinx.html.*
 
 typealias SlideArg = (DIV, Slide) -> Unit
 
+interface MarkdownSlideContext
+interface HtmlSlideContext
+interface DslSlideContext
+
 abstract class Slide(internal val presentation: Presentation, internal val content: SlideArg) {
   private val slideConfig = SlideConfig() // Do not call init on this because it is merged with the presentation config
   var id = ""
@@ -41,7 +45,8 @@ abstract class Slide(internal val presentation: Presentation, internal val conte
 
 abstract class HorizontalSlide(presentation: Presentation, content: SlideArg) : Slide(presentation, content)
 
-class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
+class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content),
+  HtmlSlideContext {
   internal var htmlBlock: () -> String = { "" }
   internal var htmlAssigned = false
   var style = ""
@@ -55,7 +60,8 @@ class HtmlSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide
   }
 }
 
-class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
+class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content),
+  MarkdownSlideContext {
   internal var markdownBlock: () -> String = { "" }
   internal var markdownAssigned = false
   var filename = ""
@@ -70,7 +76,8 @@ class MarkdownSlide(presentation: Presentation, content: SlideArg) : HorizontalS
   }
 }
 
-class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content) {
+class DslSlide(presentation: Presentation, content: SlideArg) : HorizontalSlide(presentation, content),
+  DslSlideContext {
   internal var dslBlock: SECTION.(DslSlide) -> Unit = { }
   internal var dslAssigned = false
   var style = ""
@@ -90,7 +97,8 @@ open class VerticalSlide(presentation: Presentation, content: SlideArg) : Slide(
   val verticalContext = VerticalSlideContext()
 }
 
-class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
+class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content),
+  HtmlSlideContext {
   internal var htmlBlock: () -> String = { "" }
   internal var htmlAssigned = false
   var style = ""
@@ -104,7 +112,8 @@ class VerticalHtmlSlide(presentation: Presentation, content: SlideArg) : Vertica
   }
 }
 
-class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
+class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content),
+  MarkdownSlideContext {
   internal var markdownBlock: () -> String = { "" }
   internal var markdownAssigned = false
   var filename = ""
@@ -119,7 +128,8 @@ class VerticalMarkdownSlide(presentation: Presentation, content: SlideArg) : Ver
   }
 }
 
-class VerticalDslSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content) {
+class VerticalDslSlide(presentation: Presentation, content: SlideArg) : VerticalSlide(presentation, content),
+  DslSlideContext {
   internal var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
   internal var dslAssigned = false
   var style = ""

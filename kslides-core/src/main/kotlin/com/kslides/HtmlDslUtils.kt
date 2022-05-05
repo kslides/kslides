@@ -5,12 +5,13 @@ import com.kslides.HtmlDslUtils.logger
 import com.kslides.Playground.otherNames
 import com.kslides.Playground.playgroundEndpoint
 import com.kslides.Playground.sourceName
+import com.kslides.config.*
 import kotlinx.html.*
 import mu.*
 
 object HtmlDslUtils : KLogging()
 
-context(Presentation, SECTION)
+context(Presentation, DslSlideContext, SECTION)
     @KSlidesDslMarker
 fun playground(
   source: String,
@@ -46,9 +47,9 @@ fun playground(
 fun FlowContent.codeSnippet(
   language: String,
   text: String,
-  linePattern: String = "",   // none will turn off line numbers
+  linePattern: String = "",    // none will turn off line numbers
   lineOffSet: Int = -1,
-  dataId: String = "",        // For animation
+  dataId: String = "",         // For animation
   trim: Boolean = true,
   escapeHtml: Boolean = false,
   copyButton: Boolean = true,  // Adds COPY button

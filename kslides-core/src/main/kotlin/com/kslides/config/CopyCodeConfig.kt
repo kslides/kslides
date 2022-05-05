@@ -1,4 +1,4 @@
-package com.kslides
+package com.kslides.config
 
 class CopyCodeConfig : AbstractConfig() {
 

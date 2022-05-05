@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.github.pambrose.common.response.*
+import com.kslides.config.PlaygroundConfig.Companion.playgroundAttributes
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import kotlinx.html.*
@@ -13,30 +14,6 @@ object Playground : KLogging() {
   const val playgroundEndpoint = "kotlin-file"
   const val sourceName = "source"
   const val otherNames = "other"
-
-  private val playgroundAttributes =
-    listOf(
-      "args",
-      "data-target-platform",
-      "data-highlight-only",
-      "folded-button",
-      "data-js-libs",
-      "auto-indent",
-      "theme",
-      "mode",
-      "data-min-compiler-version",
-      "data-autocomplete",
-      "highlight-on-fly",
-      "indent",
-      "lines",
-      "from",
-      "to",
-      "data-output-height",
-      "match-brackets",
-      "data-crosslink",
-      "data-shorter-height",
-      "data-scrollbar-style",
-    )
 
   fun Routing.playgroundFiles() {
 

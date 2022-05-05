@@ -1,13 +1,14 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
+import com.kslides.config.*
 import kotlinx.html.*
 import kotlinx.html.dom.*
 import java.io.*
 
 internal object Page {
 
-  fun generatePage(p: Presentation, prefix: String = "/"): String {
+  fun generatePage(p: Presentation, toFileSystem: Boolean = false, prefix: String = "/"): String {
     val document =
       document {
         val config = p.finalConfig

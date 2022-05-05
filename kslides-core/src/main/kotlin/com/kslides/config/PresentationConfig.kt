@@ -1,4 +1,6 @@
-package com.kslides
+package com.kslides.config
+
+import com.kslides.*
 
 class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   internal val menuConfig = MenuConfig()

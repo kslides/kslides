@@ -2,6 +2,7 @@ package com.kslides
 
 import com.github.pambrose.common.util.*
 import com.kslides.Transition.SLIDE
+import com.kslides.config.*
 import kotlinx.html.*
 
 class SlideConfig : AbstractConfig() {

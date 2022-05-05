@@ -1,6 +1,7 @@
 package com.github.readingbat
 
 import com.kslides.*
+import com.kslides.config.*
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
 import io.kotest.matchers.string.*

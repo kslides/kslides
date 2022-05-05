@@ -1,4 +1,4 @@
-package com.kslides
+package com.kslides.config
 
 abstract class AbstractConfig {
   val unmanagedValues = mutableMapOf<String, Any>()

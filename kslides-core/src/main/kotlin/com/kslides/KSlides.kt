@@ -6,6 +6,7 @@ import com.kslides.KSlides.Companion.runHttpServer
 import com.kslides.KSlides.Companion.writeToFileSystem
 import com.kslides.Page.generatePage
 import com.kslides.Playground.playgroundFiles
+import com.kslides.config.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -51,23 +52,23 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
           }
       }
 
-      outputBlock(outputContext)
+      outputBlock(outputConfig)
 
-      if (outputContext.enableFileSystem)
-        writeToFileSystem(outputContext)
+      if (outputConfig.enableFileSystem)
+        writeToFileSystem(outputConfig)
 
-      if (outputContext.enableHttp)
-        runHttpServer(outputContext)
+      if (outputConfig.enableHttp)
+        runHttpServer(outputConfig)
 
-      if (!outputContext.enableFileSystem && !outputContext.enableHttp)
+      if (!outputConfig.enableFileSystem && !outputConfig.enableHttp)
         KSlides.logger.warn { "Set enableHttp or enableFileSystem to true in the output block" }
     }
 
 class KSlides {
   internal val globalConfig = PresentationConfig(true)
-  internal val outputContext = OutputContext(this)
+  internal val outputConfig = OutputConfig(this)
   internal var configBlock: PresentationConfig.() -> Unit = {}
-  internal var outputBlock: OutputContext.() -> Unit = {}
+  internal var outputBlock: OutputConfig.() -> Unit = {}
   internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
   internal val presentationMap = mutableMapOf<String, Presentation>()
   internal val presentations get() = presentationMap.values
@@ -88,7 +89,7 @@ class KSlides {
   }
 
   @KSlidesDslMarker
-  fun output(outputBlock: OutputContext.() -> Unit) {
+  fun output(outputBlock: OutputConfig.() -> Unit) {
     this.outputBlock = outputBlock
   }
 
@@ -98,7 +99,7 @@ class KSlides {
   }
 
   companion object : KLogging() {
-    internal fun runHttpServer(output: OutputContext) {
+    internal fun runHttpServer(output: OutputConfig) {
       val port = System.getenv("PORT")?.toInt() ?: output.httpPort
 
       embeddedServer(CIO, port = port) {
@@ -131,7 +132,7 @@ class KSlides {
           output.kslides.presentationMap.forEach { (key, p) ->
             get(key) {
               respondWith {
-                generatePage(p)
+                generatePage(p, false)
               }
             }
           }
@@ -139,7 +140,7 @@ class KSlides {
       }.start(wait = true)
     }
 
-    internal fun writeToFileSystem(output: OutputContext) {
+    internal fun writeToFileSystem(output: OutputConfig) {
       require(output.outputDir.isNotBlank()) { "outputDir value must not be empty" }
 
       val outputDir = output.outputDir
@@ -161,7 +162,7 @@ class KSlides {
               }
             }
           logger.info { "Writing presentation $key to $file" }
-          file.writeText(generatePage(p, prefix))
+          file.writeText(generatePage(p, true, prefix))
         }
     }
   }

@@ -1,4 +1,4 @@
-package com.kslides
+package com.kslides.config
 
 import kotlin.reflect.*
 
