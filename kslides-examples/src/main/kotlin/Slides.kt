@@ -7,6 +7,9 @@ fun main() {
 
   kslides {
 
+    kslidesConfig {
+    }
+
     val slides = "kslides-examples/src/main/kotlin/Slides.kt"
 
     output {

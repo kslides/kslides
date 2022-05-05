@@ -6,7 +6,8 @@ interface DslSlide {
   val _slideName: String
   var _useHttp: Boolean
   var _dslAssigned: Boolean
-  // User-accessible
+
+  // User variables
   var style: String
 
   fun processSlide(section: SECTION)
@@ -17,7 +18,8 @@ class HorizontalDslSlide(presentation: Presentation, content: SlideArgs) : Horiz
   internal var dslBlock: SECTION.(HorizontalDslSlide) -> Unit = { }
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
-  // User-accessible
+
+  // User variables
   override var style = ""
 
   @KSlidesDslMarker
@@ -36,7 +38,8 @@ class VerticalDslSlide(presentation: Presentation, content: SlideArgs) : Vertica
   internal var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
-  // User-accessible
+
+  // User variables
   override var style = ""
 
   @KSlidesDslMarker

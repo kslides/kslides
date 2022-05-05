@@ -10,12 +10,12 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   val _slideName = "${presentation.playgroundPath}slide-${slideCount.incrementAndGet()}.html"
   internal val mergedConfig by lazy {
     SlideConfig()
-      .apply { merge(presentation.kslides.globalConfig.slideConfig) }
+      .apply { merge(presentation.kslides.globalPresentationConfig.slideConfig) }
       .apply { merge(presentation.presentationConfig.slideConfig) }
       .apply { merge(slideConfig) }
   }
 
-  // User-accessible
+  // User variables
   var id = ""
   var classes = ""
   var hidden = false

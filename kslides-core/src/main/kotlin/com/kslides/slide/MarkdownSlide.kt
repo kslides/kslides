@@ -11,7 +11,8 @@ class HortizontalMarkdownSlide(presentation: Presentation, content: SlideArgs) :
   MarkdownSlide {
   internal var markdownAssigned = false
   override var _markdownBlock: () -> String = { "" }
-  // User-accessible
+
+  // User variables
   override var filename = ""
   override var indentToken = INDENT_TOKEN
   override var disableTrimIndent = false
@@ -28,6 +29,8 @@ class VerticalMarkdownSlide(presentation: Presentation, content: SlideArgs) : Ve
   MarkdownSlide {
   internal var markdownAssigned = false
   override var _markdownBlock: () -> String = { "" }
+
+  // User variables
   override var filename = ""
   override var indentToken = INDENT_TOKEN
   override var disableTrimIndent = false

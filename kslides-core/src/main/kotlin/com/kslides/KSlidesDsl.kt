@@ -3,7 +3,6 @@ package com.kslides
 import com.github.pambrose.common.util.*
 import com.kslides.KSlidesDsl.logger
 import com.kslides.Playground.otherNames
-import com.kslides.Playground.playgroundEndpoint
 import com.kslides.Playground.sourceName
 import com.kslides.config.*
 import kotlinx.html.*
@@ -20,13 +19,14 @@ fun playground(
 ) {
   val config =
     PlaygroundConfig()
-      .apply { merge(kslides.globalConfig.playgroundConfig) }
+      .apply { merge(kslides.globalPresentationConfig.playgroundConfig) }
       .apply { merge(presentationConfig.playgroundConfig) }
       .apply { merge(PlaygroundConfig().also { block(it) }) }
 
   val buildUrl =
     buildString {
-      append("$playgroundEndpoint?")
+      append(kslides.kslidesConfig.playgroundEndpoint)
+      append("?")
       append("$sourceName=${source.encode()}")
       if (otherSources.isNotEmpty())
         append("&$otherNames=${otherSources.joinToString(",").encode()}")

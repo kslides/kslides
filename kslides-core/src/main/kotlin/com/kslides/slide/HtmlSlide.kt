@@ -5,6 +5,8 @@ import kotlinx.html.*
 interface HtmlSlide {
   var _htmlBlock: () -> String
   var _htmlAssigned: Boolean
+
+  // User variables
   var classes: String
   var style: String
   var indentToken: String
@@ -17,7 +19,8 @@ class HorizontalHtmlSlide(presentation: Presentation, content: SlideArgs) : Hori
   HtmlSlide {
   override var _htmlBlock: () -> String = { "" }
   override var _htmlAssigned = false
-  // User-accessible
+
+  // User variables
   override var style = ""
   override var indentToken = INDENT_TOKEN
   override var disableTrimIndent = false
@@ -33,7 +36,8 @@ class VerticalHtmlSlide(presentation: Presentation, content: SlideArgs) : Vertic
   HtmlSlide {
   override var _htmlBlock: () -> String = { "" }
   override var _htmlAssigned = false
-  // User-accessible
+
+  // User variables
   override var style = ""
   override var indentToken = INDENT_TOKEN
   override var disableTrimIndent = false
