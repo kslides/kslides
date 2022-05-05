@@ -9,13 +9,15 @@ interface DslSlide {
 
   // User variables
   var style: String
+  var classes: String
 
   fun processSlide(section: SECTION)
+  var _dslBlock: SECTION.() -> Unit
 }
 
 class HorizontalDslSlide(presentation: Presentation, content: SlideArgs) : HorizontalSlide(presentation, content),
   DslSlide {
-  internal var dslBlock: SECTION.(HorizontalDslSlide) -> Unit = { }
+  override var _dslBlock: SECTION.() -> Unit = { }
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
 
@@ -23,8 +25,8 @@ class HorizontalDslSlide(presentation: Presentation, content: SlideArgs) : Horiz
   override var style = ""
 
   @KSlidesDslMarker
-  fun content(dslBlock: SECTION.(HorizontalDslSlide) -> Unit) {
-    this.dslBlock = dslBlock
+  fun content(dslBlock: SECTION.() -> Unit) {
+    this._dslBlock = dslBlock
     _dslAssigned = true
   }
 
@@ -35,7 +37,7 @@ class HorizontalDslSlide(presentation: Presentation, content: SlideArgs) : Horiz
 
 class VerticalDslSlide(presentation: Presentation, content: SlideArgs) : VerticalSlide(presentation, content),
   DslSlide {
-  internal var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
+  override var _dslBlock: SECTION.() -> Unit = { }
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
 
@@ -43,8 +45,8 @@ class VerticalDslSlide(presentation: Presentation, content: SlideArgs) : Vertica
   override var style = ""
 
   @KSlidesDslMarker
-  fun content(dslBlock: SECTION.(VerticalDslSlide) -> Unit) {
-    this.dslBlock = dslBlock
+  fun content(dslBlock: SECTION.() -> Unit) {
+    this._dslBlock = dslBlock
     _dslAssigned = true
   }
 

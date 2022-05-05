@@ -219,11 +219,14 @@ class Presentation(val kslides: KSlides) {
       }
     }.also { verticalSlides += it }
 
-  private fun SECTION.processDsl(s: DslSlide) {
-    if (s.style.isNotBlank())
-      style = s.style
-    s.processSlide(this)
-    require(s._dslAssigned) { "dslSlide missing content { } section" }
+  private fun DIV.processDsl(s: DslSlide) {
+    section(classes = s.classes.nullIfBlank()) {
+      if (s.style.isNotBlank())
+        style = s.style
+      s.processSlide(this)
+      s._dslBlock(this)
+      require(s._dslAssigned) { "dslSlide missing content { } section" }
+    }.also { rawHtml("\n") }
   }
 
   @KSlidesDslMarker
@@ -234,10 +237,7 @@ class Presentation(val kslides: KSlides) {
           .also { s ->
             s._useHttp = useHttp
             slideContent(s)
-            section(classes = s.classes.nullIfBlank()) {
-              processDsl(s)
-              s.dslBlock(this, s)
-            }.also { rawHtml("\n") }
+            processDsl(s)
           }
       }
     }.also { slides += it }
@@ -250,10 +250,7 @@ class Presentation(val kslides: KSlides) {
           .also { s ->
             s._useHttp = useHttp
             slideContent(s)
-            section(classes = s.classes.nullIfBlank()) {
-              processDsl(s)
-              s.dslBlock(this, s)
-            }.also { rawHtml("\n") }
+            processDsl(s)
           }
       }
     }.also { verticalSlides += it }
