@@ -33,7 +33,7 @@ class PlaygroundConfig : AbstractConfig() {
   var dataShorterHeight by ConfigProperty<Int>(unmanagedValues)
   var dataScrollbarStyle by ConfigProperty<String>(unmanagedValues)
 
-  internal fun init() {
+  fun init() {
     width = ""
     height = ""
     style = ""
@@ -58,14 +58,13 @@ class PlaygroundConfig : AbstractConfig() {
               }
               )
         }
-        .map { (k, v) -> "${k.toPropertyName()}=${v.toString().encode()}" }
-        .joinToString("&")
+        .joinToString("&") { (k, v) -> "${k.toPropertyName()}=${v.toString().encode()}" }
         .let { "&$it" }
     else
       ""
 
   companion object {
-    internal val playgroundAttributes =
+    val playgroundAttributes =
       listOf(
         "args",
         "data-target-platform",

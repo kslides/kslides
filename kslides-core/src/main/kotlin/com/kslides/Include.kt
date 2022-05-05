@@ -45,7 +45,7 @@ fun CODE.includeFile(
 ) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 // When called from a DslSlide, turn off indentToken and escaping
-fun DslSlide.includeFile(
+fun HorizontalDslSlide.includeFile(
   path: String,
   linePattern: String = "",
   beginToken: String = "",
@@ -98,7 +98,7 @@ fun CODE.includeUrl(
 ) = includeUrl(url, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 // When called from a DslSlide, turn off indentToken and escaping
-fun DslSlide.includeUrl(
+fun HorizontalDslSlide.includeUrl(
   url: String,
   linePattern: String = "",
   beginToken: String = "",

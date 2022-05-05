@@ -11,7 +11,7 @@ import mu.*
 
 object HtmlDslUtils : KLogging()
 
-context(Presentation, DslSlideContext, SECTION)
+context(Presentation, DslSlide, SECTION)
     @KSlidesDslMarker
 fun playground(
   source: String,
@@ -36,10 +36,10 @@ fun playground(
   iframe {
     logger.info { "Query string: $url" }
     src = url
-    mergedConfig.width.also { if (it.isNotEmpty()) width = it }
-    mergedConfig.height.also { if (it.isNotEmpty()) height = it }
-    mergedConfig.style.also { if (it.isNotEmpty()) style = it }
-    mergedConfig.title.also { if (it.isNotEmpty()) title = it }
+    mergedConfig.width.also { if (it.isNotBlank()) width = it }
+    mergedConfig.height.also { if (it.isNotBlank()) height = it }
+    mergedConfig.style.also { if (it.isNotBlank()) style = it }
+    mergedConfig.title.also { if (it.isNotBlank()) title = it }
   }
 }
 
@@ -95,7 +95,7 @@ inline fun LI.listHref(
     if (newWindow) target = "_blank"
     href = url
     block()
-    +(if (text.isBlank()) url else text)
+    +(text.ifBlank { url })
   }
 }
 

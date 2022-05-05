@@ -1,6 +1,6 @@
 import org.junit.*
 
-class TestLambdas() {
+class TestLambdas {
   @Test
   fun contains() {
     Assert.assertTrue(

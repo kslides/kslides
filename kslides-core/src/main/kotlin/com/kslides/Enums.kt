@@ -55,7 +55,7 @@ enum class TargetPlatform(s: String = "") {
   val queryVal: String
 
   init {
-    this.queryVal = if (s.isEmpty()) this.name.lowercase() else s
+    this.queryVal = s.ifEmpty { this.name.lowercase() }
   }
 }
 
@@ -69,7 +69,7 @@ enum class PlaygroundMode(s: String = "") {
   val queryVal: String
 
   init {
-    this.queryVal = if (s.isEmpty()) this.name.lowercase() else s
+    this.queryVal = s.ifEmpty { this.name.lowercase() }
   }
 }
 

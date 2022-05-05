@@ -103,7 +103,6 @@ class KSlides {
       val port = System.getenv("PORT")?.toInt() ?: output.httpPort
 
       embeddedServer(CIO, port = port) {
-
         // By embedding this logic here, rather than in an Application.module() call, we are not able to use auto-reload
         install(CallLogging) { level = output.logLevel }
         install(DefaultHeaders) { header("X-Engine", "Ktor") }
@@ -154,7 +153,7 @@ class KSlides {
               key == "/" -> File("$outputDir/index.html") to srcPrefix
               key.endsWith(".html") -> File("$outputDir/$key") to srcPrefix
               else -> {
-                val pathElems = "$outputDir/$key".split("/").filter { it.isNotEmpty() }
+                val pathElems = "$outputDir/$key".split("/").filter { it.isNotBlank() }
                 val path = pathElems.joinToString("/")
                 val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
                 File(path).mkdir()
