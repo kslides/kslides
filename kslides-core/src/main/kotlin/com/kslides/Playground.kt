@@ -29,7 +29,7 @@ object Playground : KLogging() {
             }
             body {
               val params = call.request.queryParameters
-              div(classes = dataSelector) {
+              code(classes = dataSelector) {
                 playgroundAttributes
                   .map { attrib -> attrib to (params[attrib] ?: "") }
                   .filter { it.second.isNotBlank() }
@@ -48,7 +48,7 @@ object Playground : KLogging() {
                         .forEach { filename ->
                           logger.info { "Including additional file: $filename" }
                           textArea(classes = "hidden-dependency") {
-                            +this@div.includeFile(filename)
+                            +this@code.includeFile(filename)
                           }
                         }
                   }

@@ -35,7 +35,7 @@ fun includeFile(
   }
 
 // When called from a code block, turn off indentToken and escaping
-fun DIV.includeFile(
+fun CODE.includeFile(
   path: String,
   linePattern: String = "",
   beginToken: String = "",
