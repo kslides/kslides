@@ -12,11 +12,11 @@ import kotlin.collections.set
 object Playground : KLogging() {
 
   const val playgroundEndpoint = "kotlin-file"
+  const val dataSelector = "kotlin-code"
   const val sourceName = "source"
   const val otherNames = "other"
 
-  fun Routing.playgroundFiles() {
-
+  fun Routing.setupPlayground() {
     get(playgroundEndpoint) {
       respondWith {
         document {
@@ -24,12 +24,12 @@ object Playground : KLogging() {
             head {
               script {
                 src = "https://unpkg.com/kotlin-playground@1"
-                attributes["data-selector"] = "code"
+                attributes["data-selector"] = ".$dataSelector"
               }
             }
             body {
               val params = call.request.queryParameters
-              code {
+              div(classes = dataSelector) {
                 playgroundAttributes
                   .map { attrib -> attrib to (params[attrib] ?: "") }
                   .filter { it.second.isNotBlank() }
@@ -48,7 +48,7 @@ object Playground : KLogging() {
                         .forEach { filename ->
                           logger.info { "Including additional file: $filename" }
                           textArea(classes = "hidden-dependency") {
-                            +this@code.includeFile(filename)
+                            +this@div.includeFile(filename)
                           }
                         }
                   }

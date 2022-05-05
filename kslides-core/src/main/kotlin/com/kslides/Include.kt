@@ -12,7 +12,7 @@ object Include : KLogging()
 
 private fun String.pad() = "\n$this\n"
 
-// This will cover htmlSlide and markdownSlide
+// Used within htmlSlide and markdownSlide
 fun includeFile(
   path: String,
   linePattern: String = "",
@@ -35,7 +35,7 @@ fun includeFile(
   }
 
 // When called from a code block, turn off indentToken and escaping
-fun CODE.includeFile(
+fun DIV.includeFile(
   path: String,
   linePattern: String = "",
   beginToken: String = "",
@@ -64,7 +64,7 @@ fun VerticalDslSlide.includeFile(
   trimIndent: Boolean = true,
 ) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
-// This will cover htmlSlide and markdownSlide
+// Used within htmlSlide and markdownSlide
 fun includeUrl(
   url: String,
   linePattern: String = "",

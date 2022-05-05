@@ -18,7 +18,7 @@ fun playground(
   vararg otherSources: String = emptyArray(),
   block: PlaygroundConfig.() -> Unit = {},
 ) {
-  val mergedConfig =
+  val config =
     PlaygroundConfig()
       .apply { merge(kslides.globalConfig.playgroundConfig) }
       .apply { merge(presentationConfig.playgroundConfig) }
@@ -30,16 +30,19 @@ fun playground(
       append("$sourceName=${source.encode()}")
       if (otherSources.isNotEmpty())
         append("&$otherNames=${otherSources.joinToString(",").encode()}")
-      append(mergedConfig.toQueryString())
+      append(config.toQueryString())
     }
+
+  val content = com.kslides.includeUrl("http://0.0.0.0:8080/$url")
+  logger.info { "Content: $content" }
 
   iframe {
     logger.info { "Query string: $url" }
     src = url
-    mergedConfig.width.also { if (it.isNotBlank()) width = it }
-    mergedConfig.height.also { if (it.isNotBlank()) height = it }
-    mergedConfig.style.also { if (it.isNotBlank()) style = it }
-    mergedConfig.title.also { if (it.isNotBlank()) title = it }
+    config.width.also { if (it.isNotBlank()) width = it }
+    config.height.also { if (it.isNotBlank()) height = it }
+    config.style.also { if (it.isNotBlank()) style = it }
+    config.title.also { if (it.isNotBlank()) title = it }
   }
 }
 
