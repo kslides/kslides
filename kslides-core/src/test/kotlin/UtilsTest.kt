@@ -1,6 +1,7 @@
 package com.github.readingbat
 
 import com.kslides.*
+import com.kslides.config.*
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
 import io.kotest.matchers.string.*
@@ -74,7 +75,7 @@ val y = 1              // NO TAB
           if (it.contains("NO TAB"))
             it.trimStart().length shouldBe it.length
           else {
-            if (it.isNotEmpty()) it.trimStart().length shouldNotBe it.length
+            if (it.isNotBlank()) it.trimStart().length shouldNotBe it.length
           }
         }
     }
@@ -120,8 +121,8 @@ val y = 1              // NO TAB
       val p3 =
         PresentationConfig()
           .apply {
-            merge(p1)
-            merge(p2)
+            mergeConfig(p1)
+            mergeConfig(p2)
           }
       p3.enableMenu shouldBe false
     }
@@ -134,8 +135,8 @@ val y = 1              // NO TAB
       val p3 =
         PresentationConfig()
           .apply {
-            merge(p1)
-            merge(p2)
+            mergeConfig(p1)
+            mergeConfig(p2)
           }
       p3.enableMenu shouldBe false
     }
@@ -150,8 +151,8 @@ val y = 1              // NO TAB
       val p3 =
         PresentationConfig()
           .apply {
-            merge(p1)
-            merge(p2)
+            mergeConfig(p1)
+            mergeConfig(p2)
           }
       p3.enableMenu shouldBe true
     }
@@ -166,8 +167,8 @@ val y = 1              // NO TAB
       val p3 =
         PresentationConfig()
           .apply {
-            merge(p1)
-            merge(p2)
+            mergeConfig(p1)
+            mergeConfig(p2)
           }
       p3.enableMenu shouldBe false
     }
@@ -181,7 +182,7 @@ val y = 1              // NO TAB
         5
       """
 
-      val lines = text.lines().filter { it.trim().isNotEmpty() }
+      val lines = text.lines().filter { it.trim().isNotBlank() }
 
       lines.fromTo("", "").size shouldBe 5
 
@@ -226,7 +227,7 @@ val y = 1              // NO TAB
         "3"
       """
 
-      val lines = text.lines().filter { it.trim().isNotEmpty() }
+      val lines = text.lines().filter { it.trim().isNotBlank() }
 
       lines.fromTo("1", "3", false).also {
         it.size shouldBe 3
@@ -291,7 +292,7 @@ val y = 1              // NO TAB
         5
       """
 
-      val lines = text.lines().filter { it.trim().isNotEmpty() }
+      val lines = text.lines().filter { it.trim().isNotBlank() }
 
       lines.toLineRanges("").size shouldBe 5
 

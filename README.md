@@ -196,7 +196,7 @@ the option to convert it to the appropriate Kotlin HTML DSL code. Install it by 
 `HTML to kotlinx.html` in "Marketplace"
 
 ### Formatting
-Disable IntelliJ automatic formatting your code when you commit. The presentation
+Disable the IntelliJ `Reformat code` option when you commit. The presentation
 html files are space-sensitive and might not work if they are formatted.
 
 ### Images
@@ -210,6 +210,9 @@ If you have to embed code, remove all indentation of the `content{}` block.
 
 ### Local Development
 * Speaker Notes do not work properly when running locally.
+
+### Kotlin Playground
+Playground code using `dataTargetPlatform = JUNIT` should not hae a `package` decl. 
 
 ### Heroku 
 

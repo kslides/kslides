@@ -10,14 +10,17 @@ const val INDENT_TOKEN = "__indent__"
 
 object Include : KLogging()
 
+private fun String.pad() = "\n$this\n"
+
+// Used within htmlSlide and markdownSlide
 fun includeFile(
   path: String,
   linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
-  indentToken: String = INDENT_TOKEN,
   trimIndent: Boolean = true,
+  indentToken: String = INDENT_TOKEN,
   escapeHtml: Boolean = true,
 ) =
   try {
@@ -31,38 +34,45 @@ fun includeFile(
     ""
   }
 
-// When called from a dslSlide, you no longer need the indentToken and you want to add newlines to front and back
+// When called from a code block, turn off indentToken and escaping
 fun CODE.includeFile(
   path: String,
   linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
-  indentToken: String = "",
   trimIndent: Boolean = true,
-  escapeHtml: Boolean = true,
-) =
-  "\n${
-    com.kslides.includeFile(
-      path,
-      linePattern,
-      beginToken,
-      endToken,
-      exclusive,
-      indentToken,
-      trimIndent,
-      escapeHtml
-    )
-  }\n"
+) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
+// When called from a DslSlide, turn off indentToken and escaping
+fun HorizontalDslSlide.includeFile(
+  path: String,
+  linePattern: String = "",
+  beginToken: String = "",
+  endToken: String = "",
+  exclusive: Boolean = true,
+  trimIndent: Boolean = true,
+) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+
+// When called from a vertical DslSlide, turn off indentToken and escaping
+fun VerticalDslSlide.includeFile(
+  path: String,
+  linePattern: String = "",
+  beginToken: String = "",
+  endToken: String = "",
+  exclusive: Boolean = true,
+  trimIndent: Boolean = true,
+) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+
+// Used within htmlSlide and markdownSlide
 fun includeUrl(
   url: String,
   linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
-  indentToken: String = INDENT_TOKEN,
   trimIndent: Boolean = true,
+  indentToken: String = INDENT_TOKEN,
   escapeHtml: Boolean = true,
 ) =
   try {
@@ -77,28 +87,35 @@ fun includeUrl(
     ""
   }
 
+// When called from a code block, turn off indentToken and escaping
 fun CODE.includeUrl(
   url: String,
   linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
-  indentToken: String = "",
   trimIndent: Boolean = true,
-  escapeHtml: Boolean = true,
-) =
-  "\n${
-    com.kslides.includeUrl(
-      url,
-      linePattern,
-      beginToken,
-      endToken,
-      exclusive,
-      indentToken,
-      trimIndent,
-      escapeHtml
-    )
-  }\n"
+) = includeUrl(url, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+
+// When called from a DslSlide, turn off indentToken and escaping
+fun HorizontalDslSlide.includeUrl(
+  url: String,
+  linePattern: String = "",
+  beginToken: String = "",
+  endToken: String = "",
+  exclusive: Boolean = true,
+  trimIndent: Boolean = true,
+) = includeUrl(url, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+
+// When called from a vertical DslSlide, turn off indentToken and escaping
+fun VerticalDslSlide.includeUrl(
+  url: String,
+  linePattern: String = "",
+  beginToken: String = "",
+  endToken: String = "",
+  exclusive: Boolean = true,
+  trimIndent: Boolean = true,
+) = includeUrl(url, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 internal fun List<String>.fromTo(
   beginToken: String = "",
@@ -137,10 +154,10 @@ internal fun List<String>.fromTo(
   return if (beginIndex == 0 && endIndex == this.size) this else subList(beginIndex, endIndex)
 }
 
-internal fun List<String>.toLineRanges(text: String): List<String> =
+internal fun List<String>.toLineRanges(linePattern: String): List<String> =
   when {
-    text.isNotBlank() ->
-      text.toIntList().let { lineNums ->
+    linePattern.isNotBlank() ->
+      linePattern.toIntList().let { lineNums ->
         filterIndexed { i, _ -> i + 1 in lineNums }
       }
     else -> this

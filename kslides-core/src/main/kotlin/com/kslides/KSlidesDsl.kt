@@ -1,15 +1,59 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
+import com.kslides.KSlidesDsl.logger
+import com.kslides.Playground.otherNames
+import com.kslides.Playground.playgroundEndpoint
+import com.kslides.Playground.sourceName
+import com.kslides.config.*
 import kotlinx.html.*
+import mu.*
+
+object KSlidesDsl : KLogging()
+
+context(Presentation, DslSlide, SECTION)
+    @KSlidesDslMarker
+fun playground(
+  source: String,
+  vararg otherSources: String = emptyArray(),
+  block: PlaygroundConfig.() -> Unit = {},
+) {
+  val config =
+    PlaygroundConfig()
+      .apply { merge(kslides.globalConfig.playgroundConfig) }
+      .apply { merge(presentationConfig.playgroundConfig) }
+      .apply { merge(PlaygroundConfig().also { block(it) }) }
+
+  val buildUrl =
+    buildString {
+      append("$playgroundEndpoint?")
+      append("$sourceName=${source.encode()}")
+      if (otherSources.isNotEmpty())
+        append("&$otherNames=${otherSources.joinToString(",").encode()}")
+      append(config.toQueryString())
+    }
+
+  if (!_useHttp)
+    kslides.playgroundUrls += _slideName to buildUrl
+
+  val url = if (_useHttp) buildUrl else _slideName
+  logger.info { "Query string: $url" }
+  iframe {
+    src = url
+    config.width.also { if (it.isNotBlank()) width = it }
+    config.height.also { if (it.isNotBlank()) height = it }
+    config.style.also { if (it.isNotBlank()) style = it }
+    config.title.also { if (it.isNotBlank()) title = it }
+  }
+}
 
 @HtmlTagMarker
 fun FlowContent.codeSnippet(
   language: String,
   text: String,
-  linePattern: String = "",   // none will turn off line numbers
+  linePattern: String = "",    // none will turn off line numbers
   lineOffSet: Int = -1,
-  dataId: String = "",        // For animation
+  dataId: String = "",         // For animation
   trim: Boolean = true,
   escapeHtml: Boolean = false,
   copyButton: Boolean = true,  // Adds COPY button
@@ -55,7 +99,7 @@ inline fun LI.listHref(
     if (newWindow) target = "_blank"
     href = url
     block()
-    +(if (text.isBlank()) url else text)
+    +(text.ifBlank { url })
   }
 }
 

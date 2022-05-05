@@ -1,19 +1,20 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
+import com.kslides.config.*
 import kotlinx.html.*
 import kotlinx.html.dom.*
 import java.io.*
 
 internal object Page {
 
-  fun generatePage(p: Presentation, prefix: String = "/"): String {
-    val config = p.finalConfig
+  fun generatePage(p: Presentation, useHttp: Boolean = true, prefix: String = "/"): String {
     val document =
       document {
+        val config = p.finalConfig
         append.html {
           generateHead(p, config, prefix.ensureSuffix("/"))
-          generateBody(p, config, prefix.ensureSuffix("/"))
+          generateBody(p, config, prefix.ensureSuffix("/"), useHttp)
         }
       }
 
@@ -39,7 +40,7 @@ internal object Page {
     return document.serialize()
   }
 
-  fun HTML.generateHead(p: Presentation, config: PresentationConfig, srcPrefix: String) =
+  private fun HTML.generateHead(p: Presentation, config: PresentationConfig, srcPrefix: String) =
     head {
       meta { charset = "utf-8" }
       meta { name = "apple-mobile-web-app-capable"; content = "yes" }
@@ -79,12 +80,12 @@ internal object Page {
       rawHtml("\n")
       style("text/css") {
         media = "screen"
-        rawHtml(Page::class.java.classLoader.getResource("slides.css")
-                  ?.readText()
-                  ?.lines()
-                  ?.map { "\t\t$it" }
-                  ?.joinToString("\n")
-                  ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"))
+        rawHtml(
+          Page::class.java.classLoader.getResource("slides.css")
+            ?.readText()
+            ?.lines()
+            ?.joinToString("\n") { "\t\t$it" }
+            ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"))
       }
 
       if (p.css.isNotBlank()) {
@@ -96,7 +97,7 @@ internal object Page {
       }
     }
 
-  fun HTML.generateBody(p: Presentation, config: PresentationConfig, srcPrefix: String) =
+  private fun HTML.generateBody(p: Presentation, config: PresentationConfig, srcPrefix: String, useHttp: Boolean) =
     body {
       div("reveal") {
         if (config.topLeftHref.isNotBlank()) {
@@ -124,7 +125,7 @@ internal object Page {
 
         rawHtml("\n")
         div("slides") {
-          p.slides.forEach { slide -> slide.content(this, slide) }
+          p.slides.forEach { slide -> slide.content(this, slide, useHttp) }
         }
       }
 

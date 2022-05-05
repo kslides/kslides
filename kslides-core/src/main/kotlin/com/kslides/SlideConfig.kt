@@ -2,6 +2,7 @@ package com.kslides
 
 import com.github.pambrose.common.util.*
 import com.kslides.Transition.SLIDE
+import com.kslides.config.*
 import kotlinx.html.*
 
 class SlideConfig : AbstractConfig() {
@@ -28,7 +29,7 @@ class SlideConfig : AbstractConfig() {
   var markdownVerticalSeparator by ConfigProperty<String>(unmanagedValues)
   var markdownNotesSeparator by ConfigProperty<String>(unmanagedValues)
 
-  fun init() {
+  internal fun init() {
     transition = Transition.UNASSIGNED
     transitionIn = Transition.UNASSIGNED
     transitionOut = Transition.UNASSIGNED

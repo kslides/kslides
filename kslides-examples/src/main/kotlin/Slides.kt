@@ -31,13 +31,22 @@ fun main() {
       gaPropertyId = "G-TRY2Q243XC"
       enableSpeakerNotes = true
       enableMenu = true
-      theme = Theme.SOLARIZED
+      theme = PresentationTheme.SOLARIZED
       center = true
 
       copyCodeConfig {
         timeout = 2000
         copy = "Copy"
         copied = "Copied!"
+      }
+
+      playgroundConfig {
+        theme = PlaygroundTheme.DARCULA
+        lines = true
+        //style = "border: 1px solid red;"
+        style = "border:none;"
+        width = "100%"
+        height = "250px"
       }
     }
 
@@ -51,9 +60,13 @@ fun main() {
         """
 
       presentationConfig {
-        // presentation-sepecific confurations go here
+        // presentation-specific configurations
+
         slideConfig {
-          // defaults for slides go here
+          // defaults for slides
+        }
+
+        playgroundConfig {
         }
       }
 
@@ -174,11 +187,7 @@ fun main() {
           content {
             h2 { +"Highlighted Code with a dslSlide" }
             val file = "kslides-examples/src/main/kotlin/examples/HelloWorldK.kt"
-            codeSnippet(
-              "kotlin",
-              includeFile(file, indentToken = "", escapeHtml = false),
-              "[|3,7|4,6|5|4-6]",
-            )
+            codeSnippet("kotlin", includeFile(file), "[|3,7|4,6|5|4-6]")
             h2 { +"👇" }
             aside("notes") {
               +"This slide shows highlighted code. You can specify the lines you want to highlight."
@@ -200,11 +209,7 @@ fun main() {
             content {
               h2 { +"Animated Code with a dslSlide" }
               val file = "kslides-examples/src/main/kotlin/examples/assign.js"
-              codeSnippet(
-                "javascript",
-                includeFile(file, lines, indentToken = "", escapeHtml = false),
-                dataId = "code-animation"
-              )
+              codeSnippet("javascript", includeFile(file, lines), dataId = "code-animation")
               h2 { +"👇" }
               aside("notes") {
                 +"This slide shows animated code highlights."
@@ -241,6 +246,70 @@ fun main() {
         // animated2 end
 
         slideDefinition(slides, "animated2")
+      }
+
+      verticalSlides {
+
+        val root = "kslides-examples/src/main/kotlin/playground"
+
+        // pg1 begin
+        dslSlide {
+          content {
+            h2 { +"Kotlin Playground Support" }
+            playground("$root/HelloWorld.kt") {
+              args = "1 2 3"
+            }
+          }
+        }
+        // pg1 end
+
+        slideDefinition(slides, "pg1")
+
+        // pg2 begin
+        dslSlide {
+          content {
+            h2 { +"Playground with Additional Code" }
+            playground(
+              "$root/HelloPets.kt",
+              "$root/Cat.kt",
+              "$root/Dog.kt"
+            ) {
+              theme = PlaygroundTheme.IDEA
+            }
+          }
+        }
+        // pg2 end
+
+        slideDefinition(slides, "pg2")
+
+        // pg3 begin
+        dslSlide {
+          content {
+            h2 { +"Playground Using JUnit" }
+            playground("$root/TestLambdas.kt") {
+              height = "450px"
+              dataTargetPlatform = TargetPlatform.JUNIT
+            }
+          }
+        }
+        // pg3 end
+
+        slideDefinition(slides, "pg3")
+
+        // pg4 begin
+        dslSlide {
+          content {
+            h2 { +"Playground Using Kotlin/JS" }
+            playground("$root/JsPlayground.txt") {
+              theme = PlaygroundTheme.IDEA
+              dataTargetPlatform = TargetPlatform.JS
+              dataJsLibs = "https://unpkg.com/moment@2"
+            }
+          }
+        }
+        // pg4 end
+
+        slideDefinition(slides, "pg4")
       }
 
       verticalSlides {
@@ -504,7 +573,7 @@ fun main() {
               +"reveal.js comes with some built-in themes:"
               br {}
               // The Theme enum includes all the built in themes
-              Theme.values()
+              PresentationTheme.values()
                 .forEachIndexed { index, theme ->
                   a {
                     href = "#/themes"
@@ -512,7 +581,7 @@ fun main() {
                       "document.getElementById('theme').setAttribute('href','dist/theme/${theme.name.toLower()}.css'); return false;"
                     +theme.name
                   }
-                  if (index < Theme.values().size - 1)
+                  if (index < PresentationTheme.values().size - 1)
                     +"-"
                 }
             }
@@ -647,16 +716,10 @@ fun main() {
           content {
             h2 { +"Fit Text" }
             p { +"Resizes text to be as large as possible within its container. 👇" }
+            val token = "ft1"
             codeSnippet(
               "kotlin",
-              includeFile(
-                slides,
-                "3",
-                beginToken = "ft1 begin",
-                endToken = "ft1 end",
-                indentToken = "",
-                escapeHtml = false
-              ),
+              includeFile(slides, "3", beginToken = "$token begin", endToken = "$token end"),
               linePattern = "none",
             )
             p { +"or" }
@@ -697,16 +760,10 @@ fun main() {
           content {
             h2 { +"Stretch" }
             p { +"Makes an element as tall as possible while remaining within the slide bounds. 👇" }
+            val token = "stretch"
             codeSnippet(
               "kotlin",
-              includeFile(
-                slides,
-                "3-7",
-                beginToken = "stretch begin",
-                endToken = "stretch end",
-                indentToken = "",
-                escapeHtml = false,
-              ),
+              includeFile(slides, "3-7", beginToken = "$token begin", endToken = "$token end"),
               linePattern = "none",
             )
             p { +"or" }
@@ -750,13 +807,7 @@ fun main() {
               code("kotlin") {
                 attributes["data-trim"] = "true"
                 val token = "stack1" // Using a variable prevents false begin/end match
-                +includeFile(
-                  slides,
-                  "3-21",
-                  beginToken = "$token begin",
-                  endToken = "$token end",
-                  escapeHtml = false
-                )
+                +includeFile(slides, "3-21", beginToken = "$token begin", endToken = "$token end")
               }
             }
           }
@@ -801,13 +852,7 @@ fun main() {
               code("kotlin") {
                 attributes["data-trim"] = "true"
                 val token = "hstack"
-                +includeFile(
-                  slides,
-                  "3-8",
-                  beginToken = "$token begin",
-                  endToken = "$token end",
-                  escapeHtml = false
-                )
+                +includeFile(slides, "3-8", beginToken = "$token begin", endToken = "$token end")
               }
             }
           }
@@ -839,13 +884,7 @@ fun main() {
               code("kotlin") {
                 attributes["data-trim"] = "true"
                 val token = "vstack"
-                +includeFile(
-                  slides,
-                  "3-8",
-                  beginToken = "$token begin",
-                  endToken = "$token end",
-                  escapeHtml = false
-                )
+                +includeFile(slides, "3-8", beginToken = "$token begin", endToken = "$token end")
               }
             }
           }
@@ -945,7 +984,7 @@ fun main() {
         topRightTitle = "Go to main presentation"
         topRightText = "🔙"
 
-        theme = Theme.SERIF
+        theme = PresentationTheme.SERIF
       }
 
       verticalSlides {

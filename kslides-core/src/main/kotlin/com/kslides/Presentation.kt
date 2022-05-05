@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
+import com.kslides.config.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
@@ -22,6 +23,8 @@ class Presentation(val kslides: KSlides) {
   // Initialize css with the global css value
   val css by lazy { AppendableString(kslides.css.let { if (it.isNotBlank()) "$it\n" else "" }) }
   var path = "/"
+
+  internal val playgroundPath by lazy { kslides.outputConfig.playgroundDir.ensureSuffix("/") }
 
   internal fun validatePath() {
     require(path.removePrefix("/") !in kslides.staticRoots) { "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"" }
@@ -120,7 +123,7 @@ class Presentation(val kslides: KSlides) {
 
   @KSlidesDslMarker
   fun verticalSlides(block: VerticalSlideContext.() -> Unit) =
-    VerticalSlide(this) { div, slide ->
+    VerticalSlide(this) { div, slide, useHttp ->
       div.apply {
         (slide as VerticalSlide).verticalContext
           .also { vcontext ->
@@ -129,7 +132,7 @@ class Presentation(val kslides: KSlides) {
             vcontext.resetContext()
             block(vcontext)
             section(classes = vcontext.classes.nullIfBlank()) {
-              vcontext.id.also { if (it.isNotEmpty()) id = it }
+              vcontext.id.also { if (it.isNotBlank()) id = it }
 
               // Apply config items for all the slides in the vertical slide
               vcontext.slideConfig.applyConfig(this)
@@ -137,7 +140,7 @@ class Presentation(val kslides: KSlides) {
 
               vcontext.verticalSlides
                 .forEach { verticalSlide ->
-                  verticalSlide.content(div, verticalSlide)
+                  verticalSlide.content(div, verticalSlide, useHttp)
                   rawHtml("\n")
                 }
             }.also { rawHtml("\n") }
@@ -145,11 +148,26 @@ class Presentation(val kslides: KSlides) {
       }
     }.also { slides += it }
 
+  private fun SECTION.processMarkdown(s: MarkdownSlide) {
+    if (s.filename.isBlank()) {
+      s._markdownBlock()
+        .also { markdown ->
+          if (markdown.isNotBlank())
+            script("text/template") {
+              markdown
+                .indentInclude(s.indentToken)
+                .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+                .also { rawHtml("\n$it\n") }
+            }
+        }
+    }
+  }
+
   @KSlidesDslMarker
-  fun markdownSlide(slideContent: MarkdownSlide.() -> Unit = {}) =
-    MarkdownSlide(this) { div, slide ->
+  fun markdownSlide(slideContent: HortizontalMarkdownSlide.() -> Unit = {}) =
+    HortizontalMarkdownSlide(this) { div, slide, _ ->
       div.apply {
-        (slide as MarkdownSlide).also { s ->
+        (slide as HortizontalMarkdownSlide).also { s ->
           slideContent(s)
           section(classes = s.classes.nullIfBlank()) {
             s.processSlide(this)
@@ -163,17 +181,7 @@ class Presentation(val kslides: KSlides) {
 
             s.mergedConfig.applyMarkdownItems(this)
 
-            if (s.filename.isEmpty()) {
-              s.markdownBlock().also { markdown ->
-                if (markdown.isNotBlank())
-                  script("text/template") {
-                    markdown
-                      .indentInclude(s.indentToken)
-                      .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-                      .also { rawHtml("\n$it\n") }
-                  }
-              }
-            }
+            processMarkdown(s)
           }.also { rawHtml("\n") }
         }
       }
@@ -181,7 +189,7 @@ class Presentation(val kslides: KSlides) {
 
   @KSlidesDslMarker
   fun VerticalSlideContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
-    VerticalMarkdownSlide(this@Presentation) { div, slide ->
+    VerticalMarkdownSlide(this@Presentation) { div, slide, _ ->
       div.apply {
         (slide as VerticalMarkdownSlide).also { s ->
           slideContent(s)
@@ -205,95 +213,85 @@ class Presentation(val kslides: KSlides) {
             //if (notes.isNotBlank())
             //    attributes["data-separator-notes"] = notes
 
-            if (s.filename.isEmpty()) {
-              s.markdownBlock().also { markdown ->
-                if (markdown.isNotBlank())
-                  script("text/template") {
-                    markdown
-                      .indentInclude(s.indentToken)
-                      .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-                      .also { rawHtml("\n$it\n") }
-                  }
-              }
-            }
+            processMarkdown(s)
           }.also { rawHtml("\n") }
         }
       }
     }.also { verticalSlides += it }
 
+  private fun SECTION.processDsl(s: DslSlide) {
+    if (s.style.isNotBlank())
+      style = s.style
+    s.processSlide(this)
+    require(s._dslAssigned) { "dslSlide missing content { } section" }
+  }
+
   @KSlidesDslMarker
-  fun dslSlide(slideContent: DslSlide.() -> Unit) =
-    DslSlide(this) { div, slide ->
+  fun dslSlide(slideContent: HorizontalDslSlide.() -> Unit) =
+    HorizontalDslSlide(this) { div, slide, useHttp ->
       div.apply {
-        (slide as DslSlide).also { s ->
-          slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
-            if (s.style.isNotBlank())
-              style = s.style
-            s.processSlide(this)
-            require(s.dslAssigned) { "dslSlide missing content { } section" }
-            s.dslBlock(this, s)
-          }.also { rawHtml("\n") }
-        }
+        (slide as HorizontalDslSlide)
+          .also { s ->
+            s._useHttp = useHttp
+            slideContent(s)
+            section(classes = s.classes.nullIfBlank()) {
+              processDsl(s)
+              s.dslBlock(this, s)
+            }.also { rawHtml("\n") }
+          }
       }
     }.also { slides += it }
 
   @KSlidesDslMarker
   fun VerticalSlideContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
-    VerticalDslSlide(this@Presentation) { div, slide ->
+    VerticalDslSlide(this@Presentation) { div, slide, useHttp ->
       div.apply {
-        (slide as VerticalDslSlide).also { s ->
-          slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
-            if (s.style.isNotBlank())
-              style = s.style
-            s.processSlide(this)
-            require(s.dslAssigned) { "dslSlide missing content { } section" }
-            s.dslBlock(this, s)
-          }.also { rawHtml("\n") }
-        }
+        (slide as VerticalDslSlide)
+          .also { s ->
+            s._useHttp = useHttp
+            slideContent(s)
+            section(classes = s.classes.nullIfBlank()) {
+              processDsl(s)
+              s.dslBlock(this, s)
+            }.also { rawHtml("\n") }
+          }
       }
     }.also { verticalSlides += it }
 
+  private fun DIV.processHtml(s: HtmlSlide) {
+    section(classes = s.classes.nullIfBlank()) {
+      if (s.style.isNotBlank())
+        style = s.style
+      s.processSlide(this)
+      require(s._htmlAssigned) { "htmlSlide missing content { } section" }
+      s._htmlBlock()
+        .indentInclude(s.indentToken)
+        .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+        .also { rawHtml("\n$it") }
+    }.also { rawHtml("\n") }
+  }
+
   @KSlidesDslMarker
-  fun htmlSlide(slideContent: HtmlSlide.() -> Unit) =
-    HtmlSlide(this) { div, slide ->
+  fun htmlSlide(slideContent: HorizontalHtmlSlide.() -> Unit) =
+    HorizontalHtmlSlide(this) { div, slide, _ ->
       div.apply {
-        (slide as HtmlSlide).also { s ->
-          slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
-            if (s.style.isNotBlank())
-              style = s.style
-            s.processSlide(this)
-            require(s.htmlAssigned) { "htmlSlide missing content { } section" }
-            s.htmlBlock()
-              .indentInclude(s.indentToken)
-              .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-              .also { rawHtml("\n$it") }
-          }.also { rawHtml("\n") }
-        }
+        (slide as HorizontalHtmlSlide)
+          .also { s ->
+            slideContent(s)
+            processHtml(s)
+          }
       }
-    }.also {
-      slides += it
-    }
+    }.also { slides += it }
 
   @KSlidesDslMarker
   fun VerticalSlideContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
-    VerticalHtmlSlide(this@Presentation) { div, slide ->
+    VerticalHtmlSlide(this@Presentation) { div, slide, _ ->
       div.apply {
-        (slide as VerticalHtmlSlide).also { s ->
-          slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
-            if (s.style.isNotBlank())
-              style = s.style
-            s.processSlide(this)
-            require(s.htmlAssigned) { "htmlSlide missing content { } section" }
-            s.htmlBlock()
-              .indentInclude(s.indentToken)
-              .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-              .also { rawHtml("\n$it") }
-          }.also { rawHtml("\n") }
-        }
+        (slide as VerticalHtmlSlide)
+          .also { s ->
+            slideContent(s)
+            processHtml(s)
+          }
       }
     }.also { verticalSlides += it }
 
@@ -442,20 +440,6 @@ class Presentation(val kslides: KSlides) {
     }
 
   companion object : KLogging()
-}
-
-class VerticalSlideContext {
-  internal val slideConfig = SlideConfig().apply { init() }
-  internal val verticalSlides = mutableListOf<VerticalSlide>()
-  var id = ""
-  var classes = ""
-
-  @KSlidesDslMarker
-  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
-
-  internal fun resetContext() {
-    verticalSlides.clear()
-  }
 }
 
 class JsFile(val filename: String)

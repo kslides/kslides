@@ -1,9 +1,12 @@
-package com.kslides
+package com.kslides.config
+
+import com.kslides.*
 
 class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   internal val menuConfig = MenuConfig()
   internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
+  internal val playgroundConfig = PlaygroundConfig()
 
   // Display presentation control arrows
   var controls by ConfigProperty<Boolean>(unmanagedValues) // true
@@ -16,7 +19,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   var controlsLayout by ConfigProperty<String>(unmanagedValues) // 'bottom-right'
 
   var title by ConfigProperty<String>(managedValues)
-  var theme by ConfigProperty<Theme>(managedValues)
+  var theme by ConfigProperty<PresentationTheme>(managedValues)
   var highlight by ConfigProperty<Highlight>(managedValues)
   var enableSpeakerNotes by ConfigProperty<Boolean>(managedValues)
   var enableZoom by ConfigProperty<Boolean>(managedValues)
@@ -60,7 +63,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
     // Only the default config is initialized with default values
     if (init) {
       title = ""
-      theme = Theme.BLACK
+      theme = PresentationTheme.BLACK
       highlight = Highlight.MONOKAI
       enableSpeakerNotes = false
       enableZoom = true
@@ -93,8 +96,8 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       autoSlide = 0
       slideNumber = false
 
-      // Initialize the slide config
       slideConfig.init()
+      playgroundConfig.init()
     }
   }
 
@@ -315,11 +318,12 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   // Time before the cursor is hidden (in ms)
   var hideCursorTime by ConfigProperty<Int>(unmanagedValues) // 5000
 
-  internal fun merge(other: PresentationConfig) {
-    this.combine(other)
-    this.menuConfig.combine(other.menuConfig)
-    this.copyCodeConfig.combine(other.copyCodeConfig)
-    this.slideConfig.combine(other.slideConfig)
+  internal fun mergeConfig(other: PresentationConfig) {
+    this.merge(other)
+    this.menuConfig.merge(other.menuConfig)
+    this.copyCodeConfig.merge(other.copyCodeConfig)
+    this.slideConfig.merge(other.slideConfig)
+    this.playgroundConfig.merge(other.playgroundConfig)
   }
 
   @KSlidesDslMarker
@@ -330,4 +334,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
 
   @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = block.invoke(slideConfig)
+
+  @KSlidesDslMarker
+  fun playgroundConfig(block: PlaygroundConfig.() -> Unit) = block.invoke(playgroundConfig)
 }

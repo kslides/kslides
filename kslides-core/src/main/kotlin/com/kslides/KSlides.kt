@@ -3,8 +3,11 @@ package com.kslides
 import com.github.pambrose.common.response.*
 import com.github.pambrose.common.util.*
 import com.kslides.KSlides.Companion.runHttpServer
+import com.kslides.KSlides.Companion.writePlaygroundFiles
 import com.kslides.KSlides.Companion.writeToFileSystem
 import com.kslides.Page.generatePage
+import com.kslides.Playground.setupPlayground
+import com.kslides.config.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -16,6 +19,7 @@ import io.ktor.server.routing.*
 import kotlinx.css.*
 import mu.*
 import java.io.*
+import java.util.concurrent.*
 
 @DslMarker
 annotation class KSlidesDslMarker
@@ -39,8 +43,8 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
             finalConfig =
               PresentationConfig()
                 .apply {
-                  merge(kslides.globalConfig)
-                  merge(presentationConfig)
+                  mergeConfig(kslides.globalConfig)
+                  mergeConfig(presentationConfig)
                 }
 
             assignCssFiles()
@@ -50,25 +54,32 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
           }
       }
 
-      outputBlock(presentationOutput)
+      outputBlock(outputConfig)
 
-      if (presentationOutput.enableFileSystem)
-        writeToFileSystem(presentationOutput)
+      if (!outputConfig.enableFileSystem && !outputConfig.enableHttp)
+        KSlides.logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} section" }
 
-      if (presentationOutput.enableHttp)
-        runHttpServer(presentationOutput)
+      if (outputConfig.enableFileSystem)
+        writeToFileSystem(outputConfig)
 
-      if (!presentationOutput.enableFileSystem && !presentationOutput.enableHttp)
-        KSlides.logger.warn { "Set enableHttp or enableFileSystem to true in the output block" }
+      if (outputConfig.enableHttp || playgroundUrls.isNotEmpty())
+        runHttpServer(outputConfig, false)
+
+      if (playgroundUrls.isNotEmpty())
+        writePlaygroundFiles(outputConfig, playgroundUrls)
+
+      if (outputConfig.enableHttp)
+        CountDownLatch(1).await()
     }
 
 class KSlides {
   internal val globalConfig = PresentationConfig(true)
-  internal val presentationOutput = PresentationOutput(this)
+  internal val outputConfig = OutputConfig(this)
   internal var configBlock: PresentationConfig.() -> Unit = {}
-  internal var outputBlock: PresentationOutput.() -> Unit = {}
+  internal var outputBlock: OutputConfig.() -> Unit = {}
   internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
   internal val presentationMap = mutableMapOf<String, Presentation>()
+  internal val playgroundUrls = mutableListOf<Pair<String, String>>()
   internal val presentations get() = presentationMap.values
   internal fun presentation(name: String) =
     presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
@@ -87,7 +98,7 @@ class KSlides {
   }
 
   @KSlidesDslMarker
-  fun output(outputBlock: PresentationOutput.() -> Unit) {
+  fun output(outputBlock: OutputConfig.() -> Unit) {
     this.outputBlock = outputBlock
   }
 
@@ -97,13 +108,39 @@ class KSlides {
   }
 
   companion object : KLogging() {
-    internal fun runHttpServer(output: PresentationOutput) {
-      val port = System.getenv("PORT")?.toInt() ?: output.httpPort
+    internal fun writeToFileSystem(config: OutputConfig) {
+      require(config.outputDir.isNotBlank()) { "outputDir value must not be empty" }
 
-      embeddedServer(CIO, port = port) {
+      val outputDir = config.outputDir
+      val srcPrefix = config.staticRootDir.ensureSuffix("/")
 
+      // Create directory if missing
+      File(outputDir).mkdir()
+
+      config.kslides.presentationMap
+        .forEach { (key, p) ->
+          val (file, prefix) =
+            when {
+              key == "/" -> File("$outputDir/index.html") to srcPrefix
+              key.endsWith(".html") -> File("$outputDir/$key") to srcPrefix
+              else -> {
+                val pathElems = "$outputDir/$key".split("/").filter { it.isNotBlank() }
+                val path = pathElems.joinToString("/")
+                val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
+                // Create directory if missing
+                File(path).mkdir()
+                File("$path/index.html") to "$dotDot$srcPrefix"
+              }
+            }
+          logger.info { "Writing presentation $key to $file" }
+          file.writeText(generatePage(p, false, prefix))
+        }
+    }
+
+    internal fun runHttpServer(config: OutputConfig, wait: Boolean) {
+      embeddedServer(CIO, port = config.port) {
         // By embedding this logic here, rather than in an Application.module() call, we are not able to use auto-reload
-        install(CallLogging) { level = output.logLevel }
+        install(CallLogging) { level = config.logLevel }
         install(DefaultHeaders) { header("X-Engine", "Ktor") }
         install(Compression) {
           gzip { priority = 1.0 }
@@ -111,54 +148,47 @@ class KSlides {
         }
 
         routing {
-          if (output.defaultHttpRoot.isNotBlank())
+
+          setupPlayground()
+
+          if (config.defaultHttpRoot.isNotBlank())
             static("/") {
-              staticBasePackage = output.defaultHttpRoot
+              staticBasePackage = config.defaultHttpRoot
               resources(".")
             }
 
-          output.kslides.staticRoots.forEach {
+          config.kslides.staticRoots.forEach {
             if (it.isNotBlank())
               static("/$it") {
                 resources(it)
               }
           }
 
-          output.kslides.presentationMap.forEach { (key, p) ->
+          config.kslides.presentationMap.forEach { (key, p) ->
             get(key) {
               respondWith {
-                generatePage(p)
+                generatePage(p, true)
               }
             }
           }
         }
-      }.start(wait = true)
+      }.start(wait = wait)
     }
 
-    internal fun writeToFileSystem(output: PresentationOutput) {
-      require(output.outputDir.isNotBlank()) { "outputDir value must not be empty" }
+    internal fun writePlaygroundFiles(config: OutputConfig, playgroundUrls: List<Pair<String, String>>) {
+      val root = config.outputDir.ensureSuffix("/")
+      val playground = config.playgroundDir.ensureSuffix("/")
+      val fullPath = "$root$playground"
+      // Create directory if missing
+      File(fullPath).mkdir()
 
-      val outputDir = output.outputDir
-      val srcPrefix = output.staticRootDir.ensureSuffix("/")
+      playgroundUrls.forEach { (filename, url) ->
+        val fullname = "$root$filename"
+        val content = includeUrl("http://0.0.0.0:${config.port}/$url", indentToken = "", escapeHtml = false)
 
-      File(outputDir).mkdir()
-      output.kslides.presentationMap
-        .forEach { (key, p) ->
-          val (file, prefix) =
-            when {
-              key == "/" -> File("$outputDir/index.html") to srcPrefix
-              key.endsWith(".html") -> File("$outputDir/$key") to srcPrefix
-              else -> {
-                val pathElems = "$outputDir/$key".split("/").filter { it.isNotEmpty() }
-                val path = pathElems.joinToString("/")
-                val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
-                File(path).mkdir()
-                File("$path/index.html") to "$dotDot$srcPrefix"
-              }
-            }
-          logger.info { "Writing presentation $key to $file" }
-          file.writeText(generatePage(p, prefix))
-        }
+        logger.info { "Writing playground content to: $root$filename" }
+        File(fullname).writeText(content)
+      }
     }
   }
 }
