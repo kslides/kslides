@@ -2,7 +2,9 @@ package com.kslides
 
 import com.github.pambrose.common.util.*
 import com.kslides.HtmlDslUtils.logger
+import com.kslides.Playground.otherNames
 import com.kslides.Playground.playgroundEndpoint
+import com.kslides.Playground.sourceName
 import kotlinx.html.*
 import mu.*
 
@@ -12,7 +14,7 @@ context(Presentation, SECTION)
     @KSlidesDslMarker
 fun playground(
   source: String,
-  additionalCode: String = "",
+  vararg otherSources: String = emptyArray(),
   block: PlaygroundConfig.() -> Unit = {},
 ) {
   val mergedConfig =
@@ -21,14 +23,18 @@ fun playground(
       .apply { merge(presentationConfig.playgroundConfig) }
       .apply { merge(PlaygroundConfig().also { block(it) }) }
 
-  val encSrc = source.encode()
-  val supp = additionalCode.encode()
-  val qs = mergedConfig.toQueryString()
+  val url =
+    buildString {
+      append("$playgroundEndpoint?")
+      append("$sourceName=${source.encode()}")
+      if (otherSources.isNotEmpty())
+        append("&$otherNames=${otherSources.joinToString(",").encode()}")
+      append(mergedConfig.toQueryString())
+    }
 
   iframe {
-    logger.info { "Query string: $qs" }
-    src = "$playgroundEndpoint?source=$encSrc&supp=$supp$qs"
-
+    logger.info { "Query string: $url" }
+    src = url
     mergedConfig.width.also { if (it.isNotEmpty()) width = it }
     mergedConfig.height.also { if (it.isNotEmpty()) height = it }
     mergedConfig.style.also { if (it.isNotEmpty()) style = it }

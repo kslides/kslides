@@ -500,7 +500,7 @@ for (lines in lineSeries("[5,6,9|5-9|]"))
         <section>
           <section>
             <h2>Kotlin Playground Support</h2>
-            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloWorld.kt&amp;supp=&amp;theme=darcula&amp;lines=true&amp;args=1+2+3" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloWorld.kt&amp;theme=darcula&amp;lines=true&amp;args=1+2+3" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -521,7 +521,7 @@ dslSlide {
           
           <section>
             <h2>Playground with Additional Code</h2>
-            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloCat.kt&amp;supp=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FCat.kt&amp;theme=idea&amp;lines=true" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FHelloPets.kt&amp;other=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FCat.kt%2Ckslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FDog.kt&amp;theme=idea&amp;lines=true" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -531,7 +531,11 @@ dslSlide {
 dslSlide {
   content {
     h2 { +"Playground with Additional Code" }
-    playground("$root/HelloCat.kt", "$root/Cat.kt") {
+    playground(
+      "$root/HelloPets.kt",
+      "$root/Cat.kt",
+      "$root/Dog.kt"
+    ) {
       theme = PlaygroundTheme.IDEA
     }
   }
@@ -542,7 +546,7 @@ dslSlide {
           
           <section>
             <h2>Playground Using JUnit</h2>
-            <iframe height="450px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FTestLambdas.kt&amp;supp=&amp;theme=darcula&amp;lines=true&amp;data-target-platform=junit" style="border:none;" width="100%"></iframe>
+            <iframe height="450px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FTestLambdas.kt&amp;theme=darcula&amp;lines=true&amp;data-target-platform=junit" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -564,7 +568,7 @@ dslSlide {
           
           <section>
             <h2>Playground Using Kotlin/JS</h2>
-            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FJsPlayground.txt&amp;supp=&amp;theme=idea&amp;lines=true&amp;data-target-platform=js&amp;data-js-libs=https%3A%2F%2Funpkg.com%2Fmoment%402" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="kotlin-file?source=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fplayground%2FJsPlayground.txt&amp;theme=idea&amp;lines=true&amp;data-target-platform=js&amp;data-js-libs=https%3A%2F%2Funpkg.com%2Fmoment%402" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -1887,7 +1891,11 @@ presentation {
     dslSlide {
       content {
         h2 { +"Playground with Additional Code" }
-        playground("$root/HelloCat.kt", "$root/Cat.kt") {
+        playground(
+          "$root/HelloPets.kt",
+          "$root/Cat.kt",
+          "$root/Dog.kt"
+        ) {
           theme = PlaygroundTheme.IDEA
         }
       }

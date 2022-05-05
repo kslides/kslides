@@ -2,7 +2,7 @@ package com.kslides
 
 import org.slf4j.event.*
 
-class PresentationOutput(val kslides: KSlides) {
+class OutputContext(val kslides: KSlides) {
   var enableFileSystem = false
   var outputDir = "docs"
   var staticRootDir = "revealjs"

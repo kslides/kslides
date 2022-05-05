@@ -269,7 +269,11 @@ fun main() {
         dslSlide {
           content {
             h2 { +"Playground with Additional Code" }
-            playground("$root/HelloCat.kt", "$root/Cat.kt") {
+            playground(
+              "$root/HelloPets.kt",
+              "$root/Cat.kt",
+              "$root/Dog.kt"
+            ) {
               theme = PlaygroundTheme.IDEA
             }
           }

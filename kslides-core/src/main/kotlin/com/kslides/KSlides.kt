@@ -51,23 +51,23 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
           }
       }
 
-      outputBlock(presentationOutput)
+      outputBlock(outputContext)
 
-      if (presentationOutput.enableFileSystem)
-        writeToFileSystem(presentationOutput)
+      if (outputContext.enableFileSystem)
+        writeToFileSystem(outputContext)
 
-      if (presentationOutput.enableHttp)
-        runHttpServer(presentationOutput)
+      if (outputContext.enableHttp)
+        runHttpServer(outputContext)
 
-      if (!presentationOutput.enableFileSystem && !presentationOutput.enableHttp)
+      if (!outputContext.enableFileSystem && !outputContext.enableHttp)
         KSlides.logger.warn { "Set enableHttp or enableFileSystem to true in the output block" }
     }
 
 class KSlides {
   internal val globalConfig = PresentationConfig(true)
-  internal val presentationOutput = PresentationOutput(this)
+  internal val outputContext = OutputContext(this)
   internal var configBlock: PresentationConfig.() -> Unit = {}
-  internal var outputBlock: PresentationOutput.() -> Unit = {}
+  internal var outputBlock: OutputContext.() -> Unit = {}
   internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
   internal val presentationMap = mutableMapOf<String, Presentation>()
   internal val presentations get() = presentationMap.values
@@ -88,7 +88,7 @@ class KSlides {
   }
 
   @KSlidesDslMarker
-  fun output(outputBlock: PresentationOutput.() -> Unit) {
+  fun output(outputBlock: OutputContext.() -> Unit) {
     this.outputBlock = outputBlock
   }
 
@@ -98,7 +98,7 @@ class KSlides {
   }
 
   companion object : KLogging() {
-    internal fun runHttpServer(output: PresentationOutput) {
+    internal fun runHttpServer(output: OutputContext) {
       val port = System.getenv("PORT")?.toInt() ?: output.httpPort
 
       embeddedServer(CIO, port = port) {
@@ -139,7 +139,7 @@ class KSlides {
       }.start(wait = true)
     }
 
-    internal fun writeToFileSystem(output: PresentationOutput) {
+    internal fun writeToFileSystem(output: OutputContext) {
       require(output.outputDir.isNotBlank()) { "outputDir value must not be empty" }
 
       val outputDir = output.outputDir
