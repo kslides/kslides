@@ -224,6 +224,7 @@ class Presentation(val kslides: KSlides) {
       if (s.style.isNotBlank())
         style = s.style
       s.processSlide(this)
+      s._section = this
       s._dslBlock(this)
       require(s._dslAssigned) { "dslSlide missing content { } section" }
     }.also { rawHtml("\n") }

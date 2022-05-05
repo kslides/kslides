@@ -3,6 +3,8 @@ package com.kslides
 import kotlinx.html.*
 
 interface DslSlide {
+  val presentation: Presentation
+  var _section: SECTION?
   val _slideName: String
   var _useHttp: Boolean
   var _dslAssigned: Boolean
@@ -15,8 +17,9 @@ interface DslSlide {
   var _dslBlock: SECTION.() -> Unit
 }
 
-class HorizontalDslSlide(presentation: Presentation, content: SlideArgs) : HorizontalSlide(presentation, content),
-  DslSlide {
+class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :
+  HorizontalSlide(presentation, content), DslSlide {
+  override var _section: SECTION? = null
   override var _dslBlock: SECTION.() -> Unit = { }
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
@@ -26,7 +29,7 @@ class HorizontalDslSlide(presentation: Presentation, content: SlideArgs) : Horiz
 
   @KSlidesDslMarker
   fun content(dslBlock: SECTION.() -> Unit) {
-    this._dslBlock = dslBlock
+    _dslBlock = dslBlock
     _dslAssigned = true
   }
 
@@ -35,8 +38,9 @@ class HorizontalDslSlide(presentation: Presentation, content: SlideArgs) : Horiz
     ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }
 
-class VerticalDslSlide(presentation: Presentation, content: SlideArgs) : VerticalSlide(presentation, content),
-  DslSlide {
+class VerticalDslSlide(override val presentation: Presentation, content: SlideArgs) :
+  VerticalSlide(presentation, content), DslSlide {
+  override var _section: SECTION? = null
   override var _dslBlock: SECTION.() -> Unit = { }
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
@@ -46,7 +50,7 @@ class VerticalDslSlide(presentation: Presentation, content: SlideArgs) : Vertica
 
   @KSlidesDslMarker
   fun content(dslBlock: SECTION.() -> Unit) {
-    this._dslBlock = dslBlock
+    _dslBlock = dslBlock
     _dslAssigned = true
   }
 

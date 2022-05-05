@@ -10,22 +10,22 @@ import mu.*
 
 object KSlidesDsl : KLogging()
 
-context(Presentation, DslSlide, SECTION)
-    @KSlidesDslMarker
-fun playground(
+//context(Presentation, DslSlide, SECTION)
+@KSlidesDslMarker
+fun DslSlide.playground(
   source: String,
   vararg otherSources: String = emptyArray(),
   block: PlaygroundConfig.() -> Unit = {},
 ) {
   val config =
     PlaygroundConfig()
-      .apply { merge(kslides.globalPresentationConfig.playgroundConfig) }
-      .apply { merge(presentationConfig.playgroundConfig) }
+      .apply { merge(presentation.kslides.globalPresentationConfig.playgroundConfig) }
+      .apply { merge(presentation.presentationConfig.playgroundConfig) }
       .apply { merge(PlaygroundConfig().also { block(it) }) }
 
   val buildUrl =
     buildString {
-      append(kslides.kslidesConfig.playgroundEndpoint)
+      append(presentation.kslides.kslidesConfig.playgroundEndpoint)
       append("?")
       append("$sourceName=${source.encode()}")
       if (otherSources.isNotEmpty())
@@ -34,17 +34,17 @@ fun playground(
     }
 
   if (!_useHttp)
-    kslides.playgroundUrls += _slideName to buildUrl
+    presentation.kslides.playgroundUrls += _slideName to buildUrl
 
   val url = if (_useHttp) buildUrl else _slideName
   logger.info { "Query string: $url" }
-  iframe {
+  _section?.iframe {
     src = url
     config.width.also { if (it.isNotBlank()) width = it }
     config.height.also { if (it.isNotBlank()) height = it }
     config.style.also { if (it.isNotBlank()) style = it }
     config.title.also { if (it.isNotBlank()) title = it }
-  }
+  } ?: error("playground{} must be called from within a content{}")
 }
 
 @HtmlTagMarker
