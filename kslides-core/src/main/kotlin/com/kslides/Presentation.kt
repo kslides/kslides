@@ -224,9 +224,9 @@ class Presentation(val kslides: KSlides) {
       if (s.style.isNotBlank())
         style = s.style
       s.processSlide(this)
-      s._section = this
+      s._section = this // TODO This is a hack that will go away when context receivers work
       s._dslBlock(this)
-      require(s._dslAssigned) { "dslSlide missing content { } section" }
+      require(s._dslAssigned) { "dslSlide missing content{} section" }
     }.also { rawHtml("\n") }
   }
 
@@ -261,7 +261,7 @@ class Presentation(val kslides: KSlides) {
       if (s.style.isNotBlank())
         style = s.style
       s.processSlide(this)
-      require(s._htmlAssigned) { "htmlSlide missing content { } section" }
+      require(s._htmlAssigned) { "htmlSlide missing content{} section" }
       s._htmlBlock()
         .indentInclude(s.indentToken)
         .let { if (!s.disableTrimIndent) it.trimIndent() else it }
@@ -312,7 +312,7 @@ class Presentation(val kslides: KSlides) {
         """
         ## $title    
         ```$language $linePattern
-        ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
+        ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
         """
       }
@@ -338,7 +338,7 @@ class Presentation(val kslides: KSlides) {
         """
         ## $title    
         ```$language $linePattern
-        ${includeFile(source, beginToken = "$token begin", endToken = "$token end")}
+        ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
         """
       }

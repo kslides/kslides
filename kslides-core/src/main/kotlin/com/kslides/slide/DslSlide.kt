@@ -4,7 +4,7 @@ import kotlinx.html.*
 
 interface DslSlide {
   val presentation: Presentation
-  var _section: SECTION?
+  var _section: SECTION? // TODO This is a hack that will go away when context receivers work
   val _slideName: String
   var _useHttp: Boolean
   var _dslAssigned: Boolean

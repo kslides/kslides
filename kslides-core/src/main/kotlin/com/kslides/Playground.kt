@@ -35,7 +35,7 @@ object Playground : KLogging() {
 
                 val path = params[sourceName] ?: throw IllegalArgumentException("Missing playground filename")
                 logger.info { "Including file: $path" }
-                +includeFile(path)
+                +include(path)
 
                 // other names are comma separated
                 (params[otherNames] ?: "")
@@ -46,7 +46,7 @@ object Playground : KLogging() {
                         .forEach { filename ->
                           logger.info { "Including additional file: $filename" }
                           textArea(classes = "hidden-dependency") {
-                            +this@code.includeFile(filename)
+                            +this@code.include(filename)
                           }
                         }
                   }

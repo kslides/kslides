@@ -1,5 +1,6 @@
 package com.kslides
 
+import com.kslides.Include.logger
 import kotlinx.html.*
 import mu.*
 import org.apache.commons.text.StringEscapeUtils.escapeHtml4
@@ -13,8 +14,8 @@ object Include : KLogging()
 private fun String.pad() = "\n$this\n"
 
 // Used within htmlSlide and markdownSlide
-fun includeFile(
-  path: String,
+fun include(
+  src: String,
   linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
@@ -24,98 +25,43 @@ fun includeFile(
   escapeHtml: Boolean = true,
 ) =
   try {
-    File("${System.getProperty("user.dir")}/$path")
-      .readLines()
-      .fromTo(beginToken, endToken, exclusive)
-      .toLineRanges(linePattern)
-      .fixIndents(indentToken, trimIndent, escapeHtml)
+    if (src.isUrl())
+      URL(src)
+        .readText()
+        .lines()
+        .fromTo(beginToken, endToken, exclusive)
+        .toLineRanges(linePattern)
+        .fixIndents(indentToken, trimIndent, escapeHtml)
+    else
+      File("${System.getProperty("user.dir")}/$src")
+        .readLines()
+        .fromTo(beginToken, endToken, exclusive)
+        .toLineRanges(linePattern)
+        .fixIndents(indentToken, trimIndent, escapeHtml)
   } catch (e: Exception) {
-    Include.logger.warn(e) { "Unable to read $path" }
+    logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
     ""
   }
 
 // When called from a code block, turn off indentToken and escaping
-fun CODE.includeFile(
+fun CODE.include(
   path: String,
   linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+) = include(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 // When called from a DslSlide, turn off indentToken and escaping
-fun HorizontalDslSlide.includeFile(
+fun DslSlide.include(
   path: String,
   linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
-
-// When called from a vertical DslSlide, turn off indentToken and escaping
-fun VerticalDslSlide.includeFile(
-  path: String,
-  linePattern: String = "",
-  beginToken: String = "",
-  endToken: String = "",
-  exclusive: Boolean = true,
-  trimIndent: Boolean = true,
-) = includeFile(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
-
-// Used within htmlSlide and markdownSlide
-fun includeUrl(
-  url: String,
-  linePattern: String = "",
-  beginToken: String = "",
-  endToken: String = "",
-  exclusive: Boolean = true,
-  trimIndent: Boolean = true,
-  indentToken: String = INDENT_TOKEN,
-  escapeHtml: Boolean = true,
-) =
-  try {
-    URL(url)
-      .readText()
-      .lines()
-      .fromTo(beginToken, endToken, exclusive)
-      .toLineRanges(linePattern)
-      .fixIndents(indentToken, trimIndent, escapeHtml)
-  } catch (e: Exception) {
-    Include.logger.warn(e) { "Unable to read $url" }
-    ""
-  }
-
-// When called from a code block, turn off indentToken and escaping
-fun CODE.includeUrl(
-  url: String,
-  linePattern: String = "",
-  beginToken: String = "",
-  endToken: String = "",
-  exclusive: Boolean = true,
-  trimIndent: Boolean = true,
-) = includeUrl(url, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
-
-// When called from a DslSlide, turn off indentToken and escaping
-fun HorizontalDslSlide.includeUrl(
-  url: String,
-  linePattern: String = "",
-  beginToken: String = "",
-  endToken: String = "",
-  exclusive: Boolean = true,
-  trimIndent: Boolean = true,
-) = includeUrl(url, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
-
-// When called from a vertical DslSlide, turn off indentToken and escaping
-fun VerticalDslSlide.includeUrl(
-  url: String,
-  linePattern: String = "",
-  beginToken: String = "",
-  endToken: String = "",
-  exclusive: Boolean = true,
-  trimIndent: Boolean = true,
-) = includeUrl(url, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+) = include(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 internal fun List<String>.fromTo(
   beginToken: String = "",

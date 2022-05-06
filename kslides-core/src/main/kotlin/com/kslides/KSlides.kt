@@ -193,9 +193,10 @@ class KSlides {
       File(fullPath).mkdir()
 
       playgroundUrls.forEach { (filename, url) ->
+        val prefix = config.kslides.kslidesConfig.playgroundHttpPrefix
+        val port = config.port
         val fullname = "$root$filename"
-        val content = includeUrl("http://0.0.0.0:${config.port}/$url", indentToken = "", escapeHtml = false)
-
+        val content = include("$prefix:$port/$url", indentToken = "", escapeHtml = false)
         logger.info { "Writing playground content to: $root$filename" }
         File(fullname).writeText(content)
       }

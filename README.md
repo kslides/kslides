@@ -205,8 +205,8 @@ filesystem presentations load from `/docs`.
 
 ### Code Slides
 Rather than embedding code directly in markdownSlides, it is much better to use the
-`includeCode()` and `includeUrl()` calls. You are likely to have space issues if you embed code directly,
-If you have to embed code, remove all indentation of the `content{}` block.
+`include()` call. You are likely to have space issues if you embed code directly,
+If you choose to embed code, remove all indentation in the `content{}` block.
 
 ### Local Development
 * Speaker Notes do not work properly when running locally.

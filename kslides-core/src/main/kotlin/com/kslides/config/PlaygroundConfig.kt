@@ -45,7 +45,7 @@ class PlaygroundConfig : AbstractConfig() {
       .map { if (it.isUpperCase()) "-${it.lowercaseChar()}" else it }
       .joinToString("")
 
-  fun toQueryString() =
+  internal fun toQueryString() =
     if (unmanagedValues.isNotEmpty())
       unmanagedValues
         .map { (k, v) ->

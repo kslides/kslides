@@ -258,7 +258,7 @@ val y = 1              // NO TAB
             ""${'"'}            
             ## Images Slide Description    
             ```kotlin []
-            includeFile(slides, beginToken = "image begin", endToken = "image end")
+            include(slides, beginToken = "image begin", endToken = "image end")
             ```
             ""${'"'}
           }
@@ -317,6 +317,17 @@ val y = 1              // NO TAB
         it[1] shouldContain "3"
         it[2] shouldContain "5"
       }
+    }
+
+    "URL Prefix Test" {
+      " HTTP://".isUrl() shouldBe true
+      " http://".isUrl() shouldBe true
+      " HTTPS://".isUrl() shouldBe true
+      " https://".isUrl() shouldBe true
+      " docs/something".isUrl() shouldBe false
+      "".isUrl() shouldBe false
+      " ".isUrl() shouldBe false
+      "http://0.0.0.0:8080/playground-file".isUrl() shouldBe true
     }
   }
 )

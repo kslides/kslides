@@ -78,7 +78,7 @@ fun main() {
         content {
           """
           <pre data-id="code-animation"><code data-trim="" data-line-numbers="">
-          ${includeFile("src/test/kotlin/examples/assign.js", linePattern = "4-9")}
+          ${include("src/test/kotlin/examples/assign.js", linePattern = "4-9")}
           </code></pre>
           """
         }
@@ -91,7 +91,7 @@ fun main() {
           """
           <pre data-id="code-animation">
           <code data-trim="" data-line-numbers="">
-          ${includeFile("src/test/kotlin/examples/assign.js")}
+          ${include("src/test/kotlin/examples/assign.js")}
           </code>
           </pre>
           """
@@ -144,7 +144,7 @@ fun main() {
           """
           # Java Code  
           ```java [3|4|5]
-          ${includeFile("src/test/kotlin/examples/HelloWorldJ.java")}
+          ${include("src/test/kotlin/examples/HelloWorldJ.java")}
           ```
           """
         }
@@ -165,7 +165,7 @@ fun main() {
           """
           # Markdown Example
           ```kotlin [3,7|4,6|5]
-          ${includeFile("src/test/kotlin/examples/HelloWorldK.kt")}
+          ${include("src/test/kotlin/examples/HelloWorldK.kt")}
           ```
           """
         }
@@ -176,7 +176,7 @@ fun main() {
           """
           # Markdown Example
           ````kotlin [3,7|4,6|5]
-          ${includeUrl(githubRawUrl("kslides", "kslides", "kslides-examples/src/test/kotlin/examples/HelloWorldK.kt"))}
+          ${include(githubRawUrl("kslides", "kslides", "kslides-examples/src/test/kotlin/examples/HelloWorldK.kt"))}
           ````
           """
         }

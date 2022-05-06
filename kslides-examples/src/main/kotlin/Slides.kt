@@ -172,7 +172,7 @@ fun main() {
             """
             ## Highlighted Code with a markdownSlide   
             ```kotlin [|3,7|4,6|5|4-6]
-            ${includeFile("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
+            ${include("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
             ```
             ### 👇 
             Note: This slide shows code highlights. You can specify the lines you want to highlight.
@@ -190,7 +190,7 @@ fun main() {
           content {
             h2 { +"Highlighted Code with a dslSlide" }
             val file = "kslides-examples/src/main/kotlin/examples/HelloWorldK.kt"
-            codeSnippet("kotlin", includeFile(file), "[|3,7|4,6|5|4-6]")
+            codeSnippet("kotlin", include(file), "[|3,7|4,6|5|4-6]")
             h2 { +"👇" }
             aside("notes") {
               +"This slide shows highlighted code. You can specify the lines you want to highlight."
@@ -212,7 +212,7 @@ fun main() {
             content {
               h2 { +"Animated Code with a dslSlide" }
               val file = "kslides-examples/src/main/kotlin/examples/assign.js"
-              codeSnippet("javascript", includeFile(file, lines), dataId = "code-animation")
+              codeSnippet("javascript", include(file, lines), dataId = "code-animation")
               h2 { +"👇" }
               aside("notes") {
                 +"This slide shows animated code highlights."
@@ -236,7 +236,7 @@ fun main() {
               <h2>Animated Code with an htmlSlide</h2>
               <pre data-id="code-animation" data-cc="false">
                 <code class="javascript" data-trim="" data-line-numbers="">
-                  ${includeFile("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+                  ${include("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
                 </code>
               </pre>
               <h2>👇</h2>
@@ -726,7 +726,7 @@ fun main() {
             p { +"Resizes text to be as large as possible within its container. 👇" }
             codeSnippet(
               "kotlin",
-              includeFile(slides, "3", beginToken = "ft1 begin", endToken = "ft1 end"),
+              include(slides, "3", beginToken = "ft1 begin", endToken = "ft1 end"),
               linePattern = "none",
             )
             p { +"or" }
@@ -769,7 +769,7 @@ fun main() {
             p { +"Makes an element as tall as possible while remaining within the slide bounds. 👇" }
             codeSnippet(
               "kotlin",
-              includeFile(slides, "3-7", beginToken = "stretch begin", endToken = "stretch end"),
+              include(slides, "3-7", beginToken = "stretch begin", endToken = "stretch end"),
               linePattern = "none",
             )
             p { +"or" }
@@ -812,7 +812,7 @@ fun main() {
             pre {
               code("kotlin") {
                 attributes["data-trim"] = "true"
-                +includeFile(slides, "3-21", beginToken = "stack1 begin", endToken = "stack1 end")
+                +include(slides, "3-21", beginToken = "stack1 begin", endToken = "stack1 end")
               }
             }
           }
@@ -856,7 +856,7 @@ fun main() {
             pre {
               code("kotlin") {
                 attributes["data-trim"] = "true"
-                +includeFile(slides, "3-8", beginToken = "hstack begin", endToken = "hstack end")
+                +include(slides, "3-8", beginToken = "hstack begin", endToken = "hstack end")
               }
             }
           }
@@ -887,7 +887,7 @@ fun main() {
             pre {
               code("kotlin") {
                 attributes["data-trim"] = "true"
-                +includeFile(slides, "3-8", beginToken = "vstack begin", endToken = "vstack end")
+                +include(slides, "3-8", beginToken = "vstack begin", endToken = "vstack end")
               }
             }
           }
