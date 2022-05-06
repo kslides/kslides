@@ -11,7 +11,7 @@ plugins {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.8.4'
+    version '0.8.5'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
@@ -79,24 +79,26 @@ subprojects {
 
     compileKotlin {
         kotlinOptions {
+            //useIR = true
             jvmTarget = '1.8'
-            languageVersion = '1.7'
-            apiVersion = '1.7'
+            //languageVersion = '1.7'
+            //apiVersion = '1.7'
             freeCompilerArgs += ['-Xbackend-threads=8',
-                                 '-Xcontext-receivers',
-                                 '-Xskip-prerelease-check',
+                                 //'-Xcontext-receivers',
+                                 //'-Xskip-prerelease-check',
             ]
         }
     }
 
     compileTestKotlin {
         kotlinOptions {
+            //useIR = true
             jvmTarget = '1.8'
-            languageVersion = '1.7'
-            apiVersion = '1.7'
+            //languageVersion = '1.7'
+            //apiVersion = '1.7'
             freeCompilerArgs += ['-Xbackend-threads=8',
-                                 '-Xcontext-receivers',
-                                 '-Xskip-prerelease-check',
+                                 //'-Xcontext-receivers',
+                                 //'-Xskip-prerelease-check',
             ]
         }
     }

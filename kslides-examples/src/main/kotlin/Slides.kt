@@ -7,6 +7,9 @@ fun main() {
 
   kslides {
 
+    kslidesConfig {
+    }
+
     val slides = "kslides-examples/src/main/kotlin/Slides.kt"
 
     output {
@@ -286,8 +289,13 @@ fun main() {
         dslSlide {
           content {
             h2 { +"Playground Using JUnit" }
+            small {
+              +"( Replace TODO() with: "
+              em { +"it%2==0" }
+              +" )"
+            }
             playground("$root/TestLambdas.kt") {
-              height = "450px"
+              height = "250px"
               dataTargetPlatform = TargetPlatform.JUNIT
             }
           }

@@ -3,26 +3,33 @@ package com.kslides
 import kotlinx.html.*
 
 interface DslSlide {
+  val presentation: Presentation
+  var _section: SECTION?
   val _slideName: String
   var _useHttp: Boolean
   var _dslAssigned: Boolean
-  // User-accessible
+
+  // User variables
   var style: String
+  var classes: String
 
   fun processSlide(section: SECTION)
+  var _dslBlock: SECTION.() -> Unit
 }
 
-class HorizontalDslSlide(presentation: Presentation, content: SlideArgs) : HorizontalSlide(presentation, content),
-  DslSlide {
-  internal var dslBlock: SECTION.(HorizontalDslSlide) -> Unit = { }
+class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :
+  HorizontalSlide(presentation, content), DslSlide {
+  override var _section: SECTION? = null
+  override var _dslBlock: SECTION.() -> Unit = { }
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
-  // User-accessible
+
+  // User variables
   override var style = ""
 
   @KSlidesDslMarker
-  fun content(dslBlock: SECTION.(HorizontalDslSlide) -> Unit) {
-    this.dslBlock = dslBlock
+  fun content(dslBlock: SECTION.() -> Unit) {
+    _dslBlock = dslBlock
     _dslAssigned = true
   }
 
@@ -31,17 +38,19 @@ class HorizontalDslSlide(presentation: Presentation, content: SlideArgs) : Horiz
     ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }
 
-class VerticalDslSlide(presentation: Presentation, content: SlideArgs) : VerticalSlide(presentation, content),
-  DslSlide {
-  internal var dslBlock: SECTION.(VerticalDslSlide) -> Unit = { }
+class VerticalDslSlide(override val presentation: Presentation, content: SlideArgs) :
+  VerticalSlide(presentation, content), DslSlide {
+  override var _section: SECTION? = null
+  override var _dslBlock: SECTION.() -> Unit = { }
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
-  // User-accessible
+
+  // User variables
   override var style = ""
 
   @KSlidesDslMarker
-  fun content(dslBlock: SECTION.(VerticalDslSlide) -> Unit) {
-    this.dslBlock = dslBlock
+  fun content(dslBlock: SECTION.() -> Unit) {
+    _dslBlock = dslBlock
     _dslAssigned = true
   }
 

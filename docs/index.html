@@ -546,7 +546,8 @@ dslSlide {
           
           <section>
             <h2>Playground Using JUnit</h2>
-            <iframe height="450px" src="playground/slide-65.html" style="border:none;" width="100%"></iframe>
+            <small>( Replace TODO() with: <em>it%2==0</em> )</small>
+            <iframe height="250px" src="playground/slide-65.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -556,8 +557,13 @@ dslSlide {
 dslSlide {
   content {
     h2 { +"Playground Using JUnit" }
+    small {
+      +"( Replace TODO() with: "
+      em { +"it%2==0" }
+      +" )"
+    }
     playground("$root/TestLambdas.kt") {
-      height = "450px"
+      height = "250px"
       dataTargetPlatform = TargetPlatform.JUNIT
     }
   }
@@ -1903,8 +1909,13 @@ presentation {
     dslSlide {
       content {
         h2 { +"Playground Using JUnit" }
+        small {
+          +"( Replace TODO() with: "
+          em { +"it%2==0" }
+          +" )"
+        }
         playground("$root/TestLambdas.kt") {
-          height = "450px"
+          height = "250px"
           dataTargetPlatform = TargetPlatform.JUNIT
         }
       }

@@ -31,7 +31,9 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
       kslidesBlock()
       require(presentationBlocks.isNotEmpty()) { "At least one presentation must be defined" }
 
-      configBlock(globalConfig)
+      kslidesConfigBlock(kslidesConfig)
+
+      globalPresentationConfigBlock(globalPresentationConfig)
 
       presentationBlocks.forEach { presentationBlock ->
         Presentation(this)
@@ -43,7 +45,7 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
             finalConfig =
               PresentationConfig()
                 .apply {
-                  mergeConfig(kslides.globalConfig)
+                  mergeConfig(kslides.globalPresentationConfig)
                   mergeConfig(presentationConfig)
                 }
 
@@ -54,7 +56,7 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
           }
       }
 
-      outputBlock(outputConfig)
+      outputConfigBlock(outputConfig)
 
       if (!outputConfig.enableFileSystem && !outputConfig.enableHttp)
         KSlides.logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} section" }
@@ -73,10 +75,12 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
     }
 
 class KSlides {
-  internal val globalConfig = PresentationConfig(true)
+  internal val kslidesConfig = KSlidesConfig()
+  internal val globalPresentationConfig = PresentationConfig(true)
   internal val outputConfig = OutputConfig(this)
-  internal var configBlock: PresentationConfig.() -> Unit = {}
-  internal var outputBlock: OutputConfig.() -> Unit = {}
+  internal var kslidesConfigBlock: KSlidesConfig.() -> Unit = {}
+  internal var globalPresentationConfigBlock: PresentationConfig.() -> Unit = {}
+  internal var outputConfigBlock: OutputConfig.() -> Unit = {}
   internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
   internal val presentationMap = mutableMapOf<String, Presentation>()
   internal val playgroundUrls = mutableListOf<Pair<String, String>>()
@@ -84,6 +88,7 @@ class KSlides {
   internal fun presentation(name: String) =
     presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
+  // User variables
   val staticRoots = mutableListOf("assets", "css", "dist", "js", "plugin", "revealjs")
   val css = AppendableString()
 
@@ -93,13 +98,18 @@ class KSlides {
   }
 
   @KSlidesDslMarker
+  fun kslidesConfig(block: KSlidesConfig.() -> Unit) {
+    kslidesConfigBlock = block
+  }
+
+  @KSlidesDslMarker
   fun presentationDefault(block: PresentationConfig.() -> Unit) {
-    configBlock = block
+    globalPresentationConfigBlock = block
   }
 
   @KSlidesDslMarker
   fun output(outputBlock: OutputConfig.() -> Unit) {
-    this.outputBlock = outputBlock
+    this.outputConfigBlock = outputBlock
   }
 
   @KSlidesDslMarker
@@ -149,7 +159,7 @@ class KSlides {
 
         routing {
 
-          setupPlayground()
+          setupPlayground(config.kslides)
 
           if (config.defaultHttpRoot.isNotBlank())
             static("/") {

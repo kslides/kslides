@@ -11,25 +11,23 @@ import kotlin.collections.set
 
 object Playground : KLogging() {
 
-  const val playgroundEndpoint = "kotlin-file"
-  const val dataSelector = "kotlin-code"
   const val sourceName = "source"
   const val otherNames = "other"
 
-  fun Routing.setupPlayground() {
-    get(playgroundEndpoint) {
+  fun Routing.setupPlayground(kslides: KSlides) {
+    get(kslides.kslidesConfig.playgroundEndpoint) {
       respondWith {
         document {
           append.html {
             head {
               script {
-                src = "https://unpkg.com/kotlin-playground@1"
-                attributes["data-selector"] = ".$dataSelector"
+                src = kslides.kslidesConfig.playgroundUrl
+                attributes["data-selector"] = ".${kslides.kslidesConfig.playgroundSelector}"
               }
             }
             body {
               val params = call.request.queryParameters
-              code(classes = dataSelector) {
+              code(classes = kslides.kslidesConfig.playgroundSelector) {
                 playgroundAttributes
                   .map { attrib -> attrib to (params[attrib] ?: "") }
                   .filter { it.second.isNotBlank() }
