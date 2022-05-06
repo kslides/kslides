@@ -63,9 +63,9 @@ class Presentation(val kslides: KSlides) {
       jsFiles += JsFile("plugin/math/math.js")
 
     if (finalConfig.enableCodeCopy) {
-      jsFiles += JsFile("plugin/copycode/copycode.js")
       // Required for copycode.js
-      jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js")
+      jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js")
+      jsFiles += JsFile("plugin/copycode/copycode.js")
     }
 
     if (finalConfig.enableMenu)
@@ -299,7 +299,7 @@ class Presentation(val kslides: KSlides) {
     source: String,
     token: String,
     title: String = "Slide Definition",
-    linePattern: String = "",
+    highlightPattern: String = "",
     id: String = "",
     language: String = "kotlin",
   ) {
@@ -311,7 +311,7 @@ class Presentation(val kslides: KSlides) {
       content {
         """
         ## $title    
-        ```$language $linePattern
+        ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
         """
@@ -325,7 +325,7 @@ class Presentation(val kslides: KSlides) {
     source: String,
     token: String,
     title: String = "Slide Definition",
-    linePattern: String = "[]",
+    highlightPattern: String = "[]",
     id: String = "",
     language: String = "kotlin",
   ) {
@@ -337,7 +337,7 @@ class Presentation(val kslides: KSlides) {
       content {
         """
         ## $title    
-        ```$language $linePattern
+        ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
         """

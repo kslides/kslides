@@ -57,6 +57,7 @@
 		</style>
     
     <style media="screen" type="text/css">
+		
         #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
         img[alt=slide] { width: 150px; }
@@ -285,8 +286,7 @@ markdownSlide {
         <section>
           <section>
             <h2>Highlighted Code with a dslSlide</h2>
-            <pre data-cc="true">
-              <code class="kotlin" data-line-numbers="|3,7|4,6|5|4-6" data-noescape="" data-trim="">
+            <pre><code class="kotlin" data-line-numbers="|3,7|4,6|5|4-6" data-noescape="" data-trim="">
 package examples
 
 fun main() {
@@ -324,8 +324,7 @@ dslSlide {
         <section>
           <section data-auto-animate="">
             <h2>Animated Code with a dslSlide</h2>
-            <pre data-cc="true" data-id="code-animation">
-              <code class="javascript" data-line-numbers="" data-noescape="" data-trim="">
+            <pre data-id="code-animation"><code class="javascript" data-line-numbers="" data-noescape="" data-trim="">
 let planets = [
     {name: 'mars', diameter: 6779},
 ];
@@ -337,8 +336,7 @@ let planets = [
           
           <section data-auto-animate="">
             <h2>Animated Code with a dslSlide</h2>
-            <pre data-cc="true" data-id="code-animation">
-              <code class="javascript" data-line-numbers="" data-noescape="" data-trim="">
+            <pre data-id="code-animation"><code class="javascript" data-line-numbers="" data-noescape="" data-trim="">
 let planets = [
     {name: 'mars', diameter: 6779},
     {name: 'earth', diameter: 12742},
@@ -352,8 +350,7 @@ let planets = [
           
           <section data-auto-animate="">
             <h2>Animated Code with a dslSlide</h2>
-            <pre data-cc="true" data-id="code-animation">
-              <code class="javascript" data-line-numbers="" data-noescape="" data-trim="">
+            <pre data-id="code-animation"><code class="javascript" data-line-numbers="" data-noescape="" data-trim="">
 let circumferenceReducer = (c, planet) =&gt; {
     return c + planet.diameter * Math.PI;
 };
@@ -377,7 +374,7 @@ let c = planets.reduce(circumferenceReducer, 0);
 ```kotlin []
 // A for loop generates a series of slides, each with a different set of lines
 // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-for (lines in lineSeries("[5,6,9|5-9|]"))
+for (lines in highlights("[5,6,9|5-9|]"))
   dslSlide {
     autoAnimate = true
     content {
@@ -401,8 +398,7 @@ for (lines in lineSeries("[5,6,9|5-9|]"))
             
             <h2>Animated Code with an htmlSlide</h2>
             
-            <pre data-cc="false" data-id="code-animation">
-                <code class="javascript" data-line-numbers="" data-trim="">
+            <pre data-cc="false" data-id="code-animation"><code class="javascript" data-line-numbers="" data-trim="">
     let planets = [
         {name: 'mars', diameter: 6779},
     ];
@@ -421,8 +417,7 @@ This slide shows animated code highlights.
             
             <h2>Animated Code with an htmlSlide</h2>
             
-            <pre data-cc="false" data-id="code-animation">
-                <code class="javascript" data-line-numbers="" data-trim="">
+            <pre data-cc="false" data-id="code-animation"><code class="javascript" data-line-numbers="" data-trim="">
     let planets = [
         {name: 'mars', diameter: 6779},
         {name: 'earth', diameter: 12742},
@@ -443,8 +438,7 @@ This slide shows animated code highlights.
             
             <h2>Animated Code with an htmlSlide</h2>
             
-            <pre data-cc="false" data-id="code-animation">
-                <code class="javascript" data-line-numbers="" data-trim="">
+            <pre data-cc="false" data-id="code-animation"><code class="javascript" data-line-numbers="" data-trim="">
     let circumferenceReducer = (c, planet) =&gt; {
         return c + planet.diameter * Math.PI;
     };
@@ -473,14 +467,13 @@ This slide shows animated code highlights.
 ```kotlin []
 // A for loop generates a series of slides, each with a different set of lines
 // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-for (lines in lineSeries("[5,6,9|5-9|]"))
+for (lines in highlights("[5,6,9|5-9|]"))
   htmlSlide {
     autoAnimate = true
     content {
       """
       <h2>Animated Code with an htmlSlide</h2>
-      <pre data-id="code-animation" data-cc="false">
-        <code class="javascript" data-trim="" data-line-numbers="">
+      <pre data-id="code-animation" data-cc="false"><code class="javascript" data-trim="" data-line-numbers="">
           ${include("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
         </code>
       </pre>
@@ -1017,10 +1010,12 @@ presentation {
         codeSnippet(
           "kotlin",
           include(slides, "3", beginToken = "ft1 begin", endToken = "ft1 end"),
-          linePattern = "none",
+          highlightPattern = "none",
+          copyButton = false
         )
         p { +"or" }
         pre {
+          attributes["data-cc"] = "false"
           code("html") {
             attributes["data-trim"] = ""
             h2("r-fit-text") { +"FIT" }
@@ -1060,10 +1055,12 @@ presentation {
         codeSnippet(
           "kotlin",
           include(slides, "3-7", beginToken = "stretch begin", endToken = "stretch end"),
-          linePattern = "none",
+          highlightPattern = "none",
+          copyButton = false,
         )
         p { +"or" }
         pre {
+          attributes["data-cc"] = "false"
           code("html") {
             attributes["data-trim"] = ""
             h2 { +"Stretch Example" }
@@ -1675,6 +1672,7 @@ markdownSlide {
 ## Presentation Definition    
 ```kotlin 
 presentation {
+
   css +=
     """
     #intro h1 { color: #FF5533; }
@@ -1826,7 +1824,7 @@ presentation {
     // animated1 begin
     // A for loop generates a series of slides, each with a different set of lines
     // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-    for (lines in lineSeries("[5,6,9|5-9|]"))
+    for (lines in highlights("[5,6,9|5-9|]"))
       dslSlide {
         autoAnimate = true
         content {
@@ -1848,14 +1846,13 @@ presentation {
     // animated2 begin
     // A for loop generates a series of slides, each with a different set of lines
     // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-    for (lines in lineSeries("[5,6,9|5-9|]"))
+    for (lines in highlights("[5,6,9|5-9|]"))
       htmlSlide {
         autoAnimate = true
         content {
           """
           <h2>Animated Code with an htmlSlide</h2>
-          <pre data-id="code-animation" data-cc="false">
-            <code class="javascript" data-trim="" data-line-numbers="">
+          <pre data-id="code-animation" data-cc="false"><code class="javascript" data-trim="" data-line-numbers="">
               ${include("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
             </code>
           </pre>
@@ -2319,7 +2316,7 @@ fun slideDefinition(
   source: String,
   token: String,
   title: String = "Slide Definition",
-  linePattern: String = "",
+  highlightPattern: String = "",
   id: String = "",
   language: String = "kotlin",
 ) {
@@ -2331,7 +2328,7 @@ fun slideDefinition(
     content {
       """
       ## $title    
-      ```$language $linePattern
+      ```$language $highlightPattern
       ${include(source, beginToken = "$token begin", endToken = "$token end")}
       ```
       """
@@ -2351,8 +2348,8 @@ fun slideDefinition(
 	<script src="revealjs/plugin/search/search.js"></script>
 	<script src="revealjs/plugin/markdown/markdown.js"></script>
 	<script src="revealjs/plugin/highlight/highlight.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
 	<script src="revealjs/plugin/copycode/copycode.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
 	<script src="revealjs/plugin/menu/menu.js"></script>
 
 	<script>
@@ -2377,3 +2374,4 @@ fun slideDefinition(
 </script>
   </body>
 </html>
+

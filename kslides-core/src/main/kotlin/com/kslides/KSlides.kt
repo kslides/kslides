@@ -2,6 +2,7 @@ package com.kslides
 
 import com.github.pambrose.common.response.*
 import com.github.pambrose.common.util.*
+import com.kslides.KSlides.Companion.logger
 import com.kslides.KSlides.Companion.runHttpServer
 import com.kslides.KSlides.Companion.writePlaygroundFiles
 import com.kslides.KSlides.Companion.writeToFileSystem
@@ -59,7 +60,7 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
       outputConfigBlock(outputConfig)
 
       if (!outputConfig.enableFileSystem && !outputConfig.enableHttp)
-        KSlides.logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} section" }
+        logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} section" }
 
       if (outputConfig.enableFileSystem)
         writeToFileSystem(outputConfig)

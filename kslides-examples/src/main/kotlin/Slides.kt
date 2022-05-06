@@ -10,8 +10,6 @@ fun main() {
     kslidesConfig {
     }
 
-    val slides = "kslides-examples/src/main/kotlin/Slides.kt"
-
     output {
       enableFileSystem = true
       enableHttp = true
@@ -53,8 +51,11 @@ fun main() {
       }
     }
 
+    val slides = "kslides-examples/src/main/kotlin/Slides.kt"
+
     // readme begin
     presentation {
+
       css +=
         """
         #intro h1 { color: #FF5533; }
@@ -206,7 +207,7 @@ fun main() {
         // animated1 begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (lines in lineSeries("[5,6,9|5-9|]"))
+        for (lines in highlights("[5,6,9|5-9|]"))
           dslSlide {
             autoAnimate = true
             content {
@@ -228,7 +229,7 @@ fun main() {
         // animated2 begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (lines in lineSeries("[5,6,9|5-9|]"))
+        for (lines in highlights("[5,6,9|5-9|]"))
           htmlSlide {
             autoAnimate = true
             content {
@@ -727,10 +728,12 @@ fun main() {
             codeSnippet(
               "kotlin",
               include(slides, "3", beginToken = "ft1 begin", endToken = "ft1 end"),
-              linePattern = "none",
+              highlightPattern = "none",
+              copyButton = false
             )
             p { +"or" }
             pre {
+              attributes["data-cc"] = "false"
               code("html") {
                 attributes["data-trim"] = ""
                 h2("r-fit-text") { +"FIT" }
@@ -770,10 +773,12 @@ fun main() {
             codeSnippet(
               "kotlin",
               include(slides, "3-7", beginToken = "stretch begin", endToken = "stretch end"),
-              linePattern = "none",
+              highlightPattern = "none",
+              copyButton = false,
             )
             p { +"or" }
             pre {
+              attributes["data-cc"] = "false"
               code("html") {
                 attributes["data-trim"] = ""
                 h2 { +"Stretch Example" }

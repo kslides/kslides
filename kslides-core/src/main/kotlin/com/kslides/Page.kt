@@ -8,6 +8,9 @@ import java.io.*
 
 internal object Page {
 
+  val preRegex = Regex("\\s*<pre.*>\\s*")
+  val codeRegex = Regex("\\s*<code.*>\\s*")
+
   fun generatePage(p: Presentation, useHttp: Boolean = true, prefix: String = "/"): String {
     val document =
       document {
@@ -20,24 +23,57 @@ internal object Page {
 
     // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
     val nodeList = document.getElementsByTagName("*")
-    (0..nodeList.length).forEach { i ->
-      val node = nodeList.item(i)
-      if (node.isNotNull()) {
-        if (node.nodeName == "section") {
-          node.attributes.getNamedItem("data-separator")?.apply {
-            nodeValue = nodeValue.replace("\n", "\\n")
-            nodeValue = nodeValue.replace("\r", "\\r")
-          }
+    (0..nodeList.length)
+      .forEach { i ->
+        val node = nodeList.item(i)
+        if (node.isNotNull()) {
+          if (node.nodeName == "section") {
+            node.attributes.getNamedItem("data-separator")?.apply {
+              nodeValue = nodeValue.replace("\n", "\\n")
+              nodeValue = nodeValue.replace("\r", "\\r")
+            }
 
-          node.attributes.getNamedItem("data-separator-vertical")?.apply {
-            nodeValue = nodeValue.replace("\n", "\\n")
-            nodeValue = nodeValue.replace("\r", "\\r")
+            node.attributes.getNamedItem("data-separator-vertical")?.apply {
+              nodeValue = nodeValue.replace("\n", "\\n")
+              nodeValue = nodeValue.replace("\r", "\\r")
+            }
           }
         }
       }
-    }
 
-    return document.serialize()
+    /*
+    This is a hack to fix a copycode issue: the <pre> and <code> tags must be on the same line
+    <pre>
+       <code>
+       </code>
+    </pre>
+
+    has to be transformed into:
+    <pre><code>
+       </code>
+    </pre>
+     */
+    return buildString {
+      var preFound = false
+      document
+        .serialize()
+        .lines()
+        .forEach {
+          when {
+            it.matches(preRegex) -> {
+              preFound = true
+              append(it)
+            }
+            preFound && it.matches(codeRegex) -> {
+              preFound = false
+              append("${it.trimStart()}\n")
+            }
+            else -> {
+              append("$it\n")
+            }
+          }
+        }
+    }
   }
 
   private fun HTML.generateHead(p: Presentation, config: PresentationConfig, srcPrefix: String) =
@@ -92,6 +128,7 @@ internal object Page {
         rawHtml("\n")
         style("text/css") {
           media = "screen"
+          rawHtml("\n\t\t")
           rawHtml(p.css.prependIndent("\t\t"))
         }
       }

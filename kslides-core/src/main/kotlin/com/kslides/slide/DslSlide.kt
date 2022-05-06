@@ -8,13 +8,13 @@ interface DslSlide {
   val _slideName: String
   var _useHttp: Boolean
   var _dslAssigned: Boolean
+  var _dslBlock: SECTION.() -> Unit
 
   // User variables
   var style: String
   var classes: String
 
   fun processSlide(section: SECTION)
-  var _dslBlock: SECTION.() -> Unit
 }
 
 class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :

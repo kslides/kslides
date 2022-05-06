@@ -25,19 +25,22 @@ fun include(
   escapeHtml: Boolean = true,
 ) =
   try {
-    if (src.isUrl())
+    if (src.isUrl()) {
       URL(src)
         .readText()
         .lines()
         .fromTo(beginToken, endToken, exclusive)
         .toLineRanges(linePattern)
         .fixIndents(indentToken, trimIndent, escapeHtml)
-    else
+    } else {
+      // Do not let queries wander outside of repo
+      if (src.contains("../")) throw IllegalArgumentException("Invalid filename: $src")
       File("${System.getProperty("user.dir")}/$src")
         .readLines()
         .fromTo(beginToken, endToken, exclusive)
         .toLineRanges(linePattern)
         .fixIndents(indentToken, trimIndent, escapeHtml)
+    }
   } catch (e: Exception) {
     logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
     ""

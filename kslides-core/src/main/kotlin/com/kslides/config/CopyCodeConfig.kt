@@ -1,7 +1,6 @@
 package com.kslides.config
 
 class CopyCodeConfig : AbstractConfig() {
-
   var copy by ConfigProperty<String>(unmanagedValues) // 'Copy'
   var copied by ConfigProperty<String>(unmanagedValues) // 'Copied'
 
