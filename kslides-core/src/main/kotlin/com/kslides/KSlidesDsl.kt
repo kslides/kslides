@@ -53,7 +53,7 @@ fun DslSlide.playground(
 fun FlowContent.codeSnippet(
   language: String,
   text: String,
-  linePattern: String = "",    // none will turn off line numbers
+  linePattern: String = "",    // "" turns on all lines, "none" turn off line numbers
   lineOffSet: Int = -1,
   dataId: String = "",         // For animation
   trim: Boolean = true,
@@ -73,8 +73,8 @@ fun FlowContent.codeSnippet(
       attributes["data-cc-copied"] = copyButtonMsg
 
     code(language.nullIfBlank()) {
-      if (linePattern.toLower() != "none")
-        attributes["data-line-numbers"] = linePattern
+      if (!linePattern.toLower().contains("none"))
+        attributes["data-line-numbers"] = linePattern.stripBraces()
       if (lineOffSet != -1)
         attributes["data-ln-start-from"] = lineOffSet.toString()
       if (trim)

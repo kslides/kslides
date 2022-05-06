@@ -157,4 +157,6 @@ fun <T> List<T>.permuteBy(vararg orders: List<Int>): Sequence<List<T>> =
 
 private val httpRegex = Regex("\\s*http[s]?://.*")
 
-fun String.isUrl()  = lowercase().matches(httpRegex)
+fun String.isUrl() = lowercase().matches(httpRegex)
+
+fun String.stripBraces() = trimStart().trimEnd().trimStart('[', '(').trimEnd(']', ')')

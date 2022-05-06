@@ -329,5 +329,11 @@ val y = 1              // NO TAB
       " ".isUrl() shouldBe false
       "http://0.0.0.0:8080/playground-file".isUrl() shouldBe true
     }
+
+    "stripBraces Test" {
+      " [123] ".stripBraces() shouldBe "123"
+      "[123]".stripBraces() shouldBe "123"
+      "123".stripBraces() shouldBe "123"
+    }
   }
 )
