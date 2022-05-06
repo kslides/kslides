@@ -36,15 +36,16 @@ fun DslSlide.playground(
   if (!_useHttp)
     presentation.kslides.playgroundUrls += _slideName to buildUrl
 
-  val url = if (_useHttp) buildUrl else _slideName
-  logger.info { "Query string: $url" }
-  _section?.iframe {
-    src = url
-    config.width.also { if (it.isNotBlank()) width = it }
-    config.height.also { if (it.isNotBlank()) height = it }
-    config.style.also { if (it.isNotBlank()) style = it }
-    config.title.also { if (it.isNotBlank()) title = it }
-  } ?: error("playground{} must be called from within a content{}")
+  if (_useHttp) buildUrl else _slideName.also { url ->
+    logger.debug { "Query string: $url" }
+    _section?.iframe {
+      src = url
+      config.width.also { if (it.isNotBlank()) width = it }
+      config.height.also { if (it.isNotBlank()) height = it }
+      config.style.also { if (it.isNotBlank()) style = it }
+      config.title.also { if (it.isNotBlank()) title = it }
+    } ?: error("playground{} must be called from within a content{}")
+  }
 }
 
 @HtmlTagMarker
