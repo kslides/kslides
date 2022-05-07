@@ -39,7 +39,7 @@ kslides {
 
   output {
     // Writes the presentation to a file
-    enableFilSystem = true
+    enableFileSystem = true
     // Serves up the presentation via HTTP
     enableHttp = true
   }

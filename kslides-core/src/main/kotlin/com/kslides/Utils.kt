@@ -136,9 +136,8 @@ internal fun String.toIntList() =
       }
   }
 
-fun highlights(highlightPattern: String) =
-  highlightPattern
-    .replace(whiteSpace, "")
+fun String.toLinePatterns() =
+  replace(whiteSpace, "")
     .trimStart('[', '(')
     .trimEnd(']', ')')
     .split("|")

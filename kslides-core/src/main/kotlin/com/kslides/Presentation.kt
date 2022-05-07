@@ -30,7 +30,7 @@ class Presentation(val kslides: KSlides) {
     require(path.removePrefix("/") !in kslides.staticRoots) { "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"" }
 
     (if (path.startsWith("/")) path else "/$path").also { adjustedPath ->
-      require(!kslides.presentationMap.containsKey(adjustedPath)) { "Presentation path already defined: \"$adjustedPath\"" }
+      require(!kslides.presentationMap.containsKey(adjustedPath)) { "Presentation with path already defined: \"$adjustedPath\"" }
       kslides.presentationMap[adjustedPath] = this
     }
   }
@@ -298,16 +298,13 @@ class Presentation(val kslides: KSlides) {
   fun slideDefinition(
     source: String,
     token: String,
-    title: String = "Slide Definition",
     highlightPattern: String = "",
+    title: String = "Slide Definition",
     id: String = "",
     language: String = "kotlin",
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
-      slideConfig {
-        markdownNotesSeparator = "^^"
-      }
       content {
         """
         ## $title    

@@ -44,7 +44,6 @@ fun main() {
       playgroundConfig {
         theme = PlaygroundTheme.DARCULA
         lines = true
-        //style = "border: 1px solid red;"
         style = "border:none;"
         width = "100%"
         height = "250px"
@@ -53,15 +52,21 @@ fun main() {
 
     val slides = "kslides-examples/src/main/kotlin/Slides.kt"
 
-    // readme begin
     presentation {
 
       css +=
         """
-        #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
         img[alt=slide] { width: 150px; }
         """
+
+      // Or use the Kotlin css DSL
+      // instead of #intro h1 { color: #FF5533; } use this:
+      css {
+        rule("#intro h1") {
+          color = Color("#FF5533")
+        }
+      }
 
       presentationConfig {
         // presentation-specific configurations
@@ -153,7 +158,7 @@ fun main() {
         // dslslide begin
         dslSlide {
           content {
-            h1 { +"A DSL Slide" }
+            h1 { +"An HTML DSL Slide" }
             h2 { +"👀" }
             p("fragment fade-right") { +"Press CTRL+Shift+F to search all the slides" }
             p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
@@ -192,7 +197,7 @@ fun main() {
             h2 { +"Highlighted Code with a dslSlide" }
             val file = "kslides-examples/src/main/kotlin/examples/HelloWorldK.kt"
             codeSnippet("kotlin", include(file), "[|3,7|4,6|5|4-6]")
-            h2 { +"👇" }
+            h3 { +"👇" }
             aside("notes") {
               +"This slide shows highlighted code. You can specify the lines you want to highlight."
             }
@@ -207,14 +212,14 @@ fun main() {
         // animated1 begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (lines in highlights("[5,6,9|5-9|]"))
+        for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
           dslSlide {
             autoAnimate = true
             content {
               h2 { +"Animated Code with a dslSlide" }
               val file = "kslides-examples/src/main/kotlin/examples/assign.js"
-              codeSnippet("javascript", include(file, lines), dataId = "code-animation")
-              h2 { +"👇" }
+              codeSnippet("javascript", include(file, linePattern), dataId = "code-animation")
+              h3 { +"👇" }
               aside("notes") {
                 +"This slide shows animated code highlights."
               }
@@ -229,7 +234,7 @@ fun main() {
         // animated2 begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (lines in highlights("[5,6,9|5-9|]"))
+        for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
           htmlSlide {
             autoAnimate = true
             content {
@@ -237,10 +242,10 @@ fun main() {
               <h2>Animated Code with an htmlSlide</h2>
               <pre data-id="code-animation" data-cc="false">
                 <code class="javascript" data-trim="" data-line-numbers="">
-                  ${include("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+                  ${include("kslides-examples/src/main/kotlin/examples/assign.js", linePattern)}
                 </code>
               </pre>
-              <h2>👇</h2>
+              <h3>👇</h3>
               <aside class="notes">
               This slide shows animated code highlights.
               </aside>
@@ -319,6 +324,21 @@ fun main() {
         // pg4 end
 
         slideDefinition(slides, "pg4")
+
+        // pg5 begin
+        dslSlide {
+          content {
+            h2 { +"Playground Support for other Languages" }
+            playground("kslides-examples/src/main/kotlin/examples/helloworld.html") {
+              theme = PlaygroundTheme.DARCULA
+              mode = PlaygroundMode.XML
+            }
+            p { +"Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C" }
+          }
+        }
+        // pg5 end
+
+        slideDefinition(slides, "pg5")
       }
 
       verticalSlides {
@@ -650,6 +670,8 @@ fun main() {
                         
             [Backgrounds](/backgrounds.html) 
 
+            [Multi-Columns](/multicols.html) 
+
             👇 ${fragment()}
 
             """
@@ -667,11 +689,11 @@ fun main() {
             """
             ## Presentation Navigation 🦊 
             
-            [Go to the 1st slide](#/intro) ${fragment()}
+            [Go to the previous slide](#/features) ${fragment()}
          
-            [Go to the 2nd slide](#/mdslide) ${fragment()}
+            [Go to the next slide](#/lastslide) ${fragment()}
             
-            [Go to the presentation definition slide](#/definition) ${fragment()}
+            [Go to the presentation source on GitHub](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt) ${fragment()}
             """
           }
         }
@@ -680,15 +702,19 @@ fun main() {
         slideDefinition(slides, "navigation")
       }
 
-      slideDefinition(slides, "readme", "Presentation Definition", id = "definition")
+      verticalSlides {
+        // slidedef begin
+        slideDefinition(
+          "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+          "slideDefinition",
+          title = "Slide Definition Source",
+          id = "lastslide"
+        )
+        // slidedef end
 
-      slideDefinition(
-        "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
-        "slideDefinition",
-        "Slide Source Definition"
-      )
+        slideDefinition(slides, "slidedef")
+      }
     }
-    // readme end
 
     presentation {
       path = "layouts.html"
@@ -1172,71 +1198,101 @@ fun main() {
     }
 
     presentation {
-      // Make this presentation available at helloworld.html
-      path = "helloworld.html"
 
-      // css styles can be specified as a string or with the kotlin css DSL
-      css +=
-        """
-        .htmlslide h2 {
-          color: yellow;
-        }
-        """
+      path = "multicols.html"
 
-      css {
-        rule("#mdslide h2") {
-          color = Color.green
-        }
-      }
-
-      // presentationConfig values are the default values for all slides in a presentation
       presentationConfig {
-        transition = Transition.FADE
-
-        // slideConfig values override the presentationDefault slideConfig values
-        slideConfig {
-          backgroundColor = "#2A9EEE"
-        }
+        topRightHref = "/#/features"
+        topRightTitle = "Go to main presentation"
+        topRightText = "🔙"
       }
 
-      // Slide that uses Markdown for content
-      markdownSlide {
-        id = "mdslide"
-
-        content {
-          """
-          # Markdown
-          ## Hello World
-          """
+      css += """
+        .column2 {
+          float: left;
+          width: 50%;
         }
-      }
+        
+        .column2 li {
+          margin-bottom:10px;
+        }
+        
+        /* Clear floats after the columns */
+        .row2:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
 
-      // Two vertical slides
+        .column3 {
+          float: left;
+          width: 33%;
+        }
+        
+        .column3 li {
+          margin-bottom:10px;
+        }
+        
+        /* Clear floats after the columns */
+        .row3:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+      """
+
       verticalSlides {
-        // Slide that uses HTML for content
-        htmlSlide {
-          classes = "htmlslide"
-
-          // slideConfig values override the presentationConfig slideConfig values
-          slideConfig {
-            backgroundColor = "red"
-          }
-
-          content {
-            """
-            <h1>HTML</h1>
-            <h2>Hello World</h2>
-            """
-          }
-        }
-
-        // Slide that uses the Kotlin HTML DSL for content
+        // 2col begin
         dslSlide {
           content {
-            h1 { +"DSL" }
-            h2 { +"Hello World" }
+            h2 { +"Two Column Slide"; style = "margin-bottom:20px;" }
+            div("row2") {
+              val fmt = "font-size:30px; padding-top:10px; list-style-type:circle;"
+              div("column2") {
+                p { +"Header 1"; style = "color: red;" }
+                unorderedList("Item 1", "Item 2", "Item 3", "Item 4") { style = fmt }
+              }
+              div("column2") {
+                p { +"Header 2"; style = "color: red;" }
+                unorderedList("Item 5", "Item 6", "Item 7", "Item 8") { style = fmt }
+              }
+            }
           }
         }
+        // 2col end
+
+        slideDefinition(slides, "2col")
+      }
+
+      verticalSlides {
+        // 3col begin
+        dslSlide {
+          content {
+            h2 { +"Three Column Slide" }
+            div("row3") {
+              val fmt = "font-size:30px; list-style-type:square;"
+              div("column3") {
+                p { +"Header 1"; style = "color: blue;" }
+                unorderedList("Item 1", "Item 2", "Item 3", "Item 4", "Item 5") {
+                  style = fmt
+                }
+              }
+              div("column3") {
+                p { +"Header 2"; style = "color: blue;" }
+                val col2Items = List(5) { "Item ${it + 6}" }
+                unorderedList(*col2Items.toTypedArray()) { style = fmt }
+              }
+              div("column3") {
+                p { +"Header 3"; style = "color: blue;" }
+                val col3Items = List(5) { "Item ${it + 11}" }
+                unorderedList(*col3Items.toTypedArray()) { style = fmt }
+              }
+            }
+          }
+        }
+        // 3col end
+
+        slideDefinition(slides, "3col")
       }
     }
   }

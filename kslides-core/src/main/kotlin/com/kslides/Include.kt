@@ -34,7 +34,7 @@ fun include(
         .fixIndents(indentToken, trimIndent, escapeHtml)
     } else {
       // Do not let queries wander outside of repo
-      if (src.contains("../")) throw IllegalArgumentException("Invalid filename: $src")
+      if (src.contains("../")) throw IllegalArgumentException("Illegal filename: $src")
       File("${System.getProperty("user.dir")}/$src")
         .readLines()
         .fromTo(beginToken, endToken, exclusive)

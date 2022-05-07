@@ -45,7 +45,7 @@ fun DslSlide.playground(
         config.height.also { if (it.isNotBlank()) height = it }
         config.style.also { if (it.isNotBlank()) style = it }
         config.title.also { if (it.isNotBlank()) title = it }
-      } ?: error("playground{} must be called from within a content{}")
+      } ?: error("playground{} must be called from within a content{} block")
     }
 }
 
@@ -106,6 +106,10 @@ inline fun LI.listHref(
 }
 
 @HtmlTagMarker
+inline fun DIV.unorderedList(items: List<String>, crossinline block: UL.() -> Unit = {}) =
+  unorderedList(*items.toTypedArray(), block = block)
+
+@HtmlTagMarker
 inline fun DIV.unorderedList(vararg items: String, crossinline block: UL.() -> Unit = {}) {
   val funcs: List<LI.() -> Unit> = items.map { { +it } }
   unorderedList(*funcs.toTypedArray(), block = block)
@@ -119,6 +123,10 @@ inline fun DIV.unorderedList(vararg items: LI.() -> Unit, crossinline block: UL.
       li { it() }
     }
   }
+
+@HtmlTagMarker
+inline fun DIV.orderedList(items: List<String>, crossinline block: OL.() -> Unit = {}) =
+  orderedList(*items.toTypedArray(), block = block)
 
 @HtmlTagMarker
 inline fun DIV.orderedList(vararg items: String, crossinline block: OL.() -> Unit = {}) {
@@ -136,6 +144,10 @@ inline fun DIV.orderedList(vararg items: LI.() -> Unit, crossinline block: OL.()
   }
 
 @HtmlTagMarker
+inline fun SECTION.unorderedList(items: List<String>, crossinline block: UL.() -> Unit = {}) =
+  unorderedList(*items.toTypedArray(), block = block)
+
+@HtmlTagMarker
 inline fun SECTION.unorderedList(vararg items: String, crossinline block: UL.() -> Unit = {}) {
   val funcs: List<LI.() -> Unit> = items.map { { +it } }
   unorderedList(*funcs.toTypedArray(), block = block)
@@ -149,6 +161,10 @@ inline fun SECTION.unorderedList(vararg items: LI.() -> Unit, crossinline block:
       li { it() }
     }
   }
+
+@HtmlTagMarker
+inline fun SECTION.orderedList(items: List<String>, crossinline block: OL.() -> Unit = {}) =
+  orderedList(*items.toTypedArray(), block = block)
 
 @HtmlTagMarker
 inline fun SECTION.orderedList(vararg items: String, crossinline block: OL.() -> Unit = {}) {

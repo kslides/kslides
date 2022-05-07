@@ -58,10 +58,13 @@
     
     <style media="screen" type="text/css">
 		
-        #intro h1 { color: #FF5533; }
         #mdslide p { color: #FF6836; }
         img[alt=slide] { width: 150px; }
-        </style>
+        #intro h1 {
+color: #FF5533;
+}
+
+</style>
   </head>
   <body>
     <div class="reveal">
@@ -215,7 +218,7 @@ htmlSlide {
         
         <section>
           <section>
-            <h1>A DSL Slide</h1>
+            <h1>An HTML DSL Slide</h1>
             <h2>&#128064;</h2>
             <p class="fragment fade-right">Press CTRL+Shift+F to search all the slides</p>
             <p class="fragment fade-right">Press Alt+click to zoom in on elements</p>
@@ -229,7 +232,7 @@ htmlSlide {
 ```kotlin []
 dslSlide {
   content {
-    h1 { +"A DSL Slide" }
+    h1 { +"An HTML DSL Slide" }
     h2 { +"👀" }
     p("fragment fade-right") { +"Press CTRL+Shift+F to search all the slides" }
     p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
@@ -296,7 +299,7 @@ fun main() {
 }
 </code>
             </pre>
-            <h2>&#128071;</h2>
+            <h3>&#128071;</h3>
             <aside class="notes">This slide shows highlighted code. You can specify the lines you want to highlight.</aside>
           </section>
           
@@ -309,7 +312,7 @@ dslSlide {
     h2 { +"Highlighted Code with a dslSlide" }
     val file = "kslides-examples/src/main/kotlin/examples/HelloWorldK.kt"
     codeSnippet("kotlin", include(file), "[|3,7|4,6|5|4-6]")
-    h2 { +"👇" }
+    h3 { +"👇" }
     aside("notes") {
       +"This slide shows highlighted code. You can specify the lines you want to highlight."
     }
@@ -330,7 +333,7 @@ let planets = [
 ];
 </code>
             </pre>
-            <h2>&#128071;</h2>
+            <h3>&#128071;</h3>
             <aside class="notes">This slide shows animated code highlights.</aside>
           </section>
           
@@ -344,7 +347,7 @@ let planets = [
 ];
 </code>
             </pre>
-            <h2>&#128071;</h2>
+            <h3>&#128071;</h3>
             <aside class="notes">This slide shows animated code highlights.</aside>
           </section>
           
@@ -364,7 +367,7 @@ let planets = [
 let c = planets.reduce(circumferenceReducer, 0);
 </code>
             </pre>
-            <h2>&#128071;</h2>
+            <h3>&#128071;</h3>
             <aside class="notes">This slide shows animated code highlights.</aside>
           </section>
           
@@ -374,14 +377,14 @@ let c = planets.reduce(circumferenceReducer, 0);
 ```kotlin []
 // A for loop generates a series of slides, each with a different set of lines
 // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-for (lines in highlights("[5,6,9|5-9|]"))
+for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
   dslSlide {
     autoAnimate = true
     content {
       h2 { +"Animated Code with a dslSlide" }
       val file = "kslides-examples/src/main/kotlin/examples/assign.js"
-      codeSnippet("javascript", include(file, lines), dataId = "code-animation")
-      h2 { +"👇" }
+      codeSnippet("javascript", include(file, linePattern), dataId = "code-animation")
+      h3 { +"👇" }
       aside("notes") {
         +"This slide shows animated code highlights."
       }
@@ -406,7 +409,7 @@ for (lines in highlights("[5,6,9|5-9|]"))
 
             </pre>
             
-            <h2>&#128071;</h2>
+            <h3>&#128071;</h3>
             
             <aside class="notes">
 This slide shows animated code highlights.
@@ -427,7 +430,7 @@ This slide shows animated code highlights.
 
             </pre>
             
-            <h2>&#128071;</h2>
+            <h3>&#128071;</h3>
             
             <aside class="notes">
 This slide shows animated code highlights.
@@ -454,7 +457,7 @@ This slide shows animated code highlights.
 
             </pre>
             
-            <h2>&#128071;</h2>
+            <h3>&#128071;</h3>
             
             <aside class="notes">
 This slide shows animated code highlights.
@@ -467,17 +470,17 @@ This slide shows animated code highlights.
 ```kotlin []
 // A for loop generates a series of slides, each with a different set of lines
 // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-for (lines in highlights("[5,6,9|5-9|]"))
+for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
   htmlSlide {
     autoAnimate = true
     content {
       """
       <h2>Animated Code with an htmlSlide</h2>
       <pre data-id="code-animation" data-cc="false"><code class="javascript" data-trim="" data-line-numbers="">
-          ${include("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
+          ${include("kslides-examples/src/main/kotlin/examples/assign.js", linePattern)}
         </code>
       </pre>
-      <h2>👇</h2>
+      <h3>👇</h3>
       <aside class="notes">
       This slide shows animated code highlights.
       </aside>
@@ -493,7 +496,7 @@ for (lines in highlights("[5,6,9|5-9|]"))
         <section>
           <section>
             <h2>Kotlin Playground Support</h2>
-            <iframe height="250px" src="playground/slide-61.html" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="playground/slide-60.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -514,7 +517,7 @@ dslSlide {
           
           <section>
             <h2>Playground with Additional Code</h2>
-            <iframe height="250px" src="playground/slide-63.html" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="playground/slide-62.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -540,7 +543,7 @@ dslSlide {
           <section>
             <h2>Playground Using JUnit</h2>
             <small>( Replace TODO() with: <em>it%2==0</em> )</small>
-            <iframe height="250px" src="playground/slide-65.html" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="playground/slide-64.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -567,7 +570,7 @@ dslSlide {
           
           <section>
             <h2>Playground Using Kotlin/JS</h2>
-            <iframe height="250px" src="playground/slide-67.html" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="playground/slide-66.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -582,6 +585,30 @@ dslSlide {
       dataTargetPlatform = TargetPlatform.JS
       dataJsLibs = "https://unpkg.com/moment@2"
     }
+  }
+}
+```
+</script>
+          </section>
+          
+          <section>
+            <h2>Playground Support for other Languages</h2>
+            <iframe height="250px" src="playground/slide-68.html" style="border:none;" width="100%"></iframe>
+            <p>Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C</p>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"Playground Support for other Languages" }
+    playground("kslides-examples/src/main/kotlin/examples/helloworld.html") {
+      theme = PlaygroundTheme.DARCULA
+      mode = PlaygroundMode.XML
+    }
+    p { +"Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C" }
   }
 }
 ```
@@ -932,6 +959,8 @@ dslSlide {
                     
         [Backgrounds](/backgrounds.html) 
 
+        [Multi-Columns](/multicols.html) 
+
         👇 ${fragment()}
 
         """
@@ -949,11 +978,11 @@ dslSlide {
         """
         ## Presentation Navigation 🦊 
         
-        [Go to the 1st slide](#/intro) ${fragment()}
+        [Go to the previous slide](#/features) ${fragment()}
      
-        [Go to the 2nd slide](#/mdslide) ${fragment()}
+        [Go to the next slide](#/lastslide) ${fragment()}
         
-        [Go to the presentation definition slide](#/definition) ${fragment()}
+        [Go to the presentation source on GitHub](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt) ${fragment()}
         """
       }
     }
@@ -962,15 +991,19 @@ dslSlide {
     slideDefinition(slides, "navigation")
   }
 
-  slideDefinition(slides, "readme", "Presentation Definition", id = "definition")
+  verticalSlides {
+    // slidedef begin
+    slideDefinition(
+      "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+      "slideDefinition",
+      title = "Slide Definition Source",
+      id = "lastslide"
+    )
+    // slidedef end
 
-  slideDefinition(
-    "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
-    "slideDefinition",
-    "Slide Source Definition"
-  )
+    slideDefinition(slides, "slidedef")
+  }
 }
-// readme end
 
 presentation {
   path = "layouts.html"
@@ -1595,6 +1628,8 @@ dslSlide {
             
 [Backgrounds](/backgrounds.html) 
 
+[Multi-Columns](/multicols.html) 
+
 👇 
               <!-- .element: class="fragment" -->
 
@@ -1617,6 +1652,8 @@ markdownSlide {
                 
     [Backgrounds](/backgrounds.html) 
 
+    [Multi-Columns](/multicols.html) 
+
     👇 ${fragment()}
 
     """
@@ -1633,13 +1670,13 @@ markdownSlide {
             <script type="text/template">
 ## Presentation Navigation 🦊 
 
-[Go to the 1st slide](#/intro) 
+[Go to the previous slide](#/features) 
               <!-- .element: class="fragment" -->
 
-[Go to the 2nd slide](#/mdslide) 
+[Go to the next slide](#/lastslide) 
               <!-- .element: class="fragment" -->
 
-[Go to the presentation definition slide](#/definition) 
+[Go to the presentation source on GitHub](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt) 
               <!-- .element: class="fragment" -->
 </script>
           </section>
@@ -1653,11 +1690,11 @@ markdownSlide {
     """
     ## Presentation Navigation 🦊 
     
-    [Go to the 1st slide](#/intro) ${fragment()}
+    [Go to the previous slide](#/features) ${fragment()}
  
-    [Go to the 2nd slide](#/mdslide) ${fragment()}
+    [Go to the next slide](#/lastslide) ${fragment()}
     
-    [Go to the presentation definition slide](#/definition) ${fragment()}
+    [Go to the presentation source on GitHub](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt) ${fragment()}
     """
   }
 }
@@ -1667,664 +1704,21 @@ markdownSlide {
           
         </section>
         
-        <section data-markdown="" id="definition">
-          <script type="text/template">
-## Presentation Definition    
-```kotlin 
-presentation {
-
-  css +=
-    """
-    #intro h1 { color: #FF5533; }
-    #mdslide p { color: #FF6836; }
-    img[alt=slide] { width: 150px; }
-    """
-
-  presentationConfig {
-    // presentation-specific configurations
-
-    slideConfig {
-      // defaults for slides
-    }
-
-    playgroundConfig {
-    }
-  }
-
-  verticalSlides {
-
-    // intro begin
-    markdownSlide {
-      id = "intro"
-
-      slideConfig {
-        // Config values for this slide can be set here
-        // backgroundColor = "#4370A5"
-      }
-
-      content {
-        """
-        # kslides
-        ![slide](images/slide-transparent.png)
-
-        ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
-        ### 👇
-        Notes: This is a note for the opening slide 📝
-        """
-      }
-    }
-    // intro end
-
-    slideDefinition(slides, "intro")
-  }
-
-  verticalSlides {
-    // mdslide begin
-    markdownSlide {
-      id = "mdslide"
-
-      content {
-        """
-        # A Markdown Slide
-        ## 🍒
-        
-        Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
-        
-        Press ESC to see the presentation overview ${fragment(Effect.FADE_LEFT)}
-                  
-        Press the down arrow to see the slide definition 👇 ${fragment(Effect.FADE_LEFT)}
-
-        Notes: This is a note for the Markdown slide 📝
-        """
-      }
-    }
-    // mdslide end
-
-    slideDefinition(slides, "mdslide")
-  }
-
-  verticalSlides {
-    // htmlslide begin
-    htmlSlide {
-      content {
-        """
-        <h1>An HTML Slide</h1>
-        <h2>🐦</h2>
-        <p class="fragment fade-up">Press S to see the speaker notes</p> 
-        <p class="fragment fade-up">Press M to see the menu</p> 
-        <p class="fragment fade-up">Press B or . to pause the presentation</p> 
-        <p class="fragment fade-up">Press the down arrow to see the slide definition 👇</p>
-
-        <aside class="notes">
-          This is a note for the HTML slide 📝
-        </aside>
-        """
-      }
-    }
-    // htmlslide end
-
-    slideDefinition(slides, "htmlslide")
-  }
-
-  verticalSlides {
-    // dslslide begin
-    dslSlide {
-      content {
-        h1 { +"A DSL Slide" }
-        h2 { +"👀" }
-        p("fragment fade-right") { +"Press CTRL+Shift+F to search all the slides" }
-        p("fragment fade-right") { +"Press Alt+click to zoom in on elements" }
-        p("fragment fade-right") { +"Press the down arrow to see the slide definition 👇" }
-        notes { +"This is a note for the DSL slide 📝" }
-      }
-    }
-    // dslslide end
-
-    slideDefinition(slides, "dslslide")
-  }
-
-  verticalSlides {
-    // highlights1 begin
-    markdownSlide {
-      content {
-        """
-        ## Highlighted Code with a markdownSlide   
-        ```kotlin [|3,7|4,6|5|4-6]
-        ${include("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
-        ```
-        ### 👇 
-        Note: This slide shows code highlights. You can specify the lines you want to highlight.
-        """
-      }
-    }
-    // highlights1 end
-
-    slideDefinition(slides, "highlights1")
-  }
-
-  verticalSlides {
-    // highlights2 begin
-    dslSlide {
-      content {
-        h2 { +"Highlighted Code with a dslSlide" }
-        val file = "kslides-examples/src/main/kotlin/examples/HelloWorldK.kt"
-        codeSnippet("kotlin", include(file), "[|3,7|4,6|5|4-6]")
-        h2 { +"👇" }
-        aside("notes") {
-          +"This slide shows highlighted code. You can specify the lines you want to highlight."
-        }
-      }
-    }
-    // highlights2 end
-
-    slideDefinition(slides, "highlights2")
-  }
-
-  verticalSlides {
-    // animated1 begin
-    // A for loop generates a series of slides, each with a different set of lines
-    // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-    for (lines in highlights("[5,6,9|5-9|]"))
-      dslSlide {
-        autoAnimate = true
-        content {
-          h2 { +"Animated Code with a dslSlide" }
-          val file = "kslides-examples/src/main/kotlin/examples/assign.js"
-          codeSnippet("javascript", include(file, lines), dataId = "code-animation")
-          h2 { +"👇" }
-          aside("notes") {
-            +"This slide shows animated code highlights."
-          }
-        }
-      }
-    // animated1 end
-
-    slideDefinition(slides, "animated1")
-  }
-
-  verticalSlides {
-    // animated2 begin
-    // A for loop generates a series of slides, each with a different set of lines
-    // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-    for (lines in highlights("[5,6,9|5-9|]"))
-      htmlSlide {
-        autoAnimate = true
-        content {
-          """
-          <h2>Animated Code with an htmlSlide</h2>
-          <pre data-id="code-animation" data-cc="false"><code class="javascript" data-trim="" data-line-numbers="">
-              ${include("kslides-examples/src/main/kotlin/examples/assign.js", lines)}
-            </code>
-          </pre>
-          <h2>👇</h2>
-          <aside class="notes">
-          This slide shows animated code highlights.
-          </aside>
-          """
-        }
-      }
-    // animated2 end
-
-    slideDefinition(slides, "animated2")
-  }
-
-  verticalSlides {
-
-    val root = "kslides-examples/src/main/kotlin/playground"
-
-    // pg1 begin
-    dslSlide {
-      content {
-        h2 { +"Kotlin Playground Support" }
-        playground("$root/HelloWorld.kt") {
-          args = "1 2 3"
-        }
-      }
-    }
-    // pg1 end
-
-    slideDefinition(slides, "pg1")
-
-    // pg2 begin
-    dslSlide {
-      content {
-        h2 { +"Playground with Additional Code" }
-        playground(
-          "$root/HelloPets.kt",
-          "$root/Cat.kt",
-          "$root/Dog.kt"
-        ) {
-          theme = PlaygroundTheme.IDEA
-        }
-      }
-    }
-    // pg2 end
-
-    slideDefinition(slides, "pg2")
-
-    // pg3 begin
-    dslSlide {
-      content {
-        h2 { +"Playground Using JUnit" }
-        small {
-          +"( Replace TODO() with: "
-          em { +"it%2==0" }
-          +" )"
-        }
-        playground("$root/TestLambdas.kt") {
-          height = "250px"
-          dataTargetPlatform = TargetPlatform.JUNIT
-        }
-      }
-    }
-    // pg3 end
-
-    slideDefinition(slides, "pg3")
-
-    // pg4 begin
-    dslSlide {
-      content {
-        h2 { +"Playground Using Kotlin/JS" }
-        playground("$root/JsPlayground.txt") {
-          theme = PlaygroundTheme.IDEA
-          dataTargetPlatform = TargetPlatform.JS
-          dataJsLibs = "https://unpkg.com/moment@2"
-        }
-      }
-    }
-    // pg4 end
-
-    slideDefinition(slides, "pg4")
-  }
-
-  verticalSlides {
-    // swapping begin
-    listOf("One", "Two", "Three", "Four", "👇")
-      .permuteBy(
-        listOf(0, 1, 4),
-        listOf(0, 1, 2),
-        listOf(0, 1, 2, 3),
-        listOf(1, 0, 3, 2),
-        listOf(1, 2, 0, 3),
-        listOf(1, 2, 3, 0),
-        listOf(0, 3, 2, 1),
-      )
-      .forEach { items ->
-        dslSlide {
-          autoAnimate = true
-          content {
-            h2 { +"Animated List Items" }
-            unorderedList(*items.toTypedArray())
-          }
-        }
-      }
-    // swapping end
-
-    slideDefinition(slides, "swapping")
-  }
-
-  verticalSlides {
-
-    dslSlide {
-      style = "height: 600px"
-      autoAnimate = true
-
-      content {
-        h4 {
-          attributes["data-id"] = "slidenum"
-          style = "opacity: 0.75;"
-          +"Slide 1"
-        }
-        h2 {
-          attributes["data-id"] = "title"
-          style = "margin-top: 250px;"
-          +"Animate Anything 👇"
-        }
-        div {
-          attributes["data-id"] = "1"
-          style = "background: cyan; position: absolute; top: 150px; left: 16%; width: 60px; height: 60px;"
-        }
-        div {
-          attributes["data-id"] = "2"
-          style = "background: magenta; position: absolute; top: 150px; left: 36%; width: 60px; height: 60px;"
-        }
-        div {
-          attributes["data-id"] = "3"
-          style = "background: yellow; position: absolute; top: 150px; left: 56%; width: 60px; height: 60px;"
-        }
-        div {
-          attributes["data-id"] = "4"
-          style = "background: red; position: absolute; top: 150px; left: 76%; width: 60px; height: 60px;"
-        }
-      }
-    }
-
-    dslSlide {
-      style = "height: 600px"
-      autoAnimate = true
-
-      content {
-        h4 {
-          attributes["data-id"] = "slidenum"
-          style = "opacity: 0.75;"
-          +"Slide 2"
-        }
-        h2 {
-          attributes["data-id"] = "title"
-          style = "margin-top: 450px"
-          +"With Auto Animate 👇"
-        }
-        div {
-          attributes["data-id"] = "1"
-          style = "background: cyan; position: absolute; bottom: 190px; left: 16%; width: 60px; height: 60px;"
-        }
-        div {
-          attributes["data-id"] = "2"
-          style = "background: magenta; position: absolute; bottom: 190px; left: 36%; width: 60px; height: 160px;"
-        }
-        div {
-          attributes["data-id"] = "3"
-          style = "background: yellow; position: absolute; bottom: 190px; left: 56%; width: 60px; height: 260px;"
-        }
-        div {
-          attributes["data-id"] = "4"
-          style = "background: red; position: absolute; bottom: 190px; left: 76%; width: 60px; height: 360px;"
-        }
-      }
-    }
-
-    dslSlide {
-      style = "height: 600px"
-      autoAnimate = true
-
-      content {
-        h4 {
-          attributes["data-id"] = "slidenum"
-          style = "opacity: 0.75;"
-          +"Slide 3"
-        }
-        h2 {
-          attributes["data-id"] = "title"
-          style = "margin-top: 500px; opacity: 0.5;"
-          +"With Auto Animate 👇"
-        }
-        div {
-          attributes["data-id"] = "1"
-          style =
-            "background: cyan; position: absolute; top: 50%; left: 50%; width: 400px; height: 400px; margin: -200px 0 0 -200px; border-radius: 400px;"
-        }
-        div {
-          attributes["data-id"] = "2"
-          style =
-            "background: magenta; position: absolute; top: 50%; left: 50%; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 400px;"
-        }
-        div {
-          attributes["data-id"] = "3"
-          style =
-            "background: yellow; position: absolute; top: 50%; left: 50%; width: 200px; height: 200px; margin: -100px 0 0 -100px; border-radius: 400px;"
-        }
-        div {
-          attributes["data-id"] = "4"
-          style =
-            "background: red; position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; margin: -50px 0 0 -50px; border-radius: 400px;"
-        }
-      }
-    }
-
-    dslSlide {
-      style = "height: 600px"
-      autoAnimate = true
-
-      content {
-        h4 {
-          attributes["data-id"] = "slidenum"
-          style = "opacity: 0.75;"
-          +"Slide 4"
-        }
-        h2 {
-          attributes["data-id"] = "title"
-          style = "margin-top: 300px; opacity: 0.25;"
-          +"With Auto Animate"
-        }
-        div {
-          attributes["data-id"] = "1"
-          style = "background: cyan; position: absolute; top: 250px; left: 16%; width: 60px; height: 60px;"
-        }
-        div {
-          attributes["data-id"] = "2"
-          style = "background: magenta; position: absolute; top: 250px; left: 36%; width: 60px; height: 60px;"
-        }
-        div {
-          attributes["data-id"] = "3"
-          style = "background: yellow; position: absolute; top: 250px; left: 56%; width: 60px; height: 60px;"
-        }
-        div {
-          attributes["data-id"] = "4"
-          style = "background: red; position: absolute; top: 250px; left: 76%; width: 60px; height: 60px;"
-        }
-      }
-    }
-  }
-
-  verticalSlides {
-    // tabular begin
-    dslSlide {
-      content {
-        h2 { +"Tables" }
-        table {
-          thead {
-            headRow("Item", "Value", "Quantity")
-          }
-          tbody {
-            bodyRow("Apples", "$1", "7")
-            bodyRow("Lemonade", "$2", "18")
-            // Or use the verbose form
-            tr {
-              td { +"Bread" }
-              td { +"$3" }
-              td { +"2" }
-            }
-          }
-        }
-      }
-    }
-    // tabular end
-
-    slideDefinition(slides, "tabular")
-  }
-
-  verticalSlides {
-    // iframe begin
-    dslSlide {
-      slideConfig {
-        backgroundIframe = "https://revealjs.com/backgrounds/#iframe-backgrounds"
-      }
-      content {
-        div {
-          style =
-            """
-              position: absolute; width: 40%; right: 0; 
-              box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); 
-              background-color: rgba(0, 0, 0, 0.9); 
-              color: #fff; 
-              padding: 20px; 
-              font-size: 20px; 
-              text-align: left;
-            """
-          h2 { +"Iframe Backgrounds" }
-          p {
-            +"""Since reveal.js runs on the web, you can easily embed other web content. Try interacting with the
-          page in the background."""
-          }
-        }
-      }
-    }
-    // iframe end
-
-    slideDefinition(slides, "iframe")
-  }
-
-  verticalSlides {
-    // transition begin
-    dslSlide {
-      id = "transitions"
-      content {
-        h2 { +"Transitions" }
-        p {
-          +"You can select from different transitions, like:"
-          br {}
-          // The Transition enum includes all the built-in transitions
-          Transition.values()
-            .forEachIndexed { index, transition ->
-              a { href = "?transition=${transition.name.toLower()}#/transitions"; +transition.name }
-              if (index < Transition.values().size - 1)
-                +"-"
-            }
-        }
-      }
-    }
-    // transition end
-
-    slideDefinition(slides, "transition")
-  }
-
-  verticalSlides {
-    // themes begin
-    dslSlide {
-      id = "themes"
-      content {
-        h2 { +"Themes" }
-        p {
-          +"reveal.js comes with some built-in themes:"
-          br {}
-          // The Theme enum includes all the built in themes
-          PresentationTheme.values()
-            .forEachIndexed { index, theme ->
-              a {
-                href = "#/themes"
-                onClick =
-                  "document.getElementById('theme').setAttribute('href','dist/theme/${theme.name.toLower()}.css'); return false;"
-                +theme.name
-              }
-              if (index < PresentationTheme.values().size - 1)
-                +"-"
-            }
-        }
-      }
-    }
-    // themes end
-
-    slideDefinition(slides, "themes")
-  }
-
-  verticalSlides {
-    // video1 begin
-    dslSlide {
-      slideConfig {
-        backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
-      }
-
-      content {
-        h1 { style = "color: red;"; +"Video Backgrounds" }
-      }
-    }
-    // video1 end
-
-    slideDefinition(slides, "video1")
-  }
-
-  verticalSlides {
-
-    // webcontent begin
-    dslSlide {
-      content {
-        h2 { +"Embedded Web Content" }
-        iframe {
-          src = "https://slides.com/news/auto-animate/embed"
-          height = "540"
-          width = "700"
-          style = "border:none;"
-        }
-      }
-    }
-    // webcontent end
-
-    slideDefinition(slides, "webcontent")
-  }
-
-  verticalSlides {
-    // other begin
-    markdownSlide {
-      id = "features"
-      content {
-        """
-        ## Other Features 🚡
-        
-        [Layouts](/layouts.html) 
-     
-        [Fragments](/fragments.html) 
-                    
-        [Backgrounds](/backgrounds.html) 
-
-        👇 ${fragment()}
-
-        """
-      }
-    }
-    // other end
-
-    slideDefinition(slides, "other")
-  }
-
-  verticalSlides {
-    // navigation begin
-    markdownSlide {
-      content {
-        """
-        ## Presentation Navigation 🦊 
-        
-        [Go to the 1st slide](#/intro) ${fragment()}
-     
-        [Go to the 2nd slide](#/mdslide) ${fragment()}
-        
-        [Go to the presentation definition slide](#/definition) ${fragment()}
-        """
-      }
-    }
-    // navigation end
-
-    slideDefinition(slides, "navigation")
-  }
-
-  slideDefinition(slides, "readme", "Presentation Definition", id = "definition")
-
-  slideDefinition(
-    "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
-    "slideDefinition",
-    "Slide Source Definition"
-  )
-}
-```
-</script>
-        </section>
-        
-        <section data-markdown="">
-          <script type="text/template">
-## Slide Source Definition    
-```kotlin 
+        <section>
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="" id="lastslide">
+            <script type="text/template">
+## Slide Definition Source    
+```kotlin []
 fun slideDefinition(
   source: String,
   token: String,
-  title: String = "Slide Definition",
   highlightPattern: String = "",
+  title: String = "Slide Definition",
   id: String = "",
   language: String = "kotlin",
 ) {
   markdownSlide {
     if (id.isNotBlank()) this.id = id
-    slideConfig {
-      markdownNotesSeparator = "^^"
-    }
     content {
       """
       ## $title    
@@ -2337,6 +1731,22 @@ fun slideDefinition(
 }
 ```
 </script>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+slideDefinition(
+  "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+  "slideDefinition",
+  title = "Slide Definition Source",
+  id = "lastslide"
+)
+```
+</script>
+          </section>
+          
         </section>
         
       </div>
