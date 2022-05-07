@@ -7,12 +7,13 @@
 
 **kslides** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com) 
 presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint. 
-It works particularly well for presentations with code snippets and slides
-authored in Markdown/HTML.
+It works particularly well for presentations with code snippets and animations. Slides are
+authored in [Markdown](https://www.markdownguide.org), [HTML](https://www.w3schools.com/html/), 
+or the Kotlin [HTML DSL](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started). 
 
 [![kslides screenshot](https://kslides.github.io/kslides/images/kslides-screenshot.png)](https://kslides.github.io/kslides/)
 
-The [above](kslides-examples/src/main/kotlin/Slides.kt) presentation is served statically from
+[This presentation](kslides-examples/src/main/kotlin/Slides.kt) is served statically from
 [Netlify](https://kslides.netlify.app)
 and [GitHub Pages](https://kslides.github.io/kslides/).
 It is also running dynamically on [Heroku](https://kslides-repo.herokuapp.com).
@@ -21,8 +22,8 @@ It is also running dynamically on [Heroku](https://kslides-repo.herokuapp.com).
 
 [![Template](https://img.shields.io/endpoint?color=%232A9EEE&logo=github&style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2Fkslides%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ftemplate.json)](https://github.com/kslides/kslides-template/generate)
 
-To create a kslides presentation, generate a new repository using [kslides-template](https://github.com/kslides/kslides-template)
-as a [template](https://github.com/kslides/kslides-template/generate). 
+To create a kslides presentation, generate a new repository using the [kslides-template](https://github.com/kslides/kslides-template)
+repo as a [template](https://github.com/kslides/kslides-template/generate). 
 
 The kslides-template [README.md](https://github.com/kslides/kslides-template/blob/master/README.md) describes how to generate 
 and publish slide content once you have created your new kslides repo.
@@ -30,43 +31,49 @@ and publish slide content once you have created your new kslides repo.
 ## Defining a Presentation
 
 A presentation is created using a [Kotlin DSL](https://medium.com/adobetech/building-elegant-dsls-with-kotlin-707726c5ed21). 
-Defining a presentation requires a minimal knowledge of Kotlin. 
+Defining a presentation requires a minimal knowledge of Kotlin. If you are comfortable with Python, Javascript or Java,
+you will have no problem with the Kotlin code. 
 
-The following _kslides_ definition can be seen [here](https://kslides.github.io/kslides/helloworld.html).
+The following _kslides_ definition generates [this presentation](https://kslides.github.io/kslides/helloworld.html).
 
 ```kotlin
-kslides {
+  kslides {
 
   output {
-    // Writes the presentation to a file
+    // Write the presentations to a file
     enableFileSystem = true
-    // Serves up the presentation via HTTP
+    // Serve up the presentations via HTTP
     enableHttp = true
+  }
+
+  // Default values for all presentations in this file
+  presentationDefault {
   }
 
   presentation {
     // Make this presentation available at helloworld.html
     path = "helloworld.html"
 
-    // css styles can be specified as a string or with the kotlin css DSL
+    // Specify css styles  as a string
     css +=
       """
-      .htmlslide h2 {
-        color: yellow;
-      }
-      """
-
+        .htmlslide h2 {
+          color: yellow;
+        }
+        """
+    // or with the kotlin css DSL
     css {
       rule("#mdslide h2") {
         color = Color.green
       }
     }
 
-    // presentationConfig values are the default values for all slides in a presentation
+    // Default values for all slides in this presentation
     presentationConfig {
       transition = Transition.FADE
+      topLeftHref = ""
+      topRightHref = ""
 
-      // slideConfig values override the presentationDefault slideConfig values
       slideConfig {
         backgroundColor = "#2A9EEE"
       }
@@ -78,28 +85,28 @@ kslides {
 
       content {
         """
-        # Markdown
-        ## Hello World
-        """
+          # Markdown
+          ## Hello World
+          """
       }
     }
 
-    // Two vertical slides
+    // Vertical section with two slides
     verticalSlides {
       // Slide that uses HTML for content
       htmlSlide {
         classes = "htmlslide"
 
-        // slideConfig values override the presentationConfig slideConfig values
+        // Slide-specific config values
         slideConfig {
           backgroundColor = "red"
         }
 
         content {
           """
-          <h1>HTML</h1>
-          <h2>Hello World</h2>
-          """
+            <h1>HTML</h1>
+            <h2>Hello World</h2>
+            """
         }
       }
 
@@ -115,19 +122,21 @@ kslides {
 }
 ```
 
-## Sections
+## Presentation Sections
 
 ### kslides
 
 A _kslides_ section contains:
-* an _output_ section
-* a _css_ section
-* a _presentationDefault_ section
-* and one or more _presentation_ sections
+* an optional `kslidesConfig{}` section
+* an optional `output{}` section
+* an optional `css{}` section
+* an optional `presentationDefault{}` section
+* one or more `presentation()` sections
 
 ```kotlin
 kslides {
-  output {}                 
+  kslidesConfig{}           // Optional
+  output {}                 // Optional
   css {}                    // Optional
   presentationDefault {}    // Optional
   presentation {}           // One or more presentations
@@ -206,7 +215,7 @@ filesystem presentations load from `/docs`.
 ### Code Slides
 Rather than embedding code directly in markdownSlides, it is much better to use the
 `include()` call. You are likely to have space issues if you embed code directly,
-If you choose to embed code, remove all indentation in the `content{}` block.
+If you choose to embed code, remove all indentation in the `content{}` section.
 
 ### Local Development
 * Speaker Notes do not work properly when running locally.

@@ -12,7 +12,7 @@ internal object Page {
   val codeRegex = Regex("\\s*<code.*>\\s*")
 
   fun generatePage(p: Presentation, useHttp: Boolean = true, prefix: String = "/"): String {
-    val document =
+    val htmldoc =
       document {
         val config = p.finalConfig
         append.html {
@@ -22,7 +22,7 @@ internal object Page {
       }
 
     // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
-    val nodeList = document.getElementsByTagName("*")
+    val nodeList = htmldoc.getElementsByTagName("*")
     (0..nodeList.length)
       .forEach { i ->
         val node = nodeList.item(i)
@@ -55,7 +55,7 @@ internal object Page {
      */
     return buildString {
       var preFound = false
-      document
+      htmldoc
         .serialize()
         .lines()
         .forEach {

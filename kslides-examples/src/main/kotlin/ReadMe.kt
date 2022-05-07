@@ -7,35 +7,40 @@ fun main() {
   kslides {
 
     output {
-      // Writes the presentation to a file
+      // Write the presentations to a file
       enableFileSystem = true
-      // Serves up the presentation via HTTP
+      // Serve up the presentations via HTTP
       enableHttp = true
+    }
+
+    // Default values for all presentations in this file
+    presentationDefault {
     }
 
     presentation {
       // Make this presentation available at helloworld.html
       path = "helloworld.html"
 
-      // css styles can be specified as a string or with the kotlin css DSL
+      // Specify css styles  as a string
       css +=
         """
         .htmlslide h2 {
           color: yellow;
         }
         """
-
+      // or with the kotlin css DSL
       css {
         rule("#mdslide h2") {
           color = Color.green
         }
       }
 
-      // presentationConfig values are the default values for all slides in a presentation
+      // Default values for all slides in this presentation
       presentationConfig {
         transition = Transition.FADE
+        topLeftHref = ""
+        topRightHref = ""
 
-        // slideConfig values override the presentationDefault slideConfig values
         slideConfig {
           backgroundColor = "#2A9EEE"
         }
@@ -53,13 +58,13 @@ fun main() {
         }
       }
 
-      // Two vertical slides
+      // Vertical section with two slides
       verticalSlides {
         // Slide that uses HTML for content
         htmlSlide {
           classes = "htmlslide"
 
-          // slideConfig values override the presentationConfig slideConfig values
+          // Slide-specific config values
           slideConfig {
             backgroundColor = "red"
           }
