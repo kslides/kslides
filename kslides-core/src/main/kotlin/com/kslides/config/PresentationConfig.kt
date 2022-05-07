@@ -32,10 +32,12 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   var enableCodeCopy by ConfigProperty<Boolean>(managedValues)
   var enableMenu by ConfigProperty<Boolean>(managedValues)
   var topLeftHref by ConfigProperty<String>(managedValues)
+  var topLeftTarget by ConfigProperty<HrefTarget>(managedValues)
   var topLeftTitle by ConfigProperty<String>(managedValues)
   var topLeftSvg by ConfigProperty<String>(managedValues)
   var topLeftText by ConfigProperty<String>(managedValues)
   var topRightHref by ConfigProperty<String>(managedValues)
+  var topRightTarget by ConfigProperty<HrefTarget>(managedValues)
   var topRightTitle by ConfigProperty<String>(managedValues)
   var topRightSvg by ConfigProperty<String>(managedValues)
   var topRightText by ConfigProperty<String>(managedValues)
@@ -77,6 +79,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       enableMenu = false
 
       topLeftHref = ""
+      topLeftTarget = HrefTarget.BLANK
       topLeftTitle = "View source on Github"
       topLeftSvg =
         """
@@ -87,6 +90,7 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
       topLeftText = ""
 
       topRightHref = ""
+      topRightTarget = HrefTarget.SELF
       topLeftTitle = ""
       topRightSvg = ""
       topRightText = ""

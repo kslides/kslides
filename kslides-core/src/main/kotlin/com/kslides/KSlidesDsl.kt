@@ -93,12 +93,12 @@ fun FlowContent.codeSnippet(
 inline fun LI.listHref(
   url: String,
   text: String = "",
+  target: HrefTarget = HrefTarget.SELF,
   classes: String = "",
-  newWindow: Boolean = false,
   crossinline block: A.() -> Unit = {}
 ) {
   a(classes = classes.nullIfBlank()) {
-    if (newWindow) target = "_blank"
+    if (target != HrefTarget.SELF) this.target = target.htmlVal
     href = url
     block()
     +(text.ifBlank { url })

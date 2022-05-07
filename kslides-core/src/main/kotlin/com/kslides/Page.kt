@@ -138,7 +138,7 @@ internal object Page {
     body {
       div("reveal") {
         if (config.topLeftHref.isNotBlank()) {
-          a(href = config.topLeftHref, target = "_blank", classes = "top-left") {
+          a(href = config.topLeftHref, target = config.topLeftTarget.htmlVal, classes = "top-left") {
             if (config.topLeftTitle.isNotBlank())
               title = config.topLeftTitle
             if (config.topLeftSvg.isNotBlank())
@@ -150,7 +150,7 @@ internal object Page {
 
         if (config.topRightHref.isNotBlank()) {
           rawHtml("\n\t\t\t")
-          a(href = config.topRightHref, classes = "top-right") {
+          a(href = config.topRightHref, target = config.topRightTarget.htmlVal, classes = "top-right") {
             if (config.topRightTitle.isNotBlank())
               title = config.topRightTitle
             if (config.topRightSvg.isNotBlank())

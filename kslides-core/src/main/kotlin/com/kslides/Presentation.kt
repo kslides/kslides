@@ -131,7 +131,7 @@ class Presentation(val kslides: KSlides) {
             // for both http and the filesystem. Without resetting the slide context, you will end up with double the slides
             vcontext.resetContext()
             block(vcontext)
-            section(classes = vcontext.classes.nullIfBlank()) {
+            section(vcontext.classes.nullIfBlank()) {
               vcontext.id.also { if (it.isNotBlank()) id = it }
 
               // Apply config items for all the slides in the vertical slide
@@ -169,7 +169,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as HortizontalMarkdownSlide).also { s ->
           slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
+          section(s.classes.nullIfBlank()) {
             s.processSlide(this)
             require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
 
@@ -193,7 +193,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as VerticalMarkdownSlide).also { s ->
           slideContent(s)
-          section(classes = s.classes.nullIfBlank()) {
+          section(s.classes.nullIfBlank()) {
             s.processSlide(this)
             require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
             // If this value is == "" it means read content inline
@@ -220,7 +220,7 @@ class Presentation(val kslides: KSlides) {
     }.also { verticalSlides += it }
 
   private fun DIV.processDsl(s: DslSlide) {
-    section(classes = s.classes.nullIfBlank()) {
+    section(s.classes.nullIfBlank()) {
       if (s.style.isNotBlank())
         style = s.style
       s.processSlide(this)
@@ -257,7 +257,7 @@ class Presentation(val kslides: KSlides) {
     }.also { verticalSlides += it }
 
   private fun DIV.processHtml(s: HtmlSlide) {
-    section(classes = s.classes.nullIfBlank()) {
+    section(s.classes.nullIfBlank()) {
       if (s.style.isNotBlank())
         style = s.style
       s.processSlide(this)

@@ -27,7 +27,7 @@ object Playground : KLogging() {
             }
             body {
               val params = call.request.queryParameters
-              code(classes = kslides.kslidesConfig.playgroundSelector) {
+              code(kslides.kslidesConfig.playgroundSelector) {
                 playgroundAttributes
                   .map { attrib -> attrib to (params[attrib] ?: "") }
                   .filter { it.second.isNotBlank() }

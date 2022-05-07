@@ -629,7 +629,7 @@ fun main() {
           }
 
           content {
-            h1 { style = "color: red;"; +"Video Backgrounds" }
+            h1 { +"Video Backgrounds"; style = "color: red;" }
           }
         }
         // video1 end

@@ -76,3 +76,9 @@ enum class PlaygroundMode(s: String = "") {
 enum class Crosslink {
   ENABLED, DISABLED
 }
+
+enum class HrefTarget {
+  SELF, BLANK, PARENT, TOP;
+
+  val htmlVal get() = "_${name.lowercase()}"
+}
