@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script data-selector=".kotlin-code" src="https://unpkg.com/kotlin-playground@1"></script>
+  </head>
+  <body>
+    <code class="kotlin-code" lines="true" theme="idea">
+package playground
+
+fun main(args: Array&lt;String&gt;) {
+  //sampleStart
+  val cat = Cat("Kitty")
+  val dog = Dog("Fido")
+  println("Hello ${cat.name} and ${dog.name} ")
+  //sampleEnd
+}
+<textarea class="hidden-dependency">
+package playground
+
+class Cat(val name: String)
+</textarea><textarea class="hidden-dependency">
+package playground
+
+class Dog(val name: String)
+</textarea></code>
+  </body>
+</html>

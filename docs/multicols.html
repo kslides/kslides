@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K"></script>
+	<script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date()); 
+              gtag('config', 'G-TRY2Q243XC');
+            </script>
+
+    <link href="revealjs/dist/reveal.css" rel="stylesheet">
+    <link href="revealjs/dist/reset.css" rel="stylesheet">
+    <link href="revealjs/dist/theme/solarized.css" id="theme" rel="stylesheet">
+    <link href="revealjs/plugin/highlight/monokai.css" id="highlight-theme" rel="stylesheet">
+    <link href="revealjs/plugin/copycode/copycode.css" rel="stylesheet">
+    
+    <style media="screen" type="text/css">		/* These CSS settings are embedded directly in the presentation html */
+		
+		/* This prevents auto-capitalization of headers */
+		.reveal h1,
+		.reveal h2,
+		.reveal h3,
+		.reveal h4,
+		.reveal h5,
+		.reveal h6 {
+		    text-transform: none;
+		}
+		
+		a.top-left {
+		    position: absolute;
+		    z-index: 1;
+		    width: clamp(50px, 8vmax, 80px);
+		    line-height: 0;
+		    color: rgba(255, 255, 255, 0.5);
+		}
+		
+		a.top-left path {
+		    fill: #258bd2;
+		}
+		
+		a.top-left:hover {
+		    color: white;
+		}
+		
+		a.top-right {
+		    position: absolute;
+		    top: 15px;
+		    right: 15px;
+		    z-index: 1;
+		}
+		</style>
+    
+    <style media="screen" type="text/css">
+		
+        .column2 {
+          float: left;
+          width: 50%;
+        }
+        
+        .column2 li {
+          margin-bottom:10px;
+        }
+        
+        /* Clear floats after the columns */
+        .row2:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+
+        .column3 {
+          float: left;
+          width: 33%;
+        }
+        
+        .column3 li {
+          margin-bottom:10px;
+        }
+        
+        /* Clear floats after the columns */
+        .row3:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+      </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <a class="top-left" href="https://github.com/kslides/kslides/" target="_blank" title="View presentation source on Github">
+          
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
+                      
+          <path d="M27.5 11.2a16.3 16.3 0 0 0-5.1 31.7c.8.2 1.1-.3 1.1-.7v-2.8c-4.5 1-5.5-2.2-5.5-2.2-.7-1.9-1.8-2.4-1.8-2.4-1.5-1 .1-1 .1-1 1.6.1 2.5 1.7 2.5 1.7 1.5 2.5 3.8 1.8 4.7 1.4.2-1 .6-1.8 1-2.2-3.5-.4-7.3-1.8-7.3-8 0-1.8.6-3.3 1.6-4.4-.1-.5-.7-2.1.2-4.4 0 0 1.4-.4 4.5 1.7a15.6 15.6 0 0 1 8.1 0c3.1-2 4.5-1.7 4.5-1.7.9 2.3.3 4 .2 4.4 1 1 1.6 2.6 1.6 4.3 0 6.3-3.8 7.7-7.4 8 .6.6 1.1 1.6 1.1 3v4.6c0 .4.3.9 1.1.7a16.3 16.3 0 0 0-5.2-31.7" fill="currentColor" stroke="none"></path>
+                    
+        </svg>
+                </a>
+			<a class="top-right" href="/#/features" title="Go to main presentation">&#128281;</a>
+
+      <div class="slides">
+        <section>
+          <section>
+            <h2 style="margin-bottom:20px;">Two Column Slide</h2>
+            <div class="row2">
+              <div class="column2">
+                <p style="color: red;">Header 1</p>
+                <ul style="font-size:30px; padding-top:10px; list-style-type:circle;">
+                  <li>Item 1</li>
+                  <li>Item 2</li>
+                  <li>Item 3</li>
+                  <li>Item 4</li>
+                </ul>
+              </div>
+              <div class="column2">
+                <p style="color: red;">Header 2</p>
+                <ul style="font-size:30px; padding-top:10px; list-style-type:circle;">
+                  <li>Item 5</li>
+                  <li>Item 6</li>
+                  <li>Item 7</li>
+                  <li>Item 8</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"Two Column Slide"; style = "margin-bottom:20px;" }
+    div("row2") {
+      val fmt = "font-size:30px; padding-top:10px; list-style-type:circle;"
+      div("column2") {
+        p { +"Header 1"; style = "color: red;" }
+        unorderedList("Item 1", "Item 2", "Item 3", "Item 4") { style = fmt }
+      }
+      div("column2") {
+        p { +"Header 2"; style = "color: red;" }
+        unorderedList("Item 5", "Item 6", "Item 7", "Item 8") { style = fmt }
+      }
+    }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section>
+            <h2>Three Column Slide</h2>
+            <div class="row3">
+              <div class="column3">
+                <p style="color: blue;">Header 1</p>
+                <ul style="font-size:30px; list-style-type:square;">
+                  <li>Item 1</li>
+                  <li>Item 2</li>
+                  <li>Item 3</li>
+                  <li>Item 4</li>
+                  <li>Item 5</li>
+                </ul>
+              </div>
+              <div class="column3">
+                <p style="color: blue;">Header 2</p>
+                <ul style="font-size:30px; list-style-type:square;">
+                  <li>Item 6</li>
+                  <li>Item 7</li>
+                  <li>Item 8</li>
+                  <li>Item 9</li>
+                  <li>Item 10</li>
+                </ul>
+              </div>
+              <div class="column3">
+                <p style="color: blue;">Header 3</p>
+                <ul style="font-size:30px; list-style-type:square;">
+                  <li>Item 11</li>
+                  <li>Item 12</li>
+                  <li>Item 13</li>
+                  <li>Item 14</li>
+                  <li>Item 15</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"Three Column Slide" }
+    div("row3") {
+      val fmt = "font-size:30px; list-style-type:square;"
+      div("column3") {
+        p { +"Header 1"; style = "color: blue;" }
+        unorderedList("Item 1", "Item 2", "Item 3", "Item 4", "Item 5") {
+          style = fmt
+        }
+      }
+      div("column3") {
+        p { +"Header 2"; style = "color: blue;" }
+        val col2Items = List(5) { "Item ${it + 6}" }
+        unorderedList(*col2Items.toTypedArray()) { style = fmt }
+      }
+      div("column3") {
+        p { +"Header 3"; style = "color: blue;" }
+        val col3Items = List(5) { "Item ${it + 11}" }
+        unorderedList(*col3Items.toTypedArray()) { style = fmt }
+      }
+    }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+      </div>
+    </div>
+    	
+	<script src="revealjs/dist/reveal.js"></script>
+	<script src="revealjs/plugin/notes/notes.js"></script>
+	<script src="revealjs/plugin/zoom/zoom.js"></script>
+	<script src="revealjs/plugin/search/search.js"></script>
+	<script src="revealjs/plugin/markdown/markdown.js"></script>
+	<script src="revealjs/plugin/highlight/highlight.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+	<script src="revealjs/plugin/copycode/copycode.js"></script>
+	<script src="revealjs/plugin/menu/menu.js"></script>
+
+	<script>
+		Reveal.initialize({
+			hash: true,
+			history: true,
+			transition: 'slide',
+			transitionSpeed: 'slow',
+			center: true,
+
+			slideNumber: 'c/t',
+
+			copycode: {
+				timeout: 2000,
+				copy: 'Copy',
+				copied: 'Copied!'
+			},
+			
+			plugins: [ RevealNotes, RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight, RevealMenu, CopyCode ]
+		});
+
+</script>
+  </body>
+</html>
+
