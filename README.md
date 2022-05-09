@@ -47,7 +47,7 @@ The following _kslides_ definition generates [this presentation](https://kslides
   }
 
   // Default values for all presentations in this file
-  presentationDefault {
+  presentationConfig {
   }
 
   presentation {
@@ -122,31 +122,41 @@ The following _kslides_ definition generates [this presentation](https://kslides
 }
 ```
 
-## Presentation Sections
+## ** THE DOCS ARE STILL A WORK IN PROGRESS **
+
+## Sections  
 
 ### kslides
 
-A _kslides_ section contains:
-* an optional `kslidesConfig{}` section
-* an optional `output{}` section
-* an optional `css{}` section
-* an optional `presentationDefault{}` section
-* one or more `presentation()` sections
+A `kslides` section contains configuration values, output directives, css defaults, presentation configuration defaults
+and presentation defintions. They can be declared in any order. 
 
 ```kotlin
 kslides {
   kslidesConfig{}           // Optional
   output {}                 // Optional
   css {}                    // Optional
-  presentationDefault {}    // Optional
+  presentationConfig {      // Optional
+    menuConfig {}           // Optional
+    copyCodeConfig {}       // Optional
+    slideConfig {}          // Optional
+    playgroundConfig {}     // Optional
+  }
   presentation {}           // One or more presentations
 }
 ```
 
+### kslideConfig
+
+The `kslideConfig` section contains global options that control the kslides setup. 
+The `kslideConfig` options and defaults values are 
+[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt).
+
+
 ### output
 
-An _output_ section defines how slide content is made available.
-This _output_ section would write slide content to html files in the _/docs_ directory and serve 
+The `output` section defines how slide content is made available.
+This `output` section would write slide content to html files in the _/docs_ directory and serve
 the slide content via HTTP on port 8080.
 
 ```kotlin
@@ -159,16 +169,59 @@ output {
 }
 ```
 
+The `output` section options and default values are 
+[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
+
 ### css
 
-### presentationDefault
+Presentation CSS can be specified using raw CSS or the Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html).
+
+### Presentation
+
+A `presentation` section includes one or more slide sections. There are 3 types of slides:
+
+```kotlin
+presentation {
+
+  presentationConfig {      // Optional
+    menuConfig {}           // Optional
+    copyCodeConfig {}       // Optional
+    slideConfig {}          // Optional
+    playgroundConfig {}     // Optional
+  }
+
+  css {}                    // Optional
+  
+  markdownSlide {
+    slideConfig {}          // Optional
+    content {}              // Required
+  }
+  
+  htmlSlide {
+    slideConfig {}          // Optional
+    content {}              // Required
+
+  }
+  
+  dslSlide {
+    slideConfig {}          // Optional
+    content {}              // Required
+
+  }
+}
+```
+
+### css
+
+Presentation CSS can be specified using raw CSS or the Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html).
+
+Unlike CSS values in HTML files, which must be specified in the _head_, CSS values in kslide can specified 
+throughout the definition. It is convenient to have the CSS values right above the code in the slides where
+they are referenced. 
+
+### presentationConfig
 
 ### presentation
-
-Each presentation section contains:
-* a _css_ section
-* a _presentationConfig_ section
-* and one or more _slide_ sections
 
 ```kotlin
 presentation {

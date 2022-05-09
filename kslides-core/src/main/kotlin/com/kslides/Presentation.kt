@@ -27,7 +27,9 @@ class Presentation(val kslides: KSlides) {
   internal val playgroundPath by lazy { kslides.outputConfig.playgroundDir.ensureSuffix("/") }
 
   internal fun validatePath() {
-    require(path.removePrefix("/") !in kslides.staticRoots) { "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\"" }
+    require(path.removePrefix("/") !in kslides.kslidesConfig.staticRoots) {
+      "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\""
+    }
 
     (if (path.startsWith("/")) path else "/$path").also { adjustedPath ->
       require(!kslides.presentationMap.containsKey(adjustedPath)) { "Presentation with path already defined: \"$adjustedPath\"" }
@@ -354,7 +356,7 @@ class Presentation(val kslides: KSlides) {
 
   fun toJs(config: PresentationConfig, srcPrefix: String) =
     buildString {
-      config.unmanagedValues.also { vals ->
+      config.revealjsManagedValues.also { vals ->
         if (vals.isNotEmpty()) {
           vals.forEach { (k, v) ->
             append("\t\t\t${toJsValue(k, v)},\n")
@@ -397,7 +399,7 @@ class Presentation(val kslides: KSlides) {
           }
         }
 
-      config.menuConfig.unmanagedValues.also { vals ->
+      config.menuConfig.revealjsManagedValues.also { vals ->
         if (vals.isNotEmpty()) {
           appendLine(
             buildString {
@@ -409,7 +411,7 @@ class Presentation(val kslides: KSlides) {
         }
       }
 
-      config.copyCodeConfig.unmanagedValues.also { vals ->
+      config.copyCodeConfig.revealjsManagedValues.also { vals ->
         if (vals.isNotEmpty()) {
           appendLine(
             buildString {

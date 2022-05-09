@@ -6,34 +6,34 @@ import kotlin.reflect.full.*
 
 class PlaygroundConfig : AbstractConfig() {
 
-  var width by ConfigProperty<String>(managedValues)
-  var height by ConfigProperty<String>(managedValues)
-  var style by ConfigProperty<String>(managedValues)
-  var title by ConfigProperty<String>(managedValues) // For screen readers
-
   // These have to be kept in sync with the playgroundAttributes value below
-  var args by ConfigProperty<String>(unmanagedValues)
-  var dataTargetPlatform by ConfigProperty<TargetPlatform>(unmanagedValues)
-  var dataHighlightOnly by ConfigProperty<Boolean>(unmanagedValues)
-  var foldedButton by ConfigProperty<Boolean>(unmanagedValues)
-  var dataJsLibs by ConfigProperty<String>(unmanagedValues)
-  var autoIndent by ConfigProperty<Boolean>(unmanagedValues)
-  var theme by ConfigProperty<PlaygroundTheme>(unmanagedValues)
-  var mode by ConfigProperty<PlaygroundMode>(unmanagedValues)
-  var dataMinCompilerVersion by ConfigProperty<String>(unmanagedValues)
-  var dataAutocomplete by ConfigProperty<Boolean>(unmanagedValues)
-  var highlightOnFly by ConfigProperty<Boolean>(unmanagedValues)
-  var indent by ConfigProperty<Int>(unmanagedValues)
-  var lines by ConfigProperty<Boolean>(unmanagedValues)
-  var from by ConfigProperty<Int>(unmanagedValues)
-  var to by ConfigProperty<Int>(unmanagedValues)
-  var dataOutputHeight by ConfigProperty<Int>(unmanagedValues)
-  var matchBrackets by ConfigProperty<Boolean>(unmanagedValues)
-  var dataCrosslink by ConfigProperty<Crosslink>(unmanagedValues)
-  var dataShorterHeight by ConfigProperty<Int>(unmanagedValues)
-  var dataScrollbarStyle by ConfigProperty<String>(unmanagedValues)
+  var args by ConfigProperty<String>(revealjsManagedValues)
+  var dataTargetPlatform by ConfigProperty<TargetPlatform>(revealjsManagedValues)
+  var dataHighlightOnly by ConfigProperty<Boolean>(revealjsManagedValues)
+  var foldedButton by ConfigProperty<Boolean>(revealjsManagedValues)
+  var dataJsLibs by ConfigProperty<String>(revealjsManagedValues)
+  var autoIndent by ConfigProperty<Boolean>(revealjsManagedValues)
+  var theme by ConfigProperty<PlaygroundTheme>(revealjsManagedValues)
+  var mode by ConfigProperty<PlaygroundMode>(revealjsManagedValues)
+  var dataMinCompilerVersion by ConfigProperty<String>(revealjsManagedValues)
+  var dataAutocomplete by ConfigProperty<Boolean>(revealjsManagedValues)
+  var highlightOnFly by ConfigProperty<Boolean>(revealjsManagedValues)
+  var indent by ConfigProperty<Int>(revealjsManagedValues)
+  var lines by ConfigProperty<Boolean>(revealjsManagedValues)
+  var from by ConfigProperty<Int>(revealjsManagedValues)
+  var to by ConfigProperty<Int>(revealjsManagedValues)
+  var dataOutputHeight by ConfigProperty<Int>(revealjsManagedValues)
+  var matchBrackets by ConfigProperty<Boolean>(revealjsManagedValues)
+  var dataCrosslink by ConfigProperty<Crosslink>(revealjsManagedValues)
+  var dataShorterHeight by ConfigProperty<Int>(revealjsManagedValues)
+  var dataScrollbarStyle by ConfigProperty<String>(revealjsManagedValues)
 
-  fun init() {
+  var width by ConfigProperty<String>(kslidesManagedValues)
+  var height by ConfigProperty<String>(kslidesManagedValues)
+  var style by ConfigProperty<String>(kslidesManagedValues)
+  var title by ConfigProperty<String>(kslidesManagedValues) // For screen readers
+
+  fun assignDefaults() {
     width = ""
     height = ""
     style = ""
@@ -46,8 +46,8 @@ class PlaygroundConfig : AbstractConfig() {
       .joinToString("")
 
   internal fun toQueryString() =
-    if (unmanagedValues.isNotEmpty())
-      unmanagedValues
+    if (revealjsManagedValues.isNotEmpty())
+      revealjsManagedValues
         .map { (k, v) ->
           k to (
               when {

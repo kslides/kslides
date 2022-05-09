@@ -57,18 +57,22 @@
 		</style>
     
     <style media="screen" type="text/css">
-		
-        .column2 {
-          float: left;
-          width: 50%;
-        }
-        
-        .column2 li {
-          margin-bottom:10px;
-        }
-        
+		.multiColumn2:after {
+content: '';
+display: table;
+clear: both;
+}
+.column2 {
+float: left;
+width: 50%;
+}
+.column2 li {
+margin-bottom: 10px;
+}
+
+
         /* Clear floats after the columns */
-        .row2:after {
+        .multiColumn3:after {
           content: "";
           display: table;
           clear: both;
@@ -79,16 +83,14 @@
           width: 33%;
         }
         
-        .column3 li {
-          margin-bottom:10px;
+        .column3 ul {
+          font-size:30px; 
+          list-style-type:square;
         }
         
-        /* Clear floats after the columns */
-        .row3:after {
-          content: "";
-          display: table;
-          clear: both;
-        }
+        .column3 li {
+          margin-bottom:10px;
+        }               
       </style>
   </head>
   <body>
@@ -107,7 +109,7 @@
         <section>
           <section>
             <h2 style="margin-bottom:20px;">Two Column Slide</h2>
-            <div class="row2">
+            <div class="multiColumn2">
               <div class="column2">
                 <p style="color: red;">Header 1</p>
                 <ul style="font-size:30px; padding-top:10px; list-style-type:circle;">
@@ -136,7 +138,7 @@
 dslSlide {
   content {
     h2 { +"Two Column Slide"; style = "margin-bottom:20px;" }
-    div("row2") {
+    div("multiColumn2") {
       val fmt = "font-size:30px; padding-top:10px; list-style-type:circle;"
       div("column2") {
         p { +"Header 1"; style = "color: red;" }
@@ -158,10 +160,10 @@ dslSlide {
         <section>
           <section>
             <h2>Three Column Slide</h2>
-            <div class="row3">
+            <div class="multiColumn3">
               <div class="column3">
                 <p style="color: blue;">Header 1</p>
-                <ul style="font-size:30px; list-style-type:square;">
+                <ul>
                   <li>Item 1</li>
                   <li>Item 2</li>
                   <li>Item 3</li>
@@ -171,7 +173,7 @@ dslSlide {
               </div>
               <div class="column3">
                 <p style="color: blue;">Header 2</p>
-                <ul style="font-size:30px; list-style-type:square;">
+                <ul>
                   <li>Item 6</li>
                   <li>Item 7</li>
                   <li>Item 8</li>
@@ -181,7 +183,7 @@ dslSlide {
               </div>
               <div class="column3">
                 <p style="color: blue;">Header 3</p>
-                <ul style="font-size:30px; list-style-type:square;">
+                <ul>
                   <li>Item 11</li>
                   <li>Item 12</li>
                   <li>Item 13</li>
@@ -199,23 +201,20 @@ dslSlide {
 dslSlide {
   content {
     h2 { +"Three Column Slide" }
-    div("row3") {
-      val fmt = "font-size:30px; list-style-type:square;"
+    div("multiColumn3") {
       div("column3") {
         p { +"Header 1"; style = "color: blue;" }
-        unorderedList("Item 1", "Item 2", "Item 3", "Item 4", "Item 5") {
-          style = fmt
-        }
+        unorderedList("Item 1", "Item 2", "Item 3", "Item 4", "Item 5")
       }
       div("column3") {
         p { +"Header 2"; style = "color: blue;" }
         val col2Items = List(5) { "Item ${it + 6}" }
-        unorderedList(*col2Items.toTypedArray()) { style = fmt }
+        unorderedList(*col2Items.toTypedArray())
       }
       div("column3") {
         p { +"Header 3"; style = "color: blue;" }
         val col3Items = List(5) { "Item ${it + 11}" }
-        unorderedList(*col3Items.toTypedArray()) { style = fmt }
+        unorderedList(*col3Items.toTypedArray())
       }
     }
   }

@@ -6,30 +6,30 @@ import com.kslides.config.*
 import kotlinx.html.*
 
 class SlideConfig : AbstractConfig() {
-  var transition by ConfigProperty<Transition>(unmanagedValues)
-  var transitionIn by ConfigProperty<Transition>(unmanagedValues)
-  var transitionOut by ConfigProperty<Transition>(unmanagedValues)
-  var transitionSpeed by ConfigProperty<Speed>(unmanagedValues)
-  var background by ConfigProperty<String>(unmanagedValues)
-  var backgroundImage by ConfigProperty<String>(unmanagedValues)
-  var backgroundColor by ConfigProperty<String>(unmanagedValues)
-  var backgroundSize by ConfigProperty<String>(unmanagedValues)
-  var backgroundPosition by ConfigProperty<String>(unmanagedValues)
-  var backgroundRepeat by ConfigProperty<String>(unmanagedValues)
-  var backgroundOpacity by ConfigProperty<Double>(unmanagedValues)
-  var backgroundTransition by ConfigProperty<Transition>(unmanagedValues)
-  var backgroundIframe by ConfigProperty<String>(unmanagedValues)
-  var backgroundInteractive by ConfigProperty<Boolean>(unmanagedValues)
-  var backgroundVideo by ConfigProperty<String>(unmanagedValues)
-  var backgroundVideoLoop by ConfigProperty<Boolean>(unmanagedValues)
-  var backgroundVideoMuted by ConfigProperty<Boolean>(unmanagedValues)
+  var transition by ConfigProperty<Transition>(revealjsManagedValues)
+  var transitionIn by ConfigProperty<Transition>(revealjsManagedValues)
+  var transitionOut by ConfigProperty<Transition>(revealjsManagedValues)
+  var transitionSpeed by ConfigProperty<Speed>(revealjsManagedValues)
+  var background by ConfigProperty<String>(revealjsManagedValues)
+  var backgroundImage by ConfigProperty<String>(revealjsManagedValues)
+  var backgroundColor by ConfigProperty<String>(revealjsManagedValues)
+  var backgroundSize by ConfigProperty<String>(revealjsManagedValues)
+  var backgroundPosition by ConfigProperty<String>(revealjsManagedValues)
+  var backgroundRepeat by ConfigProperty<String>(revealjsManagedValues)
+  var backgroundOpacity by ConfigProperty<Double>(revealjsManagedValues)
+  var backgroundTransition by ConfigProperty<Transition>(revealjsManagedValues)
+  var backgroundIframe by ConfigProperty<String>(revealjsManagedValues)
+  var backgroundInteractive by ConfigProperty<Boolean>(revealjsManagedValues)
+  var backgroundVideo by ConfigProperty<String>(revealjsManagedValues)
+  var backgroundVideoLoop by ConfigProperty<Boolean>(revealjsManagedValues)
+  var backgroundVideoMuted by ConfigProperty<Boolean>(revealjsManagedValues)
 
   // Markdown-only items
-  var markdownSeparator by ConfigProperty<String>(unmanagedValues)
-  var markdownVerticalSeparator by ConfigProperty<String>(unmanagedValues)
-  var markdownNotesSeparator by ConfigProperty<String>(unmanagedValues)
+  var markdownSeparator by ConfigProperty<String>(revealjsManagedValues)
+  var markdownVerticalSeparator by ConfigProperty<String>(revealjsManagedValues)
+  var markdownNotesSeparator by ConfigProperty<String>(revealjsManagedValues)
 
-  internal fun init() {
+  internal fun assignDefaults() {
     transition = Transition.UNASSIGNED
     transitionIn = Transition.UNASSIGNED
     transitionOut = Transition.UNASSIGNED

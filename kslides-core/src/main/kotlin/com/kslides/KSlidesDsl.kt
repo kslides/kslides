@@ -106,17 +106,17 @@ inline fun LI.listHref(
 }
 
 @HtmlTagMarker
-inline fun DIV.unorderedList(items: List<String>, crossinline block: UL.() -> Unit = {}) =
+inline fun FlowContent.unorderedList(items: List<String>, crossinline block: UL.() -> Unit = {}) =
   unorderedList(*items.toTypedArray(), block = block)
 
 @HtmlTagMarker
-inline fun DIV.unorderedList(vararg items: String, crossinline block: UL.() -> Unit = {}) {
+inline fun FlowContent.unorderedList(vararg items: String, crossinline block: UL.() -> Unit = {}) {
   val funcs: List<LI.() -> Unit> = items.map { { +it } }
   unorderedList(*funcs.toTypedArray(), block = block)
 }
 
 @HtmlTagMarker
-inline fun DIV.unorderedList(vararg items: LI.() -> Unit, crossinline block: UL.() -> Unit = {}) =
+inline fun FlowContent.unorderedList(vararg items: LI.() -> Unit, crossinline block: UL.() -> Unit = {}) =
   ul {
     block()
     items.forEach {
@@ -125,55 +125,17 @@ inline fun DIV.unorderedList(vararg items: LI.() -> Unit, crossinline block: UL.
   }
 
 @HtmlTagMarker
-inline fun DIV.orderedList(items: List<String>, crossinline block: OL.() -> Unit = {}) =
+inline fun FlowContent.orderedList(items: List<String>, crossinline block: OL.() -> Unit = {}) =
   orderedList(*items.toTypedArray(), block = block)
 
 @HtmlTagMarker
-inline fun DIV.orderedList(vararg items: String, crossinline block: OL.() -> Unit = {}) {
+inline fun FlowContent.orderedList(vararg items: String, crossinline block: OL.() -> Unit = {}) {
   val funcs: List<LI.() -> Unit> = items.map { { +it } }
   orderedList(*funcs.toTypedArray(), block = block)
 }
 
 @HtmlTagMarker
-inline fun DIV.orderedList(vararg items: LI.() -> Unit, crossinline block: OL.() -> Unit = {}) =
-  ol {
-    block()
-    items.forEach {
-      li { it() }
-    }
-  }
-
-@HtmlTagMarker
-inline fun SECTION.unorderedList(items: List<String>, crossinline block: UL.() -> Unit = {}) =
-  unorderedList(*items.toTypedArray(), block = block)
-
-@HtmlTagMarker
-inline fun SECTION.unorderedList(vararg items: String, crossinline block: UL.() -> Unit = {}) {
-  val funcs: List<LI.() -> Unit> = items.map { { +it } }
-  unorderedList(*funcs.toTypedArray(), block = block)
-}
-
-@HtmlTagMarker
-inline fun SECTION.unorderedList(vararg items: LI.() -> Unit, crossinline block: UL.() -> Unit = {}) =
-  ul {
-    block()
-    items.forEach {
-      li { it() }
-    }
-  }
-
-@HtmlTagMarker
-inline fun SECTION.orderedList(items: List<String>, crossinline block: OL.() -> Unit = {}) =
-  orderedList(*items.toTypedArray(), block = block)
-
-@HtmlTagMarker
-inline fun SECTION.orderedList(vararg items: String, crossinline block: OL.() -> Unit = {}) {
-  val funcs: List<LI.() -> Unit> = items.map { { +it } }
-  orderedList(*funcs.toTypedArray(), block = block)
-}
-
-@HtmlTagMarker
-inline fun SECTION.orderedList(vararg items: LI.() -> Unit, crossinline block: OL.() -> Unit = {}) =
+inline fun FlowContent.orderedList(vararg items: LI.() -> Unit, crossinline block: OL.() -> Unit = {}) =
   ol {
     block()
     items.forEach {

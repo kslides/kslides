@@ -10,17 +10,20 @@ class PresentationTest : StringSpec(
   {
     "Simple presentation tests" {
 
-      kslides {
-
+      kslidesTest {
         presentation {
-          dslSlide { }
+          dslSlide {
+            content{}
+          }
         }
 
         presentationBlocks.size shouldBe 1
 
         presentation {
           path = "test"
-          dslSlide { }
+          dslSlide {
+            content{}
+          }
         }
 
         presentationBlocks.size shouldBe 2
@@ -30,7 +33,7 @@ class PresentationTest : StringSpec(
     "Simple presentation tests2" {
 
       shouldThrowExactly<IllegalArgumentException> {
-        kslides {
+        kslidesTest {
           presentation {}
           presentation {}
         }
@@ -40,7 +43,7 @@ class PresentationTest : StringSpec(
     "Simple presentation tests3" {
 
       shouldThrowExactly<IllegalArgumentException> {
-        kslides {
+        kslidesTest {
           presentation {
             path = "test"
           }
@@ -53,7 +56,7 @@ class PresentationTest : StringSpec(
 
     "Simple presentation tests4" {
       shouldThrowExactly<IllegalArgumentException> {
-        kslides {
+        kslidesTest {
           presentation {
             path = "test"
           }
@@ -65,9 +68,9 @@ class PresentationTest : StringSpec(
     }
 
     "Simple presentation tests5" {
-      KSlides().staticRoots.forEach {
+      KSlides().kslidesConfig.staticRoots.forEach {
         shouldThrowExactly<IllegalArgumentException> {
-          kslides {
+          kslidesTest {
             presentation {
               path = it
             }
@@ -82,13 +85,14 @@ class PresentationTest : StringSpec(
 
     "Missing presentation test" {
       shouldThrowExactly<IllegalArgumentException> {
-        kslides {}
+        kslidesTest {
+        }
       }
     }
 
     "Missing slide test" {
       shouldThrowExactly<IllegalArgumentException> {
-        kslides {
+        kslidesTest {
           presentation {}
         }
       }
@@ -96,7 +100,7 @@ class PresentationTest : StringSpec(
 
     "Missing markdownSlide content test" {
       shouldThrowExactly<IllegalArgumentException> {
-        kslides {
+        kslidesTest {
           presentation { markdownSlide { } }
         }.presentations.forEach { p ->
           generatePage(p)
@@ -106,7 +110,7 @@ class PresentationTest : StringSpec(
 
     "Missing htmlSlide content test" {
       shouldThrowExactly<IllegalArgumentException> {
-        kslides {
+        kslidesTest {
           presentation { htmlSlide { } }
         }.presentations.forEach { p ->
           generatePage(p)
@@ -116,7 +120,7 @@ class PresentationTest : StringSpec(
 
     "Missing dslSlide content test" {
       shouldThrowExactly<IllegalArgumentException> {
-        kslides {
+        kslidesTest {
           presentation { dslSlide { } }
         }.presentations.forEach { p ->
           generatePage(p)
@@ -126,7 +130,7 @@ class PresentationTest : StringSpec(
 
     "Default Css Test 1" {
       val kslides =
-        kslides {
+        kslidesTest {
           presentation {
             dslSlide { content { } }
           }
@@ -142,7 +146,7 @@ class PresentationTest : StringSpec(
 
     "Default Css Test 2" {
       val kslides =
-        kslides {
+        kslidesTest {
           presentation {
             dslSlide { css += "aaa"; content { } }
           }
@@ -158,7 +162,7 @@ class PresentationTest : StringSpec(
 
     "Default Css Test 3" {
       val kslides =
-        kslides {
+        kslidesTest {
           css += "aaa"
           presentation {
             dslSlide { content { } }
@@ -175,7 +179,7 @@ class PresentationTest : StringSpec(
 
     "Default Css Test 4" {
       val kslides =
-        kslides {
+        kslidesTest {
           css += "aaa"
           presentation {
             dslSlide { css += "bbb"; content { } }

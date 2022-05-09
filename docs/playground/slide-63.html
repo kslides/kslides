@@ -2,27 +2,19 @@
 <html>
   <head>
     <META content="text/html; charset=UTF-8" http-equiv="Content-Type">
-    <script data-selector=".kotlin-code" src="https://unpkg.com/kotlin-playground@1"></script>
+    <script data-selector=".playground-code" src="https://unpkg.com/kotlin-playground@1"></script>
   </head>
   <body>
-    <code class="kotlin-code" lines="true" theme="idea">
+    <code args="1 2 3" class="playground-code" lines="true" theme="darcula">
 package playground
 
+//sampleStart
 fun main(args: Array&lt;String&gt;) {
-  //sampleStart
-  val cat = Cat("Kitty")
-  val dog = Dog("Fido")
-  println("Hello ${cat.name} and ${dog.name} ")
-  //sampleEnd
+  for (arg in args) {
+    println("Hello World $arg")
+  }
 }
-<textarea class="hidden-dependency">
-package playground
-
-class Cat(val name: String)
-</textarea><textarea class="hidden-dependency">
-package playground
-
-class Dog(val name: String)
-</textarea></code>
+//sampleEnd
+</code>
   </body>
 </html>

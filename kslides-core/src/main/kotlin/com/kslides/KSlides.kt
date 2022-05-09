@@ -26,10 +26,10 @@ import java.util.concurrent.*
 annotation class KSlidesDslMarker
 
 @KSlidesDslMarker
-fun kslides(kslidesBlock: KSlides.() -> Unit) =
+fun kslides(block: KSlides.() -> Unit) =
   KSlides()
     .apply {
-      kslidesBlock()
+      block()
       require(presentationBlocks.isNotEmpty()) { "At least one presentation must be defined" }
 
       kslidesConfigBlock(kslidesConfig)
@@ -75,6 +75,17 @@ fun kslides(kslidesBlock: KSlides.() -> Unit) =
         CountDownLatch(1).await()
     }
 
+@KSlidesDslMarker
+internal fun kslidesTest(block: KSlides.() -> Unit) =
+  kslides {
+    block()
+    output {
+      enableFileSystem = false
+      enableHttp = false
+    }
+  }
+
+
 class KSlides {
   internal val kslidesConfig = KSlidesConfig()
   internal val globalPresentationConfig = PresentationConfig(true)
@@ -90,7 +101,6 @@ class KSlides {
     presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
   // User variables
-  val staticRoots = mutableListOf("assets", "css", "dist", "js", "plugin", "revealjs")
   val css = AppendableString()
 
   @KSlidesDslMarker
@@ -104,13 +114,13 @@ class KSlides {
   }
 
   @KSlidesDslMarker
-  fun presentationDefault(block: PresentationConfig.() -> Unit) {
-    globalPresentationConfigBlock = block
+  fun output(outputBlock: OutputConfig.() -> Unit) {
+    this.outputConfigBlock = outputBlock
   }
 
   @KSlidesDslMarker
-  fun output(outputBlock: OutputConfig.() -> Unit) {
-    this.outputConfigBlock = outputBlock
+  fun presentationConfig(block: PresentationConfig.() -> Unit) {
+    globalPresentationConfigBlock = block
   }
 
   @KSlidesDslMarker
@@ -158,8 +168,13 @@ class KSlides {
           deflate { priority = 10.0; minimumSize(1024) /* condition*/ }
         }
 
-        routing {
+        config.kslides.presentationMap
+          .apply {
+            if (!containsKey("/") && !containsKey("/index.html"))
+              logger.warn { """Missing a presentation with: path = "/"""" }
+          }
 
+        routing {
           setupPlayground(config.kslides)
 
           if (config.defaultHttpRoot.isNotBlank())
@@ -168,7 +183,7 @@ class KSlides {
               resources(".")
             }
 
-          config.kslides.staticRoots.forEach {
+          config.kslides.kslidesConfig.staticRoots.forEach {
             if (it.isNotBlank())
               static("/$it") {
                 resources(it)

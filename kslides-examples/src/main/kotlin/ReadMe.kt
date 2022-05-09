@@ -14,7 +14,7 @@ fun main() {
     }
 
     // Default values for all presentations in this file
-    presentationDefault {
+    presentationConfig {
     }
 
     presentation {

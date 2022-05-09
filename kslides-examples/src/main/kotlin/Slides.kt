@@ -1,6 +1,7 @@
 import com.github.pambrose.common.util.*
 import com.kslides.*
 import kotlinx.css.*
+import kotlinx.css.Float
 import kotlinx.html.*
 
 fun main() {
@@ -16,7 +17,7 @@ fun main() {
     }
 
     // Default config values for all presentations go here
-    presentationDefault {
+    presentationConfig {
       topLeftHref = "https://github.com/kslides/kslides/"
       topLeftTitle = "View presentation source on Github"
 
@@ -54,20 +55,6 @@ fun main() {
 
     presentation {
 
-      css +=
-        """
-        #mdslide p { color: #FF6836; }
-        img[alt=slide] { width: 150px; }
-        """
-
-      // Or use the Kotlin css DSL
-      // instead of #intro h1 { color: #FF5533; } use this:
-      css {
-        rule("#intro h1") {
-          color = Color("#FF5533")
-        }
-      }
-
       presentationConfig {
         // presentation-specific configurations
 
@@ -81,6 +68,17 @@ fun main() {
 
       verticalSlides {
 
+        css +=
+          """
+            img[alt=slideimg] { width: 150px; }
+          """
+        // Or use the Kotlin CSS DSL. Instead of #intro h1 { color: #FF5533; } use this:
+        css {
+          rule("#intro h1") {
+            color = Color("#FF5533")
+          }
+        }
+
         // intro begin
         markdownSlide {
           id = "intro"
@@ -93,7 +91,7 @@ fun main() {
           content {
             """
             # kslides
-            ![slide](images/slide-transparent.png)
+            ![slideimg](images/slide-transparent.png)
 
             ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
             ### 👇
@@ -105,6 +103,13 @@ fun main() {
 
         slideDefinition(slides, "intro")
       }
+
+      css +=
+        """
+          #mdslide p { 
+            color: #FF6836; 
+          }
+        """
 
       verticalSlides {
         // mdslide begin
@@ -670,7 +675,9 @@ fun main() {
                         
             [Backgrounds](/backgrounds.html) 
 
-            [Multi-Columns](/multicols.html) 
+            [Multi-Columns DSL Slides](/multicols.html) 
+
+            [Multi-Slide Markdown Slides](/multislide.html) 
 
             👇 ${fragment()}
 
@@ -1207,46 +1214,48 @@ fun main() {
         topRightText = "🔙"
       }
 
-      css += """
+      css {
+        /* Clear floats after the columns */
+        rule(".multiColumn2:after") {
+          content = QuotedString("")
+          display = Display.table
+          clear = Clear.both
+        }
+
+        rule(".column2") {
+          float = Float.left
+          width = LinearDimension("50%")
+        }
+
+        rule(".column2 li") {
+          marginBottom = LinearDimension("10px")
+        }
+      }
+
+      /*
+        /* Clear floats after the columns */
+        .multiColumn2:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+
         .column2 {
           float: left;
           width: 50%;
         }
-        
+
         .column2 li {
           margin-bottom:10px;
         }
-        
-        /* Clear floats after the columns */
-        .row2:after {
-          content: "";
-          display: table;
-          clear: both;
-        }
 
-        .column3 {
-          float: left;
-          width: 33%;
-        }
-        
-        .column3 li {
-          margin-bottom:10px;
-        }
-        
-        /* Clear floats after the columns */
-        .row3:after {
-          content: "";
-          display: table;
-          clear: both;
-        }
-      """
-
+       */
       verticalSlides {
         // 2col begin
         dslSlide {
           content {
             h2 { +"Two Column Slide"; style = "margin-bottom:20px;" }
-            div("row2") {
+            div("multiColumn2") {
               val fmt = "font-size:30px; padding-top:10px; list-style-type:circle;"
               div("column2") {
                 p { +"Header 1"; style = "color: red;" }
@@ -1264,28 +1273,48 @@ fun main() {
         slideDefinition(slides, "2col")
       }
 
+      css += """
+        /* Clear floats after the columns */
+        .multiColumn3:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+
+        .column3 {
+          float: left;
+          width: 33%;
+        }
+        
+        .column3 ul {
+          font-size:30px; 
+          list-style-type:square;
+        }
+        
+        .column3 li {
+          margin-bottom:10px;
+        }               
+      """
+
       verticalSlides {
         // 3col begin
         dslSlide {
           content {
             h2 { +"Three Column Slide" }
-            div("row3") {
-              val fmt = "font-size:30px; list-style-type:square;"
+            div("multiColumn3") {
               div("column3") {
                 p { +"Header 1"; style = "color: blue;" }
-                unorderedList("Item 1", "Item 2", "Item 3", "Item 4", "Item 5") {
-                  style = fmt
-                }
+                unorderedList("Item 1", "Item 2", "Item 3", "Item 4", "Item 5")
               }
               div("column3") {
                 p { +"Header 2"; style = "color: blue;" }
                 val col2Items = List(5) { "Item ${it + 6}" }
-                unorderedList(*col2Items.toTypedArray()) { style = fmt }
+                unorderedList(*col2Items.toTypedArray())
               }
               div("column3") {
                 p { +"Header 3"; style = "color: blue;" }
                 val col3Items = List(5) { "Item ${it + 11}" }
-                unorderedList(*col3Items.toTypedArray()) { style = fmt }
+                unorderedList(*col3Items.toTypedArray())
               }
             }
           }
@@ -1294,6 +1323,73 @@ fun main() {
 
         slideDefinition(slides, "3col")
       }
+    }
+
+    presentation {
+      path = "multislide.html"
+
+      presentationConfig {
+        topRightHref = "/#/features"
+        topRightTitle = "Go back to main presentation"
+        topRightText = "🔙"
+      }
+
+      // hmultislide begin
+      markdownSlide {
+        content {
+          """
+            ## This is a multi-slide Markdown Slide
+            
+            This is page 1 of 3
+            
+            ---
+      
+            ## This is a multi-slide Markdown Slide
+            
+            This is page 2 of 3
+      
+            ---
+      
+            ## This is a multi-slide Markdown Slide
+            
+            This is page 3 of 3
+            """
+        }
+      }
+      // hmultislide end
+
+      slideDefinition(slides, "hmultislide")
+
+      // vmultislide begin
+      verticalSlides {
+        markdownSlide {
+          content {
+            """
+            ## This is a multi-slide Markdown Slide
+            ### embedded in a verticalSlides section
+            
+            This is page 1 of 3
+            
+            ---
+      
+            ## This is a multi-slide Markdown Slide
+            ### embedded in a verticalSlides section
+            
+            This is page 2 of 3
+      
+            ---
+      
+            ## This is a multi-slide Markdown Slide
+            ### embedded in a verticalSlides section
+            
+            This is page 3 of 3
+            """
+          }
+        }
+      }
+      // vmultislide end
+
+      slideDefinition(slides, "vmultislide")
     }
   }
 }

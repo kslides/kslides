@@ -58,13 +58,10 @@
     
     <style media="screen" type="text/css">
 		
-        #mdslide p { color: #FF6836; }
-        img[alt=slide] { width: 150px; }
-        #intro h1 {
-color: #FF5533;
-}
-
-</style>
+          #mdslide p { 
+            color: #FF6836; 
+          }
+        </style>
   </head>
   <body>
     <div class="reveal">
@@ -83,7 +80,7 @@ color: #FF5533;
           <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="intro">
             <script type="text/template">
 # kslides
-![slide](images/slide-transparent.png)
+![slideimg](images/slide-transparent.png)
 
 ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
 ### 👇
@@ -106,7 +103,7 @@ markdownSlide {
   content {
     """
     # kslides
-    ![slide](images/slide-transparent.png)
+    ![slideimg](images/slide-transparent.png)
 
     ### A Kotlin DSL wrapper for [reveal.js](https://revealjs.com)
     ### 👇
@@ -496,7 +493,7 @@ for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
         <section>
           <section>
             <h2>Kotlin Playground Support</h2>
-            <iframe height="250px" src="playground/slide-60.html" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="playground/slide-64.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -517,7 +514,7 @@ dslSlide {
           
           <section>
             <h2>Playground with Additional Code</h2>
-            <iframe height="250px" src="playground/slide-62.html" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="playground/slide-66.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -543,7 +540,7 @@ dslSlide {
           <section>
             <h2>Playground Using JUnit</h2>
             <small>( Replace TODO() with: <em>it%2==0</em> )</small>
-            <iframe height="250px" src="playground/slide-64.html" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="playground/slide-68.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -570,7 +567,7 @@ dslSlide {
           
           <section>
             <h2>Playground Using Kotlin/JS</h2>
-            <iframe height="250px" src="playground/slide-66.html" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="playground/slide-70.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -593,7 +590,7 @@ dslSlide {
           
           <section>
             <h2>Playground Support for other Languages</h2>
-            <iframe height="250px" src="playground/slide-68.html" style="border:none;" width="100%"></iframe>
+            <iframe height="250px" src="playground/slide-72.html" style="border:none;" width="100%"></iframe>
             <p>Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C</p>
           </section>
           
@@ -959,7 +956,9 @@ dslSlide {
                     
         [Backgrounds](/backgrounds.html) 
 
-        [Multi-Columns](/multicols.html) 
+        [Multi-Columns DSL Slides](/multicols.html) 
+
+        [Multi-Slide Markdown Slides](/multislide.html) 
 
         👇 ${fragment()}
 
@@ -1628,7 +1627,9 @@ dslSlide {
             
 [Backgrounds](/backgrounds.html) 
 
-[Multi-Columns](/multicols.html) 
+[Multi-Columns DSL Slides](/multicols.html) 
+
+[Multi-Slide Markdown Slides](/multislide.html) 
 
 👇 
               <!-- .element: class="fragment" -->
@@ -1652,7 +1653,9 @@ markdownSlide {
                 
     [Backgrounds](/backgrounds.html) 
 
-    [Multi-Columns](/multicols.html) 
+    [Multi-Columns DSL Slides](/multicols.html) 
+
+    [Multi-Slide Markdown Slides](/multislide.html) 
 
     👇 ${fragment()}
 

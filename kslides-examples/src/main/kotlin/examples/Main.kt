@@ -8,7 +8,7 @@ fun main() {
 
   kslides {
 
-    presentationDefault {
+    presentationConfig {
       slideNumber = "c/t"
       transition = Transition.FADE
       gaPropertyId = "G-XXXXXXXXX"
@@ -78,7 +78,7 @@ fun main() {
         content {
           """
           <pre data-id="code-animation"><code data-trim="" data-line-numbers="">
-          ${include("src/test/kotlin/examples/assign.js", linePattern = "4-9")}
+          ${include("kslides-examples/src/main/kotlin/examples/assign.js", linePattern = "4-9")}
           </code></pre>
           """
         }
@@ -91,7 +91,7 @@ fun main() {
           """
           <pre data-id="code-animation">
           <code data-trim="" data-line-numbers="">
-          ${include("src/test/kotlin/examples/assign.js")}
+          ${include("kslides-examples/src/main/kotlin/examples/assign.js")}
           </code>
           </pre>
           """
@@ -144,7 +144,7 @@ fun main() {
           """
           # Java Code  
           ```java [3|4|5]
-          ${include("src/test/kotlin/examples/HelloWorldJ.java")}
+          ${include("kslides-examples/src/main/kotlin/examples/HelloWorldJ.java")}
           ```
           """
         }
@@ -154,6 +154,8 @@ fun main() {
         slideConfig {
           backgroundIframe = "https://www.readingbat.com"
         }
+
+        content{}
       }
 
       markdownSlide {
@@ -165,7 +167,7 @@ fun main() {
           """
           # Markdown Example
           ```kotlin [3,7|4,6|5]
-          ${include("src/test/kotlin/examples/HelloWorldK.kt")}
+          ${include("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
           ```
           """
         }
@@ -176,7 +178,7 @@ fun main() {
           """
           # Markdown Example
           ````kotlin [3,7|4,6|5]
-          ${include(githubRawUrl("kslides", "kslides", "kslides-examples/src/test/kotlin/examples/HelloWorldK.kt"))}
+          ${include(githubRawUrl("kslides", "kslides", "kslides-examples/src/main/kotlin/examples/HelloWorldK.kt"))}
           ````
           """
         }

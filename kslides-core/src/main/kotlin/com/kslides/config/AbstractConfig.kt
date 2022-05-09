@@ -1,11 +1,11 @@
 package com.kslides.config
 
 abstract class AbstractConfig {
-  val unmanagedValues = mutableMapOf<String, Any>()
-  val managedValues = mutableMapOf<String, Any>()
+  val revealjsManagedValues = mutableMapOf<String, Any>()
+  val kslidesManagedValues = mutableMapOf<String, Any>()
 
   fun merge(other: AbstractConfig) {
-    unmanagedValues.putAll(other.unmanagedValues)
-    managedValues.putAll(other.managedValues)
+    revealjsManagedValues.putAll(other.revealjsManagedValues)
+    kslidesManagedValues.putAll(other.kslidesManagedValues)
   }
 }

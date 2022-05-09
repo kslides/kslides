@@ -2,26 +2,16 @@
 <html>
   <head>
     <META content="text/html; charset=UTF-8" http-equiv="Content-Type">
-    <script data-selector=".kotlin-code" src="https://unpkg.com/kotlin-playground@1"></script>
+    <script data-selector=".playground-code" src="https://unpkg.com/kotlin-playground@1"></script>
   </head>
   <body>
-    <code class="kotlin-code" lines="true" mode="xml" theme="darcula">
-&lt;!DOCTYPE HTML&gt;
-&lt;html&gt;
+    <code class="playground-code" data-js-libs="https://unpkg.com/moment@2" data-target-platform="js" lines="true" theme="idea">
+external fun moment(): dynamic
 
-&lt;body&gt;
-
-&lt;p&gt;Before the script...&lt;/p&gt;
-
-&lt;script&gt;
-    alert( 'Hello, world!' );
-&lt;/script&gt;
-
-&lt;p&gt;...After the script.&lt;/p&gt;
-
-&lt;/body&gt;
-
-&lt;/html&gt;
+fun main() {
+  val startOfDay = moment().startOf("day").fromNow()
+  println("The start of the day was $startOfDay")
+}
 </code>
   </body>
 </html>

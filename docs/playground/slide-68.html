@@ -2,26 +2,37 @@
 <html>
   <head>
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script data-selector=".kotlin-code" src="https://unpkg.com/kotlin-playground@1"></script>
+    <script data-selector=".playground-code" src="https://unpkg.com/kotlin-playground@1"></script>
   </head>
   <body>
-    <code class="kotlin-code" lines="true" mode="xml" theme="darcula">
-&lt;!DOCTYPE HTML&gt;
-&lt;html&gt;
+    <code class="playground-code" data-target-platform="junit" lines="true" theme="darcula">
+import org.junit.*
 
-&lt;body&gt;
+class TestLambdas {
+  @Test
+  fun contains() {
+    Assert.assertTrue(
+      "The result should be true if the collection contains an even number",
+      containsEven(listOf(1, 2, 3, 126, 555))
+    )
+  }
 
-&lt;p&gt;Before the script...&lt;/p&gt;
+  @Test
+  fun notContains() {
+    Assert.assertFalse(
+      "The result should be false if the collection doesn't contain an even number",
+      containsEven(listOf(43, 33))
+    )
+  }
+}
 
-&lt;script&gt;
-    alert( 'Hello, world!' );
-&lt;/script&gt;
-
-&lt;p&gt;...After the script.&lt;/p&gt;
-
-&lt;/body&gt;
-
-&lt;/html&gt;
+//sampleStart
+/*
+Pass a lambda to any function to check if the collection contains an even number. The function any
+gets a predicate as an argument and returns true if there is at least one element satisfying the predicate.
+*/
+fun containsEven(collection: Collection&lt;Int&gt;): Boolean = collection.any { TODO() }
+//sampleEnd
 </code>
   </body>
 </html>
