@@ -66,19 +66,20 @@ fun main() {
         }
       }
 
-      verticalSlides {
-
-        css +=
+      css +=
+        """
+            img[alt=slideimg] { 
+              width: 150px; 
+            }
           """
-            img[alt=slideimg] { width: 150px; }
-          """
-        // Or use the Kotlin CSS DSL. Instead of #intro h1 { color: #FF5533; } use this:
-        css {
-          rule("#intro h1") {
-            color = Color("#FF5533")
-          }
+      // Or use the Kotlin CSS DSL. Instead of #intro h1 { color: #FF5533; } use this:
+      css {
+        rule("#intro h1") {
+          color = Color("#FF5533")
         }
+      }
 
+      verticalSlides {
         // intro begin
         markdownSlide {
           id = "intro"
