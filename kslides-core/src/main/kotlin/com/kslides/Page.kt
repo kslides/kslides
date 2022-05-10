@@ -91,16 +91,18 @@ internal object Page {
 
       if (config.gaPropertyId.isNotBlank()) {
         script { async = true; src = "https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K" }
-        rawHtml("\n\t")
+        rawHtml("\n\n\t\t")
         script {
+          rawHtml("\n")
           rawHtml(
             """
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date()); 
               gtag('config', '${config.gaPropertyId}');
-            """
+            """.trimIndent().prependIndent("\t\t\t")
           )
+          rawHtml("\n\t\t")
         }
       }
 
@@ -116,6 +118,7 @@ internal object Page {
       rawHtml("\n")
       style("text/css") {
         media = "screen"
+        rawHtml("\n")
         rawHtml(
           Page::class.java.classLoader.getResource("slides.css")
             ?.readText()
@@ -124,12 +127,16 @@ internal object Page {
             ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"))
       }
 
-      if (p.css.isNotBlank()) {
-        rawHtml("\n")
-        style("text/css") {
-          media = "screen"
-          rawHtml("\n\t\t")
-          rawHtml(p.css.prependIndent("\t\t"))
+      p.css.also { css ->
+        if (css.isNotBlank()) {
+          rawHtml("\n")
+          style("text/css") {
+            media = "screen"
+            rawHtml("\n")
+            rawHtml(css.prependIndent("\t\t\t"))
+            rawHtml("\n\t\t")
+          }
+          rawHtml("\n")
         }
       }
     }

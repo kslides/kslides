@@ -68,11 +68,11 @@ fun main() {
 
       css +=
         """
-            img[alt=slideimg] { 
-              width: 150px; 
-            }
-          """
-      // Or use the Kotlin CSS DSL. Instead of #intro h1 { color: #FF5533; } use this:
+        img[alt=slideimg] { 
+          width: 150px; 
+        }
+        """
+      // Or use the Kotlin CSS DSL. Instead of #intro h1 { color: #FF5533; } use:
       css {
         rule("#intro h1") {
           color = Color("#FF5533")
@@ -107,9 +107,9 @@ fun main() {
 
       css +=
         """
-          #mdslide p { 
-            color: #FF6836; 
-          }
+        #mdslide p { 
+          color: #FF6836; 
+        }
         """
 
       verticalSlides {
@@ -1075,7 +1075,6 @@ fun main() {
       }
 
       verticalSlides {
-
         // background4 begin
         dslSlide {
           slideConfig {

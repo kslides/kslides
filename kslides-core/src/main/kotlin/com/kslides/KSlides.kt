@@ -85,7 +85,6 @@ internal fun kslidesTest(block: KSlides.() -> Unit) =
     }
   }
 
-
 class KSlides {
   internal val kslidesConfig = KSlidesConfig()
   internal val globalPresentationConfig = PresentationConfig(true)
@@ -101,11 +100,11 @@ class KSlides {
     presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
   // User variables
-  val css = AppendableString()
+  val css = CssValue()
 
   @KSlidesDslMarker
-  inline fun css(block: CssBuilder.() -> Unit) {
-    css += "${CssBuilder().apply(block)}\n"
+  fun css(block: CssBuilder.() -> Unit) {
+    css += block
   }
 
   @KSlidesDslMarker
@@ -114,8 +113,8 @@ class KSlides {
   }
 
   @KSlidesDslMarker
-  fun output(outputBlock: OutputConfig.() -> Unit) {
-    this.outputConfigBlock = outputBlock
+  fun output(block: OutputConfig.() -> Unit) {
+    outputConfigBlock = block
   }
 
   @KSlidesDslMarker
@@ -183,10 +182,10 @@ class KSlides {
               resources(".")
             }
 
-          config.kslides.kslidesConfig.staticRoots.forEach {
-            if (it.isNotBlank())
-              static("/$it") {
-                resources(it)
+          config.kslides.kslidesConfig.httpStaticRoots.forEach {
+            if (it.dirname.isNotBlank())
+              static("/${it.dirname}") {
+                resources(it.dirname)
               }
           }
 

@@ -33,6 +33,7 @@ fun DslSlide.playground(
       append(config.toQueryString())
     }
 
+  // Add to list of pages to generate and later grab with an iframe
   if (!_useHttp)
     presentation.kslides.playgroundUrls += _slideName to pgUrl
 

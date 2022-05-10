@@ -13,7 +13,7 @@ class PresentationTest : StringSpec(
       kslidesTest {
         presentation {
           dslSlide {
-            content{}
+            content {}
           }
         }
 
@@ -22,7 +22,7 @@ class PresentationTest : StringSpec(
         presentation {
           path = "test"
           dslSlide {
-            content{}
+            content {}
           }
         }
 
@@ -68,11 +68,11 @@ class PresentationTest : StringSpec(
     }
 
     "Simple presentation tests5" {
-      KSlides().kslidesConfig.staticRoots.forEach {
+      KSlides().kslidesConfig.httpStaticRoots.forEach {
         shouldThrowExactly<IllegalArgumentException> {
           kslidesTest {
             presentation {
-              path = it
+              path = it.dirname
             }
 
             presentation {
@@ -148,7 +148,8 @@ class PresentationTest : StringSpec(
       val kslides =
         kslidesTest {
           presentation {
-            dslSlide { css += "aaa"; content { } }
+            css += "aaa"
+            dslSlide { content { } }
           }
         }.apply {
           presentations.forEach { p ->
@@ -157,7 +158,7 @@ class PresentationTest : StringSpec(
         }
 
       kslides.css.toString() shouldBe ""
-      kslides.presentation("/").css.toString() shouldBe "aaa"
+      kslides.presentation("/").css.toString().trim() shouldBe "aaa"
     }
 
     "Default Css Test 3" {
@@ -173,8 +174,8 @@ class PresentationTest : StringSpec(
           }
         }
 
-      kslides.css.toString() shouldBe "aaa"
-      kslides.presentation("/").css.toString() shouldBe "aaa\n"
+      kslides.css.toString().trim() shouldBe "aaa"
+      kslides.presentation("/").css.toString().trim() shouldBe "aaa"
     }
 
     "Default Css Test 4" {
@@ -182,7 +183,8 @@ class PresentationTest : StringSpec(
         kslidesTest {
           css += "aaa"
           presentation {
-            dslSlide { css += "bbb"; content { } }
+            css += "bbb"
+            dslSlide {  content { } }
           }
         }.apply {
           presentations.forEach { p ->
@@ -190,7 +192,60 @@ class PresentationTest : StringSpec(
           }
         }
 
-      kslides.css.toString() shouldBe "aaa"
-      kslides.presentation("/").css.toString() shouldBe "aaa\nbbb"
+      kslides.css.toString().trim() shouldBe "aaa"
+      kslides.presentation("/").css.toString().trim() shouldBe "aaa\n\nbbb"
+    }
+
+    "Css Test 1" {
+      val kslides =
+        shouldThrowExactly<IllegalArgumentException> {
+          kslidesTest {
+            presentation {
+              dslSlide {
+                css += "bbb"; content { }
+              }
+            }
+          }.apply {
+            presentations.forEach { p ->
+              generatePage(p)
+            }
+          }
+        }
+    }
+
+    "Css Test 2" {
+      val kslides =
+        shouldThrowExactly<IllegalArgumentException> {
+          kslidesTest {
+            presentation {
+              verticalSlides {
+                css += "bbb"
+                dslSlide {
+                  content { }
+                }
+              }
+            }
+          }.apply {
+            presentations.forEach { p ->
+              generatePage(p)
+            }
+          }
+        }
+    }
+
+    "Vertical Slides Test" {
+      val kslides =
+        shouldThrowExactly<IllegalArgumentException> {
+          kslidesTest {
+            presentation {
+              verticalSlides {
+              }
+            }
+          }.apply {
+            presentations.forEach { p ->
+              generatePage(p)
+            }
+          }
+        }
     }
   })

@@ -12,22 +12,19 @@ class Presentation(val kslides: KSlides) {
   internal val presentationConfig = PresentationConfig()
   internal lateinit var finalConfig: PresentationConfig
   internal val slides = mutableListOf<Slide>()
-
-  internal val jsFiles = mutableListOf(JsFile("dist/reveal.js"))
-  internal val cssFiles =
-    mutableListOf(
-      CssFile("dist/reveal.css"),
-      CssFile("dist/reset.css"),
-    )
-
-  // Initialize css with the global css value
-  val css by lazy { AppendableString(kslides.css.let { if (it.isNotBlank()) "$it\n" else "" }) }
-  var path = "/"
-
   internal val playgroundPath by lazy { kslides.outputConfig.playgroundDir.ensureSuffix("/") }
 
+  // User variables
+  // Initialize with the global config value
+  val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
+  val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
+
+  // Initialize css with the global css value
+  val css by lazy { CssValue(kslides.css) }
+  var path = "/"
+
   internal fun validatePath() {
-    require(path.removePrefix("/") !in kslides.kslidesConfig.staticRoots) {
+    require(path.removePrefix("/") !in kslides.kslidesConfig.httpStaticRoots.map { it.dirname }) {
       "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\""
     }
 
@@ -117,7 +114,7 @@ class Presentation(val kslides: KSlides) {
 
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
-    css += "${CssBuilder().apply(block)}\n"
+    css += block
   }
 
   @KSlidesDslMarker
@@ -133,13 +130,16 @@ class Presentation(val kslides: KSlides) {
             // for both http and the filesystem. Without resetting the slide context, you will end up with double the slides
             vcontext.resetContext()
             block(vcontext)
+
+            require(vcontext.verticalSlides.isNotEmpty()) {
+              throw IllegalArgumentException("A verticalSlides{} section requires one or more slides")
+            }
             section(vcontext.classes.nullIfBlank()) {
               vcontext.id.also { if (it.isNotBlank()) id = it }
 
               // Apply config items for all the slides in the vertical slide
               vcontext.slideConfig.applyConfig(this)
               vcontext.slideConfig.applyMarkdownItems(this)
-
               vcontext.verticalSlides
                 .forEach { verticalSlide ->
                   verticalSlide.content(div, verticalSlide, useHttp)
@@ -439,6 +439,8 @@ class Presentation(val kslides: KSlides) {
   companion object : KLogging()
 }
 
-class JsFile(val filename: String)
+data class StaticRoot(val dirname: String)
 
-class CssFile(val filename: String, val id: String = "")
+data class JsFile(val filename: String)
+
+data class CssFile(val filename: String, val id: String = "")

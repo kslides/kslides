@@ -155,7 +155,7 @@ fun main() {
           backgroundIframe = "https://www.readingbat.com"
         }
 
-        content{}
+        content {}
       }
 
       markdownSlide {
