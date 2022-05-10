@@ -51,40 +51,30 @@ fun DslSlide.playground(
 }
 
 @HtmlTagMarker
-fun FlowContent.codeSnippet(
-  language: String,
-  text: String,
-  highlightPattern: String = "", // "" turns on all lines, "none" turns off line numbers
-  lineOffSet: Int = -1,
-  dataId: String = "",           // For animation
-  trim: Boolean = true,
-  escapeHtml: Boolean = false,
-  copyButton: Boolean = true,    // Adds COPY button
-  copyButtonText: String = "",
-  copyButtonMsg: String = "",
-) {
+fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
+  val config = CodeSnippetConfig().apply { block(this) }
   pre {
-    if (dataId.isNotBlank())
-      attributes["data-id"] = dataId
-    if (!copyButton)
-      attributes["data-cc"] = copyButton.toString()
-    if (copyButtonText.isNotBlank())
-      attributes["data-cc-copy"] = copyButtonText
-    if (copyButtonMsg.isNotBlank())
-      attributes["data-cc-copied"] = copyButtonMsg
+    if (config.dataId.isNotBlank())
+      attributes["data-id"] = config.dataId
+    if (!config.copyButton)
+      attributes["data-cc"] = config.copyButton.toString()
+    if (config.copyButtonText.isNotBlank())
+      attributes["data-cc-copy"] = config.copyButtonText
+    if (config.copyButtonMsg.isNotBlank())
+      attributes["data-cc-copied"] = config.copyButtonMsg
 
-    code(language.nullIfBlank()) {
-      if (!highlightPattern.toLower().contains("none"))
-        attributes["data-line-numbers"] = highlightPattern.stripBraces()
-      if (lineOffSet != -1)
-        attributes["data-ln-start-from"] = lineOffSet.toString()
-      if (trim)
+    code(config.language.nullIfBlank()) {
+      if (!config.highlightPattern.toLower().contains("none"))
+        attributes["data-line-numbers"] = config.highlightPattern.stripBraces()
+      if (config.lineOffSet != -1)
+        attributes["data-ln-start-from"] = config.lineOffSet.toString()
+      if (config.trim)
         attributes["data-trim"] = ""
-      if (!escapeHtml)
+      if (!config.escapeHtml)
         attributes["data-noescape"] = ""
       //script { // This will allow unwrapped html
       //type = "text/template"
-      +text
+      +config.code
       //}
     }
   }

@@ -107,7 +107,7 @@ fun main() {
 
       css +=
         """
-        #mdslide p { 
+        #markdownslide p { 
           color: #FF6836; 
         }
         """
@@ -115,7 +115,7 @@ fun main() {
       verticalSlides {
         // mdslide begin
         markdownSlide {
-          id = "mdslide"
+          id = "markdownslide"
 
           content {
             """
@@ -137,9 +137,16 @@ fun main() {
         slideDefinition(slides, "mdslide")
       }
 
+      css {
+        rule("#htmlslide p") {
+          color = Color("blue")
+        }
+      }
+
       verticalSlides {
         // htmlslide begin
         htmlSlide {
+          id = "htmlslide"
           content {
             """
             <h1>An HTML Slide</h1>
@@ -202,7 +209,11 @@ fun main() {
           content {
             h2 { +"Highlighted Code with a dslSlide" }
             val file = "kslides-examples/src/main/kotlin/examples/HelloWorldK.kt"
-            codeSnippet("kotlin", include(file), "[|3,7|4,6|5|4-6]")
+            codeSnippet {
+              language = "kotlin"
+              highlightPattern = "[|3,7|4,6|5|4-6]"
+              +include(file)
+            }
             h3 { +"👇" }
             aside("notes") {
               +"This slide shows highlighted code. You can specify the lines you want to highlight."
@@ -224,7 +235,11 @@ fun main() {
             content {
               h2 { +"Animated Code with a dslSlide" }
               val file = "kslides-examples/src/main/kotlin/examples/assign.js"
-              codeSnippet("javascript", include(file, linePattern), dataId = "code-animation")
+              codeSnippet {
+                language = "javascript"
+                dataId = "code-animation"
+                +include(file, linePattern)
+              }
               h3 { +"👇" }
               aside("notes") {
                 +"This slide shows animated code highlights."
@@ -265,13 +280,13 @@ fun main() {
 
       verticalSlides {
 
-        val root = "kslides-examples/src/main/kotlin/playground"
+        val pg = "kslides-examples/src/main/kotlin/playground"
 
         // pg1 begin
         dslSlide {
           content {
             h2 { +"Kotlin Playground Support" }
-            playground("$root/HelloWorld.kt") {
+            playground("$pg/HelloWorld.kt") {
               args = "1 2 3"
             }
           }
@@ -284,11 +299,7 @@ fun main() {
         dslSlide {
           content {
             h2 { +"Playground with Additional Code" }
-            playground(
-              "$root/HelloPets.kt",
-              "$root/Cat.kt",
-              "$root/Dog.kt"
-            ) {
+            playground("$pg/HelloPets.kt", "$pg/Cat.kt", "$pg/Dog.kt") {
               theme = PlaygroundTheme.IDEA
             }
           }
@@ -306,7 +317,7 @@ fun main() {
               em { +"it%2==0" }
               +" )"
             }
-            playground("$root/TestLambdas.kt") {
+            playground("$pg/TestLambdas.kt") {
               height = "250px"
               dataTargetPlatform = TargetPlatform.JUNIT
             }
@@ -320,7 +331,7 @@ fun main() {
         dslSlide {
           content {
             h2 { +"Playground Using Kotlin/JS" }
-            playground("$root/JsPlayground.txt") {
+            playground("$pg/JsPlayground.txt") {
               theme = PlaygroundTheme.IDEA
               dataTargetPlatform = TargetPlatform.JS
               dataJsLibs = "https://unpkg.com/moment@2"
@@ -516,9 +527,18 @@ fun main() {
         }
       }
 
+      css +=
+        """
+        #tables th {
+          color: red; 
+          border-bottom-color: #586E75;
+        }
+        """
+
       verticalSlides {
         // tabular begin
         dslSlide {
+          id = "tables"
           content {
             h2 { +"Tables" }
             table {
@@ -759,12 +779,12 @@ fun main() {
           content {
             h2 { +"Fit Text" }
             p { +"Resizes text to be as large as possible within its container. 👇" }
-            codeSnippet(
-              "kotlin",
-              include(slides, "3", beginToken = "ft1 begin", endToken = "ft1 end"),
-              highlightPattern = "none",
+            codeSnippet {
+              language = "kotlin"
+              highlightPattern = "none"
               copyButton = false
-            )
+              +include(slides, "3", beginToken = "ft1 begin", endToken = "ft1 end")
+            }
             p { +"or" }
             pre {
               attributes["data-cc"] = "false"
@@ -804,12 +824,12 @@ fun main() {
           content {
             h2 { +"Stretch" }
             p { +"Makes an element as tall as possible while remaining within the slide bounds. 👇" }
-            codeSnippet(
-              "kotlin",
-              include(slides, "3-7", beginToken = "stretch begin", endToken = "stretch end"),
-              highlightPattern = "none",
-              copyButton = false,
-            )
+            codeSnippet {
+              language = "kotlin"
+              highlightPattern = "none"
+              copyButton = false
+              +include(slides, "3-7", beginToken = "stretch begin", endToken = "stretch end")
+            }
             p { +"or" }
             pre {
               attributes["data-cc"] = "false"
