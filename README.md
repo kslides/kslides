@@ -144,29 +144,48 @@ kslides {
 }
 ```
 
+| Variable | Default | Description | 
+|----------|---------|-------------|
+| _css_    | ""      |             |
+
 ### kslidesConfig
 
-The `kslideConfig` section contains global options that control the kslides setup.
-The `kslideConfig` options and defaults values are
+The `kslideConfig` section specifies the kslides setup.
+The kslideConfig options and defaults values are
 [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt).
 
 ### output
 
-The `output` section defines how slide content is made available. The available variables are 
-described [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
-
+The `output` section specifies how slide content is made available. The options and defaults values are
+[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
 
 ```kotlin
 presentationConfig {
   menuConfig {}           // Optional
   copyCodeConfig {}       // Optional
-  slideConfig {}          // Optional
   playgroundConfig {}     // Optional
+  slideConfig {}          // Optional
 }
 ```
 
-The `output` section options and default values are
-[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
+A `presentationConfig` section appears in either a kslides or a presentation section. The options and defaults values
+are
+[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt)
+.
+
+A `menuConfig` section appears in a presentationConfig section. The options and defaults values are
+[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/MenuConfig.kt).
+
+A `copyCodeConfig` section appears in a presentationConfig section. The options and defaults values are
+[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/CopyCodeConfig.kt)
+.
+
+A `playgroundConfig` section appears in a presentationConfig section. The options and defaults values are
+[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt)
+.
+
+A `slideConfig` section appears in either a presentationConfig or a slide section. The options and defaults values are
+[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/SlideConfig.kt).
 
 ### css
 
@@ -210,11 +229,7 @@ they are referenced.
 ```kotlin
 presentation {
   css {}
-  presentationConfig {
-    menuConfig {}
-    copyCodeConfig {}
-    slideConfig {}
-  }
+  presentationConfig {}
   markdownSlide {
     slideConfig {}
     output {}
@@ -231,6 +246,23 @@ presentation {
   }
 }
 ```
+
+VerticalSlideContext
+
+| Variable  | Default | Description | 
+|-----------|---------|-------------|
+| _id_      | ""      |             |
+| _style_   | ""      |             |
+| _classes_ | ""      |             |
+
+
+
+| Variable   | Default                              | Description                       | 
+|------------|--------------------------------------|-----------------------------------|
+| _path_     | "/"                                  | Presentation diretory or filename |
+| _css_      | kslides.css value                    |                                   |
+| _cssFiles_ | kslides.kslidesConfig.cssFiles value |                                   |
+| _jsFiles_  | kslides.kslidesConfig.jsFiles value  |                                   |
 
 ## Misc Notes
 

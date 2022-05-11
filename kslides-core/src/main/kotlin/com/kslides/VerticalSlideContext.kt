@@ -14,6 +14,7 @@ class VerticalSlideContext {
 
   // User variables
   var id = ""
+  var style = ""
   var classes = ""
 
   @KSlidesDslMarker

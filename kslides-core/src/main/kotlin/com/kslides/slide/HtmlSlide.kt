@@ -6,9 +6,9 @@ interface HtmlSlide {
   var _htmlBlock: () -> String
   var _htmlAssigned: Boolean
 
-  // User variables
-  var classes: String
+  var id: String
   var style: String
+  var classes: String
   var indentToken: String
   var disableTrimIndent: Boolean
 
@@ -21,7 +21,6 @@ class HorizontalHtmlSlide(presentation: Presentation, content: SlideArgs) : Hori
   override var _htmlAssigned = false
 
   // User variables
-  override var style = ""
   override var indentToken = INDENT_TOKEN
   override var disableTrimIndent = false
 
@@ -38,7 +37,6 @@ class VerticalHtmlSlide(presentation: Presentation, content: SlideArgs) : Vertic
   override var _htmlAssigned = false
 
   // User variables
-  override var style = ""
   override var indentToken = INDENT_TOKEN
   override var disableTrimIndent = false
 

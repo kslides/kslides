@@ -195,7 +195,7 @@ class KSlides {
               static(rootDir) {
                 baseDirs.forEach {
                   static(it) {
-                    logger.info { "Registering http dir: $it" }
+                    logger.debug { "Registering http dir $it" }
                     resources(it)
                   }
                 }

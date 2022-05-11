@@ -23,6 +23,7 @@ abstract class Slide(private val presentation: Presentation, internal val conten
 
   // User variables
   var id = ""
+  var style = ""
   var classes = ""
   var hidden = false
   var uncounted = false
@@ -37,6 +38,9 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   fun processSlide(section: SECTION) {
     if (id.isNotBlank())
       section.id = id
+
+    if (style.isNotBlank())
+      section.style = style
 
     if (hidden)
       section.attributes["data-visibility"] = "hidden"

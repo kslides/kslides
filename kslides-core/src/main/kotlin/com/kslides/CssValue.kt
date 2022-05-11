@@ -20,6 +20,10 @@ class CssValue(private var text: String = "", val valid: Boolean = true) {
 
   fun prependIndent(indentToken: String) = text.prependIndent(indentToken)
 
+  fun clear() {
+    text = ""
+  }
+
   override fun toString() = text
 
   companion object {

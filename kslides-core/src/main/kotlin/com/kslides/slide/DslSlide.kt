@@ -10,7 +10,7 @@ interface DslSlide {
   var _dslAssigned: Boolean
   var _dslBlock: SECTION.() -> Unit
 
-  // User variables
+  var id: String
   var style: String
   var classes: String
 
@@ -25,7 +25,6 @@ class HorizontalDslSlide(override val presentation: Presentation, content: Slide
   override var _dslAssigned = false
 
   // User variables
-  override var style = ""
 
   @KSlidesDslMarker
   fun content(dslBlock: SECTION.() -> Unit) {
@@ -44,9 +43,6 @@ class VerticalDslSlide(override val presentation: Presentation, content: SlideAr
   override var _dslBlock: SECTION.() -> Unit = { }
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
-
-  // User variables
-  override var style = ""
 
   @KSlidesDslMarker
   fun content(dslBlock: SECTION.() -> Unit) {

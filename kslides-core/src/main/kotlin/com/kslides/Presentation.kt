@@ -15,13 +15,11 @@ class Presentation(val kslides: KSlides) {
   internal val playgroundPath by lazy { kslides.outputConfig.playgroundDir.ensureSuffix("/") }
 
   // User variables
-  // Initialize with the global config value
-  val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
-  val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
-
-  // Initialize css with the global css value
-  val css by lazy { CssValue(kslides.css) }
   var path = "/"
+  // Initialized with the global values
+  val css by lazy { CssValue(kslides.css) }
+  val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
+  val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
 
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
@@ -47,6 +45,7 @@ class Presentation(val kslides: KSlides) {
             }
             section(vcontext.classes.nullIfBlank()) {
               vcontext.id.also { if (it.isNotBlank()) id = it }
+              vcontext.style.also { if (it.isNotBlank()) style = it }
 
               // Apply config items for all the slides in the vertical slide
               vcontext.slideConfig.applyConfig(this)
@@ -94,6 +93,7 @@ class Presentation(val kslides: KSlides) {
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
             require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
+
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
@@ -119,8 +119,6 @@ class Presentation(val kslides: KSlides) {
 
   private fun DIV.processDsl(s: DslSlide) {
     section(s.classes.nullIfBlank()) {
-      if (s.style.isNotBlank())
-        style = s.style
       s.processSlide(this)
       s._section = this // TODO This is a hack that will go away when context receivers work
       s._dslBlock(this)
@@ -156,8 +154,6 @@ class Presentation(val kslides: KSlides) {
 
   private fun DIV.processHtml(s: HtmlSlide) {
     section(s.classes.nullIfBlank()) {
-      if (s.style.isNotBlank())
-        style = s.style
       s.processSlide(this)
       require(s._htmlAssigned) { "htmlSlide missing content{} section" }
       s._htmlBlock()
