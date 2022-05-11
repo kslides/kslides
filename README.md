@@ -3,13 +3,13 @@
 [![Release](https://jitpack.io/v/kslides/kslides.svg)](https://jitpack.io/#kslides/kslides)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/kslides/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=kslides/kslides&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://app.travis-ci.com/kslides/kslides.svg?branch=master)](https://app.travis-ci.com/kslides/kslides)
-[![Kotlin version](https://img.shields.io/badge/kotlin-1.7.0-Beta-red?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin version](https://img.shields.io/badge/kotlin-1.6.21-red?logo=kotlin)](http://kotlinlang.org)
 
-**kslides** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com) 
-presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint. 
+**kslides** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com)
+presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint.
 It works particularly well for presentations with code snippets and animations. Slides are
-authored in [Markdown](https://www.markdownguide.org), [HTML](https://www.w3schools.com/html/), 
-or the Kotlin [HTML DSL](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started). 
+authored in [Markdown](https://www.markdownguide.org), [HTML](https://www.w3schools.com/html/),
+or the Kotlin [HTML DSL](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started).
 
 [![kslides screenshot](https://kslides.github.io/kslides/images/kslides-screenshot.png)](https://kslides.github.io/kslides/)
 
@@ -22,17 +22,20 @@ It is also running dynamically on [Heroku](https://kslides-repo.herokuapp.com).
 
 [![Template](https://img.shields.io/endpoint?color=%232A9EEE&logo=github&style=flat&url=https%3A%2F%2Fraw.githubusercontent.com%2Fkslides%2Fkslides%2Fmaster%2Fdocs%2Fshields%2Ftemplate.json)](https://github.com/kslides/kslides-template/generate)
 
-To create a kslides presentation, generate a new repository using the [kslides-template](https://github.com/kslides/kslides-template)
-repo as a [template](https://github.com/kslides/kslides-template/generate). 
+To create a kslides presentation, generate a new repository using
+the [kslides-template](https://github.com/kslides/kslides-template)
+repo as a [template](https://github.com/kslides/kslides-template/generate).
 
-The kslides-template [README.md](https://github.com/kslides/kslides-template/blob/master/README.md) describes how to generate 
+The kslides-template [README.md](https://github.com/kslides/kslides-template/blob/master/README.md) describes how to
+generate
 and publish slide content once you have created your new kslides repo.
 
 ## Defining a Presentation
 
-A presentation is created using a [Kotlin DSL](https://medium.com/adobetech/building-elegant-dsls-with-kotlin-707726c5ed21). 
+A presentation is created using
+a [Kotlin DSL](https://medium.com/adobetech/building-elegant-dsls-with-kotlin-707726c5ed21).
 Defining a presentation requires a minimal knowledge of Kotlin. If you are comfortable with Python, Javascript or Java,
-you will have no problem with the Kotlin code. 
+you will have no problem with the Kotlin code.
 
 The following _kslides_ definition generates [this presentation](https://kslides.github.io/kslides/helloworld.html).
 
@@ -54,7 +57,7 @@ The following _kslides_ definition generates [this presentation](https://kslides
     // Make this presentation available at helloworld.html
     path = "helloworld.html"
 
-    // Specify css styles  as a string
+    // Specify css styles as a string
     css +=
       """
         .htmlslide h2 {
@@ -124,52 +127,45 @@ The following _kslides_ definition generates [this presentation](https://kslides
 
 ## ** THE DOCS ARE STILL A WORK IN PROGRESS **
 
-## Sections  
+## Sections
 
 ### kslides
 
 A `kslides` section contains configuration values, output directives, css defaults, presentation configuration defaults
-and presentation defintions. They can be declared in any order. 
+and presentation defintions. They can be declared in any order.
 
 ```kotlin
 kslides {
-  kslidesConfig{}           // Optional
+  kslidesConfig {}          // Optional
   output {}                 // Optional
+  presentationConfig {}     // Optional
   css {}                    // Optional
-  presentationConfig {      // Optional
-    menuConfig {}           // Optional
-    copyCodeConfig {}       // Optional
-    slideConfig {}          // Optional
-    playgroundConfig {}     // Optional
-  }
   presentation {}           // One or more presentations
 }
 ```
 
-### kslideConfig
+### kslidesConfig
 
-The `kslideConfig` section contains global options that control the kslides setup. 
-The `kslideConfig` options and defaults values are 
+The `kslideConfig` section contains global options that control the kslides setup.
+The `kslideConfig` options and defaults values are
 [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt).
-
 
 ### output
 
-The `output` section defines how slide content is made available.
-This `output` section would write slide content to html files in the _/docs_ directory and serve
-the slide content via HTTP on port 8080.
+The `output` section defines how slide content is made available. The available variables are 
+described [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
+
 
 ```kotlin
-output {
-  enableFileSystem = true  
-  outputDir = "docs"
-  
-  enableHttp = true
-  httpPort = 8080
+presentationConfig {
+  menuConfig {}           // Optional
+  copyCodeConfig {}       // Optional
+  slideConfig {}          // Optional
+  playgroundConfig {}     // Optional
 }
 ```
 
-The `output` section options and default values are 
+The `output` section options and default values are
 [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
 
 ### css
@@ -178,36 +174,24 @@ Presentation CSS can be specified using raw CSS or the Kotlin [CSS DSL](https://
 
 ### Presentation
 
-A `presentation` section includes one or more slide sections. There are 3 types of slides:
+A `presentation` section includes one or more slide sections. There are 3 types of slides.
 
 ```kotlin
 presentation {
-
-  presentationConfig {      // Optional
-    menuConfig {}           // Optional
-    copyCodeConfig {}       // Optional
-    slideConfig {}          // Optional
-    playgroundConfig {}     // Optional
-  }
-
+  presentationConfig {}     // Optional
   css {}                    // Optional
-  
-  markdownSlide {
-    slideConfig {}          // Optional
-    content {}              // Required
+  slide {}                  // Where slide can be markdownSlide, htmlSlide or dslSlide
+  verticalSlides {
+    slide {}
+    slide {}
   }
-  
-  htmlSlide {
-    slideConfig {}          // Optional
-    content {}              // Required
+}
+```
 
-  }
-  
-  dslSlide {
-    slideConfig {}          // Optional
-    content {}              // Required
-
-  }
+```kotlin
+slide {  // Where slide can be markdownSlide, htmlSlide or dslSlide
+  slideConfig {}          // Optional
+  content {}              // Required
 }
 ```
 
@@ -215,9 +199,9 @@ presentation {
 
 Presentation CSS can be specified using raw CSS or the Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html).
 
-Unlike CSS values in HTML files, which must be specified in the _head_, CSS values in kslide can specified 
+Unlike CSS values in HTML files, which must be specified in the _head_, CSS values in kslide can specified
 throughout the definition. It is convenient to have the CSS values right above the code in the slides where
-they are referenced. 
+they are referenced.
 
 ### presentationConfig
 
@@ -252,40 +236,46 @@ presentation {
 
 ### Using dslSlides
 
-[This](https://plugins.jetbrains.com/plugin/12205-html-to-kotlinx-html) plugin makes it much easier to work with 
+[This](https://plugins.jetbrains.com/plugin/12205-html-to-kotlinx-html) plugin makes it much easier to work with
 HTML. Just copy some HTML into your copy buffer, and when you paste it, it will give you
 the option to convert it to the appropriate Kotlin HTML DSL code. Install it by going to "Plugins" and searching for
 `HTML to kotlinx.html` in "Marketplace"
 
 ### Formatting
+
 Disable the IntelliJ `Reformat code` option when you commit. The presentation
 html files are space-sensitive and might not work if they are formatted.
 
 ### Images
-* Presentations served by HTTP load static files from `/src/main/resources/public`, whereas 
-filesystem presentations load from `/docs`.
+
+* Presentations served by HTTP load static files from `/src/main/resources/public`, whereas
+  filesystem presentations load from `/docs`.
 
 ### Code Slides
+
 Rather than embedding code directly in markdownSlides, it is much better to use the
 `include()` call. You are likely to have space issues if you embed code directly,
 If you choose to embed code, remove all indentation in the `content{}` section.
 
 ### Local Development
+
 * Speaker Notes do not work properly when running locally.
 
 ### Kotlin Playground
-Playground code using `dataTargetPlatform = JUNIT` should not hae a `package` decl. 
 
-### Heroku 
+Playground code using `dataTargetPlatform = JUNIT` should not hae a `package` decl.
+
+### Heroku
 
 * Add a config var: `GRADLE_TASK=-Pprod=true uberjar`
 
-### MarkDown Slide 
+### MarkDown Slide
 
 * When a `markdownSlide` is in a `verticalSlides` section and references an external file, the string "---"
   is interpreted as a vertical page separator and "--- " (with a space suffix) is rendered as a markdown horizontal
   line.
-* 
+*
+
 ## Third Party Plugins
 
 * https://github.com/Martinomagnifico/reveal.js-copycode

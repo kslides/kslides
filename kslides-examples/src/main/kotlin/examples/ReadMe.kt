@@ -21,7 +21,7 @@ fun main() {
       // Make this presentation available at helloworld.html
       path = "helloworld.html"
 
-      // Specify css styles  as a string
+      // Specify css styles as a string
       css +=
         """
         .htmlslide h2 {

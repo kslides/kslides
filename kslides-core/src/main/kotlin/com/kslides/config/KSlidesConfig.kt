@@ -9,7 +9,6 @@ class KSlidesConfig {
     StaticRoot("dist"),
     StaticRoot("js"),
     StaticRoot("plugin"),
-    StaticRoot("revealjs")
   )
   val jsFiles = mutableListOf(JsFile("dist/reveal.js"))
   val cssFiles = mutableListOf(

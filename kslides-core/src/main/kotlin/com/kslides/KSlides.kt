@@ -103,11 +103,6 @@ class KSlides {
   val css = CssValue()
 
   @KSlidesDslMarker
-  fun css(block: CssBuilder.() -> Unit) {
-    css += block
-  }
-
-  @KSlidesDslMarker
   fun kslidesConfig(block: KSlidesConfig.() -> Unit) {
     kslidesConfigBlock = block
   }
@@ -123,6 +118,11 @@ class KSlides {
   }
 
   @KSlidesDslMarker
+  fun css(block: CssBuilder.() -> Unit) {
+    css += block
+  }
+
+  @KSlidesDslMarker
   fun presentation(block: Presentation.() -> Unit) {
     presentationBlocks += block
   }
@@ -132,35 +132,35 @@ class KSlides {
       require(config.outputDir.isNotBlank()) { "outputDir value must not be empty" }
 
       val outputDir = config.outputDir
-      val srcPrefix = config.staticRootDir.ensureSuffix("/")
+      val rootPrefix = config.staticRootDir.ensureSuffix("/")
 
       // Create directory if missing
       File(outputDir).mkdir()
 
       config.kslides.presentationMap
         .forEach { (key, p) ->
-          val (file, prefix) =
+          val (file, srcPrefix) =
             when {
-              key == "/" -> File("$outputDir/index.html") to srcPrefix
-              key.endsWith(".html") -> File("$outputDir/$key") to srcPrefix
+              key == "/" -> File("$outputDir/index.html") to rootPrefix
+              key.endsWith(".html") -> File("$outputDir/$key") to rootPrefix
               else -> {
                 val pathElems = "$outputDir/$key".split("/").filter { it.isNotBlank() }
                 val path = pathElems.joinToString("/")
                 val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
                 // Create directory if missing
                 File(path).mkdir()
-                File("$path/index.html") to "$dotDot$srcPrefix"
+                File("$path/index.html") to "$dotDot$rootPrefix"
               }
             }
           logger.info { "Writing presentation $key to $file" }
-          file.writeText(generatePage(p, false, prefix))
+          file.writeText(generatePage(p, false, srcPrefix))
         }
     }
 
     internal fun runHttpServer(config: OutputConfig, wait: Boolean) {
       embeddedServer(CIO, port = config.port) {
         // By embedding this logic here, rather than in an Application.module() call, we are not able to use auto-reload
-        install(CallLogging) { level = config.logLevel }
+        install(CallLogging) { level = config.callLoggingLogLevel }
         install(DefaultHeaders) { header("X-Engine", "Ktor") }
         install(Compression) {
           gzip { priority = 1.0 }
@@ -182,20 +182,34 @@ class KSlides {
               resources(".")
             }
 
-          config.kslides.kslidesConfig.httpStaticRoots.forEach {
-            if (it.dirname.isNotBlank())
-              static("/${it.dirname}") {
-                resources(it.dirname)
-              }
-          }
+          // This is hardcoded for http since it is shipped with the jar
+          val rootDir = "revealjs"
+          val baseDirs =
+            config.kslides.kslidesConfig.httpStaticRoots
+              .filter { it.dirname.isNotBlank() }
+              .map { it.dirname }
 
-          config.kslides.presentationMap.forEach { (key, p) ->
-            get(key) {
-              respondWith {
-                generatePage(p, true)
+          if (baseDirs.isNotEmpty())
+            static("/") {
+              staticBasePackage = rootDir
+              static(rootDir) {
+                baseDirs.forEach {
+                  static(it) {
+                    logger.info { "Registering http dir: $it" }
+                    resources(it)
+                  }
+                }
               }
             }
-          }
+
+          config.kslides.presentationMap
+            .forEach { (key, p) ->
+              get(key) {
+                respondWith {
+                  generatePage(p, true, "/$rootDir")
+                }
+              }
+            }
         }
       }.start(wait = wait)
     }

@@ -7,17 +7,16 @@ import kotlinx.html.dom.*
 import java.io.*
 
 internal object Page {
-
   val preRegex = Regex("\\s*<pre.*>\\s*")
   val codeRegex = Regex("\\s*<code.*>\\s*")
 
-  fun generatePage(p: Presentation, useHttp: Boolean = true, prefix: String = "/"): String {
+  internal fun generatePage(p: Presentation, useHttp: Boolean = true, srcPrefix: String = "/"): String {
     val htmldoc =
       document {
         val config = p.finalConfig
         append.html {
-          generateHead(p, config, prefix.ensureSuffix("/"))
-          generateBody(p, config, prefix.ensureSuffix("/"), useHttp)
+          generateHead(p, config, srcPrefix.ensureSuffix("/"))
+          generateBody(p, config, srcPrefix.ensureSuffix("/"), useHttp)
         }
       }
 

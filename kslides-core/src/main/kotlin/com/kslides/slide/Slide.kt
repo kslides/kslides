@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.kslides.CssValue.Companion.cssError
+import com.kslides.config.*
 import kotlinx.css.*
 import kotlinx.html.*
 import java.util.concurrent.atomic.*
@@ -16,6 +17,7 @@ abstract class Slide(private val presentation: Presentation, internal val conten
       .apply { merge(presentation.presentationConfig.slideConfig) }
       .apply { merge(slideConfig) }
   }
+
   // This is used to catch incorrect usages of css
   val css = CssValue(valid = false)
 
@@ -28,6 +30,9 @@ abstract class Slide(private val presentation: Presentation, internal val conten
 
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit): Unit = cssError()
+
+  @KSlidesDslMarker
+  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
 
   fun processSlide(section: SECTION) {
     if (id.isNotBlank())
@@ -45,11 +50,8 @@ abstract class Slide(private val presentation: Presentation, internal val conten
     mergedConfig.applyConfig(section)
   }
 
-  @KSlidesDslMarker
-  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
-
   companion object {
-    val slideCount = AtomicInteger(0)
+    private val slideCount = AtomicInteger(0)
   }
 }
 

@@ -23,6 +23,7 @@ class CssValue(private var text: String = "", val valid: Boolean = true) {
   override fun toString() = text
 
   companion object {
-    fun cssError() : Nothing = throw IllegalArgumentException("css calls must be made in a kslides{} or presentation{} section")
+    fun cssError(): Nothing =
+      throw IllegalArgumentException("css calls must be made in a kslides{} or presentation{} section")
   }
 }

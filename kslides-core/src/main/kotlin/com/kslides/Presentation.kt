@@ -23,95 +23,6 @@ class Presentation(val kslides: KSlides) {
   val css by lazy { CssValue(kslides.css) }
   var path = "/"
 
-  internal fun validatePath() {
-    require(path.removePrefix("/") !in kslides.kslidesConfig.httpStaticRoots.map { it.dirname }) {
-      "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\""
-    }
-
-    (if (path.startsWith("/")) path else "/$path").also { adjustedPath ->
-      require(!kslides.presentationMap.containsKey(adjustedPath)) { "Presentation with path already defined: \"$adjustedPath\"" }
-      kslides.presentationMap[adjustedPath] = this
-    }
-  }
-
-  internal fun assignCssFiles() {
-    cssFiles += CssFile("dist/theme/${finalConfig.theme.name.toLower()}.css", "theme")
-    cssFiles += CssFile("plugin/highlight/${finalConfig.highlight.name.toLower()}.css", "highlight-theme")
-
-    if (finalConfig.enableCodeCopy)
-      cssFiles += CssFile("plugin/copycode/copycode.css")
-  }
-
-  internal fun assignJsFiles() {
-    if (finalConfig.enableSpeakerNotes)
-      jsFiles += JsFile("plugin/notes/notes.js")
-
-    if (finalConfig.enableZoom)
-      jsFiles += JsFile("plugin/zoom/zoom.js")
-
-    if (finalConfig.enableSearch)
-      jsFiles += JsFile("plugin/search/search.js")
-
-    if (finalConfig.enableMarkdown)
-      jsFiles += JsFile("plugin/markdown/markdown.js")
-
-    if (finalConfig.enableHighlight)
-      jsFiles += JsFile("plugin/highlight/highlight.js")
-
-    if (finalConfig.enableMathKatex || finalConfig.enableMathJax2 || finalConfig.enableMathJax3)
-      jsFiles += JsFile("plugin/math/math.js")
-
-    if (finalConfig.enableCodeCopy) {
-      // Required for copycode.js
-      jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js")
-      jsFiles += JsFile("plugin/copycode/copycode.js")
-    }
-
-    if (finalConfig.enableMenu)
-      jsFiles += JsFile("plugin/menu/menu.js")
-
-    // if (finalConfig.toolbar) {
-    //   jsFiles += "plugin/toolbar/toolbar.js"
-    // }
-  }
-
-  internal fun assignPlugins() {
-    if (finalConfig.enableSpeakerNotes)
-      plugins += "RevealNotes"
-
-    if (finalConfig.enableZoom)
-      plugins += "RevealZoom"
-
-    if (finalConfig.enableSearch)
-      plugins += "RevealSearch"
-
-    if (finalConfig.enableMarkdown)
-      plugins += "RevealMarkdown"
-
-    if (finalConfig.enableHighlight)
-      plugins += "RevealHighlight"
-
-    if (finalConfig.enableMathKatex)
-      plugins += "RevealMath.KaTeX"
-
-    if (finalConfig.enableMathJax2)
-      plugins += "RevealMath.MathJax2"
-
-    if (finalConfig.enableMathJax3)
-      plugins += "RevealMath.MathJax3"
-
-    if (finalConfig.enableMenu)
-      plugins += "RevealMenu"
-
-    if (finalConfig.enableCodeCopy)
-      plugins += "CopyCode"
-  }
-
-  internal fun assignDependencies() {
-    // if (finalConfig.toolbar)
-    //   dependencies += "plugin/toolbar/toolbar.js"
-  }
-
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
     css += block
@@ -149,21 +60,6 @@ class Presentation(val kslides: KSlides) {
           }
       }
     }.also { slides += it }
-
-  private fun SECTION.processMarkdown(s: MarkdownSlide) {
-    if (s.filename.isBlank()) {
-      s._markdownBlock()
-        .also { markdown ->
-          if (markdown.isNotBlank())
-            script("text/template") {
-              markdown
-                .indentInclude(s.indentToken)
-                .let { if (!s.disableTrimIndent) it.trimIndent() else it }
-                .also { rawHtml("\n$it\n") }
-            }
-        }
-    }
-  }
 
   @KSlidesDslMarker
   fun markdownSlide(slideContent: HortizontalMarkdownSlide.() -> Unit = {}) =
@@ -300,8 +196,8 @@ class Presentation(val kslides: KSlides) {
   fun slideDefinition(
     source: String,
     token: String,
-    highlightPattern: String = "",
     title: String = "Slide Definition",
+    highlightPattern: String = "[]",
     id: String = "",
     language: String = "kotlin",
   ) {
@@ -344,6 +240,110 @@ class Presentation(val kslides: KSlides) {
     }
   }
 
+  internal fun validatePath() {
+    require(path.removePrefix("/") !in kslides.kslidesConfig.httpStaticRoots.map { it.dirname }) {
+      "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\""
+    }
+
+    (if (path.startsWith("/")) path else "/$path").also { adjustedPath ->
+      require(!kslides.presentationMap.containsKey(adjustedPath)) { "Presentation with path already defined: \"$adjustedPath\"" }
+      kslides.presentationMap[adjustedPath] = this
+    }
+  }
+
+  internal fun assignCssFiles() {
+    cssFiles += CssFile("dist/theme/${finalConfig.theme.name.toLower()}.css", "theme")
+    cssFiles += CssFile("plugin/highlight/${finalConfig.highlight.name.toLower()}.css", "highlight-theme")
+
+    if (finalConfig.enableCodeCopy)
+      cssFiles += CssFile("plugin/copycode/copycode.css")
+  }
+
+  internal fun assignJsFiles() {
+    if (finalConfig.enableSpeakerNotes)
+      jsFiles += JsFile("plugin/notes/notes.js")
+
+    if (finalConfig.enableZoom)
+      jsFiles += JsFile("plugin/zoom/zoom.js")
+
+    if (finalConfig.enableSearch)
+      jsFiles += JsFile("plugin/search/search.js")
+
+    if (finalConfig.enableMarkdown)
+      jsFiles += JsFile("plugin/markdown/markdown.js")
+
+    if (finalConfig.enableHighlight)
+      jsFiles += JsFile("plugin/highlight/highlight.js")
+
+    if (finalConfig.enableMathKatex || finalConfig.enableMathJax2 || finalConfig.enableMathJax3)
+      jsFiles += JsFile("plugin/math/math.js")
+
+    if (finalConfig.enableCodeCopy) {
+      // Required for copycode.js
+      jsFiles += JsFile("https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js")
+      jsFiles += JsFile("plugin/copycode/copycode.js")
+    }
+
+    if (finalConfig.enableMenu)
+      jsFiles += JsFile("plugin/menu/menu.js")
+
+    // if (finalConfig.toolbar) {
+    //   jsFiles += "plugin/toolbar/toolbar.js"
+    // }
+  }
+
+  internal fun assignPlugins() {
+    if (finalConfig.enableSpeakerNotes)
+      plugins += "RevealNotes"
+
+    if (finalConfig.enableZoom)
+      plugins += "RevealZoom"
+
+    if (finalConfig.enableSearch)
+      plugins += "RevealSearch"
+
+    if (finalConfig.enableMarkdown)
+      plugins += "RevealMarkdown"
+
+    if (finalConfig.enableHighlight)
+      plugins += "RevealHighlight"
+
+    if (finalConfig.enableMathKatex)
+      plugins += "RevealMath.KaTeX"
+
+    if (finalConfig.enableMathJax2)
+      plugins += "RevealMath.MathJax2"
+
+    if (finalConfig.enableMathJax3)
+      plugins += "RevealMath.MathJax3"
+
+    if (finalConfig.enableMenu)
+      plugins += "RevealMenu"
+
+    if (finalConfig.enableCodeCopy)
+      plugins += "CopyCode"
+  }
+
+  internal fun assignDependencies() {
+    // if (finalConfig.toolbar)
+    //   dependencies += "plugin/toolbar/toolbar.js"
+  }
+
+  private fun SECTION.processMarkdown(s: MarkdownSlide) {
+    if (s.filename.isBlank()) {
+      s._markdownBlock()
+        .also { markdown ->
+          if (markdown.isNotBlank())
+            script("text/template") {
+              markdown
+                .indentInclude(s.indentToken)
+                .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+                .also { rawHtml("\n$it\n") }
+            }
+        }
+    }
+  }
+
   private fun toJsValue(key: String, value: Any) =
     when (value) {
       is Boolean, is Number -> "$key: $value"
@@ -354,7 +354,7 @@ class Presentation(val kslides: KSlides) {
       else -> throw IllegalArgumentException("Invalid value for $key: $value")
     }
 
-  fun toJs(config: PresentationConfig, srcPrefix: String) =
+  internal fun toJs(config: PresentationConfig, srcPrefix: String) =
     buildString {
       config.revealjsManagedValues.also { vals ->
         if (vals.isNotEmpty()) {
