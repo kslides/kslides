@@ -28,7 +28,7 @@ fun main() {
           color: yellow;
         }
         """
-      // or with the kotlin css DSL
+      // or use the Kotlin CSS DSL
       css {
         rule("#mdslide h2") {
           color = Color.green

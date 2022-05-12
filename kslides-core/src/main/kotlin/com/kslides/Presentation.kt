@@ -16,6 +16,7 @@ class Presentation(val kslides: KSlides) {
 
   // User variables
   var path = "/"
+
   // Initialized with the kslides values
   val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
   val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
@@ -68,17 +69,19 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
+            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} section" }
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
-            if (s.charset.isNotBlank())
-              attributes["data-charset"] = s.charset
+            val config = s.mergedConfig
+            config.markdownCharset.also { charset ->
+              if (charset.isNotBlank()) attributes["data-charset"] = charset
+            }
 
-            s.mergedConfig.applyMarkdownItems(this)
+            config.applyMarkdownItems(this)
 
-            processMarkdown(s)
+            processMarkdown(s, config)
           }.also { rawHtml("\n") }
         }
       }
@@ -92,26 +95,23 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
+            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} section" }
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
-            if (s.charset.isNotBlank())
-              attributes["data-charset"] = s.charset
+            val config = s.mergedConfig
+            config.markdownCharset.also { charset ->
+              if (charset.isNotBlank()) attributes["data-charset"] = charset
+            }
+
+            attributes["data-separator-notes"] = config.markdownNotesSeparator
 
             // These are not applicable for vertical markdown slides
             attributes["data-separator"] = ""
             attributes["data-separator-vertical"] = ""
 
-            s.mergedConfig.apply {
-              attributes["data-separator-notes"] = markdownNotesSeparator
-            }
-
-            //if (notes.isNotBlank())
-            //    attributes["data-separator-notes"] = notes
-
-            processMarkdown(s)
+            processMarkdown(s, config)
           }.also { rawHtml("\n") }
         }
       }
@@ -152,13 +152,13 @@ class Presentation(val kslides: KSlides) {
       }
     }.also { verticalSlides += it }
 
-  private fun DIV.processHtml(s: HtmlSlide) {
+  private fun DIV.processHtml(s: HtmlSlide, config: SlideConfig) {
     section(s.classes.nullIfBlank()) {
       s.processSlide(this)
       require(s._htmlAssigned) { "htmlSlide missing content{} section" }
       s._htmlBlock()
-        .indentInclude(s.indentToken)
-        .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+        .indentInclude(config.indentToken)
+        .let { if (!config.disableTrimIndent) it.trimIndent() else it }
         .also { rawHtml("\n$it") }
     }.also { rawHtml("\n") }
   }
@@ -170,7 +170,7 @@ class Presentation(val kslides: KSlides) {
         (slide as HorizontalHtmlSlide)
           .also { s ->
             slideContent(s)
-            processHtml(s)
+            processHtml(s, s.mergedConfig)
           }
       }
     }.also { slides += it }
@@ -182,7 +182,7 @@ class Presentation(val kslides: KSlides) {
         (slide as VerticalHtmlSlide)
           .also { s ->
             slideContent(s)
-            processHtml(s)
+            processHtml(s, s.mergedConfig)
           }
       }
     }.also { verticalSlides += it }
@@ -325,15 +325,15 @@ class Presentation(val kslides: KSlides) {
     //   dependencies += "plugin/toolbar/toolbar.js"
   }
 
-  private fun SECTION.processMarkdown(s: MarkdownSlide) {
+  private fun SECTION.processMarkdown(s: MarkdownSlide, config: SlideConfig) {
     if (s.filename.isBlank()) {
       s._markdownBlock()
         .also { markdown ->
           if (markdown.isNotBlank())
             script("text/template") {
               markdown
-                .indentInclude(s.indentToken)
-                .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+                .indentInclude(config.indentToken)
+                .let { if (!config.disableTrimIndent) it.trimIndent() else it }
                 .also { rawHtml("\n$it\n") }
             }
         }

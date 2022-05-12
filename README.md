@@ -64,7 +64,7 @@ The following _kslides_ definition generates [this presentation](https://kslides
           color: yellow;
         }
         """
-    // or with the kotlin css DSL
+    // or use the Kotlin CSS DSL
     css {
       rule("#mdslide h2") {
         color = Color.green
@@ -266,7 +266,32 @@ presentation {
 | _id_      | ""      | _id_ value for underlying html _section_    |
 | _style_   | ""      | _style_ value for underlying html _section_ |
 
-#### _markdownSlide_, _htmlSlide_, and _dslSlide_ variables
+#### _markdownSlide_ variables
+
+| Variable            | Default    | Description                                                           | 
+|---------------------|------------|-----------------------------------------------------------------------|
+| _css_               | ""         | String alternative to the css{} section                               |
+| _classes_           | ""         | _class_ value for underlying html _section_                           |
+| _id_                | ""         | _id_ value for underlying html _section_                              |
+| _style_             | ""         | _style_ value for underlying html _section_                           |
+| _hidden_            | false      | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0) |
+| _uncounted_         | false      | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)    |
+| _autoAnimate_       | false      | [Details](https://revealjs.com/auto-animate/)                         |
+| _filename_          | false      | [Details](https://revealjs.com/markdown/#external-markdown)           |
+
+#### _htmlSlide_ variables
+
+| Variable            | Default    | Description                                                           | 
+|---------------------|------------|-----------------------------------------------------------------------|
+| _css_               | ""         | String alternative to the css{} section                               |
+| _classes_           | ""         | _class_ value for underlying html _section_                           |
+| _id_                | ""         | _id_ value for underlying html _section_                              |
+| _style_             | ""         | _style_ value for underlying html _section_                           |
+| _hidden_            | false      | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0) |
+| _uncounted_         | false      | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)    |
+| _autoAnimate_       | false      | [Details](https://revealjs.com/auto-animate/)                         |
+
+#### _dslSlide_ variables
 
 | Variable      | Default | Description                                                           | 
 |---------------|---------|-----------------------------------------------------------------------|

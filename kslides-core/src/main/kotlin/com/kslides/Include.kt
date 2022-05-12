@@ -7,7 +7,7 @@ import org.apache.commons.text.StringEscapeUtils.escapeHtml4
 import java.io.*
 import java.net.*
 
-const val INDENT_TOKEN = "__indent__"
+const val INDENT_TOKEN = "--indent--"
 
 object Include : KLogging()
 
