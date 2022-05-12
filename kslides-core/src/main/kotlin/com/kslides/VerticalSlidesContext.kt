@@ -4,7 +4,7 @@ import com.kslides.CssValue.Companion.cssError
 import com.kslides.config.*
 import kotlinx.css.*
 
-class VerticalSlideContext {
+class VerticalSlidesContext {
   // This slideConfig is not overridden by the global and presentation slideConfig
   internal val slideConfig = SlideConfig().apply { assignDefaults() }
   internal val verticalSlides = mutableListOf<VerticalSlide>()
@@ -13,9 +13,9 @@ class VerticalSlideContext {
   val css = CssValue(valid = false)
 
   // User variables
+  var classes = ""
   var id = ""
   var style = ""
-  var classes = ""
 
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit): Unit = cssError()

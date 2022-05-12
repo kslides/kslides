@@ -16,10 +16,10 @@ class Presentation(val kslides: KSlides) {
 
   // User variables
   var path = "/"
-  // Initialized with the global values
-  val css by lazy { CssValue(kslides.css) }
-  val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
+  // Initialized with the kslides values
   val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
+  val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
+  val css by lazy { CssValue(kslides.css) }
 
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
@@ -30,7 +30,7 @@ class Presentation(val kslides: KSlides) {
   fun presentationConfig(block: PresentationConfig.() -> Unit) = block(presentationConfig)
 
   @KSlidesDslMarker
-  fun verticalSlides(block: VerticalSlideContext.() -> Unit) =
+  fun verticalSlides(block: VerticalSlidesContext.() -> Unit) =
     VerticalSlide(this) { div, slide, useHttp ->
       div.apply {
         (slide as VerticalSlide).verticalContext
@@ -85,7 +85,7 @@ class Presentation(val kslides: KSlides) {
     }.also { slides += it }
 
   @KSlidesDslMarker
-  fun VerticalSlideContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
+  fun VerticalSlidesContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
     VerticalMarkdownSlide(this@Presentation) { div, slide, _ ->
       div.apply {
         (slide as VerticalMarkdownSlide).also { s ->
@@ -140,7 +140,7 @@ class Presentation(val kslides: KSlides) {
     }.also { slides += it }
 
   @KSlidesDslMarker
-  fun VerticalSlideContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
+  fun VerticalSlidesContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
     VerticalDslSlide(this@Presentation) { div, slide, useHttp ->
       div.apply {
         (slide as VerticalDslSlide)
@@ -176,7 +176,7 @@ class Presentation(val kslides: KSlides) {
     }.also { slides += it }
 
   @KSlidesDslMarker
-  fun VerticalSlideContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
+  fun VerticalSlidesContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
     VerticalHtmlSlide(this@Presentation) { div, slide, _ ->
       div.apply {
         (slide as VerticalHtmlSlide)
@@ -212,7 +212,7 @@ class Presentation(val kslides: KSlides) {
   // slideDefinition end
 
   @KSlidesDslMarker
-  fun VerticalSlideContext.slideDefinition(
+  fun VerticalSlidesContext.slideDefinition(
     source: String,
     token: String,
     title: String = "Slide Definition",

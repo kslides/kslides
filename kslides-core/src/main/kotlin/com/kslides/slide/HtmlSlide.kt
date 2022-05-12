@@ -6,9 +6,9 @@ interface HtmlSlide {
   var _htmlBlock: () -> String
   var _htmlAssigned: Boolean
 
+  var classes: String
   var id: String
   var style: String
-  var classes: String
   var indentToken: String
   var disableTrimIndent: Boolean
 

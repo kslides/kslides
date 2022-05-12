@@ -144,9 +144,11 @@ kslides {
 }
 ```
 
-| Variable | Default | Description | 
-|----------|---------|-------------|
-| _css_    | ""      |             |
+#### _kslides_ Variables
+
+| Variable | Default | Description                             | 
+|----------|---------|-----------------------------------------|
+| _css_    | ""      | String alternative to the css{} section |
 
 ### kslidesConfig
 
@@ -247,22 +249,35 @@ presentation {
 }
 ```
 
-VerticalSlideContext
+#### _presentation_ variables
 
-| Variable  | Default | Description | 
-|-----------|---------|-------------|
-| _id_      | ""      |             |
-| _style_   | ""      |             |
-| _classes_ | ""      |             |
+| Variable   | Default                              | Description                             | 
+|------------|--------------------------------------|-----------------------------------------|
+| _path_     | "/"                                  | Presentation directory or filename      |
+| _css_      | kslides.css value                    | String alternative to the css{} section |
+| _cssFiles_ | kslides.kslidesConfig.cssFiles value | List for including additional css files |
+| _jsFiles_  | kslides.kslidesConfig.jsFiles value  | List for including additional js files  |
 
+#### _verticalSlides_ variables
 
+| Variable  | Default | Description                                 | 
+|-----------|---------|---------------------------------------------|
+| _classes_ | ""      | _class_ value for underlying html _section_ |
+| _id_      | ""      | _id_ value for underlying html _section_    |
+| _style_   | ""      | _style_ value for underlying html _section_ |
 
-| Variable   | Default                              | Description                       | 
-|------------|--------------------------------------|-----------------------------------|
-| _path_     | "/"                                  | Presentation diretory or filename |
-| _css_      | kslides.css value                    |                                   |
-| _cssFiles_ | kslides.kslidesConfig.cssFiles value |                                   |
-| _jsFiles_  | kslides.kslidesConfig.jsFiles value  |                                   |
+#### _markdownSlide_, _htmlSlide_, and _dslSlide_ variables
+
+| Variable      | Default | Description                                                           | 
+|---------------|---------|-----------------------------------------------------------------------|
+| _css_         | ""      | String alternative to the css{} section                               |
+| _classes_     | ""      | _class_ value for underlying html _section_                           |
+| _id_          | ""      | _id_ value for underlying html _section_                              |
+| _style_       | ""      | _style_ value for underlying html _section_                           |
+| _hidden_      | false   | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0) |
+| _uncounted_   | false   | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)    |
+| _autoAnimate_ | false   | [Details](https://revealjs.com/auto-animate/)                         |
+
 
 ## Misc Notes
 

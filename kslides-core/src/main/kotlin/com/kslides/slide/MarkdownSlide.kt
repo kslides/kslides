@@ -3,9 +3,9 @@ package com.kslides
 interface MarkdownSlide {
   var _markdownBlock: () -> String
 
+  var classes: String
   var id: String
   var style: String
-  var classes: String
   var filename: String
   var indentToken: String
   var disableTrimIndent: Boolean

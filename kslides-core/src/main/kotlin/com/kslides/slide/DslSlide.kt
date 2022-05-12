@@ -10,9 +10,9 @@ interface DslSlide {
   var _dslAssigned: Boolean
   var _dslBlock: SECTION.() -> Unit
 
+  var classes: String
   var id: String
   var style: String
-  var classes: String
 
   fun processSlide(section: SECTION)
 }
@@ -23,8 +23,6 @@ class HorizontalDslSlide(override val presentation: Presentation, content: Slide
   override var _dslBlock: SECTION.() -> Unit = { }
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
-
-  // User variables
 
   @KSlidesDslMarker
   fun content(dslBlock: SECTION.() -> Unit) {

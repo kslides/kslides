@@ -22,9 +22,9 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   val css = CssValue(valid = false)
 
   // User variables
+  var classes = ""
   var id = ""
   var style = ""
-  var classes = ""
   var hidden = false
   var uncounted = false
   var autoAnimate = false
@@ -62,5 +62,5 @@ abstract class Slide(private val presentation: Presentation, internal val conten
 abstract class HorizontalSlide(presentation: Presentation, content: SlideArgs) : Slide(presentation, content)
 
 open class VerticalSlide(presentation: Presentation, content: SlideArgs) : Slide(presentation, content) {
-  val verticalContext = VerticalSlideContext()
+  internal val verticalContext = VerticalSlidesContext()
 }
