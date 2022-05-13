@@ -60,7 +60,7 @@ fun kslides(block: KSlides.() -> Unit) =
       outputConfigBlock(outputConfig)
 
       if (!outputConfig.enableFileSystem && !outputConfig.enableHttp)
-        logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} section" }
+        logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} block" }
 
       if (outputConfig.enableFileSystem)
         writeToFileSystem(outputConfig)

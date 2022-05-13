@@ -28,6 +28,6 @@ class CssValue(private var text: String = "", val valid: Boolean = true) {
 
   companion object {
     fun cssError(): Nothing =
-      throw IllegalArgumentException("css calls must be made in a kslides{} or presentation{} section")
+      throw IllegalArgumentException("css calls must be made in a kslides{} or presentation{} block")
   }
 }

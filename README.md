@@ -40,16 +40,16 @@ you will have no problem with the Kotlin code.
 The following _kslides_ definition generates [this presentation](https://kslides.github.io/kslides/helloworld.html).
 
 ```kotlin
-  kslides {
+kslides {
 
   output {
     // Write the presentations to a file
     enableFileSystem = true
-    // Serve up the presentations via HTTP
+    // Also serve up the presentations via HTTP
     enableHttp = true
   }
 
-  // Default values for all presentations in this file
+  // Default values for all presentations
   presentationConfig {
   }
 
@@ -60,10 +60,10 @@ The following _kslides_ definition generates [this presentation](https://kslides
     // Specify css styles as a string
     css +=
       """
-        .htmlslide h2 {
-          color: yellow;
-        }
-        """
+      .htmlslide h2 {
+        color: yellow;
+      }
+      """
     // or use the Kotlin CSS DSL
     css {
       rule("#mdslide h2") {
@@ -71,32 +71,33 @@ The following _kslides_ definition generates [this presentation](https://kslides
       }
     }
 
-    // Default values for all slides in this presentation
+    // Config values for this presentation
     presentationConfig {
       transition = Transition.FADE
-      topLeftHref = ""
-      topRightHref = ""
+      topLeftHref = ""  // Turn off top left href
+      topRightHref = "" // Turn off top right href
 
+      // Default values for all slides in this presentation
       slideConfig {
         backgroundColor = "#2A9EEE"
       }
     }
 
-    // Slide that uses Markdown for content
+    // Slide that uses Markdown content
     markdownSlide {
       id = "mdslide"
 
       content {
         """
-          # Markdown
-          ## Hello World
-          """
+        # Markdown
+        ## Hello World
+        """
       }
     }
 
-    // Vertical section with two slides
+    // Two vertical slides slides
     verticalSlides {
-      // Slide that uses HTML for content
+      // Slide that uses HTML content
       htmlSlide {
         classes = "htmlslide"
 
@@ -107,13 +108,13 @@ The following _kslides_ definition generates [this presentation](https://kslides
 
         content {
           """
-            <h1>HTML</h1>
-            <h2>Hello World</h2>
-            """
+          <h1>HTML</h1>
+          <h2>Hello World</h2>
+          """
         }
       }
 
-      // Slide that uses the Kotlin HTML DSL for content
+      // Slide that uses Kotlin HTML DSL content
       dslSlide {
         content {
           h1 { +"DSL" }
@@ -125,44 +126,50 @@ The following _kslides_ definition generates [this presentation](https://kslides
 }
 ```
 
-## ** THE DOCS ARE STILL A WORK IN PROGRESS **
+## DSL Blocks
 
-## Sections
+### _kslides{}_ Block
 
-### kslides
+A `kslides{}` block contains configuration values, output directives, presentation configuration defaults,
+css defaults, and presentation defintions. The child blocks can be declared in any order.
 
-A `kslides` section contains configuration values, output directives, css defaults, presentation configuration defaults
-and presentation defintions. They can be declared in any order.
+#### _kslides{}_ Structure
 
 ```kotlin
 kslides {
   kslidesConfig {}          // Optional
-  output {}                 // Optional
   presentationConfig {}     // Optional
-  css {}                    // Optional
-  presentation {}           // One or more presentations
+  output {}                 // Optional
+  css {}                    // Optional and one or more 
+  presentation {}           // One or more
 }
 ```
 
-#### _kslides_ variables
+#### _kslides{}_ Variables
 
-| Variable | Default | Description                             | 
-|----------|---------|-----------------------------------------|
-| _css_    | ""      | String alternative to the css{} section |
+| Variable | Default | Description                           | 
+|----------|---------|---------------------------------------|
+| _css_    | ""      | String alternative to the css{} block |
 
-### kslidesConfig
+### _kslidesConfig{}_ Block
 
-The `kslideConfig` section specifies the kslides setup.
-The kslideConfig options and defaults values are
-[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt).
+A `kslidesConfig{}` block specifies the kslides configuration for all presentations and has these
+[options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt)
+.
 
-### output
+### _presentationConfig{}_ Block
 
-The `output` section specifies how slide content is made available. The options and defaults values are
-[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
+A `presentationConfig{}` block can be used in a `kslides{}` block or a `presentation{}` block. 
+As part of `kslides{}` block, it acts as the default value for all presentations.
+As part of `presentation{}` block, it acts as the presentation-specific configuration.
+A `presentationConfig{}` blocks has these
+[options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt)
+.
+
+#### _presentationConfig{}_ Structure
 
 ```kotlin
-presentationConfig {
+presentationConfig {      // Optional
   menuConfig {}           // Optional
   copyCodeConfig {}       // Optional
   playgroundConfig {}     // Optional
@@ -170,32 +177,37 @@ presentationConfig {
 }
 ```
 
-A `presentationConfig` section appears in either a kslides or a presentation section. The options and defaults values
-are
-[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt)
-.
 
-A `menuConfig` section appears in a presentationConfig section. The options and defaults values are
+A `menuConfig` block appears in a presentationConfig block.
+The menuConfig options and defaults values are described
 [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/MenuConfig.kt).
 
-A `copyCodeConfig` section appears in a presentationConfig section. The options and defaults values are
+A `copyCodeConfig` block appears in a presentationConfig block.
+The copyCodeConfig options and defaults values are described
 [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/CopyCodeConfig.kt)
 .
 
-A `playgroundConfig` section appears in a presentationConfig section. The options and defaults values are
+A `playgroundConfig` block appears in a presentationConfig block.
+The playgroundConfig options and defaults values are described
 [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt)
 .
 
-A `slideConfig` section appears in either a presentationConfig or a slide section. The options and defaults values are
+A `slideConfig` block appears in either a presentationConfig or a slide block.
+The slideConfig options and defaults values are described
 [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/SlideConfig.kt).
 
-### css
+### _output{}_ Block
+
+The `output` block specifies how slide content is made available. The options and defaults values are
+[here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
+
+### _css{}_ Block
 
 Presentation CSS can be specified using raw CSS or the Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html).
 
-### Presentation
+### _presentation{}_ Block
 
-A `presentation` section includes one or more slide sections. There are 3 types of slides.
+A `presentation` block includes one or more slide blocks. There are 3 types of slides.
 
 ```kotlin
 presentation {
@@ -216,7 +228,7 @@ slide {  // Where slide can be markdownSlide, htmlSlide or dslSlide
 }
 ```
 
-### css
+### css{} Block and/or css String
 
 Presentation CSS can be specified using raw CSS or the Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html).
 
@@ -224,9 +236,9 @@ Unlike CSS values in HTML files, which must be specified in the _head_, CSS valu
 throughout the definition. It is convenient to have the CSS values right above the code in the slides where
 they are referenced.
 
-### presentationConfig
+### presentationConfig{} Block
 
-### presentation
+### presentation{} Block
 
 ```kotlin
 presentation {
@@ -249,60 +261,59 @@ presentation {
 }
 ```
 
-#### _presentation_ variables
+#### _presentation{}_ Block Variables
 
 | Variable   | Default                              | Description                             | 
 |------------|--------------------------------------|-----------------------------------------|
 | _path_     | "/"                                  | Presentation directory or filename      |
-| _css_      | kslides.css value                    | String alternative to the css{} section |
+| _css_      | kslides.css value                    | String alternative to the css{} block |
 | _cssFiles_ | kslides.kslidesConfig.cssFiles value | List for including additional css files |
 | _jsFiles_  | kslides.kslidesConfig.jsFiles value  | List for including additional js files  |
 
-#### _verticalSlides_ variables
+#### _verticalSlides{}_ Block Variables
 
-| Variable  | Default | Description                                 | 
-|-----------|---------|---------------------------------------------|
-| _classes_ | ""      | _class_ value for underlying html _section_ |
-| _id_      | ""      | _id_ value for underlying html _section_    |
-| _style_   | ""      | _style_ value for underlying html _section_ |
+| Variable  | Default | Description                           | 
+|-----------|---------|---------------------------------------|
+| _classes_ | ""      | _class_ value for underlying html tag |
+| _id_      | ""      | _id_ value for underlying html tag    |
+| _style_   | ""      | _style_ value for underlying html tag |
 
-#### _markdownSlide_ variables
+#### _markdownSlide{}_ Block Variables
 
 | Variable             | Default | Description                                                               | 
 |----------------------|---------|---------------------------------------------------------------------------|
-| _classes_            | ""      | _class_ value for underlying html _section_                               |
-| _id_                 | ""      | _id_ value for underlying html _section_                                  |
-| _style_              | ""      | _style_ value for underlying html _section_                               |
+| _classes_            | ""      | _class_ value for underlying html tag                                     |
+| _id_                 | ""      | _id_ value for underlying html tag                                        |
+| _style_              | ""      | _style_ value for underlying html tag                                     |
 | _hidden_             | false   | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0)     |
 | _uncounted_          | false   | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)        |
 | _autoAnimate_        | false   | [Details](https://revealjs.com/auto-animate/)                             |
 | _autoAnimateRestart_ | false   | [Details](https://revealjs.com/auto-animate/#auto-animate-id-%26-restart) |
 | _filename_           | false   | [Details](https://revealjs.com/markdown/#external-markdown)               |
 
-#### _htmlSlide_ variables
+#### _htmlSlide{}_ Block Variables
 
 | Variable             | Default | Description                                                               | 
 |----------------------|---------|---------------------------------------------------------------------------|
-| _classes_            | ""      | _class_ value for underlying html _section_                               |
-| _id_                 | ""      | _id_ value for underlying html _section_                                  |
-| _style_              | ""      | _style_ value for underlying html _section_                               |
+| _classes_            | ""      | _class_ value for underlying html tag                                     |
+| _id_                 | ""      | _id_ value for underlying html tag                                        |
+| _style_              | ""      | _style_ value for underlying html tag                                     |
 | _hidden_             | false   | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0)     |
 | _uncounted_          | false   | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)        |
 | _autoAnimate_        | false   | [Details](https://revealjs.com/auto-animate/)                             |
 | _autoAnimateRestart_ | false   | [Details](https://revealjs.com/auto-animate/#auto-animate-id-%26-restart) |
 
-#### _dslSlide_ variables
+#### _dslSlide{}_ Block Variables
 
 | Variable             | Default | Description                                                               | 
 |----------------------|---------|---------------------------------------------------------------------------|
-| _classes_            | ""      | _class_ value for underlying html _section_                               |
-| _id_                 | ""      | _id_ value for underlying html _section_                                  |
-| _style_              | ""      | _style_ value for underlying html _section_                               |
+| _classes_            | ""      | _class_ value for underlying html tag                                     |
+| _id_                 | ""      | _id_ value for underlying html tag                                        |
+| _style_              | ""      | _style_ value for underlying html tag                                     |
 | _hidden_             | false   | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0)     |
 | _uncounted_          | false   | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)        |
 | _autoAnimate_        | false   | [Details](https://revealjs.com/auto-animate/)                             |
 | _autoAnimateRestart_ | false   | [Details](https://revealjs.com/auto-animate/#auto-animate-id-%26-restart) |
-
 
 ## Misc Notes
 
@@ -327,7 +338,7 @@ html files are space-sensitive and might not work if they are formatted.
 
 Rather than embedding code directly in markdownSlides, it is much better to use the
 `include()` call. You are likely to have space issues if you embed code directly,
-If you choose to embed code, remove all indentation in the `content{}` section.
+If you choose to embed code, remove all indentation in the `content{}` block.
 
 ### Local Development
 
@@ -343,7 +354,7 @@ Playground code using `dataTargetPlatform = JUNIT` should not hae a `package` de
 
 ### MarkDown Slide
 
-* When a `markdownSlide` is in a `verticalSlides` section and references an external file, the string "---"
+* When a `markdownSlide` is in a `verticalSlides` block and references an external file, the string "---"
   is interpreted as a vertical page separator and "--- " (with a space suffix) is rendered as a markdown horizontal
   line.
 *

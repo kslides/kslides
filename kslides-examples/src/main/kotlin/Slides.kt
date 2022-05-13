@@ -1386,21 +1386,21 @@ fun main() {
           content {
             """
             ## This is a multi-slide Markdown Slide
-            ### embedded in a verticalSlides section
+            ### embedded in a verticalSlides{} block
             
             This is page 1 of 3
             
             ---
       
             ## This is a multi-slide Markdown Slide
-            ### embedded in a verticalSlides section
+            ### embedded in a verticalSlides{} block
             
             This is page 2 of 3
       
             ---
       
             ## This is a multi-slide Markdown Slide
-            ### embedded in a verticalSlides section
+            ### embedded in a verticalSlides{} block
             
             This is page 3 of 3
             """

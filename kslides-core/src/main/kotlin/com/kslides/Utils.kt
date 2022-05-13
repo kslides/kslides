@@ -159,3 +159,5 @@ private val httpRegex = Regex("\\s*http[s]?://.*")
 fun String.isUrl() = lowercase().matches(httpRegex)
 
 fun String.stripBraces() = trimStart().trimEnd().trimStart('[', '(').trimEnd(']', ')')
+
+fun String.pad() = "\n$this\n"

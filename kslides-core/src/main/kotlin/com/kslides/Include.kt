@@ -11,9 +11,7 @@ const val INDENT_TOKEN = "--indent--"
 
 object Include : KLogging()
 
-private fun String.pad() = "\n$this\n"
-
-// Used within htmlSlide and markdownSlide
+// Used within htmlSlide{} and markdownSlide{} blocks
 fun include(
   src: String,
   linePattern: String = "",

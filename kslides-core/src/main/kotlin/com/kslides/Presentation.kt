@@ -40,7 +40,7 @@ class Presentation(val kslides: KSlides) {
             block(vcontext)
 
             require(vcontext.verticalSlides.isNotEmpty()) {
-              throw IllegalArgumentException("A verticalSlides{} section requires one or more slides")
+              throw IllegalArgumentException("A verticalSlides{} block requires one or more slides")
             }
             section(vcontext.classes.nullIfBlank()) {
               vcontext.id.also { if (it.isNotBlank()) id = it }
@@ -67,7 +67,7 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} section" }
+            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} block" }
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
@@ -93,7 +93,7 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} section" }
+            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} block" }
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
@@ -120,7 +120,7 @@ class Presentation(val kslides: KSlides) {
       s.processSlide(this)
       s._section = this // TODO This is a hack that will go away when context receivers work
       s._dslBlock(this)
-      require(s._dslAssigned) { "dslSlide missing content{} section" }
+      require(s._dslAssigned) { "dslSlide missing content{} block" }
     }.also { rawHtml("\n") }
   }
 
@@ -153,7 +153,7 @@ class Presentation(val kslides: KSlides) {
   private fun DIV.processHtml(s: HtmlSlide, config: SlideConfig) {
     section(s.classes.nullIfBlank()) {
       s.processSlide(this)
-      require(s._htmlAssigned) { "htmlSlide missing content{} section" }
+      require(s._htmlAssigned) { "htmlSlide missing content{} block" }
       s._htmlBlock()
         .indentInclude(config.indentToken)
         .let { if (!config.disableTrimIndent) it.trimIndent() else it }
