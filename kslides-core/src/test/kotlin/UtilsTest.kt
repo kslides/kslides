@@ -116,7 +116,7 @@ val y = 1              // NO TAB
     }
 
     "PresentationConfig Test 1" {
-      val p1 = PresentationConfig(true)
+      val p1 = PresentationConfig().apply { assignDefaults() }
       val p2 = PresentationConfig()
       val p3 =
         PresentationConfig()
@@ -128,7 +128,8 @@ val y = 1              // NO TAB
     }
 
     "PresentationConfig Test 2" {
-      val p1 = PresentationConfig(true).apply {
+      val p1 = PresentationConfig().apply {
+        assignDefaults()
         enableMenu = false
       }
       val p2 = PresentationConfig()
@@ -142,7 +143,8 @@ val y = 1              // NO TAB
     }
 
     "PresentationConfig Test 3" {
-      val p1 = PresentationConfig(true).apply {
+      val p1 = PresentationConfig().apply {
+        assignDefaults()
         enableMenu = false
       }
       val p2 = PresentationConfig().apply {
@@ -158,7 +160,8 @@ val y = 1              // NO TAB
     }
 
     "PresentationConfig Test 4" {
-      val p1 = PresentationConfig(true).apply {
+      val p1 = PresentationConfig().apply {
+        assignDefaults()
         enableMenu = true
       }
       val p2 = PresentationConfig().apply {

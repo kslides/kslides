@@ -87,7 +87,7 @@ internal fun kslidesTest(block: KSlides.() -> Unit) =
 
 class KSlides {
   internal val kslidesConfig = KSlidesConfig()
-  internal val globalPresentationConfig = PresentationConfig(true)
+  internal val globalPresentationConfig = PresentationConfig().apply { assignDefaults() }
   internal val outputConfig = OutputConfig(this)
   internal var kslidesConfigBlock: KSlidesConfig.() -> Unit = {}
   internal var globalPresentationConfigBlock: PresentationConfig.() -> Unit = {}

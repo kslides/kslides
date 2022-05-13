@@ -1,7 +1,6 @@
 package com.kslides.config
 
 class MenuConfig : AbstractConfig() {
-
   // Specifies which side of the presentation the menu will
   // be shown. Use 'left' or 'right'.
   var side by ConfigProperty<String>(revealjsManagedValues) // 'left'
