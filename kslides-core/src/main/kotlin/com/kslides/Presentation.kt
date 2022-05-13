@@ -16,11 +16,9 @@ class Presentation(val kslides: KSlides) {
 
   // User variables
   var path = "/"
-
-  // Initialized with the kslides values
-  val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
-  val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
   val css by lazy { CssValue(kslides.css) }
+  val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
+  val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
 
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {

@@ -144,7 +144,7 @@ kslides {
 }
 ```
 
-#### _kslides_ Variables
+#### _kslides_ variables
 
 | Variable | Default | Description                             | 
 |----------|---------|-----------------------------------------|
@@ -268,40 +268,40 @@ presentation {
 
 #### _markdownSlide_ variables
 
-| Variable            | Default    | Description                                                           | 
-|---------------------|------------|-----------------------------------------------------------------------|
-| _css_               | ""         | String alternative to the css{} section                               |
-| _classes_           | ""         | _class_ value for underlying html _section_                           |
-| _id_                | ""         | _id_ value for underlying html _section_                              |
-| _style_             | ""         | _style_ value for underlying html _section_                           |
-| _hidden_            | false      | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0) |
-| _uncounted_         | false      | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)    |
-| _autoAnimate_       | false      | [Details](https://revealjs.com/auto-animate/)                         |
-| _filename_          | false      | [Details](https://revealjs.com/markdown/#external-markdown)           |
+| Variable             | Default | Description                                                               | 
+|----------------------|---------|---------------------------------------------------------------------------|
+| _classes_            | ""      | _class_ value for underlying html _section_                               |
+| _id_                 | ""      | _id_ value for underlying html _section_                                  |
+| _style_              | ""      | _style_ value for underlying html _section_                               |
+| _hidden_             | false   | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0)     |
+| _uncounted_          | false   | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)        |
+| _autoAnimate_        | false   | [Details](https://revealjs.com/auto-animate/)                             |
+| _autoAnimateRestart_ | false   | [Details](https://revealjs.com/auto-animate/#auto-animate-id-%26-restart) |
+| _filename_           | false   | [Details](https://revealjs.com/markdown/#external-markdown)               |
 
 #### _htmlSlide_ variables
 
-| Variable            | Default    | Description                                                           | 
-|---------------------|------------|-----------------------------------------------------------------------|
-| _css_               | ""         | String alternative to the css{} section                               |
-| _classes_           | ""         | _class_ value for underlying html _section_                           |
-| _id_                | ""         | _id_ value for underlying html _section_                              |
-| _style_             | ""         | _style_ value for underlying html _section_                           |
-| _hidden_            | false      | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0) |
-| _uncounted_         | false      | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)    |
-| _autoAnimate_       | false      | [Details](https://revealjs.com/auto-animate/)                         |
+| Variable             | Default | Description                                                               | 
+|----------------------|---------|---------------------------------------------------------------------------|
+| _classes_            | ""      | _class_ value for underlying html _section_                               |
+| _id_                 | ""      | _id_ value for underlying html _section_                                  |
+| _style_              | ""      | _style_ value for underlying html _section_                               |
+| _hidden_             | false   | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0)     |
+| _uncounted_          | false   | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)        |
+| _autoAnimate_        | false   | [Details](https://revealjs.com/auto-animate/)                             |
+| _autoAnimateRestart_ | false   | [Details](https://revealjs.com/auto-animate/#auto-animate-id-%26-restart) |
 
 #### _dslSlide_ variables
 
-| Variable      | Default | Description                                                           | 
-|---------------|---------|-----------------------------------------------------------------------|
-| _css_         | ""      | String alternative to the css{} section                               |
-| _classes_     | ""      | _class_ value for underlying html _section_                           |
-| _id_          | ""      | _id_ value for underlying html _section_                              |
-| _style_       | ""      | _style_ value for underlying html _section_                           |
-| _hidden_      | false   | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0) |
-| _uncounted_   | false   | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)    |
-| _autoAnimate_ | false   | [Details](https://revealjs.com/auto-animate/)                         |
+| Variable             | Default | Description                                                               | 
+|----------------------|---------|---------------------------------------------------------------------------|
+| _classes_            | ""      | _class_ value for underlying html _section_                               |
+| _id_                 | ""      | _id_ value for underlying html _section_                                  |
+| _style_              | ""      | _style_ value for underlying html _section_                               |
+| _hidden_             | false   | [Details](https://revealjs.com/slide-visibility/#hidden-slides-4.1.0)     |
+| _uncounted_          | false   | [Details](https://revealjs.com/slide-visibility/#uncounted-slides)        |
+| _autoAnimate_        | false   | [Details](https://revealjs.com/auto-animate/)                             |
+| _autoAnimateRestart_ | false   | [Details](https://revealjs.com/auto-animate/#auto-animate-id-%26-restart) |
 
 
 ## Misc Notes

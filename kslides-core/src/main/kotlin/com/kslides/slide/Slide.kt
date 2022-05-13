@@ -28,6 +28,7 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   var hidden = false
   var uncounted = false
   var autoAnimate = false
+  var autoAnimateRestart = false
 
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit): Unit = cssError()
@@ -50,6 +51,9 @@ abstract class Slide(private val presentation: Presentation, internal val conten
 
     if (autoAnimate)
       section.attributes["data-auto-animate"] = ""
+
+    if (autoAnimateRestart)
+      section.attributes["data-auto-animate-restart"] = ""
 
     mergedConfig.applyConfig(section)
   }
