@@ -128,36 +128,36 @@ kslides {
 
 ## kslides DSL
 
-### _kslides{}_ Block
+### kslides Block
 
 A `kslides{}` block contains configuration values, output directives, presentation configuration defaults,
 css defaults, and presentation defintions. The child blocks can be declared in any order.
 
-#### _kslides{}_ Structure
+#### Structure
 
 ```kotlin
 kslides {
   kslidesConfig {}          // Optional
   presentationConfig {}     // Optional
   output {}                 // Optional
-  css {}                    // Optional and one or more 
+  css {}                    // Zero or more css blocks
   presentation {}           // One or more presentations
 }
 ```
 
-#### _kslides{}_ Variables
+#### Options
 
-| Variable | Default | Description                           | 
-|----------|---------|---------------------------------------|
-| _css_    | ""      | String alternative to the css{} block |
+| Name  | Default | Description                           | 
+|-------|---------|---------------------------------------|
+| _css_ | ""      | String alternative to the css{} block |
 
-### _kslidesConfig{}_ Block
+### kslides.kslidesConfig Block
 
 A `kslidesConfig{}` block specifies the kslides configuration for all presentations and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt)
 .
 
-### _presentationConfig{}_ Block
+### kslides.presentationConfig Block
 
 A `presentationConfig{}` block specifies the default presentation configuration values 
 for all presentations and has these
@@ -174,34 +174,42 @@ presentationConfig {      // Optional
 }
 ```
 
+### kslides.presentationConfig.menuConfig Block
+
 A `menuConfig{}` block specifies the configuration for the
 reveal.js [Menu plugin](https://github.com/denehyg/reveal.js-menu)
 and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/MenuConfig.kt).
+
+### kslides.presentationConfig.copyCodeConfig Block
 
 A `copyCodeConfig{}` block specifies the configuration for the
 reveal.js [CopyCode plugin](https://github.com/Martinomagnifico/reveal.js-copycode)
 and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/CopyCodeConfig.kt).
 
+### kslides.presentationConfig.playgroundConfig Block
+
 A `playgroundConfig{}` block specifies the configuration for
 [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframes
 and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt).
 
+### kslides.presentationConfig.slideConfig Block
+
 A `slideConfig{}` block specifies the default slide configuration values for all slides and has these 
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/SlideConfig.kt).
 
-### _output{}_ Block
+### kslides.output Block
 
 An `output{}` block specifies how and where presentation slides are published and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
 
-### _css{}_ Block
+### kslides.css Block
 
 Presentation CSS can be specified using raw CSS or the Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html).
 
-### _presentation{}_ Block
+### kslides.presentation Block
 
 A `presentation{}` block includes one or more slide blocks. There are 3 types of slides: 
 markdownSlide, htmlSlide and dslSlide.
@@ -211,30 +219,30 @@ markdownSlide, htmlSlide and dslSlide.
 ```kotlin
 presentation {
   presentationConfig {}     // Optional
-  css {}                    // Optional
+  css {}                    // Zero or more css blocks
   markdownSlide {}          // One or more slides
   htmlSlide {}
   dslSLide {}
 }
 ```
 
-#### Variables
+#### Options
 
-| Variable   | Default                              | Description                             | 
+| Name       | Default                              | Description                             | 
 |------------|--------------------------------------|-----------------------------------------|
 | _path_     | "/"                                  | Presentation directory or filename      |
-| _css_      | kslides.css value                    | String alternative to the css{} block |
+| _css_      | kslides.css value                    | String alternative to the css{} block   |
 | _cssFiles_ | kslides.kslidesConfig.cssFiles value | List for including additional css files |
 | _jsFiles_  | kslides.kslidesConfig.jsFiles value  | List for including additional js files  |
 
 
-### _presentationConfig{}_ Block
+### kslides.presentation.presentationConfig Block
 
 A `presentationConfig{}` block specifies presentation-specific configuration values and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt).
 These values override those specified in _kslides.presentationConfig{}_. 
 
-### _css{}_ Block and/or _css_ String
+### kslides.presentation.css Block and/or kslides.presentation.css String
 
 Presentation CSS can be specified using raw CSS or the Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html).
 
@@ -242,7 +250,7 @@ Unlike CSS values in HTML files, which must be specified in the _head_, CSS valu
 throughout the definition. It is convenient to have the CSS values right above the code in the slides where
 they are referenced.
 
-### _markdownSlide{}_, _htmlSlide{}_, and _dslSlide{}_ Blocks
+### kslides.presentation.markdownSlide, kslides.presentation.htmlSlide, and kslides.presentation.dslSlide Blocks
 
 #### Structure
 
@@ -263,9 +271,9 @@ dslSlide {
 }
 ```
 
-#### Variables
+#### Options
 
-| Variable             | Default | Description                                                               | 
+| Name                 | Default | Description                                                               | 
 |----------------------|---------|---------------------------------------------------------------------------|
 | _classes_            | ""      | _class_ value for underlying html tag                                     |
 | _id_                 | ""      | _id_ value for underlying html tag                                        |
@@ -275,23 +283,29 @@ dslSlide {
 | _autoAnimate_        | false   | [Details](https://revealjs.com/auto-animate/)                             |
 | _autoAnimateRestart_ | false   | [Details](https://revealjs.com/auto-animate/#auto-animate-id-%26-restart) |
 
-#### _markdownSlide_-only Variables
+#### _markdownSlide_-only Options
 
-| Variable             | Default | Description                                                               | 
-|----------------------|---------|---------------------------------------------------------------------------|
-| _filename_           | false   | [Details](https://revealjs.com/markdown/#external-markdown)               |
+| Name       | Default | Description                                                 | 
+|------------|---------|-------------------------------------------------------------|
+| _filename_ | false   | [Details](https://revealjs.com/markdown/#external-markdown) |
 
-### _slideConfig{}_ Block
+### slideConfig Block
 
 A `slideConfig{}` specifies slide-specific configuration values and has these 
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/SlideConfig.kt).
 These values override those specified in _kslides.presentationConfig.slideConfig{}_  
 and _presentation.presentationConfig.slideConfig{}_.
 
-### _content{}_ Block
+### content Block
+
+The content ot `content{}` blocks vary by the type of slide:
+* `markdownSlide.content{}` blocks contain a String with Markdown
+* `htmlSlide.content{}` blocks contain a String with HTML  
+* `dslSlide.content{}` block contains calls to the 
+[Kotlin HTML DSL](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started).
 
 
-### _verticalSlides{}_ Block
+### verticalSlides Block
 
 A `verticalSlides{}` block contains one or more slides and presents them vertically.
 
@@ -304,9 +318,9 @@ A `verticalSlides{}` block contains one or more slides and presents them vertica
   }
 ```
 
-#### Variables
+#### Options
 
-| Variable  | Default | Description                           | 
+| Name      | Default | Description                           | 
 |-----------|---------|---------------------------------------|
 | _classes_ | ""      | _class_ value for underlying html tag |
 | _id_      | ""      | _id_ value for underlying html tag    |
@@ -337,7 +351,7 @@ filesystem presentations load from `/docs`.
 Rather than embedding code directly in markdownSlides, it is much better to use the
 `include()` call. You are likely to have formatting issues if you embed code directly
 in the slide.
-If you choose to embed code, remove indentation in the `content{}` block.
+If you choose to embed code directly in the slide, remove indentation in the `content{}` block.
 
 ### Local Development
 
@@ -353,12 +367,13 @@ Add a GRADLE_TASK config var: `GRADLE_TASK=-Pprod=true uberjar`
 
 ### MarkDown Slide
 
-When a `markdownSlide` is in a `verticalSlides` block and references an external file, the string "---"
+When a `markdownSlide` is in a `verticalSlides{}` block and references an external file, the string "---"
 is interpreted as a vertical page separator and "--- " (with a space suffix) is rendered as a markdown horizontal
 line.
 
-## Third Party Plugins
+## Helpful Links
 
-* https://github.com/denehyg/reveal.js-menu
-* https://github.com/Martinomagnifico/reveal.js-copycode
+* [reveal.js Menu Plugin](https://github.com/denehyg/reveal.js-menu)
+* [reveal.js CopyCode Plugin](https://github.com/Martinomagnifico/reveal.js-copycode)
+* [Kotlin Playground](https://github.com/JetBrains/kotlin-playground)
 
