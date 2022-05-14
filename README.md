@@ -33,7 +33,7 @@ generate and publish slide content once you have created your new kslides repo.
 
 A presentation is created using
 a [Kotlin DSL](https://medium.com/adobetech/building-elegant-dsls-with-kotlin-707726c5ed21).
-Defining a presentation requires a [minimal knowledge](#/kotlin-details) 
+Defining a presentation requires a [minimal knowledge](#kotlin-details) 
 of Kotlin. If you are comfortable with Python, Javascript or Java, you will have no problem with the Kotlin code.
 
 The following _kslides_ definition generates [this presentation](https://kslides.github.io/kslides/helloworld.html).
@@ -335,7 +335,7 @@ Examples of their usgae can be found [here](https://github.com/kslides/kslides/b
 
 ## Misc Notes
 
-### Kotlin details
+### Kotlin Details
 
 kslides requires requires some Kotlin-specific knowledge:
 * [String Interpolation](https://metapx.org/kotlin-string-interpolation/)
