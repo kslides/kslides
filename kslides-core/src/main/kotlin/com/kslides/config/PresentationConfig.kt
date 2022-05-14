@@ -2,7 +2,7 @@ package com.kslides.config
 
 import com.kslides.*
 
-class PresentationConfig() : AbstractConfig() {
+class PresentationConfig : AbstractConfig() {
   // Display presentation control arrows
   var controls by ConfigProperty<Boolean>(revealjsManagedValues) // true
 
