@@ -11,6 +11,36 @@ import mu.*
 
 object KSlidesDsl : KLogging()
 
+@HtmlTagMarker
+fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
+  val config = CodeSnippetConfig().apply { block(this) }
+  pre {
+    if (config.dataId.isNotBlank())
+      attributes["data-id"] = config.dataId
+    if (!config.copyButton)
+      attributes["data-cc"] = config.copyButton.toString()
+    if (config.copyButtonText.isNotBlank())
+      attributes["data-cc-copy"] = config.copyButtonText
+    if (config.copyButtonMsg.isNotBlank())
+      attributes["data-cc-copied"] = config.copyButtonMsg
+
+    code(config.language.nullIfBlank()) {
+      if (!config.highlightPattern.toLower().contains("none"))
+        attributes["data-line-numbers"] = config.highlightPattern.stripBraces()
+      if (config.lineOffSet != -1)
+        attributes["data-ln-start-from"] = config.lineOffSet.toString()
+      if (config.trim)
+        attributes["data-trim"] = ""
+      if (!config.escapeHtml)
+        attributes["data-noescape"] = ""
+      //script { // This will allow unwrapped html
+      //type = "text/template"
+      +config.code
+      //}
+    }
+  }
+}
+
 //context(Presentation, DslSlide, SECTION)
 @KSlidesDslMarker
 fun DslSlide.playground(
@@ -52,52 +82,6 @@ fun DslSlide.playground(
 }
 
 @HtmlTagMarker
-fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
-  val config = CodeSnippetConfig().apply { block(this) }
-  pre {
-    if (config.dataId.isNotBlank())
-      attributes["data-id"] = config.dataId
-    if (!config.copyButton)
-      attributes["data-cc"] = config.copyButton.toString()
-    if (config.copyButtonText.isNotBlank())
-      attributes["data-cc-copy"] = config.copyButtonText
-    if (config.copyButtonMsg.isNotBlank())
-      attributes["data-cc-copied"] = config.copyButtonMsg
-
-    code(config.language.nullIfBlank()) {
-      if (!config.highlightPattern.toLower().contains("none"))
-        attributes["data-line-numbers"] = config.highlightPattern.stripBraces()
-      if (config.lineOffSet != -1)
-        attributes["data-ln-start-from"] = config.lineOffSet.toString()
-      if (config.trim)
-        attributes["data-trim"] = ""
-      if (!config.escapeHtml)
-        attributes["data-noescape"] = ""
-      //script { // This will allow unwrapped html
-      //type = "text/template"
-      +config.code
-      //}
-    }
-  }
-}
-
-@HtmlTagMarker
-inline fun LI.listHref(
-  url: String,
-  text: String = "",
-  target: HrefTarget = HrefTarget.SELF,
-  classes: String = "",
-  crossinline block: A.() -> Unit = {}
-) {
-  a(classes = classes.nullIfBlank()) {
-    if (target != HrefTarget.SELF) this.target = target.htmlVal
-    href = url
-    block()
-    +(text.ifBlank { url })
-  }
-}
-
-@HtmlTagMarker
 inline fun FlowContent.unorderedList(items: List<String>, crossinline block: UL.() -> Unit = {}) =
   unorderedList(*items.toTypedArray(), block = block)
 
@@ -134,6 +118,22 @@ inline fun FlowContent.orderedList(vararg items: LI.() -> Unit, crossinline bloc
       li { it() }
     }
   }
+
+@HtmlTagMarker
+inline fun LI.listHref(
+  url: String,
+  text: String = "",
+  target: HrefTarget = HrefTarget.SELF,
+  classes: String = "",
+  crossinline block: A.() -> Unit = {}
+) {
+  a(classes = classes.nullIfBlank()) {
+    if (target != HrefTarget.SELF) this.target = target.htmlVal
+    href = url
+    block()
+    +(text.ifBlank { url })
+  }
+}
 
 @HtmlTagMarker
 fun THEAD.headRow(vararg items: String) {

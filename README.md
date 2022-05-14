@@ -315,8 +315,8 @@ verticalSlides {
 
 ## kslides Functions
 
-Functions are defined [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/Utils.kt).
-Examples of their usgae can be found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt).
+These functions are defined [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/Utils.kt).
+Examples of their usage can be found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt).
 
 | Function name             | Context            | Description                               |
 |---------------------------|--------------------|-------------------------------------------|
@@ -324,13 +324,25 @@ Examples of their usgae can be found [here](https://github.com/kslides/kslides/b
 | `fragment()`              | markdownSlide only |                                           |
 | `rawHtml()`               | dslSlide           | Allows embedding of raw HTML in dslSlide  |
 | `List<T>.permuteBy()`     | Animations         |                                           |
-| `String.toLinePatterns()` | Aniumations        |                                           |
+| `String.toLinePatterns()` | Animations         |                                           |
 | `githubSourceUrl()`       | include() calls    | Returns URL for github content            |
 | `githubRawUrl()`          | include() calls    | Returns URL for raw github content        |
 | `include()`               | All Slides         | Preferred to embedding raw code in slides |
 
+## dslSlide-specific Functions
 
-### All Slides
+These functions are defined [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/KSlidesDsl.kt).
+Examples of their usage can be found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt).
+
+| Function name     | Description                 |
+|-------------------|-----------------------------|
+| `codeSnippet()`   | Embed a code snippet        |
+| `playground()`    | Embed a Kotlin Playground   |
+| `unorderedList()` | Generate an unordered list  |
+| `orderedList()`   | Generate an ordered list    |
+| `LI.listHref()`   | Generate a list href        |
+| `THEAD.headRow()` | Generate a table header row |
+| `TBODY.bodyRow()` | Generate a table body row   |
 
 
 ## Misc Notes
