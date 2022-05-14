@@ -27,7 +27,7 @@ the [kslides-template](https://github.com/kslides/kslides-template)
 repo as a [template](https://github.com/kslides/kslides-template/generate).
 
 The kslides-template [README.md](https://github.com/kslides/kslides-template/blob/master/README.md) describes how to
-generate and publish slide content once you have created your new kslides repo.
+generate and publish slide content once you have created and updated your new kslides repo.
 
 ## Defining a Presentation
 

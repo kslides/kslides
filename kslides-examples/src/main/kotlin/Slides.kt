@@ -8,7 +8,9 @@ fun main() {
 
   kslides {
 
+    // Optional
     kslidesConfig {
+      // kslides configuration options
     }
 
     output {
@@ -16,8 +18,9 @@ fun main() {
       enableHttp = true
     }
 
-    // Default config values for all presentations go here
+    // Optional
     presentationConfig {
+      // Default config values for all presentations
       topLeftHref = "https://github.com/kslides/kslides/"
       topLeftTitle = "View presentation source on Github"
 
@@ -36,6 +39,8 @@ fun main() {
       theme = PresentationTheme.SOLARIZED
       center = true
 
+      menuConfig {}
+
       copyCodeConfig {
         timeout = 2000
         copy = "Copy"
@@ -49,21 +54,21 @@ fun main() {
         width = "100%"
         height = "250px"
       }
+
+      slideConfig {}
     }
 
     val slides = "kslides-examples/src/main/kotlin/Slides.kt"
 
     presentation {
 
+      // Optional
       presentationConfig {
         // presentation-specific configurations
-
-        slideConfig {
-          // defaults for slides
-        }
-
-        playgroundConfig {
-        }
+        menuConfig {}
+        copyCodeConfig {}
+        playgroundConfig {}
+        slideConfig {}
       }
 
       css +=
