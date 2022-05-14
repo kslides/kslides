@@ -7,7 +7,7 @@
 
 **kslides** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com)
 presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint.
-It works particularly well for presentations with code snippets and animations. Slides are
+It works particularly well for presentations with code snippets and HTML animations. Slides are
 authored in [Markdown](https://www.markdownguide.org), [HTML](https://www.w3schools.com/html/),
 or the Kotlin [HTML DSL](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started).
 
@@ -153,17 +153,17 @@ kslides {
 * A `kslidesConfig{}` block specifies the kslides configuration for all presentations and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt).
 
-* A `presentationConfig{}` block specifies the default presentation configuration values
+* A `presentationConfig{}` block specifies the default presentation configuration values 
 for all presentations and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt).
 
 * An `output{}` block specifies how and where presentation slides are published and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
 
-* A `css{}` block applies to all presentations and includes Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
-CSS can also be specified using raw CSS strings. A combination of the two approaches is also allowed. 
+* A `css{}` block applies to all presentations and uses Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
+Presentation CSS can also be specified using raw CSS strings. A combination of the two approaches is also allowed. 
 
-* A `presentation{}` block includes one or more slide blocks. There are 3 types of slides:
+* A `presentation{}` block includes one or more slide descriptions. There are 3 types of slides:
 markdownSlide, htmlSlide and dslSlide.
 
 
@@ -201,7 +201,8 @@ and has these
 
 ### presentation Block
 
-Multiple presentations can be can be defined using multiple `presentation{}` blocks in kslides content.
+Multiple presentations can be defined using multiple `presentation{}` blocks, each with
+a different `path` value.
 
 #### Options
 
@@ -229,7 +230,7 @@ presentation {
 This block overrides the values specified in _kslides.presentationConfig{}_. 
 
 * A `css{}` block applies to this specific presentation and uses Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
-CSS can also be specified using raw CSS strings. A combination of the two approaches is also allowed.
+Presentation CSS can also be specified using raw CSS strings. A combination of the two approaches is also allowed.
 
 Unlike CSS values in HTML files, which must be specified in the _head_, `css{}` blocks can be placed
 throughout a presentation in kslides. It is convenient to have the CSS values near code in the slides where
@@ -284,7 +285,7 @@ _kslides.presentation.presentationConfig.slideConfig{}_.
 
 ### content Block
 
-The `content{}` blocks value types vary by the type of the slide:
+`content{}` block value types vary by the type of the slide:
 * `markdownSlide.content{}` blocks contain a String with Markdown
 * `htmlSlide.content{}` blocks contain a String with HTML  
 * `dslSlide.content{}` block contains calls to the Kotlin
