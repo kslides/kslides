@@ -357,8 +357,8 @@ kslides requires requires some Kotlin-specific knowledge:
 ### Using dslSlides
 
 [This](https://plugins.jetbrains.com/plugin/12205-html-to-kotlinx-html) plugin makes it much easier to work with
-HTML. Just copy some HTML into your copy buffer, and when you paste it, it will give you
-the option to convert it to the appropriate Kotlin HTML DSL code. Install it in IntelliJ by going to 
+HTML. Just copy some HTML into your copy buffer, and when you paste it, the plugin will give you
+the option to convert it into Kotlin HTML DSL code. Install it in IntelliJ by going to 
 "Plugins" and searching for `HTML to kotlinx.html` in "Marketplace"
 
 ### IntelliJ Settings
@@ -380,7 +380,8 @@ If you choose to embed code directly in the slide, remove indentation in the `co
 
 ### Local Development
 
-Speaker Notes do not work properly when running locally.
+Speaker Notes do not work properly when running locally. They will work from GitHub, Netlify, or Heroku
+though.
 
 ### Kotlin Playground
 
@@ -388,7 +389,8 @@ Playground code using `dataTargetPlatform = JUNIT` should not have a `package` d
 
 ### Heroku
 
-Add a GRADLE_TASK config var: `GRADLE_TASK=-Pprod=true uberjar`
+Go to your Heroku dashboard, choose your kslides app and click 
+on _Settings_->_Reveal Config Vars_ and add a config var: `GRADLE_TASK=-Pprod=true uberjar`
 
 ### MarkDown Slide
 
