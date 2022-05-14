@@ -17,12 +17,12 @@ object Utils : KLogging() {
   internal const val INDENT_TOKEN = "--indent--"
 }
 
-fun String.toLinePatterns() =
-  replace(whiteSpace, "")
-    .trimStart('[', '(')
-    .trimEnd(']', ')')
-    .split("|")
-    .map { if (it == "*") "" else it }
+fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
+
+fun fragment(effect: Effect = Effect.NONE, index: Int = 0) =
+  "<!-- .element: ${effect.toOutput()}${if (index > 0) " data-fragment-index=\"$index\"" else ""} -->"
+
+fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
 
 fun <T> List<T>.permuteBy(vararg orders: List<Int>): Sequence<List<T>> =
   sequence {
@@ -35,18 +35,18 @@ fun <T> List<T>.permuteBy(vararg orders: List<Int>): Sequence<List<T>> =
       }
   }
 
+fun String.toLinePatterns() =
+  replace(whiteSpace, "")
+    .trimStart('[', '(')
+    .trimEnd(']', ')')
+    .split("|")
+    .map { if (it == "*") "" else it }
+
 fun githubSourceUrl(username: String, repoName: String, path: String = "", branchName: String = "master") =
   "https://github.com/$username/$repoName/blob/$branchName/$path"
 
 fun githubRawUrl(username: String, repoName: String, path: String = "", branchName: String = "master") =
   "https://raw.githubusercontent.com/$username/$repoName/$branchName/$path"
-
-fun slideBackground(color: String) = "<!-- .slide: data-background=\"$color\" -->"
-
-fun fragment(effect: Effect = Effect.NONE, index: Int = 0) =
-  "<!-- .element: ${effect.toOutput()}${if (index > 0) " data-fragment-index=\"$index\"" else ""} -->"
-
-fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
 
 // Used within htmlSlide{} and markdownSlide{} blocks
 fun include(
@@ -100,4 +100,3 @@ fun DslSlide.include(
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
 ) = include(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
-

@@ -27,8 +27,7 @@ the [kslides-template](https://github.com/kslides/kslides-template)
 repo as a [template](https://github.com/kslides/kslides-template/generate).
 
 The kslides-template [README.md](https://github.com/kslides/kslides-template/blob/master/README.md) describes how to
-generate
-and publish slide content once you have created your new kslides repo.
+generate and publish slide content once you have created your new kslides repo.
 
 ## Defining a Presentation
 
@@ -202,7 +201,7 @@ and has these
 
 ### presentation Block
 
-Multiple presentations can be can be defined using multiple `presentation{}` blocks. 
+Multiple presentations can be can be defined using multiple `presentation{}` blocks in kslides content.
 
 #### Options
 
@@ -227,13 +226,13 @@ presentation {
 
 * A `presentationConfig{}` block specifies presentation-specific configuration values and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt).
-These values override those specified in _kslides.presentationConfig{}_. 
+This block overrides the values specified in _kslides.presentationConfig{}_. 
 
-* A `css{}` block applies to this specific presentation and includes Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
+* A `css{}` block applies to this specific presentation and uses Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
 CSS can also be specified using raw CSS strings. A combination of the two approaches is also allowed.
 
 Unlike CSS values in HTML files, which must be specified in the _head_, `css{}` blocks can be placed
-throughout a presentation in kslides. It is convenient to have the CSS values above the code in the slides where
+throughout a presentation in kslides. It is convenient to have the CSS values near code in the slides where
 they are referenced.
 
 ### markdownSlide, htmlSlide, and dslSlide Blocks
@@ -280,12 +279,12 @@ dslSlide {
 
 A `slideConfig{}` block specifies slide-specific configuration values and has these 
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/SlideConfig.kt).
-These values override those specified in _kslides.presentationConfig.slideConfig{}_  
-and _presentation.presentationConfig.slideConfig{}_.
+This block overrides the values specified in _kslides.presentationConfig.slideConfig{}_ and 
+_kslides.presentation.presentationConfig.slideConfig{}_.
 
 ### content Block
 
-The value types in `content{}` blocks vary by the type of the slide:
+The `content{}` blocks value types vary by the type of the slide:
 * `markdownSlide.content{}` blocks contain a String with Markdown
 * `htmlSlide.content{}` blocks contain a String with HTML  
 * `dslSlide.content{}` block contains calls to the Kotlin
@@ -307,17 +306,40 @@ A `verticalSlides{}` block contains one or more slides and presents them vertica
 #### Structure
 
 ```kotlin
-  verticalSlides {
-    dslSLide {}              // One or more slides
-    markdownSlide{}
-  }
+verticalSlides {
+  dslSLide {}              // One or more slides
+  markdownSlide {}
+}
 ```
 
 ## kslides Functions
 
+Functions are defined [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/Utils.kt).
+Examples of their usgae can be found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt).
+
+| Function name             | Context            | Description                               |
+|---------------------------|--------------------|-------------------------------------------|
+| `slideBackground()`       | markdownSlide only |                                           |
+| `fragment()`              | markdownSlide only |                                           |
+| `rawHtml()`               | dslSlide           | Allows embedding of raw HTML in dslSlide  |
+| `List<T>.permuteBy()`     | Animations         |                                           |
+| `String.toLinePatterns()` | Aniumations        |                                           |
+| `githubSourceUrl()`       | include() calls    | Returns URL for github content            |
+| `githubRawUrl()`          | include() calls    | Returns URL for raw github content        |
+| `include()`               | All Slides         | Preferred to embedding raw code in slides |
+
+
+### All Slides
 
 
 ## Misc Notes
+
+### Kotlin details
+
+kslides requires requires some Kotlin-specific knowledge:
+* [String Interpolation](https://metapx.org/kotlin-string-interpolation/)
+* [Named Arguments](https://kotlinlang.org/docs/functions.html#named-arguments)
+* [Multiline Strings](https://kotlinlang.org/docs/java-to-kotlin-idioms-strings.html#use-multiline-strings)
 
 ### Using dslSlides
 
