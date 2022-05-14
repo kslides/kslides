@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
+import com.kslides.InternalUtils.indentInclude
 import com.kslides.config.*
 import kotlinx.css.*
 import kotlinx.html.*

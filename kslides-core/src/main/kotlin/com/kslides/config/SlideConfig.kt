@@ -3,6 +3,7 @@ package com.kslides.config
 import com.github.pambrose.common.util.*
 import com.kslides.*
 import com.kslides.Transition.SLIDE
+import com.kslides.Utils.INDENT_TOKEN
 import kotlinx.html.*
 
 class SlideConfig : AbstractConfig() {

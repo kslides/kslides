@@ -236,7 +236,7 @@ Unlike CSS values in HTML files, which must be specified in the _head_, `css{}` 
 throughout a presentation in kslides. It is convenient to have the CSS values above the code in the slides where
 they are referenced.
 
-### kslides.presentation.markdownSlide, kslides.presentation.htmlSlide, and kslides.presentation.dslSlide Blocks
+### markdownSlide, htmlSlide, and dslSlide Blocks
 
 #### Options
 
@@ -250,7 +250,7 @@ they are referenced.
 | _autoAnimate_        | false   | [Details](https://revealjs.com/auto-animate/)                             |
 | _autoAnimateRestart_ | false   | [Details](https://revealjs.com/auto-animate/#auto-animate-id-%26-restart) |
 
-#### _markdownSlide_-only Options
+#### markdownSlide-only Options
 
 | Name       | Default | Description                                                 | 
 |------------|---------|-------------------------------------------------------------|
@@ -312,6 +312,9 @@ A `verticalSlides{}` block contains one or more slides and presents them vertica
     markdownSlide{}
   }
 ```
+
+## kslides Functions
+
 
 
 ## Misc Notes

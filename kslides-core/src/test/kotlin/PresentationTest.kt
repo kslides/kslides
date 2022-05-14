@@ -197,7 +197,6 @@ class PresentationTest : StringSpec(
     }
 
     "Css Test 1" {
-      val kslides =
         shouldThrowExactly<IllegalArgumentException> {
           kslidesTest {
             presentation {
@@ -214,7 +213,6 @@ class PresentationTest : StringSpec(
     }
 
     "Css Test 2" {
-      val kslides =
         shouldThrowExactly<IllegalArgumentException> {
           kslidesTest {
             presentation {
@@ -234,7 +232,6 @@ class PresentationTest : StringSpec(
     }
 
     "Vertical Slides Test" {
-      val kslides =
         shouldThrowExactly<IllegalArgumentException> {
           kslidesTest {
             presentation {

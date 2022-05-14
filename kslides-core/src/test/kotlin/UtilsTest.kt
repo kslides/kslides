@@ -1,6 +1,12 @@
 package com.github.readingbat
 
-import com.kslides.*
+import com.kslides.InternalUtils.fromTo
+import com.kslides.InternalUtils.isUrl
+import com.kslides.InternalUtils.merge
+import com.kslides.InternalUtils.stripBraces
+import com.kslides.InternalUtils.toIntList
+import com.kslides.InternalUtils.toLineRanges
+import com.kslides.InternalUtils.trimIndentWithInclude
 import com.kslides.config.*
 import io.kotest.core.spec.style.*
 import io.kotest.matchers.*
