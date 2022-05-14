@@ -3,6 +3,7 @@ package com.kslides.config
 import com.github.pambrose.common.util.*
 import com.kslides.*
 import com.kslides.Transition.SLIDE
+import com.kslides.Utils.INDENT_TOKEN
 import kotlinx.html.*
 
 class SlideConfig : AbstractConfig() {
@@ -24,10 +25,15 @@ class SlideConfig : AbstractConfig() {
   var backgroundVideoLoop by ConfigProperty<Boolean>(revealjsManagedValues)
   var backgroundVideoMuted by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Markdown-only items
+  // MarkdownSlide only items
+  var markdownCharset by ConfigProperty<String>(revealjsManagedValues)
   var markdownSeparator by ConfigProperty<String>(revealjsManagedValues)
   var markdownVerticalSeparator by ConfigProperty<String>(revealjsManagedValues)
   var markdownNotesSeparator by ConfigProperty<String>(revealjsManagedValues)
+
+  // MarkdownSlide and HtmlSlide only items
+  var indentToken by ConfigProperty<String>(revealjsManagedValues)
+  var disableTrimIndent by ConfigProperty<Boolean>(revealjsManagedValues)
 
   internal fun assignDefaults() {
     transition = Transition.UNASSIGNED
@@ -51,9 +57,13 @@ class SlideConfig : AbstractConfig() {
     backgroundVideoLoop = false
     backgroundVideoMuted = false
 
+    markdownCharset = ""
     markdownSeparator = ""
     markdownVerticalSeparator = ""
     markdownNotesSeparator = "^Notes?:"
+
+    indentToken = INDENT_TOKEN  // Token for adjusting markdown content indentation
+    disableTrimIndent = false   // Disable calling of trimIndent() on markdown content
   }
 
   internal fun applyConfig(section: SECTION) {

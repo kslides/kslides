@@ -60,7 +60,7 @@ fun kslides(block: KSlides.() -> Unit) =
       outputConfigBlock(outputConfig)
 
       if (!outputConfig.enableFileSystem && !outputConfig.enableHttp)
-        logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} section" }
+        logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} block" }
 
       if (outputConfig.enableFileSystem)
         writeToFileSystem(outputConfig)
@@ -87,7 +87,7 @@ internal fun kslidesTest(block: KSlides.() -> Unit) =
 
 class KSlides {
   internal val kslidesConfig = KSlidesConfig()
-  internal val globalPresentationConfig = PresentationConfig(true)
+  internal val globalPresentationConfig = PresentationConfig().apply { assignDefaults() }
   internal val outputConfig = OutputConfig(this)
   internal var kslidesConfigBlock: KSlidesConfig.() -> Unit = {}
   internal var globalPresentationConfigBlock: PresentationConfig.() -> Unit = {}
@@ -195,7 +195,7 @@ class KSlides {
               static(rootDir) {
                 baseDirs.forEach {
                   static(it) {
-                    logger.info { "Registering http dir: $it" }
+                    logger.debug { "Registering http dir $it" }
                     resources(it)
                   }
                 }

@@ -9,11 +9,11 @@ fun main() {
     output {
       // Write the presentations to a file
       enableFileSystem = true
-      // Serve up the presentations via HTTP
+      // Also serve up the presentations via HTTP
       enableHttp = true
     }
 
-    // Default values for all presentations in this file
+    // Default values for all presentations
     presentationConfig {
     }
 
@@ -28,25 +28,26 @@ fun main() {
           color: yellow;
         }
         """
-      // or with the kotlin css DSL
+      // or use the Kotlin CSS DSL
       css {
         rule("#mdslide h2") {
           color = Color.green
         }
       }
 
-      // Default values for all slides in this presentation
+      // Config values for this presentation
       presentationConfig {
         transition = Transition.FADE
-        topLeftHref = ""
-        topRightHref = ""
+        topLeftHref = ""  // Turn off top left href
+        topRightHref = "" // Turn off top right href
 
+        // Default values for all slides in this presentation
         slideConfig {
           backgroundColor = "#2A9EEE"
         }
       }
 
-      // Slide that uses Markdown for content
+      // Slide that uses Markdown content
       markdownSlide {
         id = "mdslide"
 
@@ -58,9 +59,9 @@ fun main() {
         }
       }
 
-      // Vertical section with two slides
+      // Two vertical slides slides
       verticalSlides {
-        // Slide that uses HTML for content
+        // Slide that uses HTML content
         htmlSlide {
           classes = "htmlslide"
 
@@ -77,7 +78,7 @@ fun main() {
           }
         }
 
-        // Slide that uses the Kotlin HTML DSL for content
+        // Slide that uses Kotlin HTML DSL content
         dslSlide {
           content {
             h1 { +"DSL" }

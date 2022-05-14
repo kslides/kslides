@@ -7,8 +7,8 @@ import kotlinx.html.dom.*
 import java.io.*
 
 internal object Page {
-  val preRegex = Regex("\\s*<pre.*>\\s*")
-  val codeRegex = Regex("\\s*<code.*>\\s*")
+  private val preRegex = Regex("\\s*<pre.*>\\s*")
+  private val codeRegex = Regex("\\s*<code.*>\\s*")
 
   internal fun generatePage(p: Presentation, useHttp: Boolean = true, srcPrefix: String = "/"): String {
     val htmldoc =

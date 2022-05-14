@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
+import com.kslides.InternalUtils.indentInclude
 import com.kslides.config.*
 import kotlinx.css.*
 import kotlinx.html.*
@@ -15,13 +16,10 @@ class Presentation(val kslides: KSlides) {
   internal val playgroundPath by lazy { kslides.outputConfig.playgroundDir.ensureSuffix("/") }
 
   // User variables
-  // Initialize with the global config value
-  val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
-  val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
-
-  // Initialize css with the global css value
-  val css by lazy { CssValue(kslides.css) }
   var path = "/"
+  val css by lazy { CssValue(kslides.css) }
+  val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
+  val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
 
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
@@ -32,7 +30,7 @@ class Presentation(val kslides: KSlides) {
   fun presentationConfig(block: PresentationConfig.() -> Unit) = block(presentationConfig)
 
   @KSlidesDslMarker
-  fun verticalSlides(block: VerticalSlideContext.() -> Unit) =
+  fun verticalSlides(block: VerticalSlidesContext.() -> Unit) =
     VerticalSlide(this) { div, slide, useHttp ->
       div.apply {
         (slide as VerticalSlide).verticalContext
@@ -43,10 +41,11 @@ class Presentation(val kslides: KSlides) {
             block(vcontext)
 
             require(vcontext.verticalSlides.isNotEmpty()) {
-              throw IllegalArgumentException("A verticalSlides{} section requires one or more slides")
+              throw IllegalArgumentException("A verticalSlides{} block requires one or more slides")
             }
             section(vcontext.classes.nullIfBlank()) {
               vcontext.id.also { if (it.isNotBlank()) id = it }
+              vcontext.style.also { if (it.isNotBlank()) style = it }
 
               // Apply config items for all the slides in the vertical slide
               vcontext.slideConfig.applyConfig(this)
@@ -69,49 +68,49 @@ class Presentation(val kslides: KSlides) {
           slideContent(s)
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
+            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} block" }
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
-            if (s.charset.isNotBlank())
-              attributes["data-charset"] = s.charset
+            val config = s.mergedConfig
+            config.markdownCharset.also { charset ->
+              if (charset.isNotBlank()) attributes["data-charset"] = charset
+            }
 
-            s.mergedConfig.applyMarkdownItems(this)
+            config.applyMarkdownItems(this)
 
-            processMarkdown(s)
+            processMarkdown(s, config)
           }.also { rawHtml("\n") }
         }
       }
     }.also { slides += it }
 
   @KSlidesDslMarker
-  fun VerticalSlideContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
+  fun VerticalSlidesContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
     VerticalMarkdownSlide(this@Presentation) { div, slide, _ ->
       div.apply {
         (slide as VerticalMarkdownSlide).also { s ->
           slideContent(s)
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content { } section" }
+            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} block" }
+
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
-            if (s.charset.isNotBlank())
-              attributes["data-charset"] = s.charset
+            val config = s.mergedConfig
+            config.markdownCharset.also { charset ->
+              if (charset.isNotBlank()) attributes["data-charset"] = charset
+            }
+
+            attributes["data-separator-notes"] = config.markdownNotesSeparator
 
             // These are not applicable for vertical markdown slides
             attributes["data-separator"] = ""
             attributes["data-separator-vertical"] = ""
 
-            s.mergedConfig.apply {
-              attributes["data-separator-notes"] = markdownNotesSeparator
-            }
-
-            //if (notes.isNotBlank())
-            //    attributes["data-separator-notes"] = notes
-
-            processMarkdown(s)
+            processMarkdown(s, config)
           }.also { rawHtml("\n") }
         }
       }
@@ -119,12 +118,10 @@ class Presentation(val kslides: KSlides) {
 
   private fun DIV.processDsl(s: DslSlide) {
     section(s.classes.nullIfBlank()) {
-      if (s.style.isNotBlank())
-        style = s.style
       s.processSlide(this)
       s._section = this // TODO This is a hack that will go away when context receivers work
       s._dslBlock(this)
-      require(s._dslAssigned) { "dslSlide missing content{} section" }
+      require(s._dslAssigned) { "dslSlide missing content{} block" }
     }.also { rawHtml("\n") }
   }
 
@@ -142,7 +139,7 @@ class Presentation(val kslides: KSlides) {
     }.also { slides += it }
 
   @KSlidesDslMarker
-  fun VerticalSlideContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
+  fun VerticalSlidesContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
     VerticalDslSlide(this@Presentation) { div, slide, useHttp ->
       div.apply {
         (slide as VerticalDslSlide)
@@ -154,15 +151,13 @@ class Presentation(val kslides: KSlides) {
       }
     }.also { verticalSlides += it }
 
-  private fun DIV.processHtml(s: HtmlSlide) {
+  private fun DIV.processHtml(s: HtmlSlide, config: SlideConfig) {
     section(s.classes.nullIfBlank()) {
-      if (s.style.isNotBlank())
-        style = s.style
       s.processSlide(this)
-      require(s._htmlAssigned) { "htmlSlide missing content{} section" }
+      require(s._htmlAssigned) { "htmlSlide missing content{} block" }
       s._htmlBlock()
-        .indentInclude(s.indentToken)
-        .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+        .indentInclude(config.indentToken)
+        .let { if (!config.disableTrimIndent) it.trimIndent() else it }
         .also { rawHtml("\n$it") }
     }.also { rawHtml("\n") }
   }
@@ -174,19 +169,19 @@ class Presentation(val kslides: KSlides) {
         (slide as HorizontalHtmlSlide)
           .also { s ->
             slideContent(s)
-            processHtml(s)
+            processHtml(s, s.mergedConfig)
           }
       }
     }.also { slides += it }
 
   @KSlidesDslMarker
-  fun VerticalSlideContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
+  fun VerticalSlidesContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
     VerticalHtmlSlide(this@Presentation) { div, slide, _ ->
       div.apply {
         (slide as VerticalHtmlSlide)
           .also { s ->
             slideContent(s)
-            processHtml(s)
+            processHtml(s, s.mergedConfig)
           }
       }
     }.also { verticalSlides += it }
@@ -216,7 +211,7 @@ class Presentation(val kslides: KSlides) {
   // slideDefinition end
 
   @KSlidesDslMarker
-  fun VerticalSlideContext.slideDefinition(
+  fun VerticalSlidesContext.slideDefinition(
     source: String,
     token: String,
     title: String = "Slide Definition",
@@ -329,15 +324,15 @@ class Presentation(val kslides: KSlides) {
     //   dependencies += "plugin/toolbar/toolbar.js"
   }
 
-  private fun SECTION.processMarkdown(s: MarkdownSlide) {
+  private fun SECTION.processMarkdown(s: MarkdownSlide, config: SlideConfig) {
     if (s.filename.isBlank()) {
       s._markdownBlock()
         .also { markdown ->
           if (markdown.isNotBlank())
             script("text/template") {
               markdown
-                .indentInclude(s.indentToken)
-                .let { if (!s.disableTrimIndent) it.trimIndent() else it }
+                .indentInclude(config.indentToken)
+                .let { if (!config.disableTrimIndent) it.trimIndent() else it }
                 .also { rawHtml("\n$it\n") }
             }
         }

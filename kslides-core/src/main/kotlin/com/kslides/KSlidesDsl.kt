@@ -1,6 +1,8 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
+import com.kslides.InternalUtils.stripBraces
+import com.kslides.Playground.logger
 import com.kslides.Playground.otherNames
 import com.kslides.Playground.sourceName
 import com.kslides.config.*
@@ -38,7 +40,7 @@ fun DslSlide.playground(
 
   (if (_useHttp) pgUrl else _slideName)
     .also { url ->
-      //logger.debug { "Query string: $url" }
+      logger.debug { "Query string: $url" }
       _section?.iframe {
         src = url
         config.width.also { if (it.isNotBlank()) width = it }

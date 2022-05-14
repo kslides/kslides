@@ -6,11 +6,9 @@ interface HtmlSlide {
   var _htmlBlock: () -> String
   var _htmlAssigned: Boolean
 
-  // User variables
   var classes: String
+  var id: String
   var style: String
-  var indentToken: String
-  var disableTrimIndent: Boolean
 
   fun processSlide(section: SECTION)
 }
@@ -19,11 +17,6 @@ class HorizontalHtmlSlide(presentation: Presentation, content: SlideArgs) : Hori
   HtmlSlide {
   override var _htmlBlock: () -> String = { "" }
   override var _htmlAssigned = false
-
-  // User variables
-  override var style = ""
-  override var indentToken = INDENT_TOKEN
-  override var disableTrimIndent = false
 
   @KSlidesDslMarker
   fun content(htmlBlock: () -> String) {
@@ -36,11 +29,6 @@ class VerticalHtmlSlide(presentation: Presentation, content: SlideArgs) : Vertic
   HtmlSlide {
   override var _htmlBlock: () -> String = { "" }
   override var _htmlAssigned = false
-
-  // User variables
-  override var style = ""
-  override var indentToken = INDENT_TOKEN
-  override var disableTrimIndent = false
 
   @KSlidesDslMarker
   fun content(htmlBlock: () -> String) {

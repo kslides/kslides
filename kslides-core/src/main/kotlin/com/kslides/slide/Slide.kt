@@ -22,11 +22,13 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   val css = CssValue(valid = false)
 
   // User variables
-  var id = ""
   var classes = ""
+  var id = ""
+  var style = ""
   var hidden = false
   var uncounted = false
   var autoAnimate = false
+  var autoAnimateRestart = false
 
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit): Unit = cssError()
@@ -38,6 +40,9 @@ abstract class Slide(private val presentation: Presentation, internal val conten
     if (id.isNotBlank())
       section.id = id
 
+    if (style.isNotBlank())
+      section.style = style
+
     if (hidden)
       section.attributes["data-visibility"] = "hidden"
 
@@ -46,6 +51,9 @@ abstract class Slide(private val presentation: Presentation, internal val conten
 
     if (autoAnimate)
       section.attributes["data-auto-animate"] = ""
+
+    if (autoAnimateRestart)
+      section.attributes["data-auto-animate-restart"] = ""
 
     mergedConfig.applyConfig(section)
   }
@@ -58,5 +66,5 @@ abstract class Slide(private val presentation: Presentation, internal val conten
 abstract class HorizontalSlide(presentation: Presentation, content: SlideArgs) : Slide(presentation, content)
 
 open class VerticalSlide(presentation: Presentation, content: SlideArgs) : Slide(presentation, content) {
-  val verticalContext = VerticalSlideContext()
+  internal val verticalContext = VerticalSlidesContext()
 }

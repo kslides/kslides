@@ -2,9 +2,11 @@ package com.kslides
 
 interface MarkdownSlide {
   var _markdownBlock: () -> String
+
+  var classes: String
+  var id: String
+  var style: String
   var filename: String
-  var indentToken: String
-  var disableTrimIndent: Boolean
 }
 
 class HortizontalMarkdownSlide(presentation: Presentation, content: SlideArgs) : HorizontalSlide(presentation, content),
@@ -14,9 +16,6 @@ class HortizontalMarkdownSlide(presentation: Presentation, content: SlideArgs) :
 
   // User variables
   override var filename = ""
-  override var indentToken = INDENT_TOKEN
-  override var disableTrimIndent = false
-  var charset = ""
 
   @KSlidesDslMarker
   fun content(markdownBlock: () -> String) {
@@ -32,9 +31,6 @@ class VerticalMarkdownSlide(presentation: Presentation, content: SlideArgs) : Ve
 
   // User variables
   override var filename = ""
-  override var indentToken = INDENT_TOKEN
-  override var disableTrimIndent = false
-  var charset = ""
 
   @KSlidesDslMarker
   fun content(markdownBlock: () -> String) {

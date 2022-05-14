@@ -2,12 +2,7 @@ package com.kslides.config
 
 import com.kslides.*
 
-class PresentationConfig(init: Boolean = false) : AbstractConfig() {
-  internal val menuConfig = MenuConfig()
-  internal val copyCodeConfig = CopyCodeConfig()
-  internal val slideConfig = SlideConfig()
-  internal val playgroundConfig = PlaygroundConfig()
-
+class PresentationConfig : AbstractConfig() {
   // Display presentation control arrows
   var controls by ConfigProperty<Boolean>(revealjsManagedValues) // true
 
@@ -279,12 +274,12 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
   // - "c/t":   Flattened slide number / total slides
   var slideNumber by ConfigProperty<Any>(kslidesManagedValues) // false
 
-  init {
-    // Only the global default config is initialized with default values
-    if (init)
-      assignDefaults()
-  }
+  internal val menuConfig = MenuConfig()
+  internal val copyCodeConfig = CopyCodeConfig()
+  internal val slideConfig = SlideConfig()
+  internal val playgroundConfig = PlaygroundConfig()
 
+  // Only the global default config is initialized with default values
   internal fun assignDefaults() {
     title = ""
     theme = PresentationTheme.BLACK
@@ -305,10 +300,10 @@ class PresentationConfig(init: Boolean = false) : AbstractConfig() {
     topLeftTitle = "View source on Github"
     topLeftSvg =
       """
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
-            <path fill="currentColor" stroke="none" d="M27.5 11.2a16.3 16.3 0 0 0-5.1 31.7c.8.2 1.1-.3 1.1-.7v-2.8c-4.5 1-5.5-2.2-5.5-2.2-.7-1.9-1.8-2.4-1.8-2.4-1.5-1 .1-1 .1-1 1.6.1 2.5 1.7 2.5 1.7 1.5 2.5 3.8 1.8 4.7 1.4.2-1 .6-1.8 1-2.2-3.5-.4-7.3-1.8-7.3-8 0-1.8.6-3.3 1.6-4.4-.1-.5-.7-2.1.2-4.4 0 0 1.4-.4 4.5 1.7a15.6 15.6 0 0 1 8.1 0c3.1-2 4.5-1.7 4.5-1.7.9 2.3.3 4 .2 4.4 1 1 1.6 2.6 1.6 4.3 0 6.3-3.8 7.7-7.4 8 .6.6 1.1 1.6 1.1 3v4.6c0 .4.3.9 1.1.7a16.3 16.3 0 0 0-5.2-31.7"></path>
-          </svg>
-        """
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55 55">
+          <path fill="currentColor" stroke="none" d="M27.5 11.2a16.3 16.3 0 0 0-5.1 31.7c.8.2 1.1-.3 1.1-.7v-2.8c-4.5 1-5.5-2.2-5.5-2.2-.7-1.9-1.8-2.4-1.8-2.4-1.5-1 .1-1 .1-1 1.6.1 2.5 1.7 2.5 1.7 1.5 2.5 3.8 1.8 4.7 1.4.2-1 .6-1.8 1-2.2-3.5-.4-7.3-1.8-7.3-8 0-1.8.6-3.3 1.6-4.4-.1-.5-.7-2.1.2-4.4 0 0 1.4-.4 4.5 1.7a15.6 15.6 0 0 1 8.1 0c3.1-2 4.5-1.7 4.5-1.7.9 2.3.3 4 .2 4.4 1 1 1.6 2.6 1.6 4.3 0 6.3-3.8 7.7-7.4 8 .6.6 1.1 1.6 1.1 3v4.6c0 .4.3.9 1.1.7a16.3 16.3 0 0 0-5.2-31.7"></path>
+        </svg>
+      """
     topLeftText = ""
 
     // Doesn't appear when href is assigned an empty string
