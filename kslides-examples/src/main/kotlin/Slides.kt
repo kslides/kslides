@@ -88,12 +88,6 @@ fun main() {
         // intro begin
         markdownSlide {
           id = "intro"
-
-          slideConfig {
-            // Config values for this slide can be set here
-            // backgroundColor = "#4370A5"
-          }
-
           content {
             """
             # kslides
@@ -121,7 +115,6 @@ fun main() {
         // mdslide begin
         markdownSlide {
           id = "markdownslide"
-
           content {
             """
             # A Markdown Slide
