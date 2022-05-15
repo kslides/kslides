@@ -130,7 +130,7 @@ kslides {
 ### kslides Block
 
 A `kslides{}` block contains configuration values, output directives, presentation configuration defaults,
-css defaults, and presentation defintions. The child blocks can be declared in any order.
+css defaults, and presentation definitions. The child blocks can be declared in any order.
 
 #### Options
 
@@ -222,6 +222,10 @@ presentation {
   markdownSlide {}          // One or more slides
   htmlSlide {}
   dslSLide {}
+  verticalSlide {
+    htmlSlide {}
+    dslSLide {}
+  }
 }
 ```
 
@@ -285,11 +289,12 @@ _kslides.presentation.presentationConfig.slideConfig{}_.
 
 ### content Block
 
-`content{}` block value types vary by the type of the slide:
+`content{}` block contents vary by the type of the slide:
 * `markdownSlide.content{}` blocks contain a String with Markdown
 * `htmlSlide.content{}` blocks contain a String with HTML  
 * `dslSlide.content{}` block contains calls to the Kotlin
-[HTML DSL](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started).
+[HTML DSL](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started)
+* `verticalSlides{}` block contains other slides
 
 
 ### verticalSlides Block
@@ -349,7 +354,7 @@ Examples of their usage can be found [here](https://github.com/kslides/kslides/b
 
 ### Kotlin Details
 
-kslides requires requires some Kotlin-specific knowledge:
+kslides requires some Kotlin-specific knowledge:
 * [String Interpolation](https://metapx.org/kotlin-string-interpolation/)
 * [Named Arguments](https://kotlinlang.org/docs/functions.html#named-arguments)
 * [Multiline Strings](https://kotlinlang.org/docs/java-to-kotlin-idioms-strings.html#use-multiline-strings)
