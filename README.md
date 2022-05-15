@@ -334,6 +334,9 @@ Examples of their usage can be found [here](https://github.com/kslides/kslides/b
 | `githubRawUrl()`          | include() calls    | Returns URL for raw github content        |
 | `include()`               | All Slides         | Preferred to embedding raw code in slides |
 
+The `include()` call accepts a filename or a URL _src_ argument. A filename is relative to the root of the repo
+and a URL requires an _http://_ or _https://_ prefix.
+
 ## dslSlide-specific Functions
 
 These functions are defined [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/KSlidesDsl.kt).
@@ -370,6 +373,11 @@ the option to convert it into Kotlin HTML DSL code. Install it in IntelliJ by go
 
 Disable the IntelliJ `Reformat code` and `Rearrange code` options when you commit to git.
 The code in the presentation html files are space-sensitive and might not work if they are reformatted.
+
+### Custom CSS
+CSS values can be specified in a _css{}_ blocks in a presentation, but they also can be specified in 
+the `src/main/resources/slides.css` file. The contents of that file are embedded directly into 
+the presentation HTML files.
 
 ### Images
 

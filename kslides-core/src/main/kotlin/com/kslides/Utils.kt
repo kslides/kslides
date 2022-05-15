@@ -83,20 +83,20 @@ fun include(
 
 // When called from a code block, turn off indentToken and escaping
 fun CODE.include(
-  path: String,
+  src: String,
   linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = include(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+) = include(src, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 // When called from a DslSlide, turn off indentToken and escaping
 fun DslSlide.include(
-  path: String,
+  src: String,
   linePattern: String = "",
   beginToken: String = "",
   endToken: String = "",
   exclusive: Boolean = true,
   trimIndent: Boolean = true,
-) = include(path, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
+) = include(src, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
