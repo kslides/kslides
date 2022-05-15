@@ -1,6 +1,7 @@
 package com.kslides
 
 import org.apache.commons.text.*
+import java.io.*
 
 object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
@@ -177,6 +178,8 @@ object InternalUtils {
     (if (trimIndent) joinToString("\n").trimIndent().lines() else this)
       .map { "$indentToken$it" }
       .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeHtml4(it) else it }
+
+  internal fun mkdir(name: String) = File(name).run { if (!exists()) mkdir() else false }
 
   internal fun String.isUrl() = lowercase().matches(httpRegex)
 

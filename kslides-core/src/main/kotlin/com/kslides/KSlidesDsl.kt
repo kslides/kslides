@@ -5,6 +5,9 @@ import com.kslides.InternalUtils.stripBraces
 import com.kslides.Playground.logger
 import com.kslides.Playground.otherNames
 import com.kslides.Playground.sourceName
+import com.kslides.Plotly.argName
+import com.kslides.Plotly.plotlyContent
+import com.kslides.Plotly.writePlotlyFile
 import com.kslides.config.*
 import kotlinx.html.*
 import mu.*
@@ -54,7 +57,7 @@ fun DslSlide.playground(
       .apply { merge(presentation.presentationConfig.playgroundConfig) }
       .apply { merge(PlaygroundConfig().also { block(it) }) }
 
-  val pgUrl =
+  val url =
     buildString {
       append(presentation.kslides.kslidesConfig.playgroundEndpoint)
       append("?")
@@ -66,18 +69,55 @@ fun DslSlide.playground(
 
   // Add to list of pages to generate and later grab with an iframe
   if (!_useHttp)
-    presentation.kslides.playgroundUrls += _slideName to pgUrl
+    presentation.kslides.playgroundUrls += this to url
 
-  (if (_useHttp) pgUrl else _slideName)
-    .also { url ->
-      logger.debug { "Query string: $url" }
+  (if (_useHttp) url else playgroundFilename)
+    .also { pgurl ->
+      logger.debug { "URL: $pgurl" }
       _section?.iframe {
-        src = url
+        src = pgurl
         config.width.also { if (it.isNotBlank()) width = it }
         config.height.also { if (it.isNotBlank()) height = it }
         config.style.also { if (it.isNotBlank()) style = it }
         config.title.also { if (it.isNotBlank()) title = it }
       } ?: error("playground{} must be called from within a content{} block")
+    }
+}
+
+@KSlidesDslMarker
+fun DslSlide.plotly(
+  block: SECTION.() -> Unit = {},
+) {
+  val config =
+    PlotlyConfig()
+      .apply { merge(presentation.kslides.globalPresentationConfig.plotlyConfig) }
+      .apply { merge(presentation.presentationConfig.plotlyConfig) }
+
+  val url =
+    buildString {
+      append(presentation.kslides.kslidesConfig.plotlyEndpoint)
+      append("?")
+      append("$argName=$_slideName")
+    }
+
+  // Add to list of pages to generate and later grab with an iframe
+  val content = plotlyContent(presentation.kslides.kslidesConfig, block)
+
+  if (_useHttp)
+    presentation.kslides.plotlyContent[_slideName] = content
+  else
+    writePlotlyFile(presentation.kslides.outputConfig, this, content)
+
+  (if (_useHttp) url else plotlyFilename)
+    .also { plurl ->
+      logger.debug { "URL: $plurl" }
+      _section?.iframe {
+        src = plurl
+        config.width.also { if (it.isNotBlank()) width = it }
+        config.height.also { if (it.isNotBlank()) height = it }
+        config.style.also { if (it.isNotBlank()) style = it }
+        config.title.also { if (it.isNotBlank()) title = it }
+      } ?: error("plotly{} must be called from within a content{} block")
     }
 }
 

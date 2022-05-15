@@ -278,6 +278,7 @@ class PresentationConfig : AbstractConfig() {
   internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
   internal val playgroundConfig = PlaygroundConfig()
+  internal val plotlyConfig = PlotlyConfig()
 
   // Only the global default config is initialized with default values
   internal fun assignDefaults() {
@@ -320,6 +321,7 @@ class PresentationConfig : AbstractConfig() {
 
     slideConfig.assignDefaults()
     playgroundConfig.assignDefaults()
+    plotlyConfig.assignDefaults()
   }
 
   internal fun mergeConfig(other: PresentationConfig) {
@@ -328,6 +330,7 @@ class PresentationConfig : AbstractConfig() {
     this.copyCodeConfig.merge(other.copyCodeConfig)
     this.slideConfig.merge(other.slideConfig)
     this.playgroundConfig.merge(other.playgroundConfig)
+    this.plotlyConfig.merge(other.plotlyConfig)
   }
 
   @KSlidesDslMarker
@@ -341,4 +344,7 @@ class PresentationConfig : AbstractConfig() {
 
   @KSlidesDslMarker
   fun playgroundConfig(block: PlaygroundConfig.() -> Unit) = block.invoke(playgroundConfig)
+
+  @KSlidesDslMarker
+  fun plotlyConfig(block: PlotlyConfig.() -> Unit) = block.invoke(plotlyConfig)
 }

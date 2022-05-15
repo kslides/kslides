@@ -10,7 +10,8 @@ typealias SlideArgs = (DIV, Slide, Boolean) -> Unit
 
 abstract class Slide(private val presentation: Presentation, internal val content: SlideArgs) {
   private val slideConfig = SlideConfig() // Do not call init on this because it is merged with the presentation config
-  val _slideName = "${presentation.playgroundPath}slide-${slideCount.incrementAndGet()}.html"
+  val _slideName = "slide-${slideCount.incrementAndGet()}"
+  val _slideFilename = "$_slideName.html"
   internal val mergedConfig by lazy {
     SlideConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.slideConfig) }

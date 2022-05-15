@@ -11,7 +11,7 @@ plugins {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.8.14'
+    version '0.9.1'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
@@ -23,6 +23,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url = 'https://repo.kotlin.link' }
         maven { url = 'https://jitpack.io' }
     }
 
@@ -63,7 +64,9 @@ subprojects {
         implementation "com.github.pambrose.common-utils:core-utils:$utils_version"
         implementation "com.github.pambrose.common-utils:ktor-server-utils:$utils_version"
 
-        implementation 'org.apache.commons:commons-text:1.9'
+        implementation "space.kscience:plotlykt-core:$plotly_version"
+
+        implementation "org.apache.commons:commons-text:$text_version"
 
         implementation "io.github.microutils:kotlin-logging:$logging_version"
         implementation "ch.qos.logback:logback-classic:$logback_version"
@@ -80,7 +83,7 @@ subprojects {
     compileKotlin {
         kotlinOptions {
             //useIR = true
-            jvmTarget = '1.8'
+            jvmTarget = '11'
             //languageVersion = '1.7'
             //apiVersion = '1.7'
             freeCompilerArgs += ['-Xbackend-threads=8',
@@ -93,7 +96,7 @@ subprojects {
     compileTestKotlin {
         kotlinOptions {
             //useIR = true
-            jvmTarget = '1.8'
+            jvmTarget = '11'
             //languageVersion = '1.7'
             //apiVersion = '1.7'
             freeCompilerArgs += ['-Xbackend-threads=8',

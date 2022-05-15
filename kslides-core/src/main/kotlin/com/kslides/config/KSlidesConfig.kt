@@ -25,4 +25,7 @@ class KSlidesConfig {
   var playgroundHttpPrefix = "http://0.0.0.0"
   var playgroundEndpoint = "playground-file"
   var playgroundSelector = "playground-code"
+
+  var plotlyUrl = "https://cdn.plot.ly/plotly-1.54.6.min.js"
+  var plotlyEndpoint = "plotly-file"
 }

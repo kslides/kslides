@@ -13,7 +13,6 @@ class Presentation(val kslides: KSlides) {
   internal val presentationConfig = PresentationConfig()
   internal lateinit var finalConfig: PresentationConfig
   internal val slides = mutableListOf<Slide>()
-  internal val playgroundPath by lazy { kslides.outputConfig.playgroundDir.ensureSuffix("/") }
 
   // User variables
   var path = "/"

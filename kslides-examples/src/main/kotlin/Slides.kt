@@ -3,6 +3,8 @@ import com.kslides.*
 import kotlinx.css.*
 import kotlinx.css.Float
 import kotlinx.html.*
+import space.kscience.plotly.*
+import kotlin.random.*
 
 fun main() {
 
@@ -69,6 +71,10 @@ fun main() {
         copyCodeConfig {}
         playgroundConfig {}
         slideConfig {}
+        plotlyConfig {
+          width = "100%"
+          height = "500px"
+        }
       }
 
       css +=
@@ -81,6 +87,24 @@ fun main() {
       css {
         rule("#intro h1") {
           color = Color("#FF5533")
+        }
+      }
+
+
+      dslSlide {
+        content {
+          p { +"This is a plotly-kt integration demo" }
+          plotly {
+            plot(config = PlotlyConfig().apply {
+              showEditInChartStudio = false
+            }) {
+              scatter {
+                x.numbers = 0..100
+                y.numbers = x.numbers.map { Random.nextDouble() }
+              }
+            }
+
+          }
         }
       }
 
