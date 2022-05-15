@@ -1,4 +1,4 @@
-package examples;
+package content;
 
 public class HelloWorldJ {
     public static void main(String[] args) {

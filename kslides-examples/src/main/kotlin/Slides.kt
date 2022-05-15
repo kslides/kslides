@@ -189,7 +189,7 @@ fun main() {
             """
             ## Highlighted Code with a markdownSlide   
             ```kotlin [|3,7|4,6|5|4-6]
-            ${include("kslides-examples/src/main/kotlin/examples/HelloWorldK.kt")}
+            ${include("kslides-examples/src/main/kotlin/content/HelloWorldK.kt")}
             ```
             ### 👇 
             Note: This slide shows code highlights. You can specify the lines you want to highlight.
@@ -206,7 +206,7 @@ fun main() {
         dslSlide {
           content {
             h2 { +"Highlighted Code with a dslSlide" }
-            val file = "kslides-examples/src/main/kotlin/examples/HelloWorldK.kt"
+            val file = "kslides-examples/src/main/kotlin/content/HelloWorldK.kt"
             codeSnippet {
               language = "kotlin"
               highlightPattern = "[|3,7|4,6|5|4-6]"
@@ -232,7 +232,7 @@ fun main() {
             autoAnimate = true
             content {
               h2 { +"Animated Code with a dslSlide" }
-              val file = "kslides-examples/src/main/kotlin/examples/assign.js"
+              val file = "kslides-examples/src/main/kotlin/content/assign.js"
               codeSnippet {
                 language = "javascript"
                 dataId = "code-animation"
@@ -261,7 +261,7 @@ fun main() {
               <h2>Animated Code with an htmlSlide</h2>
               <pre data-id="code-animation" data-cc="false">
                 <code class="javascript" data-trim="" data-line-numbers="">
-                  ${include("kslides-examples/src/main/kotlin/examples/assign.js", linePattern)}
+                  ${include("kslides-examples/src/main/kotlin/content/assign.js", linePattern)}
                 </code>
               </pre>
               <h3>👇</h3>
@@ -344,7 +344,7 @@ fun main() {
         dslSlide {
           content {
             h2 { +"Playground Support for other Languages" }
-            playground("kslides-examples/src/main/kotlin/examples/helloworld.html") {
+            playground("kslides-examples/src/main/kotlin/content/helloworld.html") {
               theme = PlaygroundTheme.DARCULA
               mode = PlaygroundMode.XML
             }

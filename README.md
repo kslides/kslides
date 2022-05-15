@@ -377,7 +377,8 @@ The code in the presentation html files are space-sensitive and might not work i
 ### Custom CSS
 CSS values can be specified in a _css{}_ blocks in a presentation, but they also can be specified in 
 the `src/main/resources/slides.css` file. The contents of that file are embedded directly into 
-the presentation HTML files.
+the presentation HTML files. Make sure you run 
+`./gradlew clean build` after making changes to _slides.css_. 
 
 ### Images
 
