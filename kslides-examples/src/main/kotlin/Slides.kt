@@ -92,9 +92,9 @@ fun main() {
       dslSlide {
 
         plotlyConfig {
-          width = "600px"
-          height = "500px"
-          style = "display:block;"
+          width = "100%"
+          height = "400px"
+          style = "width:50%; border: 2px solid red;"
           staticContent = true
         }
 
@@ -102,11 +102,11 @@ fun main() {
           p { +"This is a plotly-kt integration demo" }
           plotly {
             plot(config = PlotlyConfig().apply {
-              responsive = true
+              //responsive = true
             }) {
               layout {
-               // width = 600
-               // height = 500
+               width = 465
+               height = 400
               }
               scatter {
                 x.numbers = 0..400
@@ -119,8 +119,9 @@ fun main() {
 
       dslSlide {
         plotlyConfig {
-          width = "70%"
-          height = "500px"
+          width = "100%"
+          height = "400px"
+          style = "width:50%; border: 2px solid red;"
         }
 
         content {
@@ -128,6 +129,11 @@ fun main() {
           plotly {
             plot {
               fun l(vararg numbers: Number) = numbers.map { it.asValue() }.asValue()
+
+              layout {
+                width = 465
+                height = 400
+              }
 
               trace {
                 z.value = listOf(
