@@ -89,17 +89,24 @@ fun main() {
         }
       }
 
-
       dslSlide {
+
         plotlyConfig {
-          width = "100%"
+          width = "600px"
           height = "500px"
+          style = "display:block;"
+          staticContent = true
         }
 
         content {
           p { +"This is a plotly-kt integration demo" }
           plotly {
             plot {
+              layout {
+                title = System.currentTimeMillis().toString()
+                width = 600
+                height = 500
+              }
               scatter {
                 x.numbers = 0..400
                 y.numbers = x.numbers.map { Random.nextDouble() }
@@ -108,7 +115,6 @@ fun main() {
           }
         }
       }
-
 
       dslSlide {
         plotlyConfig {

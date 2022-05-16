@@ -22,6 +22,9 @@ dist:
 stage:
 	./gradlew stage
 
+cleandocs:
+	rm -rf docs/playground docs/plotly
+
 versioncheck:
 	./gradlew dependencyUpdates
 

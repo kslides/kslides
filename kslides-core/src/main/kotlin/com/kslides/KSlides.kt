@@ -85,8 +85,11 @@ class KSlides {
   internal var outputConfigBlock: OutputConfig.() -> Unit = {}
   internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
   internal val presentationMap = mutableMapOf<String, Presentation>()
-  internal val iframeContentMap = mutableMapOf<String, String>()
   internal val presentations get() = presentationMap.values
+  internal val staticIframeContent = mutableMapOf<String, String>()
+  internal val dynamicIframeContent = mutableMapOf<String, () -> String>()
+  internal var slideCount = 1
+
   internal fun presentation(name: String) =
     presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
@@ -172,7 +175,9 @@ class KSlides {
               get("$it/{fname}") {
                 respondWith {
                   val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing slide arg $it")
-                  kslides.iframeContentMap[path] ?: throw IllegalArgumentException("Invalid slide path: $path")
+                  kslides.dynamicIframeContent[path]?.invoke()
+                    ?: kslides.staticIframeContent[path]
+                    ?: throw IllegalArgumentException("Invalid slide path: $path")
                 }
               }
             }

@@ -6,13 +6,12 @@ import com.kslides.CssValue.Companion.cssError
 import com.kslides.config.*
 import kotlinx.css.*
 import kotlinx.html.*
-import java.util.concurrent.atomic.*
 
 typealias SlideArgs = (DIV, Slide, Boolean) -> Unit
 
 abstract class Slide(private val presentation: Presentation, internal val content: SlideArgs) {
   private val slideConfig = SlideConfig() // Do not call init on this because it is merged with the presentation config
-  val _slideFilename = "slide-${slideCount.incrementAndGet()}.html"
+  val _slideId = presentation.kslides.slideCount++
 
   internal val mergedSlideConfig by lazy {
     SlideConfig()
@@ -59,10 +58,6 @@ abstract class Slide(private val presentation: Presentation, internal val conten
       section.attributes["data-auto-animate-restart"] = ""
 
     mergedSlideConfig.applyConfig(section)
-  }
-
-  companion object {
-    private val slideCount = AtomicInteger(0)
   }
 }
 

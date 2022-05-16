@@ -21,7 +21,6 @@ class Presentation(val kslides: KSlides) {
   val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
   val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
 
-
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
     css += block
@@ -132,6 +131,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as HorizontalDslSlide)
           .also { s ->
+            s._iframeCount = 1
             s._useHttp = useHttp
             slideContent(s)
             processDsl(s)
@@ -145,6 +145,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as VerticalDslSlide)
           .also { s ->
+            s._iframeCount = 1
             s._useHttp = useHttp
             slideContent(s)
             processDsl(s)

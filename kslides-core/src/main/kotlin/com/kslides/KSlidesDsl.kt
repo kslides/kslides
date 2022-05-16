@@ -45,27 +45,29 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
 //context(Presentation, DslSlide, SECTION)
 @KSlidesDslMarker
 fun DslSlide.playground(
-  source: String,
-  vararg otherSources: String = emptyArray(),
+  srcName: String,
+  vararg otherSrcs: String = emptyArray(),
   configBlock: PlaygroundConfig.() -> Unit = {},
 ) {
+  val iframeId = _iframeCount++
+  val kslides = presentation.kslides
   val config =
     PlaygroundConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.playgroundConfig) }
       .apply { merge(presentation.presentationConfig.playgroundConfig) }
       .apply { merge(PlaygroundConfig().also { configBlock(it) }) }
 
-  val kslides = presentation.kslides
-
-  val content = playgroundContent(kslides, config, source, otherSources.toList())
-
-  if (_useHttp)
-    kslides.iframeContentMap[_slideFilename] = content
-  else
-    writeIframeContent(kslides.outputConfig.playgroundPath, _slideFilename, content)
+  recordContent(
+    kslides,
+    config.staticContent,
+    filename(iframeId),
+    kslides.outputConfig.playgroundPath
+  ) {
+    playgroundContent(kslides, config, srcName, otherSrcs.toList())
+  }
 
   _section?.iframe {
-    src = playgroundFilename
+    src = playgroundFilename(iframeId)
     config.width.also { if (it.isNotBlank()) width = it }
     config.height.also { if (it.isNotBlank()) height = it }
     config.style.also { if (it.isNotBlank()) style = it }
@@ -77,6 +79,7 @@ fun DslSlide.playground(
 fun DslSlide.plotly(
   block: SECTION.() -> Unit = {},
 ) {
+  val iframeId = _iframeCount++
   val kslides = presentation.kslides
   val config =
     PlotlyConfig()
@@ -84,20 +87,46 @@ fun DslSlide.plotly(
       .apply { merge(presentation.presentationConfig.plotlyConfig) }
       .apply { merge(PlotlyConfig().also { _plotlyBlock(it) }) }
 
-  val content = plotlyContent(kslides.kslidesConfig, block)
-
-  if (_useHttp)
-    kslides.iframeContentMap[_slideFilename] = content
-  else
-    writeIframeContent(kslides.outputConfig.plotlyPath, _slideFilename, content)
+  recordContent(
+    kslides,
+    config.staticContent,
+    filename(iframeId),
+    kslides.outputConfig.plotlyPath
+  ) {
+    plotlyContent(kslides.kslidesConfig, block)
+  }
 
   _section?.iframe {
-    src = plotlyFilename
+    src = plotlyFilename(iframeId)
     config.width.also { if (it.isNotBlank()) width = it }
     config.height.also { if (it.isNotBlank()) height = it }
     config.style.also { if (it.isNotBlank()) style = it }
     config.title.also { if (it.isNotBlank()) title = it }
   } ?: error("plotly{} must be called from within a content{} block")
+}
+
+private fun DslSlide.recordContent(
+  kslides: KSlides,
+  staticContent: Boolean,
+  filename: String,
+  path: String,
+  content: () -> String
+) {
+  if (_useHttp) {
+    if (staticContent) {
+      kslides.staticIframeContent.computeIfAbsent(filename) {
+        KSlidesDsl.logger.info { "Saving source: $filename" }
+        content()
+      }
+    } else {
+      kslides.dynamicIframeContent.computeIfAbsent(filename) {
+        KSlidesDsl.logger.info { "Saving lambda: $filename" }
+        content
+      }
+    }
+  } else {
+    writeIframeContent(path, filename, content())
+  }
 }
 
 @HtmlTagMarker

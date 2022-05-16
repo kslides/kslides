@@ -7,7 +7,7 @@ import mu.*
 import kotlin.collections.set
 
 object Playground : KLogging() {
-  fun playgroundContent(kslides: KSlides, config: PlaygroundConfig, sourceName: String, otherNames: List<String>) =
+  fun playgroundContent(kslides: KSlides, config: PlaygroundConfig, srcName: String, otherSrcs: List<String>) =
     document {
       val kslidesConfig = kslides.kslidesConfig
       append.html {
@@ -21,10 +21,10 @@ object Playground : KLogging() {
           code(kslidesConfig.playgroundSelector) {
             config.toAttributes().forEach { attributes[it.first] = it.second }
 
-            logger.info { "Including file: $sourceName" }
-            +include(sourceName)
+            logger.info { "Including file: $srcName" }
+            +include(srcName)
 
-            otherNames
+            otherSrcs
               .forEach { filename ->
                 logger.info { "Including additional file: $filename" }
                 textArea(classes = "hidden-dependency") {

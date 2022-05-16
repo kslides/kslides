@@ -30,29 +30,24 @@ class PlaygroundConfig : AbstractConfig() {
   var height by ConfigProperty<String>(kslidesManagedValues)
   var style by ConfigProperty<String>(kslidesManagedValues)
   var title by ConfigProperty<String>(kslidesManagedValues) // For screen readers
+  var staticContent by ConfigProperty<Boolean>(kslidesManagedValues) // Prevents recompute of playground content
 
   fun assignDefaults() {
     width = ""
     height = ""
     style = ""
     title = ""
+    staticContent = false
   }
 
-  private fun String.toPropertyName() =
-    toList()
-      .map { if (it.isUpperCase()) "-${it.lowercaseChar()}" else it }
-      .joinToString("")
-
   internal fun toAttributes() =
-      revealjsManagedValues
-        .map { (k, v) ->
-          k to (
-              when {
-                v is TargetPlatform -> v.queryVal
-                v is PlaygroundMode -> v.queryVal
-                v::class.isSubclassOf(Enum::class) -> (v as Enum<*>).name.lowercase()
-                else -> v.toString()
-              }
-              )
-        }
+    revealjsManagedValues
+      .map { (k, v) ->
+        k to (when {
+          v is TargetPlatform -> v.queryVal
+          v is PlaygroundMode -> v.queryVal
+          v::class.isSubclassOf(Enum::class) -> (v as Enum<*>).name.lowercase()
+          else -> v.toString()
+        })
+      }
 }

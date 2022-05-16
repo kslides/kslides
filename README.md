@@ -4,6 +4,7 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/kslides/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=kslides/kslides&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://app.travis-ci.com/kslides/kslides.svg?branch=master)](https://app.travis-ci.com/kslides/kslides)
 [![Kotlin version](https://img.shields.io/badge/kotlin-1.6.21-red?logo=kotlin)](http://kotlinlang.org)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/6d0c3c20-6eb5-4c74-8451-5fa06acf242f/deploy-status)](https://app.netlify.com/sites/kslides/deploys)
 
 **kslides** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com)
 presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint.
@@ -164,7 +165,7 @@ for all presentations and has these
 Presentation CSS can also be specified using raw CSS strings. A combination of the two approaches is also allowed. 
 
 * A `presentation{}` block includes one or more slide descriptions. There are 3 types of slides:
-markdownSlide, htmlSlide and dslSlide.
+_MarkdownSlide_, _HtmlSlide_ and _DslSlide_.
 
 
 ### presentationConfig Block
@@ -254,7 +255,7 @@ they are referenced.
 | _autoAnimate_        | false   | [Details](https://revealjs.com/auto-animate/)                             |
 | _autoAnimateRestart_ | false   | [Details](https://revealjs.com/auto-animate/#auto-animate-id-%26-restart) |
 
-#### markdownSlide-only Options
+#### markdownSlide-specific Options
 
 | Name       | Default | Description                                                 | 
 |------------|---------|-------------------------------------------------------------|
@@ -323,30 +324,30 @@ verticalSlides {
 These functions are defined [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/Utils.kt).
 Examples of their usage can be found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt).
 
-| Function name             | Context            | Description                               |
-|---------------------------|--------------------|-------------------------------------------|
-| `slideBackground()`       | markdownSlide only |                                           |
-| `fragment()`              | markdownSlide only |                                           |
-| `rawHtml()`               | dslSlide           | Allows embedding of raw HTML in dslSlide  |
-| `List<T>.permuteBy()`     | Animations         |                                           |
-| `String.toLinePatterns()` | Animations         |                                           |
-| `githubSourceUrl()`       | include() calls    | Returns URL for github content            |
-| `githubRawUrl()`          | include() calls    | Returns URL for raw github content        |
-| `include()`               | All Slides         | Preferred to embedding raw code in slides |
+| Function name             | Context            | Description                                |
+|---------------------------|--------------------|--------------------------------------------|
+| `slideBackground()`       | MarkdownSlide only |                                            |
+| `fragment()`              | MarkdownSlide only |                                            |
+| `rawHtml()`               | DslSlide           | Allows embedding of raw HTML in a DslSlide |
+| `List<T>.permuteBy()`     | Animations         |                                            |
+| `String.toLinePatterns()` | Animations         |                                            |
+| `githubSourceUrl()`       | include() calls    | Returns URL for github content             |
+| `githubRawUrl()`          | include() calls    | Returns URL for raw github content         |
+| `include()`               | All Slides         | Preferred to embedding raw code in slides  |
 
 The `include()` call accepts a filename or a URL _src_ argument. A filename is relative to the root of the repo
 and a URL requires an _http://_ or _https://_ prefix.
 
-## dslSlide-specific Functions
+## DslSlide-specific Functions
 
-These functions are defined [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/KSlidesDsl.kt).
+DslSlide-specific functions are defined [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/KSlidesDsl.kt).
 Examples of their usage can be found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt).
 
 | Function name     | Description                 |
 |-------------------|-----------------------------|
-| `codeSnippet()`   | Embed a code snippet        |
-| `playground()`    | Embed a Kotlin Playground   |
-| `unorderedList()` | Generate an unordered list  |
+| `codeSnippet{}`   | Embed a code snippet        |
+| `playground{}`    | Embed a Kotlin Playground   |
+| `unorderedList{}` | Generate an unordered list  |
 | `orderedList()`   | Generate an ordered list    |
 | `LI.listHref()`   | Generate a list href        |
 | `THEAD.headRow()` | Generate a table header row |
@@ -362,7 +363,7 @@ kslides requires some Kotlin-specific knowledge:
 * [Named Arguments](https://kotlinlang.org/docs/functions.html#named-arguments)
 * [Multiline Strings](https://kotlinlang.org/docs/java-to-kotlin-idioms-strings.html#use-multiline-strings)
 
-### Using dslSlides
+### Using DslSlides
 
 [This](https://plugins.jetbrains.com/plugin/12205-html-to-kotlinx-html) plugin makes it much easier to work with
 HTML. Just copy some HTML into your copy buffer, and when you paste it, the plugin will give you
