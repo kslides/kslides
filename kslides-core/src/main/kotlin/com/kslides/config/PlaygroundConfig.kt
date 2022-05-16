@@ -1,12 +1,10 @@
 package com.kslides.config
 
-import com.github.pambrose.common.util.*
 import com.kslides.*
 import kotlin.reflect.full.*
 
 class PlaygroundConfig : AbstractConfig() {
 
-  // These have to be kept in sync with the playgroundAttributes value below
   var args by ConfigProperty<String>(revealjsManagedValues)
   var dataTargetPlatform by ConfigProperty<TargetPlatform>(revealjsManagedValues)
   var dataHighlightOnly by ConfigProperty<Boolean>(revealjsManagedValues)
@@ -45,8 +43,7 @@ class PlaygroundConfig : AbstractConfig() {
       .map { if (it.isUpperCase()) "-${it.lowercaseChar()}" else it }
       .joinToString("")
 
-  internal fun toQueryString() =
-    if (revealjsManagedValues.isNotEmpty())
+  internal fun toAttributes() =
       revealjsManagedValues
         .map { (k, v) ->
           k to (
@@ -54,38 +51,8 @@ class PlaygroundConfig : AbstractConfig() {
                 v is TargetPlatform -> v.queryVal
                 v is PlaygroundMode -> v.queryVal
                 v::class.isSubclassOf(Enum::class) -> (v as Enum<*>).name.lowercase()
-                else -> v
+                else -> v.toString()
               }
               )
         }
-        .joinToString("&") { (k, v) -> "${k.toPropertyName()}=${v.toString().encode()}" }
-        .let { "&$it" }
-    else
-      ""
-
-  companion object {
-    val playgroundAttributes =
-      listOf(
-        "args",
-        "data-target-platform",
-        "data-highlight-only",
-        "folded-button",
-        "data-js-libs",
-        "auto-indent",
-        "theme",
-        "mode",
-        "data-min-compiler-version",
-        "data-autocomplete",
-        "highlight-on-fly",
-        "indent",
-        "lines",
-        "from",
-        "to",
-        "data-output-height",
-        "match-brackets",
-        "data-crosslink",
-        "data-shorter-height",
-        "data-scrollbar-style",
-      )
-  }
 }

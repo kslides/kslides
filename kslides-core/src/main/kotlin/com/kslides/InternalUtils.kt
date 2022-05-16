@@ -1,11 +1,12 @@
 package com.kslides
 
+import com.kslides.slide.*
+import mu.*
 import org.apache.commons.text.*
 import java.io.*
 
-object InternalUtils {
+object InternalUtils : KLogging() {
   internal val whiteSpace = "\\s".toRegex()
-  internal val httpRegex = Regex("\\s*http[s]?://.*")
 
   internal fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
     mutableMapOf<K, V>()
@@ -179,7 +180,19 @@ object InternalUtils {
       .map { "$indentToken$it" }
       .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeHtml4(it) else it }
 
+  internal fun writeContentFile(path: String, slide: DslSlide, content: String) {
+    mkdir(path)    // Create directory if missing
+
+    "$path${slide._slideFilename}"
+      .also {
+        logger.info { "Writing content to: $it" }
+        File(it).writeText(content)
+      }
+  }
+
   internal fun mkdir(name: String) = File(name).run { if (!exists()) mkdir() else false }
+
+  private val httpRegex = Regex("\\s*http[s]?://.*")
 
   internal fun String.isUrl() = lowercase().matches(httpRegex)
 

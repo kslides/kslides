@@ -1,5 +1,7 @@
-package com.kslides
+package com.kslides.slide
 
+import com.kslides.*
+import com.kslides.CssValue
 import com.kslides.CssValue.Companion.cssError
 import com.kslides.config.*
 import kotlinx.css.*
@@ -10,9 +12,9 @@ typealias SlideArgs = (DIV, Slide, Boolean) -> Unit
 
 abstract class Slide(private val presentation: Presentation, internal val content: SlideArgs) {
   private val slideConfig = SlideConfig() // Do not call init on this because it is merged with the presentation config
-  val _slideName = "slide-${slideCount.incrementAndGet()}"
-  val _slideFilename = "$_slideName.html"
-  internal val mergedConfig by lazy {
+  val _slideFilename = "slide-${slideCount.incrementAndGet()}.html"
+
+  internal val mergedSlideConfig by lazy {
     SlideConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.slideConfig) }
       .apply { merge(presentation.presentationConfig.slideConfig) }
@@ -56,7 +58,7 @@ abstract class Slide(private val presentation: Presentation, internal val conten
     if (autoAnimateRestart)
       section.attributes["data-auto-animate-restart"] = ""
 
-    mergedConfig.applyConfig(section)
+    mergedSlideConfig.applyConfig(section)
   }
 
   companion object {

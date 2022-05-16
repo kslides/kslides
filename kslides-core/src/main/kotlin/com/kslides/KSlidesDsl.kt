@@ -2,13 +2,11 @@ package com.kslides
 
 import com.github.pambrose.common.util.*
 import com.kslides.InternalUtils.stripBraces
-import com.kslides.Playground.logger
-import com.kslides.Playground.otherNames
-import com.kslides.Playground.sourceName
-import com.kslides.Plotly.argName
+import com.kslides.InternalUtils.writeContentFile
+import com.kslides.Playground.playgroundContent
 import com.kslides.Plotly.plotlyContent
-import com.kslides.Plotly.writePlotlyFile
 import com.kslides.config.*
+import com.kslides.slide.*
 import kotlinx.html.*
 import mu.*
 
@@ -57,68 +55,48 @@ fun DslSlide.playground(
       .apply { merge(presentation.presentationConfig.playgroundConfig) }
       .apply { merge(PlaygroundConfig().also { block(it) }) }
 
-  val url =
-    buildString {
-      append(presentation.kslides.kslidesConfig.playgroundEndpoint)
-      append("?")
-      append("$sourceName=${source.encode()}")
-      if (otherSources.isNotEmpty())
-        append("&$otherNames=${otherSources.joinToString(",").encode()}")
-      append(config.toQueryString())
-    }
+  val kslides = presentation.kslides
 
-  // Add to list of pages to generate and later grab with an iframe
-  if (!_useHttp)
-    presentation.kslides.playgroundUrls += this to url
+  val content = playgroundContent(kslides, config, source, otherSources.toList())
 
-  (if (_useHttp) url else playgroundFilename)
-    .also { pgurl ->
-      logger.debug { "URL: $pgurl" }
-      _section?.iframe {
-        src = pgurl
-        config.width.also { if (it.isNotBlank()) width = it }
-        config.height.also { if (it.isNotBlank()) height = it }
-        config.style.also { if (it.isNotBlank()) style = it }
-        config.title.also { if (it.isNotBlank()) title = it }
-      } ?: error("playground{} must be called from within a content{} block")
-    }
+  if (_useHttp)
+    kslides.contentMap[_slideFilename] = content
+  else
+    writeContentFile(kslides.outputConfig.playgroundPath, this, content)
+
+  _section?.iframe {
+    src = playgroundFilename
+    config.width.also { if (it.isNotBlank()) width = it }
+    config.height.also { if (it.isNotBlank()) height = it }
+    config.style.also { if (it.isNotBlank()) style = it }
+    config.title.also { if (it.isNotBlank()) title = it }
+  } ?: error("playground{} must be called from within a content{} block")
 }
 
 @KSlidesDslMarker
 fun DslSlide.plotly(
   block: SECTION.() -> Unit = {},
 ) {
+  val kslides = presentation.kslides
   val config =
     PlotlyConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.plotlyConfig) }
       .apply { merge(presentation.presentationConfig.plotlyConfig) }
 
-  val url =
-    buildString {
-      append(presentation.kslides.kslidesConfig.plotlyEndpoint)
-      append("?")
-      append("$argName=$_slideName")
-    }
-
-  // Add to list of pages to generate and later grab with an iframe
-  val content = plotlyContent(presentation.kslides.kslidesConfig, block)
+  val content = plotlyContent(kslides.kslidesConfig, block)
 
   if (_useHttp)
-    presentation.kslides.plotlyContent[_slideName] = content
+    kslides.contentMap[_slideFilename] = content
   else
-    writePlotlyFile(presentation.kslides.outputConfig, this, content)
+    writeContentFile(kslides.outputConfig.plotlyPath, this, content)
 
-  (if (_useHttp) url else plotlyFilename)
-    .also { plurl ->
-      logger.debug { "URL: $plurl" }
-      _section?.iframe {
-        src = plurl
-        config.width.also { if (it.isNotBlank()) width = it }
-        config.height.also { if (it.isNotBlank()) height = it }
-        config.style.also { if (it.isNotBlank()) style = it }
-        config.title.also { if (it.isNotBlank()) title = it }
-      } ?: error("plotly{} must be called from within a content{} block")
-    }
+  _section?.iframe {
+    src = plotlyFilename
+    config.width.also { if (it.isNotBlank()) width = it }
+    config.height.also { if (it.isNotBlank()) height = it }
+    config.style.also { if (it.isNotBlank()) style = it }
+    config.title.also { if (it.isNotBlank()) title = it }
+  } ?: error("plotly{} must be called from within a content{} block")
 }
 
 @HtmlTagMarker

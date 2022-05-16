@@ -1,3 +1,5 @@
+package examples
+
 import com.kslides.*
 import kotlinx.css.*
 import kotlinx.html.*

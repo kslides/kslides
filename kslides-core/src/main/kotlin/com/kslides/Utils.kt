@@ -8,6 +8,7 @@ import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
 import com.kslides.Playground.logger
 import com.kslides.Utils.INDENT_TOKEN
+import com.kslides.slide.*
 import kotlinx.html.*
 import mu.*
 import java.io.*

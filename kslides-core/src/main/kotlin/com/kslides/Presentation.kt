@@ -3,6 +3,7 @@ package com.kslides
 import com.github.pambrose.common.util.*
 import com.kslides.InternalUtils.indentInclude
 import com.kslides.config.*
+import com.kslides.slide.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
@@ -19,6 +20,7 @@ class Presentation(val kslides: KSlides) {
   val css by lazy { CssValue(kslides.css) }
   val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
   val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
+
 
   @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
@@ -72,7 +74,7 @@ class Presentation(val kslides: KSlides) {
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
-            val config = s.mergedConfig
+            val config = s.mergedSlideConfig
             config.markdownCharset.also { charset ->
               if (charset.isNotBlank()) attributes["data-charset"] = charset
             }
@@ -98,7 +100,7 @@ class Presentation(val kslides: KSlides) {
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
-            val config = s.mergedConfig
+            val config = s.mergedSlideConfig
             config.markdownCharset.also { charset ->
               if (charset.isNotBlank()) attributes["data-charset"] = charset
             }
@@ -168,7 +170,7 @@ class Presentation(val kslides: KSlides) {
         (slide as HorizontalHtmlSlide)
           .also { s ->
             slideContent(s)
-            processHtml(s, s.mergedConfig)
+            processHtml(s, s.mergedSlideConfig)
           }
       }
     }.also { slides += it }
@@ -180,7 +182,7 @@ class Presentation(val kslides: KSlides) {
         (slide as VerticalHtmlSlide)
           .also { s ->
             slideContent(s)
-            processHtml(s, s.mergedConfig)
+            processHtml(s, s.mergedSlideConfig)
           }
       }
     }.also { verticalSlides += it }

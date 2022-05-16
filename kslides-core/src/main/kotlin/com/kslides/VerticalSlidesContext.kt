@@ -2,6 +2,7 @@ package com.kslides
 
 import com.kslides.CssValue.Companion.cssError
 import com.kslides.config.*
+import com.kslides.slide.*
 import kotlinx.css.*
 
 class VerticalSlidesContext {

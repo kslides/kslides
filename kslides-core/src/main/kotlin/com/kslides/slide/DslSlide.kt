@@ -1,12 +1,12 @@
-package com.kslides
+package com.kslides.slide
 
 import com.github.pambrose.common.util.*
+import com.kslides.*
 import kotlinx.html.*
 
 interface DslSlide {
   val presentation: Presentation
   var _section: SECTION? // TODO This is a hack that will go away when context receivers work
-  val _slideName: String
   val _slideFilename: String
   var _useHttp: Boolean
   var _dslAssigned: Boolean
@@ -18,8 +18,8 @@ interface DslSlide {
 
   fun processSlide(section: SECTION)
 
-  val playgroundFilename get() = listOf(presentation.kslides.outputConfig.playgroundDir, _slideFilename).toPath(false)
-  val plotlyFilename get() = listOf(presentation.kslides.outputConfig.plotlyDir, _slideFilename).toPath(false)
+  val playgroundFilename get() = listOf(presentation.kslides.outputConfig.playgroundDir, _slideFilename).toPath(false, false)
+  val plotlyFilename get() = listOf(presentation.kslides.outputConfig.plotlyDir, _slideFilename).toPath(false, false)
 }
 
 class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :
