@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.kslides.config.*
+import com.kslides.config.PlaygroundConfig.Companion.toPropertyName
 import kotlinx.html.*
 import kotlinx.html.dom.*
 import mu.*
@@ -19,7 +20,7 @@ object Playground : KLogging() {
         }
         body {
           code(kslidesConfig.playgroundSelector) {
-            config.toAttributes().forEach { attributes[it.first] = it.second }
+            config.toAttributes().forEach { attributes[it.first.toPropertyName()] = it.second }
 
             logger.info { "Including file: $srcName" }
             +include(srcName)

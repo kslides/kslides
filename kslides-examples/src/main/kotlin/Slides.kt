@@ -101,11 +101,12 @@ fun main() {
         content {
           p { +"This is a plotly-kt integration demo" }
           plotly {
-            plot {
+            plot(config = PlotlyConfig().apply {
+              responsive = true
+            }) {
               layout {
-                title = System.currentTimeMillis().toString()
-                width = 600
-                height = 500
+               // width = 600
+               // height = 500
               }
               scatter {
                 x.numbers = 0..400

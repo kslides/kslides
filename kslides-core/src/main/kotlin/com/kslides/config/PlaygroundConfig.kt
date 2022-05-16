@@ -50,4 +50,11 @@ class PlaygroundConfig : AbstractConfig() {
           else -> v.toString()
         })
       }
+
+  companion object {
+    internal fun String.toPropertyName() =
+      toList()
+        .map { if (it.isUpperCase()) "-${it.lowercaseChar()}" else it }
+        .joinToString("")
+  }
 }
