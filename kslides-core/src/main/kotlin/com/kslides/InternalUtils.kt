@@ -1,11 +1,9 @@
 package com.kslides
 
-import com.kslides.slide.*
-import mu.*
 import org.apache.commons.text.*
 import java.io.*
 
-object InternalUtils : KLogging() {
+object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
 
   internal fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
@@ -180,12 +178,11 @@ object InternalUtils : KLogging() {
       .map { "$indentToken$it" }
       .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeHtml4(it) else it }
 
-  internal fun writeContentFile(path: String, slide: DslSlide, content: String) {
+  internal fun writeIframeContent(path: String, slideName: String, content: String) {
     mkdir(path)    // Create directory if missing
-
-    "$path${slide._slideFilename}"
+    "$path$slideName"
       .also {
-        logger.info { "Writing content to: $it" }
+        KSlides.logger.info { "Writing iframe content to: $it" }
         File(it).writeText(content)
       }
   }

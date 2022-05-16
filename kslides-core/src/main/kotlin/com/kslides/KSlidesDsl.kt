@@ -2,7 +2,7 @@ package com.kslides
 
 import com.github.pambrose.common.util.*
 import com.kslides.InternalUtils.stripBraces
-import com.kslides.InternalUtils.writeContentFile
+import com.kslides.InternalUtils.writeIframeContent
 import com.kslides.Playground.playgroundContent
 import com.kslides.Plotly.plotlyContent
 import com.kslides.config.*
@@ -60,9 +60,9 @@ fun DslSlide.playground(
   val content = playgroundContent(kslides, config, source, otherSources.toList())
 
   if (_useHttp)
-    kslides.contentMap[_slideFilename] = content
+    kslides.iframeContentMap[_slideFilename] = content
   else
-    writeContentFile(kslides.outputConfig.playgroundPath, this, content)
+    writeIframeContent(kslides.outputConfig.playgroundPath, _slideFilename, content)
 
   _section?.iframe {
     src = playgroundFilename
@@ -87,9 +87,9 @@ fun DslSlide.plotly(
   val content = plotlyContent(kslides.kslidesConfig, block)
 
   if (_useHttp)
-    kslides.contentMap[_slideFilename] = content
+    kslides.iframeContentMap[_slideFilename] = content
   else
-    writeContentFile(kslides.outputConfig.plotlyPath, this, content)
+    writeIframeContent(kslides.outputConfig.plotlyPath, _slideFilename, content)
 
   _section?.iframe {
     src = plotlyFilename
