@@ -7,7 +7,6 @@ import mu.*
 import kotlin.collections.set
 
 object Playground : KLogging() {
-
   fun playgroundContent(kslides: KSlides, config: PlaygroundConfig, sourceName: String, otherNames: List<String>) =
     document {
       val kslidesConfig = kslides.kslidesConfig

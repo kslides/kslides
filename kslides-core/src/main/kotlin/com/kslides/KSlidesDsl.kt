@@ -47,13 +47,13 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
 fun DslSlide.playground(
   source: String,
   vararg otherSources: String = emptyArray(),
-  block: PlaygroundConfig.() -> Unit = {},
+  configBlock: PlaygroundConfig.() -> Unit = {},
 ) {
   val config =
     PlaygroundConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.playgroundConfig) }
       .apply { merge(presentation.presentationConfig.playgroundConfig) }
-      .apply { merge(PlaygroundConfig().also { block(it) }) }
+      .apply { merge(PlaygroundConfig().also { configBlock(it) }) }
 
   val kslides = presentation.kslides
 
@@ -82,6 +82,7 @@ fun DslSlide.plotly(
     PlotlyConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.plotlyConfig) }
       .apply { merge(presentation.presentationConfig.plotlyConfig) }
+      .apply { merge(PlotlyConfig().also { _plotlyBlock(it) }) }
 
   val content = plotlyContent(kslides.kslidesConfig, block)
 

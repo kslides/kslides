@@ -71,10 +71,7 @@ fun main() {
         copyCodeConfig {}
         playgroundConfig {}
         slideConfig {}
-        plotlyConfig {
-          width = "100%"
-          height = "500px"
-        }
+        plotlyConfig {}
       }
 
       css +=
@@ -92,22 +89,24 @@ fun main() {
 
 
       dslSlide {
+        plotlyConfig {
+          width = "100%"
+          height = "400px"
+        }
+
         content {
           p { +"This is a plotly-kt integration demo" }
           plotly {
-            plot(config = PlotlyConfig().apply {
-              showEditInChartStudio = false
-            }) {
+            plot {
               scatter {
-                x.numbers = 0..100
+                x.numbers = 0..400
                 y.numbers = x.numbers.map { Random.nextDouble() }
               }
             }
-
           }
         }
       }
-
+      
       verticalSlides {
         // intro begin
         markdownSlide {
