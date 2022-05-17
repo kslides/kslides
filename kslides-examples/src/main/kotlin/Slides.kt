@@ -378,7 +378,7 @@ fun main() {
                 height = "415px"
               }
             ) {
-              plot(config = PlotlyConfig().apply { withEditorButton() }) {
+              plot(config = PlotlyConfig { withEditorButton() }) {
                 layout {
                   width = 801
                   height = 400
@@ -408,7 +408,7 @@ fun main() {
                 style = "width: 65%; border: 1px solid black;"
               }
             ) {
-              plot(config = PlotlyConfig().apply { withEditorButton() }) {
+              plot(config = PlotlyConfig { withEditorButton() }) {
                 layout {
                   width = 608
                   height = 484
@@ -448,7 +448,7 @@ fun main() {
                 style = "width: 54%; border: 1px solid black;"
               }
             ) {
-              plot(config = PlotlyConfig().apply { withEditorButton() }) {
+              plot(config = PlotlyConfig { withEditorButton() }) {
                 layout {
                   width = 503
                   height = 484
@@ -495,7 +495,7 @@ fun main() {
                 style = "width: 54%; border: 1px solid black;"
               }
             ) {
-              plot(config = PlotlyConfig().apply { withEditorButton() }) {
+              plot(config = PlotlyConfig { withEditorButton() }) {
                 layout {
                   width = 503
                   height = 484
@@ -527,7 +527,7 @@ fun main() {
                 style = "width: 54%; border: 1px solid black;"
               }
             ) {
-              plot(config = PlotlyConfig().apply { withEditorButton() }) {
+              plot(config = PlotlyConfig { withEditorButton() }) {
                 layout {
                   width = 503
                   height = 484
