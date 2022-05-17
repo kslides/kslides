@@ -77,7 +77,7 @@ fun DslSlide.playground(
 @KSlidesDslMarker
 fun DslSlide.plotly(
   dimensions: Dimensions? = null,
-  iframeConfig: PlotlyIframeConfig.() -> Unit = {},
+  iframeConfig: PlotlyIframeConfig  = PlotlyIframeConfig(),
   plotlyConfig: PlotlyConfig = PlotlyConfig(),
   block: Plot.() -> Unit,
 ) {
@@ -87,7 +87,7 @@ fun DslSlide.plotly(
     PlotlyIframeConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.plotlyIframeConfig) }
       .apply { merge(presentation.presentationConfig.plotlyIframeConfig) }
-      .apply { merge(PlotlyIframeConfig().also { iframeConfig(it) }) }
+      .apply { merge(iframeConfig) }
 
   recordContent(
     kslides,

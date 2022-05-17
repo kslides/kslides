@@ -14,4 +14,8 @@ class PlotlyIframeConfig : AbstractConfig() {
     title = ""
     staticContent = false
   }
+
+  companion object {
+    inline operator fun invoke(action: PlotlyIframeConfig.() -> Unit): PlotlyIframeConfig = PlotlyIframeConfig().apply(action)
+  }
 }

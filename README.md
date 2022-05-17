@@ -152,17 +152,14 @@ kslides {
 ```
 
 * A `kslidesConfig{}` block specifies the kslides configuration for all presentations and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt)
-  .
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt).
 
 * A `presentationConfig{}` block specifies the default presentation configuration values
   for all presentations and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt)
-  .
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt).
 
 * An `output{}` block specifies how and where presentation slides are published and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt)
-  .
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
 
 * A `css{}` block applies to all presentations and uses Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
   Presentation CSS can also be specified using raw CSS strings. A combination of the two approaches is also allowed.
@@ -187,30 +184,23 @@ presentationConfig {      // Optional
 * A `menuConfig{}` block specifies the configuration for the
   reveal.js [Menu plugin](https://github.com/denehyg/reveal.js-menu)
   and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/MenuConfig.kt)
-  .
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/MenuConfig.kt).
 
 * A `copyCodeConfig{}` block specifies the configuration for the
   reveal.js [CopyCode plugin](https://github.com/Martinomagnifico/reveal.js-copycode)
   and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/CopyCodeConfig.kt)
-  .
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/CopyCodeConfig.kt).
 
-* A `playgroundConfig{}` block specifies the configuration for
-  [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframes
-  and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt)
-  .
+* A `playgroundConfig{}` block specifies the default attributes for
+  [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframes and has these
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt).
 
-* A `plotlyIframeConfig{}` block specifies the configuration for
-  [plotly-kt](https://github.com/mipt-npm/plotly.kt) iframes
-  and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlotlyIframeConfig.kt)
-  .
+* A `plotlyIframeConfig{}` block specifies the default attributes for
+  [plotly-kt](https://github.com/mipt-npm/plotly.kt) iframes and has these
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlotlyIframeConfig.kt).
 
 * A `slideConfig{}` block specifies the default slide configuration values for all slides and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/SlideConfig.kt)
-  .
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/SlideConfig.kt).
 
 ### presentation Block
 
@@ -243,8 +233,7 @@ presentation {
 ```
 
 * A `presentationConfig{}` block specifies presentation-specific configuration values and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt)
-  .
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt).
   This block overrides the values specified in _kslides.presentationConfig{}_.
 
 * A `css{}` block applies to this specific presentation and uses Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html)
@@ -435,14 +424,14 @@ A DslSlide embeds plotly-kt content with an [iframe](https://www.w3schools.com/t
 If `output.enableFileSystem` is true, each `plotly()` call generates 
 an html file in `docs/plotly`.
 
-The `plotly()` _iframeConfig_ arg contains attributes for the iframe referencing the plotly-kt content.
+The `plotly()` _iframeConfig_ args are the attributes for the iframe referencing the plotly-kt content.
 
-The `plotly()` _dimensions_ arg are automatically added as the _width_ and _height_ values 
+The `plotly()` _dimensions_ are automatically added as the _width_ and _height_ values 
 in a `Plot.layout{}` block, thus controlling the dimensions of the plotly-kt content.
 
 The _dimensions_ and the _iframeConfig_ args must be synchronized.
 Specifically, the _dimensions.width_ value value must work with the
-_width_ value in the _iframeConfig.style_, and the _iframeConfig.height_ value
+_width_ value in the _iframeConfig.style_, and the _dimensions.height_ value
 must work with the _iframeConfig.height_ value. 
 
 Adding `border: 1px solid black;` to _iframeConfig.style_ makes it easier to synchronize the dimension values.

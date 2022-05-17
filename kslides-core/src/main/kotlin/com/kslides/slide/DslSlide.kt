@@ -2,7 +2,6 @@ package com.kslides.slide
 
 import com.github.pambrose.common.util.*
 import com.kslides.*
-import com.kslides.config.*
 import kotlinx.html.*
 
 interface DslSlide {
@@ -66,5 +65,3 @@ class VerticalDslSlide(override val presentation: Presentation, content: SlideAr
   inline fun SectioningOrFlowContent.notes(crossinline block: ASIDE.() -> Unit = {}) =
     ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }
-
-fun plotlyIframeConfig(block: PlotlyIframeConfig.() -> Unit) =  block

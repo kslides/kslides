@@ -1,5 +1,6 @@
 import com.github.pambrose.common.util.*
 import com.kslides.*
+import com.kslides.config.*
 import kotlinx.css.*
 import kotlinx.css.Float
 import kotlinx.html.*
@@ -377,7 +378,7 @@ fun main() {
             // They need to be coordinated with the layout{} values below
             plotly(
               801 by 400,
-              iframeConfig = {
+              iframeConfig = PlotlyIframeConfig {
                 style = "width: 85%; border: 2px solid #586E75;"
                 height = "415px"
               },
@@ -405,7 +406,7 @@ fun main() {
             h2 { +"A plotly-kt Histogram" }
             plotly(
               608 by 484,
-              iframeConfig = {
+              iframeConfig = PlotlyIframeConfig {
                 style = "width: 65%; border: 2px solid #586E75;"
                 height = "500px"
               },
@@ -443,7 +444,7 @@ fun main() {
             h2 { +"A plotly-kt 3D Surface Plot" }
             plotly(
               503 by 484,
-              iframeConfig = {
+              iframeConfig = PlotlyIframeConfig {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
@@ -488,7 +489,7 @@ fun main() {
             h2 { +"A plotly-kt 3D Scatter Plot" }
             plotly(
               503 by 484,
-              iframeConfig = {
+              iframeConfig = PlotlyIframeConfig {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
@@ -518,7 +519,7 @@ fun main() {
             h2 { +"A plotly-kt Heatmap" }
             plotly(
               503 by 484,
-              iframeConfig = {
+              iframeConfig = PlotlyIframeConfig {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
