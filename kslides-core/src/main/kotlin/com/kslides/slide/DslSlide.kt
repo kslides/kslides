@@ -12,7 +12,6 @@ interface DslSlide {
   var _useHttp: Boolean
   var _dslAssigned: Boolean
   var _dslBlock: SECTION.() -> Unit
-  var _plotlyBlock: PlotlyConfig.() -> Unit
   var _iframeCount: Int
 
   var classes: String
@@ -34,7 +33,6 @@ class HorizontalDslSlide(override val presentation: Presentation, content: Slide
   HorizontalSlide(presentation, content), DslSlide {
   override var _section: SECTION? = null
   override var _dslBlock: SECTION.() -> Unit = { }
-  override var _plotlyBlock: PlotlyConfig.() -> Unit = { }
   override var _iframeCount = 1
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
@@ -43,11 +41,6 @@ class HorizontalDslSlide(override val presentation: Presentation, content: Slide
   fun content(dslBlock: SECTION.() -> Unit) {
     _dslBlock = dslBlock
     _dslAssigned = true
-  }
-
-  @KSlidesDslMarker
-  fun plotlyConfig(plotlyBlock: PlotlyConfig.() -> Unit) {
-    _plotlyBlock = plotlyBlock
   }
 
   @KSlidesDslMarker
@@ -59,7 +52,6 @@ class VerticalDslSlide(override val presentation: Presentation, content: SlideAr
   VerticalSlide(presentation, content), DslSlide {
   override var _section: SECTION? = null
   override var _dslBlock: SECTION.() -> Unit = { }
-  override var _plotlyBlock: PlotlyConfig.() -> Unit = { }
   override var _iframeCount = 1
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
@@ -71,11 +63,8 @@ class VerticalDslSlide(override val presentation: Presentation, content: SlideAr
   }
 
   @KSlidesDslMarker
-  fun plotlyConfig(plotlyBlock: PlotlyConfig.() -> Unit) {
-    _plotlyBlock = plotlyBlock
-  }
-
-  @KSlidesDslMarker
   inline fun SectioningOrFlowContent.notes(crossinline block: ASIDE.() -> Unit = {}) =
     ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }
+
+fun plotlyConfig(block: KPlotlyConfig.() -> Unit) =  block

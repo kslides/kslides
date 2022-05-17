@@ -77,19 +77,20 @@ fun DslSlide.playground(
 
 @KSlidesDslMarker
 fun DslSlide.plotly(
+  config: KPlotlyConfig.() -> Unit = {},
   block: SECTION.() -> Unit = {},
 ) {
   val iframeId = _iframeCount++
   val kslides = presentation.kslides
-  val config =
-    PlotlyConfig()
+  val mergedConfig =
+    KPlotlyConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.plotlyConfig) }
       .apply { merge(presentation.presentationConfig.plotlyConfig) }
-      .apply { merge(PlotlyConfig().also { _plotlyBlock(it) }) }
+      .apply { merge(KPlotlyConfig().also { config(it) }) }
 
   recordContent(
     kslides,
-    config.staticContent,
+    mergedConfig.staticContent,
     filename(iframeId),
     kslides.outputConfig.plotlyPath
   ) {
@@ -98,10 +99,10 @@ fun DslSlide.plotly(
 
   _section?.iframe {
     src = plotlyFilename(iframeId)
-    config.width.also { if (it.isNotBlank()) width = it }
-    config.height.also { if (it.isNotBlank()) height = it }
-    config.style.also { if (it.isNotBlank()) style = it }
-    config.title.also { if (it.isNotBlank()) title = it }
+    mergedConfig.width.also { if (it.isNotBlank()) width = it }
+    mergedConfig.height.also { if (it.isNotBlank()) height = it }
+    mergedConfig.style.also { if (it.isNotBlank()) style = it }
+    mergedConfig.title.also { if (it.isNotBlank()) title = it }
   } ?: error("plotly{} must be called from within a content{} block")
 }
 

@@ -3,6 +3,21 @@ package com.kslides.config
 import com.kslides.*
 
 class PresentationConfig : AbstractConfig() {
+
+  // The "normal" size of the presentation, aspect ratio will
+  // be preserved when the presentation is scaled to fit different
+  // resolutions. Can be specified using percentage units.
+  var width by ConfigProperty<Any>(revealjsManagedValues) // 960
+  var height by ConfigProperty<Any>(revealjsManagedValues) // 700
+
+  // Factor of the display size that should remain empty around
+  // the content
+  var margin by ConfigProperty<Float>(revealjsManagedValues) // 0.04
+
+  // Bounds for smallest/largest possible scale to apply to content
+  var minScale by ConfigProperty<Float>(revealjsManagedValues) // 0.04
+  var maxScale by ConfigProperty<Float>(revealjsManagedValues) // 0.04
+
   // Display presentation control arrows
   var controls by ConfigProperty<Boolean>(revealjsManagedValues) // true
 
@@ -278,7 +293,7 @@ class PresentationConfig : AbstractConfig() {
   internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
   internal val playgroundConfig = PlaygroundConfig()
-  internal val plotlyConfig = PlotlyConfig()
+  internal val plotlyConfig = KPlotlyConfig()
 
   // Only the global default config is initialized with default values
   internal fun assignDefaults() {
@@ -346,5 +361,5 @@ class PresentationConfig : AbstractConfig() {
   fun playgroundConfig(block: PlaygroundConfig.() -> Unit) = block.invoke(playgroundConfig)
 
   @KSlidesDslMarker
-  fun plotlyConfig(block: PlotlyConfig.() -> Unit) = block.invoke(plotlyConfig)
+  fun plotlyConfig(block: KPlotlyConfig.() -> Unit) = block.invoke(plotlyConfig)
 }

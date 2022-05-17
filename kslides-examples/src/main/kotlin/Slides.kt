@@ -6,6 +6,7 @@ import kotlinx.html.*
 import space.kscience.dataforge.meta.*
 import space.kscience.dataforge.values.*
 import space.kscience.plotly.*
+import space.kscience.plotly.palettes.*
 import kotlin.random.*
 
 fun main() {
@@ -24,6 +25,9 @@ fun main() {
 
     // Optional
     presentationConfig {
+      //width = "100%"
+      //height = 700
+
       // Default config values for all presentations
       topLeftHref = "https://github.com/kslides/kslides/"
       topLeftTitle = "View presentation source on Github"
@@ -86,79 +90,6 @@ fun main() {
       css {
         rule("#intro h1") {
           color = Color("#FF5533")
-        }
-      }
-
-      dslSlide {
-
-        plotlyConfig {
-          width = "100%"
-          height = "400px"
-          style = "width:50%; border: 2px solid red;"
-          staticContent = true
-        }
-
-        content {
-          p { +"This is a plotly-kt integration demo" }
-          plotly {
-            plot(config = PlotlyConfig().apply {
-              //responsive = true
-            }) {
-              layout {
-               width = 465
-               height = 400
-              }
-              scatter {
-                x.numbers = 0..400
-                y.numbers = x.numbers.map { Random.nextDouble() }
-              }
-            }
-          }
-        }
-      }
-
-      dslSlide {
-        plotlyConfig {
-          width = "100%"
-          height = "400px"
-          style = "width:50%; border: 2px solid red;"
-        }
-
-        content {
-          p { +"This is another plotly-kt integration demo" }
-          plotly {
-            plot {
-              fun l(vararg numbers: Number) = numbers.map { it.asValue() }.asValue()
-
-              layout {
-                width = 465
-                height = 400
-              }
-
-              trace {
-                z.value = listOf(
-                  l(8.83, 8.89, 8.81, 8.87, 8.9, 8.87),
-                  l(8.89, 8.94, 8.85, 8.94, 8.96, 8.92),
-                  l(8.84, 8.9, 8.82, 8.92, 8.93, 8.91),
-                  l(8.79, 8.85, 8.79, 8.9, 8.94, 8.92),
-                  l(8.79, 8.88, 8.81, 8.9, 8.95, 8.92),
-                  l(8.8, 8.82, 8.78, 8.91, 8.94, 8.92),
-                  l(8.75, 8.78, 8.77, 8.91, 8.95, 8.92),
-                  l(8.8, 8.8, 8.77, 8.91, 8.95, 8.94),
-                  l(8.74, 8.81, 8.76, 8.93, 8.98, 8.99),
-                  l(8.89, 8.99, 8.92, 9.1, 9.13, 9.11),
-                  l(8.97, 8.97, 8.91, 9.09, 9.11, 9.11),
-                  l(9.04, 9.08, 9.05, 9.25, 9.28, 9.27),
-                  l(9, 9.01, 9, 9.2, 9.23, 9.2),
-                  l(8.99, 8.99, 8.98, 9.18, 9.2, 9.19),
-                  l(8.93, 8.97, 8.97, 9.18, 9.2, 9.18)
-                ).asValue()
-                configure {
-                  "type" put "surface"
-                }
-              }
-            }
-          }
         }
       }
 
@@ -432,6 +363,190 @@ fun main() {
         // pg5 end
 
         slideDefinition(slides, "pg5")
+      }
+
+      verticalSlides {
+        // plotly1 begin
+        dslSlide {
+          content {
+            p { +"A plotly-kt Plot" }
+            // Config values here apply to the iframe containing the plotly content
+            // They need to be coordinated with the layout{} values below
+            plotly(
+              config = {
+                style = "width: 85%; border: 1px solid black;"
+                height = "415px"
+              }
+            ) {
+              plot(config = PlotlyConfig().apply { withEditorButton() }) {
+                layout {
+                  width = 801
+                  height = 400
+                  title = "A Simple Random Plot"
+                  xaxis.title = "x Axis Title"
+                  yaxis.title = "y Axis Title"
+                }
+                scatter {
+                  x.numbers = 0..400
+                  y.numbers = x.numbers.map { Random.nextDouble(10.0) }
+                }
+              }
+            }
+          }
+        }
+        // plotly1 end
+
+        slideDefinition(slides, "plotly1")
+
+        // plotly2 begin
+        dslSlide {
+          content {
+            p { +"A plotly-kt Histogram" }
+            plotly(
+              config = {
+                height = "500px"
+                style = "width: 65%; border: 1px solid black;"
+              }
+            ) {
+              plot(config = PlotlyConfig().apply { withEditorButton() }) {
+                layout {
+                  width = 608
+                  height = 484
+                  title = "Horizontal Histogram"
+                  bargap = 0.1
+                  xaxis {
+                    title = "Count"
+                  }
+                  yaxis {
+                    title = "Value"
+                    ticklen = 3
+                    tickcolor("#FFF")
+                  }
+                }
+
+                histogram {
+                  y.set(listOf(1, 2, 2, 3, 2, 1, 4, 4))
+                  marker {
+                    colors(listOf(T10.RED, T10.GREEN, T10.ORANGE, T10.BLUE))
+                  }
+                }
+              }
+            }
+          }
+        }
+        // plotly2 end
+
+        slideDefinition(slides, "plotly2")
+
+        // plotly3 begin
+        dslSlide {
+          content {
+            p { +"A plotly-kt 3D Surface Plot" }
+            plotly(
+              config = {
+                height = "500px"
+                style = "width: 54%; border: 1px solid black;"
+              }
+            ) {
+              plot(config = PlotlyConfig().apply { withEditorButton() }) {
+                layout {
+                  width = 503
+                  height = 484
+                  title = "A 3D Surface Plot"
+                }
+                fun l(vararg numbers: Number) = numbers.map { it.asValue() }.asValue()
+                trace {
+                  z.value = listOf(
+                    l(8.83, 8.89, 8.81, 8.87, 8.9, 8.87),
+                    l(8.89, 8.94, 8.85, 8.94, 8.96, 8.92),
+                    l(8.84, 8.9, 8.82, 8.92, 8.93, 8.91),
+                    l(8.79, 8.85, 8.79, 8.9, 8.94, 8.92),
+                    l(8.79, 8.88, 8.81, 8.9, 8.95, 8.92),
+                    l(8.8, 8.82, 8.78, 8.91, 8.94, 8.92),
+                    l(8.75, 8.78, 8.77, 8.91, 8.95, 8.92),
+                    l(8.8, 8.8, 8.77, 8.91, 8.95, 8.94),
+                    l(8.74, 8.81, 8.76, 8.93, 8.98, 8.99),
+                    l(8.89, 8.99, 8.92, 9.1, 9.13, 9.11),
+                    l(8.97, 8.97, 8.91, 9.09, 9.11, 9.11),
+                    l(9.04, 9.08, 9.05, 9.25, 9.28, 9.27),
+                    l(9, 9.01, 9, 9.2, 9.23, 9.2),
+                    l(8.99, 8.99, 8.98, 9.18, 9.2, 9.19),
+                    l(8.93, 8.97, 8.97, 9.18, 9.2, 9.18)
+                  ).asValue()
+                  configure {
+                    "type" put "surface"
+                  }
+                }
+              }
+            }
+          }
+        }
+        // plotly3 end
+
+        slideDefinition(slides, "plotly3")
+
+        // plotly4 begin
+        dslSlide {
+          content {
+            p { +"A plotly-kt 3D Scatter Plot" }
+            plotly(
+              config = {
+                height = "500px"
+                style = "width: 54%; border: 1px solid black;"
+              }
+            ) {
+              plot(config = PlotlyConfig().apply { withEditorButton() }) {
+                layout {
+                  width = 503
+                  height = 484
+                  title = "A 3D Scatter Plot"
+                }
+                trace {
+                  configure {
+                    "type" put "scatter3d"
+                  }
+                  x(1, 2, 3)
+                  y(1, 2, 3)
+                  z(1, 2, 3)
+                }
+              }
+            }
+          }
+        }
+        // plotly4 end
+
+        slideDefinition(slides, "plotly4")
+
+        // plotly5 begin
+        dslSlide {
+          content {
+            p { +"A plotly-kt Heatmap" }
+            plotly(
+              config = {
+                height = "500px"
+                style = "width: 54%; border: 1px solid black;"
+              }
+            ) {
+              plot(config = PlotlyConfig().apply { withEditorButton() }) {
+                layout {
+                  width = 503
+                  height = 484
+                  title = "Red Heatmap"
+                }
+                heatmap {
+                  x.set(listOf(1, 2, 3, 4, 5))
+                  y.set(listOf(6, 7, 8, 9, 10))
+                  z.set((1..25).chunked(5))
+                  colorscale = Value.of("Reds")
+                }
+              }
+            }
+          }
+        }
+        // plotly5 end
+
+        slideDefinition(slides, "plotly5")
+
       }
 
       verticalSlides {

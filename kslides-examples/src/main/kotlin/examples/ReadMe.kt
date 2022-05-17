@@ -11,8 +11,8 @@ fun main() {
     output {
       // Write the presentations to a file
       enableFileSystem = true
-      // Also serve up the presentations via HTTP
-      enableHttp = true
+      // Do not serve up the presentations via HTTP
+      enableHttp = false
     }
 
     // Default values for all presentations

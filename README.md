@@ -177,6 +177,7 @@ presentationConfig {      // Optional
   menuConfig {}           // Optional
   copyCodeConfig {}       // Optional
   playgroundConfig {}     // Optional
+  plotlyConfig {}         // Optional
   slideConfig {}          // Optional
 }
 ```
@@ -192,9 +193,14 @@ and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/CopyCodeConfig.kt).
 
 * A `playgroundConfig{}` block specifies the configuration for
-[Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframes
-and has these
-[options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt).
+  [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframes
+  and has these
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt).
+
+* A `plotlyConfig{}` block specifies the configuration for
+  [plotly-kt](https://github.com/mipt-npm/plotly.kt) iframes
+  and has these
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlotlyConfig.kt).
 
 * A `slideConfig{}` block specifies the default slide configuration values for all slides and has these 
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/SlideConfig.kt).
@@ -347,6 +353,7 @@ Examples of their usage can be found [here](https://github.com/kslides/kslides/b
 |-------------------|-----------------------------|
 | `codeSnippet{}`   | Embed a code snippet        |
 | `playground{}`    | Embed a Kotlin Playground   |
+| `plotly{}`        | Embed a plotly-kt figure    |
 | `unorderedList{}` | Generate an unordered list  |
 | `orderedList()`   | Generate an ordered list    |
 | `LI.listHref()`   | Generate a list href        |
@@ -402,6 +409,15 @@ though.
 
 Playground code using `dataTargetPlatform = JUNIT` should not have a `package` decl.
 
+### plotly-kt
+
+The _config_ values specified in the _plotly{}_ call must be coordinated 
+with the _layout{}_ values. Specifically, the _width_ value in the _config.style_
+value correlates with the _layout.width_ value, and the _config.height_
+correlates with the _layout.height_ value. Including `border: 1px solid black;`
+in _config.style_ makes it easier to determine the proper values. Once the height 
+and width values are correct, you can remove the border.
+
 ### Heroku
 
 Go to your Heroku dashboard, choose your kslides app and click 
@@ -415,7 +431,10 @@ line.
 
 ## Helpful Links
 
+* [reveal.js](https://revealjs.com)
 * [reveal.js Menu Plugin](https://github.com/denehyg/reveal.js-menu)
 * [reveal.js CopyCode Plugin](https://github.com/Martinomagnifico/reveal.js-copycode)
 * [Kotlin Playground](https://github.com/JetBrains/kotlin-playground)
+* [plotly-kt](https://github.com/mipt-npm/plotly.kt)
+* [plotly-kt Examples](https://github.com/mipt-npm/plotly.kt/tree/master/examples/src/main/kotlin)
 
