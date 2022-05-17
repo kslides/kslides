@@ -367,9 +367,6 @@ fun main() {
       }
 
       verticalSlides {
-        // Allow plotly content to be edited in https://chart-studio.plotly.com
-        val configWithEditorEnabled = PlotlyConfig { withEditorButton() }
-
         // plotly1 begin
         dslSlide {
           content {
@@ -382,7 +379,7 @@ fun main() {
                 style = "width: 85%; border: 2px solid #586E75;"
                 height = "415px"
               },
-              plotlyConfig = configWithEditorEnabled
+              plotlyConfig = PlotlyConfig { withEditorButton() }
             ) {
               layout {
                 title = "A Simple Random Plot"
@@ -410,7 +407,7 @@ fun main() {
                 style = "width: 65%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = configWithEditorEnabled
+              plotlyConfig = PlotlyConfig { withEditorButton() }
             ) {
               layout {
                 title = "Horizontal Histogram"
@@ -448,7 +445,7 @@ fun main() {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = configWithEditorEnabled
+              plotlyConfig = PlotlyConfig { withEditorButton() }
             ) {
               layout {
                 title = "A 3D Surface Plot"
@@ -493,7 +490,7 @@ fun main() {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = configWithEditorEnabled
+              plotlyConfig = PlotlyConfig { withEditorButton() }
             ) {
               layout {
                 title = "A 3D Scatter Plot"
@@ -523,7 +520,7 @@ fun main() {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = configWithEditorEnabled
+              plotlyConfig = PlotlyConfig { withEditorButton() }
             ) {
               layout {
                 title = "Red Heatmap"
