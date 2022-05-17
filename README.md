@@ -461,4 +461,3 @@ line.
 * [Kotlin Playground](https://github.com/JetBrains/kotlin-playground)
 * [plotly-kt](https://github.com/mipt-npm/plotly.kt)
 * [plotly-kt Examples](https://github.com/mipt-npm/plotly.kt/tree/master/examples/src/main/kotlin)
-

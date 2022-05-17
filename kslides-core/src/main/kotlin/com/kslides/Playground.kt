@@ -8,7 +8,7 @@ import mu.*
 import kotlin.collections.set
 
 object Playground : KLogging() {
-  fun playgroundContent(kslides: KSlides, config: PlaygroundConfig, srcName: String, otherSrcs: List<String>) =
+  internal fun playgroundContent(kslides: KSlides, config: PlaygroundConfig, srcName: String, otherSrcs: List<String>) =
     document {
       val kslidesConfig = kslides.kslidesConfig
       append.html {

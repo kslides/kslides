@@ -7,7 +7,7 @@ import mu.*
 import space.kscience.plotly.*
 
 object Plotly : KLogging() {
-  fun plotlyContent(config: KSlidesConfig, block: SECTION.() -> Unit) =
+  internal fun plotlyContent(config: KSlidesConfig, block: SECTION.() -> Unit) =
     document {
       append.html {
         head {

@@ -33,7 +33,7 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   var autoAnimateRestart = false
 
   @KSlidesDslMarker
-  fun css(block: CssBuilder.() -> Unit): Unit = cssError()
+  fun css(@Suppress("UNUSED_PARAMETER") block: CssBuilder.() -> Unit): Unit = cssError()
 
   @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)

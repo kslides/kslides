@@ -22,10 +22,12 @@ interface DslSlide {
   fun filename(iframeId: Int) = "slide-$_slideId-$iframeId.html"
 
   fun playgroundFilename(iframeId: Int) =
-    listOf(presentation.kslides.outputConfig.playgroundDir, filename(iframeId)).toPath(false, false)
+    listOf(presentation.kslides.outputConfig.playgroundDir, filename(iframeId))
+      .toPath(addPrefix = false, addTrailing = false)
 
   fun plotlyFilename(iframeId: Int) =
-    listOf(presentation.kslides.outputConfig.plotlyDir, filename(iframeId)).toPath(false, false)
+    listOf(presentation.kslides.outputConfig.plotlyDir, filename(iframeId))
+      .toPath(addPrefix = false, addTrailing = false)
 }
 
 class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :
