@@ -374,7 +374,7 @@ fun main() {
             // Config values here apply to the iframe containing the plotly content
             // They need to be coordinated with the layout{} values below
             plotly(
-              801 by 400,
+              dimensions = 801 by 400,
               iframeConfig = PlotlyIframeConfig {
                 style = "width: 85%; border: 2px solid #586E75;"
                 height = "415px"
@@ -402,7 +402,7 @@ fun main() {
           content {
             h2 { +"A plotly-kt Histogram" }
             plotly(
-              608 by 484,
+              dimensions = 608 by 484,
               iframeConfig = PlotlyIframeConfig {
                 style = "width: 65%; border: 2px solid #586E75;"
                 height = "500px"
@@ -440,7 +440,7 @@ fun main() {
           content {
             h2 { +"A plotly-kt 3D Surface Plot" }
             plotly(
-              503 by 484,
+              dimensions = 503 by 484,
               iframeConfig = PlotlyIframeConfig {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
@@ -485,7 +485,7 @@ fun main() {
           content {
             h2 { +"A plotly-kt 3D Scatter Plot" }
             plotly(
-              503 by 484,
+              dimensions = 503 by 484,
               iframeConfig = PlotlyIframeConfig {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
@@ -515,7 +515,7 @@ fun main() {
           content {
             h2 { +"A plotly-kt Heatmap" }
             plotly(
-              503 by 484,
+              dimensions = 503 by 484,
               iframeConfig = PlotlyIframeConfig {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
