@@ -1,6 +1,6 @@
 package com.kslides.config
 
-class KPlotlyConfig : AbstractConfig() {
+class PlotlyIframeConfig : AbstractConfig() {
   var width by ConfigProperty<String>(kslidesManagedValues)  // iframe width
   var height by ConfigProperty<String>(kslidesManagedValues) // iframe height
   var style by ConfigProperty<String>(kslidesManagedValues)  // iframe style

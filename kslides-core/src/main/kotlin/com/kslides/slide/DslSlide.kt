@@ -67,4 +67,4 @@ class VerticalDslSlide(override val presentation: Presentation, content: SlideAr
     ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }
 
-fun plotlyConfig(block: KPlotlyConfig.() -> Unit) =  block
+fun plotlyIframeConfig(block: PlotlyIframeConfig.() -> Unit) =  block

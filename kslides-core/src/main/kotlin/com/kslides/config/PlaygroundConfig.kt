@@ -26,6 +26,7 @@ class PlaygroundConfig : AbstractConfig() {
   var dataShorterHeight by ConfigProperty<Int>(revealjsManagedValues)
   var dataScrollbarStyle by ConfigProperty<String>(revealjsManagedValues)
 
+  // iframe values
   var width by ConfigProperty<String>(kslidesManagedValues)
   var height by ConfigProperty<String>(kslidesManagedValues)
   var style by ConfigProperty<String>(kslidesManagedValues)

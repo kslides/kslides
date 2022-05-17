@@ -82,7 +82,6 @@ subprojects {
 
     compileKotlin {
         kotlinOptions {
-            //useIR = true
             jvmTarget = '11'
             //languageVersion = '1.7'
             //apiVersion = '1.7'
@@ -95,7 +94,6 @@ subprojects {
 
     compileTestKotlin {
         kotlinOptions {
-            //useIR = true
             jvmTarget = '11'
             //languageVersion = '1.7'
             //apiVersion = '1.7'

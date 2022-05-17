@@ -177,7 +177,7 @@ presentationConfig {      // Optional
   menuConfig {}           // Optional
   copyCodeConfig {}       // Optional
   playgroundConfig {}     // Optional
-  plotlyConfig {}         // Optional
+  plotlyIframeConfig {}   // Optional
   slideConfig {}          // Optional
 }
 ```
@@ -193,14 +193,14 @@ and has these
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/CopyCodeConfig.kt).
 
 * A `playgroundConfig{}` block specifies the configuration for
-  [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframes
-  and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt).
+[Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframes
+and has these
+[options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt).
 
-* A `plotlyConfig{}` block specifies the configuration for
-  [plotly-kt](https://github.com/mipt-npm/plotly.kt) iframes
-  and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlotlyConfig.kt).
+* A `plotlyIframeConfig{}` block specifies the configuration for
+[plotly-kt](https://github.com/mipt-npm/plotly.kt) iframes
+and has these
+[options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlotlyIframeConfig.kt).
 
 * A `slideConfig{}` block specifies the default slide configuration values for all slides and has these 
 [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/SlideConfig.kt).

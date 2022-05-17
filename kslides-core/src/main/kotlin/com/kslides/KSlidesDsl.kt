@@ -9,6 +9,7 @@ import com.kslides.config.*
 import com.kslides.slide.*
 import kotlinx.html.*
 import mu.*
+import space.kscience.plotly.*
 
 object KSlidesDsl : KLogging()
 
@@ -62,9 +63,7 @@ fun DslSlide.playground(
     mergedConfig.staticContent,
     filename(iframeId),
     kslides.outputConfig.playgroundPath
-  ) {
-    playgroundContent(kslides, mergedConfig, srcName, otherSrcs.toList())
-  }
+  ) { playgroundContent(kslides, mergedConfig, srcName, otherSrcs.toList()) }
 
   _section?.iframe {
     src = playgroundFilename(iframeId)
@@ -77,16 +76,19 @@ fun DslSlide.playground(
 
 @KSlidesDslMarker
 fun DslSlide.plotly(
-  config: KPlotlyConfig.() -> Unit = {},
-  block: SECTION.() -> Unit = {},
+  width: Int? = null,
+  height: Int? = null,
+  iframeConfig: PlotlyIframeConfig.() -> Unit = {},
+  plotlyConfig: PlotlyConfig = PlotlyConfig(),
+  block: Plot.() -> Unit,
 ) {
   val iframeId = _iframeCount++
   val kslides = presentation.kslides
   val mergedConfig =
-    KPlotlyConfig()
-      .apply { merge(presentation.kslides.globalPresentationConfig.plotlyConfig) }
-      .apply { merge(presentation.presentationConfig.plotlyConfig) }
-      .apply { merge(KPlotlyConfig().also { config(it) }) }
+    PlotlyIframeConfig()
+      .apply { merge(presentation.kslides.globalPresentationConfig.plotlyIframeConfig) }
+      .apply { merge(presentation.presentationConfig.plotlyIframeConfig) }
+      .apply { merge(PlotlyIframeConfig().also { iframeConfig(it) }) }
 
   recordContent(
     kslides,
@@ -94,15 +96,23 @@ fun DslSlide.plotly(
     filename(iframeId),
     kslides.outputConfig.plotlyPath
   ) {
-    plotlyContent(kslides.kslidesConfig, block)
+    plotlyContent(kslides.kslidesConfig) {
+      plot(config = plotlyConfig) {
+        block()
+        layout {
+          width?.let { this.width = width }
+          height?.let { this.height = height }
+        }
+      }
+    }
   }
 
   _section?.iframe {
     src = plotlyFilename(iframeId)
-    mergedConfig.width.also { if (it.isNotBlank()) width = it }
-    mergedConfig.height.also { if (it.isNotBlank()) height = it }
-    mergedConfig.style.also { if (it.isNotBlank()) style = it }
-    mergedConfig.title.also { if (it.isNotBlank()) title = it }
+    mergedConfig.width.also { if (it.isNotBlank()) this.width = it }
+    mergedConfig.height.also { if (it.isNotBlank()) this.height = it }
+    mergedConfig.style.also { if (it.isNotBlank()) this.style = it }
+    mergedConfig.title.also { if (it.isNotBlank()) this.title = it }
   } ?: error("plotly{} must be called from within a content{} block")
 }
 
