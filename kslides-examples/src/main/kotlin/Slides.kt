@@ -369,12 +369,12 @@ fun main() {
         // plotly1 begin
         dslSlide {
           content {
-            p { +"A plotly-kt Plot" }
+            h2 { +"A plotly-kt Plot" }
             // Config values here apply to the iframe containing the plotly content
             // They need to be coordinated with the layout{} values below
             plotly(
               config = {
-                style = "width: 85%; border: 1px solid black;"
+                style = "width: 85%; border: 2px solid #586E75;"
                 height = "415px"
               }
             ) {
@@ -401,11 +401,11 @@ fun main() {
         // plotly2 begin
         dslSlide {
           content {
-            p { +"A plotly-kt Histogram" }
+            h2 { +"A plotly-kt Histogram" }
             plotly(
               config = {
                 height = "500px"
-                style = "width: 65%; border: 1px solid black;"
+                style = "width: 65%; border: 2px solid #586E75;"
               }
             ) {
               plot(config = PlotlyConfig { withEditorButton() }) {
@@ -441,11 +441,11 @@ fun main() {
         // plotly3 begin
         dslSlide {
           content {
-            p { +"A plotly-kt 3D Surface Plot" }
+            h2 { +"A plotly-kt 3D Surface Plot" }
             plotly(
               config = {
                 height = "500px"
-                style = "width: 54%; border: 1px solid black;"
+                style = "width: 54%; border: 2px solid #586E75;"
               }
             ) {
               plot(config = PlotlyConfig { withEditorButton() }) {
@@ -488,11 +488,11 @@ fun main() {
         // plotly4 begin
         dslSlide {
           content {
-            p { +"A plotly-kt 3D Scatter Plot" }
+            h2 { +"A plotly-kt 3D Scatter Plot" }
             plotly(
               config = {
                 height = "500px"
-                style = "width: 54%; border: 1px solid black;"
+                style = "width: 54%; border: 2px solid #586E75;"
               }
             ) {
               plot(config = PlotlyConfig { withEditorButton() }) {
@@ -520,11 +520,11 @@ fun main() {
         // plotly5 begin
         dslSlide {
           content {
-            p { +"A plotly-kt Heatmap" }
+            h2 { +"A plotly-kt Heatmap" }
             plotly(
               config = {
                 height = "500px"
-                style = "width: 54%; border: 1px solid black;"
+                style = "width: 54%; border: 2px solid #586E75;"
               }
             ) {
               plot(config = PlotlyConfig { withEditorButton() }) {
