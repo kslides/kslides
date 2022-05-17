@@ -76,8 +76,7 @@ fun DslSlide.playground(
 
 @KSlidesDslMarker
 fun DslSlide.plotly(
-  width: Int? = null,
-  height: Int? = null,
+  dimensions: Dimensions? = null,
   iframeConfig: PlotlyIframeConfig.() -> Unit = {},
   plotlyConfig: PlotlyConfig = PlotlyConfig(),
   block: Plot.() -> Unit,
@@ -99,9 +98,12 @@ fun DslSlide.plotly(
     plotlyContent(kslides.kslidesConfig) {
       plot(config = plotlyConfig) {
         block()
+        // Override the layout dimensions with those supplied in the args
         layout {
-          width?.let { this.width = width }
-          height?.let { this.height = height }
+          dimensions?.also { d ->
+            d.width.let { this@layout.width = d.width }
+            d.height.let { this@layout.height = d.height }
+          }
         }
       }
     }

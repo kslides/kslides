@@ -366,6 +366,9 @@ fun main() {
       }
 
       verticalSlides {
+        // Allow plotly content to be edited in https://chart-studio.plotly.com
+        val configWithEditorEnabled = PlotlyConfig { withEditorButton() }
+
         // plotly1 begin
         dslSlide {
           content {
@@ -373,12 +376,12 @@ fun main() {
             // Config values here apply to the iframe containing the plotly content
             // They need to be coordinated with the layout{} values below
             plotly(
-              801, 400,
+              801 by 400,
               iframeConfig = {
                 style = "width: 85%; border: 2px solid #586E75;"
                 height = "415px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() }
+              plotlyConfig = configWithEditorEnabled
             ) {
               layout {
                 title = "A Simple Random Plot"
@@ -401,12 +404,12 @@ fun main() {
           content {
             h2 { +"A plotly-kt Histogram" }
             plotly(
-              608, 484,
+              608 by 484,
               iframeConfig = {
-                height = "500px"
                 style = "width: 65%; border: 2px solid #586E75;"
+                height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() }
+              plotlyConfig = configWithEditorEnabled
             ) {
               layout {
                 title = "Horizontal Histogram"
@@ -439,12 +442,12 @@ fun main() {
           content {
             h2 { +"A plotly-kt 3D Surface Plot" }
             plotly(
-              503, 484,
+              503 by 484,
               iframeConfig = {
-                height = "500px"
                 style = "width: 54%; border: 2px solid #586E75;"
+                height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() }
+              plotlyConfig = configWithEditorEnabled
             ) {
               layout {
                 title = "A 3D Surface Plot"
@@ -484,12 +487,12 @@ fun main() {
           content {
             h2 { +"A plotly-kt 3D Scatter Plot" }
             plotly(
-              503, 484,
+              503 by 484,
               iframeConfig = {
-                height = "500px"
                 style = "width: 54%; border: 2px solid #586E75;"
+                height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() }
+              plotlyConfig = configWithEditorEnabled
             ) {
               layout {
                 title = "A 3D Scatter Plot"
@@ -514,12 +517,12 @@ fun main() {
           content {
             h2 { +"A plotly-kt Heatmap" }
             plotly(
-              503, 484,
+              503 by 484,
               iframeConfig = {
-                height = "500px"
                 style = "width: 54%; border: 2px solid #586E75;"
+                height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() }
+              plotlyConfig = configWithEditorEnabled
             ) {
               layout {
                 title = "Red Heatmap"
