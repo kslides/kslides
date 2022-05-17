@@ -295,9 +295,9 @@ _kslides.presentation.presentationConfig.slideConfig{}_.
 
 `content{}` block contents vary by the type of the slide:
 
-* `markdownSlide.content{}` blocks contain a String with Markdown
-* `htmlSlide.content{}` blocks contain a String with HTML
-* `dslSlide.content{}` block contains calls to the Kotlin
+* `MarkdownSlide.content{}` blocks contain a String with Markdown
+* `HtmlSlide.content{}` blocks contain a String with HTML
+* `DslSlide.content{}` block contains calls to the Kotlin
   [HTML DSL](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started)
 * `verticalSlides{}` block contains other slides
 
@@ -319,6 +319,7 @@ A `verticalSlides{}` block contains one or more slides and presents them vertica
 verticalSlides {
   dslSLide {}              // One or more slides
   markdownSlide {}
+  htmlSlide {}
 }
 ```
 
@@ -356,7 +357,7 @@ found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src
 | `DslSlide.playground{}`       | Embed a Kotlin Playground   |
 | `DslSlide.plotly{}`           | Embed a plotly-kt figure    |
 | `FlowContent.unorderedList{}` | Generate an unordered list  |
-| `FlowContent.orderedList()`   | Generate an ordered list    |
+| `FlowContent.orderedList{}`   | Generate an ordered list    |
 | `LI.listHref()`               | Generate a list href        |
 | `THEAD.headRow()`             | Generate a table header row |
 | `TBODY.bodyRow()`             | Generate a table body row   |
