@@ -385,13 +385,14 @@ The code in the presentation html files are space-sensitive and might not work i
 ### Custom CSS
 CSS values can be specified in a _css{}_ blocks in a presentation, but they also can be specified in 
 the `src/main/resources/slides.css` file. The contents of that file are embedded directly into 
-the presentation HTML files. Make sure you run 
-`./gradlew clean build` after making changes to _slides.css_. 
+the presentation HTML files. Make sure to run `./gradlew clean build` after making changes to _slides.css_. 
 
-### Images
+### Static Content
 
-Presentations served by HTTP load static files from `/src/main/resources/public`, whereas
-filesystem presentations load from `/docs`.
+Presentations served by HTTP load static content from `/src/main/resources/public`, whereas
+filesystem presentations load static content from `/docs`.
+
+Make sure to run `./gradlew clean build` after making changes to `/src/main/resources/public`. 
 
 ### Code Slides
 
@@ -417,6 +418,10 @@ value correlates with the _layout.width_ value, and the _config.height_
 correlates with the _layout.height_ value. Including `border: 1px solid black;`
 in _config.style_ makes it easier to determine the proper values. Once the height 
 and width values are correct, you can remove the border.
+
+If additional space is required for plotly output, you can adjust the slide 
+presentation space with the _PresentationConfig.width_ and _PresentationConfig.height_ values.
+More details can be found [here](https://revealjs.com/presentation-size/).
 
 ### Heroku
 
