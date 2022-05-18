@@ -980,6 +980,36 @@ listOf("One", "Two", "Three", "Four", "👇")
         </section>
         
         <section>
+          <section>
+            <h2>YouTube Content</h2>
+            <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope" allowfullscreen="true" frameborder="0" height="315" src="https://www.youtube.com/embed/X8Az9X0mwUE?start=163" title="YouTube video player" width="560"></iframe>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"YouTube Content" }
+    iframe {
+      width = "560"
+      height = "315"
+      src = "https://www.youtube.com/embed/X8Az9X0mwUE?start=163"
+      title = "YouTube video player"
+      attributes["frameborder"] = "0"
+      attributes["allow"] = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+      attributes["allowfullscreen"] = "true"
+    }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
           <section id="tables">
             <h2>Tables</h2>
             <table>

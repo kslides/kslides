@@ -706,6 +706,27 @@ fun main() {
         }
       }
 
+      verticalSlides {
+        // youtube begin
+        dslSlide {
+          content {
+            h2 { +"YouTube Content" }
+            iframe {
+              width = "560"
+              height = "315"
+              src = "https://www.youtube.com/embed/X8Az9X0mwUE?start=163"
+              title = "YouTube video player"
+              attributes["frameborder"] = "0"
+              attributes["allow"] = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+              attributes["allowfullscreen"] = "true"
+            }
+          }
+        }
+        // youtube end
+
+        slideDefinition(slides, "youtube")
+      }
+
       css +=
         """
         #tables th {
