@@ -371,8 +371,6 @@ fun main() {
         dslSlide {
           content {
             h2 { +"A plotly-kt Plot" }
-            // Config values here apply to the iframe containing the plotly content
-            // They need to be coordinated with the layout{} values below
             plotly(
               dimensions = 801 by 400,
               iframeConfig = PlotlyIframeConfig {
