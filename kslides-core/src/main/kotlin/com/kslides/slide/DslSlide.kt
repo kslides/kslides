@@ -1,26 +1,40 @@
-package com.kslides
+package com.kslides.slide
 
+import com.github.pambrose.common.util.*
+import com.kslides.*
 import kotlinx.html.*
 
 interface DslSlide {
   val presentation: Presentation
   var _section: SECTION? // TODO This is a hack that will go away when context receivers work
-  val _slideName: String
+  val _slideId: Int
   var _useHttp: Boolean
   var _dslAssigned: Boolean
   var _dslBlock: SECTION.() -> Unit
+  var _iframeCount: Int
 
   var classes: String
   var id: String
   var style: String
 
   fun processSlide(section: SECTION)
+
+  fun filename(iframeId: Int) = "slide-$_slideId-$iframeId.html"
+
+  fun playgroundFilename(iframeId: Int) =
+    listOf(presentation.kslides.outputConfig.playgroundDir, filename(iframeId))
+      .toPath(addPrefix = false, addTrailing = false)
+
+  fun plotlyFilename(iframeId: Int) =
+    listOf(presentation.kslides.outputConfig.plotlyDir, filename(iframeId))
+      .toPath(addPrefix = false, addTrailing = false)
 }
 
 class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :
   HorizontalSlide(presentation, content), DslSlide {
   override var _section: SECTION? = null
   override var _dslBlock: SECTION.() -> Unit = { }
+  override var _iframeCount = 1
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
 
@@ -39,6 +53,7 @@ class VerticalDslSlide(override val presentation: Presentation, content: SlideAr
   VerticalSlide(presentation, content), DslSlide {
   override var _section: SECTION? = null
   override var _dslBlock: SECTION.() -> Unit = { }
+  override var _iframeCount = 1
   override var _useHttp: Boolean = false
   override var _dslAssigned = false
 

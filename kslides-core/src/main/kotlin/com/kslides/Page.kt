@@ -11,6 +11,7 @@ internal object Page {
   private val codeRegex = Regex("\\s*<code.*>\\s*")
 
   internal fun generatePage(p: Presentation, useHttp: Boolean = true, srcPrefix: String = "/"): String {
+    p.kslides.slideCount = 0
     val htmldoc =
       document {
         val config = p.finalConfig

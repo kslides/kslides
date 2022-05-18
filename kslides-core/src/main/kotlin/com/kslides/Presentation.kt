@@ -3,6 +3,7 @@ package com.kslides
 import com.github.pambrose.common.util.*
 import com.kslides.InternalUtils.indentInclude
 import com.kslides.config.*
+import com.kslides.slide.*
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
@@ -13,7 +14,6 @@ class Presentation(val kslides: KSlides) {
   internal val presentationConfig = PresentationConfig()
   internal lateinit var finalConfig: PresentationConfig
   internal val slides = mutableListOf<Slide>()
-  internal val playgroundPath by lazy { kslides.outputConfig.playgroundDir.ensureSuffix("/") }
 
   // User variables
   var path = "/"
@@ -73,7 +73,7 @@ class Presentation(val kslides: KSlides) {
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
-            val config = s.mergedConfig
+            val config = s.mergedSlideConfig
             config.markdownCharset.also { charset ->
               if (charset.isNotBlank()) attributes["data-charset"] = charset
             }
@@ -99,7 +99,7 @@ class Presentation(val kslides: KSlides) {
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
 
-            val config = s.mergedConfig
+            val config = s.mergedSlideConfig
             config.markdownCharset.also { charset ->
               if (charset.isNotBlank()) attributes["data-charset"] = charset
             }
@@ -131,6 +131,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as HorizontalDslSlide)
           .also { s ->
+            s._iframeCount = 1
             s._useHttp = useHttp
             slideContent(s)
             processDsl(s)
@@ -144,6 +145,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as VerticalDslSlide)
           .also { s ->
+            s._iframeCount = 1
             s._useHttp = useHttp
             slideContent(s)
             processDsl(s)
@@ -169,7 +171,7 @@ class Presentation(val kslides: KSlides) {
         (slide as HorizontalHtmlSlide)
           .also { s ->
             slideContent(s)
-            processHtml(s, s.mergedConfig)
+            processHtml(s, s.mergedSlideConfig)
           }
       }
     }.also { slides += it }
@@ -181,7 +183,7 @@ class Presentation(val kslides: KSlides) {
         (slide as VerticalHtmlSlide)
           .also { s ->
             slideContent(s)
-            processHtml(s, s.mergedConfig)
+            processHtml(s, s.mergedSlideConfig)
           }
       }
     }.also { verticalSlides += it }

@@ -2,12 +2,14 @@ package com.kslides
 
 import com.github.pambrose.common.util.*
 import com.kslides.InternalUtils.stripBraces
-import com.kslides.Playground.logger
-import com.kslides.Playground.otherNames
-import com.kslides.Playground.sourceName
+import com.kslides.InternalUtils.writeIframeContent
+import com.kslides.Playground.playgroundContent
+import com.kslides.Plotly.plotlyContent
 import com.kslides.config.*
+import com.kslides.slide.*
 import kotlinx.html.*
 import mu.*
+import space.kscience.plotly.*
 
 object KSlidesDsl : KLogging()
 
@@ -44,41 +46,100 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
 //context(Presentation, DslSlide, SECTION)
 @KSlidesDslMarker
 fun DslSlide.playground(
-  source: String,
-  vararg otherSources: String = emptyArray(),
-  block: PlaygroundConfig.() -> Unit = {},
+  srcName: String,
+  vararg otherSrcs: String = emptyArray(),
+  configBlock: PlaygroundConfig.() -> Unit = {},
 ) {
-  val config =
+  val iframeId = _iframeCount++
+  val kslides = presentation.kslides
+  val mergedConfig =
     PlaygroundConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.playgroundConfig) }
       .apply { merge(presentation.presentationConfig.playgroundConfig) }
-      .apply { merge(PlaygroundConfig().also { block(it) }) }
+      .apply { merge(PlaygroundConfig().also { configBlock(it) }) }
 
-  val pgUrl =
-    buildString {
-      append(presentation.kslides.kslidesConfig.playgroundEndpoint)
-      append("?")
-      append("$sourceName=${source.encode()}")
-      if (otherSources.isNotEmpty())
-        append("&$otherNames=${otherSources.joinToString(",").encode()}")
-      append(config.toQueryString())
+  recordContent(
+    kslides,
+    mergedConfig.staticContent,
+    filename(iframeId),
+    kslides.outputConfig.playgroundPath
+  ) { playgroundContent(kslides, mergedConfig, srcName, otherSrcs.toList()) }
+
+  _section?.iframe {
+    src = playgroundFilename(iframeId)
+    mergedConfig.width.also { if (it.isNotBlank()) width = it }
+    mergedConfig.height.also { if (it.isNotBlank()) height = it }
+    mergedConfig.style.also { if (it.isNotBlank()) style = it }
+    mergedConfig.title.also { if (it.isNotBlank()) title = it }
+  } ?: error("playground{} must be called from within a content{} block")
+}
+
+@KSlidesDslMarker
+fun DslSlide.plotly(
+  dimensions: Dimensions? = null,
+  iframeConfig: PlotlyIframeConfig  = PlotlyIframeConfig(),
+  plotlyConfig: PlotlyConfig = PlotlyConfig(),
+  block: Plot.() -> Unit,
+) {
+  val iframeId = _iframeCount++
+  val kslides = presentation.kslides
+  val mergedConfig =
+    PlotlyIframeConfig()
+      .apply { merge(presentation.kslides.globalPresentationConfig.plotlyIframeConfig) }
+      .apply { merge(presentation.presentationConfig.plotlyIframeConfig) }
+      .apply { merge(iframeConfig) }
+
+  recordContent(
+    kslides,
+    mergedConfig.staticContent,
+    filename(iframeId),
+    kslides.outputConfig.plotlyPath
+  ) {
+    plotlyContent(kslides.kslidesConfig) {
+      plot(config = plotlyConfig) {
+        block()
+        // Override the layout dimensions with those supplied in the args
+        layout {
+          dimensions?.also { d ->
+            d.width.let { this@layout.width = d.width }
+            d.height.let { this@layout.height = d.height }
+          }
+        }
+      }
     }
+  }
 
-  // Add to list of pages to generate and later grab with an iframe
-  if (!_useHttp)
-    presentation.kslides.playgroundUrls += _slideName to pgUrl
+  _section?.iframe {
+    src = plotlyFilename(iframeId)
+    mergedConfig.width.also { if (it.isNotBlank()) this.width = it }
+    mergedConfig.height.also { if (it.isNotBlank()) this.height = it }
+    mergedConfig.style.also { if (it.isNotBlank()) this.style = it }
+    mergedConfig.title.also { if (it.isNotBlank()) this.title = it }
+  } ?: error("plotly{} must be called from within a content{} block")
+}
 
-  (if (_useHttp) pgUrl else _slideName)
-    .also { url ->
-      logger.debug { "Query string: $url" }
-      _section?.iframe {
-        src = url
-        config.width.also { if (it.isNotBlank()) width = it }
-        config.height.also { if (it.isNotBlank()) height = it }
-        config.style.also { if (it.isNotBlank()) style = it }
-        config.title.also { if (it.isNotBlank()) title = it }
-      } ?: error("playground{} must be called from within a content{} block")
+private fun DslSlide.recordContent(
+  kslides: KSlides,
+  staticContent: Boolean,
+  filename: String,
+  path: String,
+  content: () -> String
+) {
+  if (_useHttp) {
+    if (staticContent) {
+      kslides.staticIframeContent.computeIfAbsent(filename) {
+        KSlidesDsl.logger.info { "Saving source: $filename" }
+        content()
+      }
+    } else {
+      kslides.dynamicIframeContent.computeIfAbsent(filename) {
+        KSlidesDsl.logger.info { "Saving lambda: $filename" }
+        content
+      }
     }
+  } else {
+    writeIframeContent(path, filename, content())
+  }
 }
 
 @HtmlTagMarker

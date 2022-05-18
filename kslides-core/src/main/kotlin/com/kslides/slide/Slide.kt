@@ -1,17 +1,19 @@
-package com.kslides
+package com.kslides.slide
 
+import com.kslides.*
+import com.kslides.CssValue
 import com.kslides.CssValue.Companion.cssError
 import com.kslides.config.*
 import kotlinx.css.*
 import kotlinx.html.*
-import java.util.concurrent.atomic.*
 
 typealias SlideArgs = (DIV, Slide, Boolean) -> Unit
 
 abstract class Slide(private val presentation: Presentation, internal val content: SlideArgs) {
   private val slideConfig = SlideConfig() // Do not call init on this because it is merged with the presentation config
-  val _slideName = "${presentation.playgroundPath}slide-${slideCount.incrementAndGet()}.html"
-  internal val mergedConfig by lazy {
+  val _slideId = presentation.kslides.slideCount++
+
+  internal val mergedSlideConfig by lazy {
     SlideConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.slideConfig) }
       .apply { merge(presentation.presentationConfig.slideConfig) }
@@ -31,7 +33,7 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   var autoAnimateRestart = false
 
   @KSlidesDslMarker
-  fun css(block: CssBuilder.() -> Unit): Unit = cssError()
+  fun css(@Suppress("UNUSED_PARAMETER") block: CssBuilder.() -> Unit): Unit = cssError()
 
   @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
@@ -55,11 +57,7 @@ abstract class Slide(private val presentation: Presentation, internal val conten
     if (autoAnimateRestart)
       section.attributes["data-auto-animate-restart"] = ""
 
-    mergedConfig.applyConfig(section)
-  }
-
-  companion object {
-    private val slideCount = AtomicInteger(0)
+    mergedSlideConfig.applyConfig(section)
   }
 }
 

@@ -1,4 +1,6 @@
-package com.kslides
+package com.kslides.slide
+
+import com.kslides.*
 
 interface MarkdownSlide {
   var _markdownBlock: () -> String

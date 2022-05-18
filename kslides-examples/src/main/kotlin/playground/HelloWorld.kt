@@ -1,5 +1,3 @@
-package playground
-
 //sampleStart
 fun main(args: Array<String>) {
   for (arg in args) {

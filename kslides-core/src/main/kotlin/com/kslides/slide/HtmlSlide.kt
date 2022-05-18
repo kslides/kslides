@@ -1,5 +1,6 @@
-package com.kslides
+package com.kslides.slide
 
+import com.kslides.*
 import kotlinx.html.*
 
 interface HtmlSlide {

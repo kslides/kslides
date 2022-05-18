@@ -1,10 +1,10 @@
 package com.kslides
 
 import org.apache.commons.text.*
+import java.io.*
 
 object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
-  internal val httpRegex = Regex("\\s*http[s]?://.*")
 
   internal fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
     mutableMapOf<K, V>()
@@ -177,6 +177,19 @@ object InternalUtils {
     (if (trimIndent) joinToString("\n").trimIndent().lines() else this)
       .map { "$indentToken$it" }
       .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeHtml4(it) else it }
+
+  internal fun writeIframeContent(path: String, slideName: String, content: String) {
+    mkdir(path)    // Create directory if missing
+    "$path$slideName"
+      .also {
+        KSlides.logger.info { "Writing iframe content to: $it" }
+        File(it).writeText(content)
+      }
+  }
+
+  internal fun mkdir(name: String) = File(name).run { if (!exists()) mkdir() else false }
+
+  private val httpRegex = Regex("\\s*http[s]?://.*")
 
   internal fun String.isUrl() = lowercase().matches(httpRegex)
 

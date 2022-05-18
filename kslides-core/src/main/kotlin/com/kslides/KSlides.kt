@@ -4,10 +4,8 @@ import com.github.pambrose.common.response.*
 import com.github.pambrose.common.util.*
 import com.kslides.KSlides.Companion.logger
 import com.kslides.KSlides.Companion.runHttpServer
-import com.kslides.KSlides.Companion.writePlaygroundFiles
-import com.kslides.KSlides.Companion.writeToFileSystem
+import com.kslides.KSlides.Companion.writeSlidesToFileSystem
 import com.kslides.Page.generatePage
-import com.kslides.Playground.setupPlayground
 import com.kslides.config.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -20,7 +18,6 @@ import io.ktor.server.routing.*
 import kotlinx.css.*
 import mu.*
 import java.io.*
-import java.util.concurrent.*
 
 @DslMarker
 annotation class KSlidesDslMarker
@@ -63,16 +60,10 @@ fun kslides(block: KSlides.() -> Unit) =
         logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} block" }
 
       if (outputConfig.enableFileSystem)
-        writeToFileSystem(outputConfig)
-
-      if (outputConfig.enableHttp || playgroundUrls.isNotEmpty())
-        runHttpServer(outputConfig, false)
-
-      if (playgroundUrls.isNotEmpty())
-        writePlaygroundFiles(outputConfig, playgroundUrls)
+        writeSlidesToFileSystem(outputConfig)
 
       if (outputConfig.enableHttp)
-        CountDownLatch(1).await()
+        runHttpServer(outputConfig, true)
     }
 
 @KSlidesDslMarker
@@ -94,8 +85,11 @@ class KSlides {
   internal var outputConfigBlock: OutputConfig.() -> Unit = {}
   internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
   internal val presentationMap = mutableMapOf<String, Presentation>()
-  internal val playgroundUrls = mutableListOf<Pair<String, String>>()
   internal val presentations get() = presentationMap.values
+  internal val staticIframeContent = mutableMapOf<String, String>()
+  internal val dynamicIframeContent = mutableMapOf<String, () -> String>()
+  internal var slideCount = 1
+
   internal fun presentation(name: String) =
     presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
@@ -128,7 +122,7 @@ class KSlides {
   }
 
   companion object : KLogging() {
-    internal fun writeToFileSystem(config: OutputConfig) {
+    internal fun writeSlidesToFileSystem(config: OutputConfig) {
       require(config.outputDir.isNotBlank()) { "outputDir value must not be empty" }
 
       val outputDir = config.outputDir
@@ -167,14 +161,26 @@ class KSlides {
           deflate { priority = 10.0; minimumSize(1024) /* condition*/ }
         }
 
-        config.kslides.presentationMap
+        val kslides = config.kslides
+
+        kslides.presentationMap
           .apply {
             if (!containsKey("/") && !containsKey("/index.html"))
               logger.warn { """Missing a presentation with: path = "/"""" }
           }
 
         routing {
-          setupPlayground(config.kslides)
+          listOf(config.playgroundDir, config.plotlyDir)
+            .forEach {
+              get("$it/{fname}") {
+                respondWith {
+                  val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing slide arg $it")
+                  kslides.dynamicIframeContent[path]?.invoke()
+                    ?: kslides.staticIframeContent[path]
+                    ?: throw IllegalArgumentException("Invalid slide path: $path")
+                }
+              }
+            }
 
           if (config.defaultHttpRoot.isNotBlank())
             static("/") {
@@ -185,7 +191,7 @@ class KSlides {
           // This is hardcoded for http since it is shipped with the jar
           val rootDir = "revealjs"
           val baseDirs =
-            config.kslides.kslidesConfig.httpStaticRoots
+            kslides.kslidesConfig.httpStaticRoots
               .filter { it.dirname.isNotBlank() }
               .map { it.dirname }
 
@@ -202,7 +208,7 @@ class KSlides {
               }
             }
 
-          config.kslides.presentationMap
+          kslides.presentationMap
             .forEach { (key, p) ->
               get(key) {
                 respondWith {
@@ -212,23 +218,6 @@ class KSlides {
             }
         }
       }.start(wait = wait)
-    }
-
-    internal fun writePlaygroundFiles(config: OutputConfig, playgroundUrls: List<Pair<String, String>>) {
-      val root = config.outputDir.ensureSuffix("/")
-      val playground = config.playgroundDir.ensureSuffix("/")
-      val fullPath = "$root$playground"
-      // Create directory if missing
-      File(fullPath).mkdir()
-
-      playgroundUrls.forEach { (filename, url) ->
-        val prefix = config.kslides.kslidesConfig.playgroundHttpPrefix
-        val port = config.port
-        val fullname = "$root$filename"
-        val content = include("$prefix:$port/$url", indentToken = "", escapeHtml = false)
-        logger.info { "Writing playground content to: $root$filename" }
-        File(fullname).writeText(content)
-      }
     }
   }
 }

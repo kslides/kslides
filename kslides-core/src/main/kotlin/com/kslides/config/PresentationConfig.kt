@@ -3,6 +3,21 @@ package com.kslides.config
 import com.kslides.*
 
 class PresentationConfig : AbstractConfig() {
+
+  // The "normal" size of the presentation, aspect ratio will
+  // be preserved when the presentation is scaled to fit different
+  // resolutions. Can be specified using percentage units.
+  var width by ConfigProperty<Any>(revealjsManagedValues) // 960
+  var height by ConfigProperty<Any>(revealjsManagedValues) // 700
+
+  // Factor of the display size that should remain empty around
+  // the content
+  var margin by ConfigProperty<Float>(revealjsManagedValues) // 0.04
+
+  // Bounds for smallest/largest possible scale to apply to content
+  var minScale by ConfigProperty<Float>(revealjsManagedValues) // 0.04
+  var maxScale by ConfigProperty<Float>(revealjsManagedValues) // 0.04
+
   // Display presentation control arrows
   var controls by ConfigProperty<Boolean>(revealjsManagedValues) // true
 
@@ -278,6 +293,7 @@ class PresentationConfig : AbstractConfig() {
   internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
   internal val playgroundConfig = PlaygroundConfig()
+  internal val plotlyIframeConfig = PlotlyIframeConfig()
 
   // Only the global default config is initialized with default values
   internal fun assignDefaults() {
@@ -320,6 +336,7 @@ class PresentationConfig : AbstractConfig() {
 
     slideConfig.assignDefaults()
     playgroundConfig.assignDefaults()
+    plotlyIframeConfig.assignDefaults()
   }
 
   internal fun mergeConfig(other: PresentationConfig) {
@@ -328,6 +345,7 @@ class PresentationConfig : AbstractConfig() {
     this.copyCodeConfig.merge(other.copyCodeConfig)
     this.slideConfig.merge(other.slideConfig)
     this.playgroundConfig.merge(other.playgroundConfig)
+    this.plotlyIframeConfig.merge(other.plotlyIframeConfig)
   }
 
   @KSlidesDslMarker
@@ -341,4 +359,7 @@ class PresentationConfig : AbstractConfig() {
 
   @KSlidesDslMarker
   fun playgroundConfig(block: PlaygroundConfig.() -> Unit) = block.invoke(playgroundConfig)
+
+  @KSlidesDslMarker
+  fun plotlyIframeConfig(block: PlotlyIframeConfig.() -> Unit) = block.invoke(plotlyIframeConfig)
 }

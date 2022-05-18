@@ -1,60 +1,39 @@
 package com.kslides
 
-import com.github.pambrose.common.response.*
-import com.kslides.config.PlaygroundConfig.Companion.playgroundAttributes
-import io.ktor.server.application.*
-import io.ktor.server.routing.*
+import com.kslides.config.*
+import com.kslides.config.PlaygroundConfig.Companion.toPropertyName
 import kotlinx.html.*
 import kotlinx.html.dom.*
 import mu.*
 import kotlin.collections.set
 
 object Playground : KLogging() {
-
-  const val sourceName = "source"
-  const val otherNames = "other"
-
-  fun Routing.setupPlayground(kslides: KSlides) {
-    get(kslides.kslidesConfig.playgroundEndpoint) {
-      respondWith {
-        document {
-          append.html {
-            head {
-              script {
-                src = kslides.kslidesConfig.playgroundUrl
-                attributes["data-selector"] = ".${kslides.kslidesConfig.playgroundSelector}"
-              }
-            }
-            body {
-              val params = call.request.queryParameters
-              code(kslides.kslidesConfig.playgroundSelector) {
-                playgroundAttributes
-                  .map { attrib -> attrib to (params[attrib] ?: "") }
-                  .filter { it.second.isNotBlank() }
-                  .forEach { attributes[it.first] = it.second }
-
-                val path = params[sourceName] ?: throw IllegalArgumentException("Missing playground filename")
-                logger.info { "Including file: $path" }
-                +include(path)
-
-                // other names are comma separated
-                (params[otherNames] ?: "")
-                  .also { files ->
-                    if (files.isNotBlank())
-                      files
-                        .split(",")
-                        .forEach { filename ->
-                          logger.info { "Including additional file: $filename" }
-                          textArea(classes = "hidden-dependency") {
-                            +this@code.include(filename)
-                          }
-                        }
-                  }
-              }
-            }
+  internal fun playgroundContent(kslides: KSlides, config: PlaygroundConfig, srcName: String, otherSrcs: List<String>) =
+    document {
+      val kslidesConfig = kslides.kslidesConfig
+      append.html {
+        head {
+          script {
+            src = kslidesConfig.playgroundUrl
+            attributes["data-selector"] = ".${kslidesConfig.playgroundSelector}"
           }
-        }.serialize() //.also { logger.info { "\n$it" } }
+        }
+        body {
+          code(kslidesConfig.playgroundSelector) {
+            config.toAttributes().forEach { attributes[it.first.toPropertyName()] = it.second }
+
+            logger.info { "Including file: $srcName" }
+            +include(srcName)
+
+            otherSrcs
+              .forEach { filename ->
+                logger.info { "Including additional file: $filename" }
+                textArea(classes = "hidden-dependency") {
+                  +this@code.include(filename)
+                }
+              }
+          }
+        }
       }
-    }
-  }
+    }.serialize()
 }

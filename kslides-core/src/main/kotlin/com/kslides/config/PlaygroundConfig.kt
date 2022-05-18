@@ -1,12 +1,10 @@
 package com.kslides.config
 
-import com.github.pambrose.common.util.*
 import com.kslides.*
 import kotlin.reflect.full.*
 
 class PlaygroundConfig : AbstractConfig() {
 
-  // These have to be kept in sync with the playgroundAttributes value below
   var args by ConfigProperty<String>(revealjsManagedValues)
   var dataTargetPlatform by ConfigProperty<TargetPlatform>(revealjsManagedValues)
   var dataHighlightOnly by ConfigProperty<Boolean>(revealjsManagedValues)
@@ -28,64 +26,36 @@ class PlaygroundConfig : AbstractConfig() {
   var dataShorterHeight by ConfigProperty<Int>(revealjsManagedValues)
   var dataScrollbarStyle by ConfigProperty<String>(revealjsManagedValues)
 
+  // iframe values
   var width by ConfigProperty<String>(kslidesManagedValues)
   var height by ConfigProperty<String>(kslidesManagedValues)
   var style by ConfigProperty<String>(kslidesManagedValues)
   var title by ConfigProperty<String>(kslidesManagedValues) // For screen readers
+  var staticContent by ConfigProperty<Boolean>(kslidesManagedValues) // Prevents recompute of playground content
 
   fun assignDefaults() {
     width = ""
     height = ""
     style = ""
     title = ""
+    staticContent = false
   }
 
-  private fun String.toPropertyName() =
-    toList()
-      .map { if (it.isUpperCase()) "-${it.lowercaseChar()}" else it }
-      .joinToString("")
-
-  internal fun toQueryString() =
-    if (revealjsManagedValues.isNotEmpty())
-      revealjsManagedValues
-        .map { (k, v) ->
-          k to (
-              when {
-                v is TargetPlatform -> v.queryVal
-                v is PlaygroundMode -> v.queryVal
-                v::class.isSubclassOf(Enum::class) -> (v as Enum<*>).name.lowercase()
-                else -> v
-              }
-              )
-        }
-        .joinToString("&") { (k, v) -> "${k.toPropertyName()}=${v.toString().encode()}" }
-        .let { "&$it" }
-    else
-      ""
+  internal fun toAttributes() =
+    revealjsManagedValues
+      .map { (k, v) ->
+        k to (when {
+          v is TargetPlatform -> v.queryVal
+          v is PlaygroundMode -> v.queryVal
+          v::class.isSubclassOf(Enum::class) -> (v as Enum<*>).name.lowercase()
+          else -> v.toString()
+        })
+      }
 
   companion object {
-    val playgroundAttributes =
-      listOf(
-        "args",
-        "data-target-platform",
-        "data-highlight-only",
-        "folded-button",
-        "data-js-libs",
-        "auto-indent",
-        "theme",
-        "mode",
-        "data-min-compiler-version",
-        "data-autocomplete",
-        "highlight-on-fly",
-        "indent",
-        "lines",
-        "from",
-        "to",
-        "data-output-height",
-        "match-brackets",
-        "data-crosslink",
-        "data-shorter-height",
-        "data-scrollbar-style",
-      )
+    internal fun String.toPropertyName() =
+      toList()
+        .map { if (it.isUpperCase()) "-${it.lowercaseChar()}" else it }
+        .joinToString("")
   }
 }
