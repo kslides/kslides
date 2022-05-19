@@ -631,7 +631,7 @@ dslSlide {
         </section>
         
         <section>
-          <section>
+          <section id="plotly">
             <h2>A plotly-kt Plot</h2>
             <iframe height="415px" src="plotly/slide-30-1.html" style="width: 85%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
@@ -641,6 +641,7 @@ dslSlide {
 ## Slide Definition    
 ```kotlin []
 dslSlide {
+  id = "plotly"
   content {
     h2 { +"A plotly-kt Plot" }
     plotly(

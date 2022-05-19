@@ -369,6 +369,7 @@ fun main() {
       verticalSlides {
         // plotly1 begin
         dslSlide {
+          id = "plotly"
           content {
             h2 { +"A plotly-kt Plot" }
             plotly(
