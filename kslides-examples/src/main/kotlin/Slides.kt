@@ -843,6 +843,7 @@ fun main() {
                   a { href = "?transition=${transition.name.toLower()}#/transitions"; +transition.name }
                   if (index < Transition.values().size - 1)
                     +"-"
+                  rawHtml("\n\t\t\t\t\t\t\t")
                 }
             }
           }
@@ -857,6 +858,7 @@ fun main() {
         dslSlide {
           id = "themes"
           content {
+            // Hack to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck.
             h2 { +"Themes" }
             p {
               +"reveal.js comes with some built-in themes:"
@@ -867,11 +869,12 @@ fun main() {
                   a {
                     href = "#/themes"
                     onClick =
-                      "document.getElementById('theme').setAttribute('href','dist/theme/${theme.name.toLower()}.css'); return false;"
+                      "document.getElementById('theme').setAttribute('href','revealjs/dist/theme/${theme.name.toLower()}.css'); return false;"
                     +theme.name
                   }
                   if (index < PresentationTheme.values().size - 1)
                     +"-"
+                  rawHtml("\n\t\t\t\t\t\t\t")
                 }
             }
           }

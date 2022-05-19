@@ -1175,6 +1175,7 @@ dslSlide {
               a { href = "?transition=${transition.name.toLower()}#/transitions"; +transition.name }
               if (index < Transition.values().size - 1)
                 +"-"
+              rawHtml("\n\t\t\t\t\t\t\t")
             }
         }
       }
@@ -1189,6 +1190,7 @@ dslSlide {
     dslSlide {
       id = "themes"
       content {
+        // Hack to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck.
         h2 { +"Themes" }
         p {
           +"reveal.js comes with some built-in themes:"
@@ -1199,11 +1201,12 @@ dslSlide {
               a {
                 href = "#/themes"
                 onClick =
-                  "document.getElementById('theme').setAttribute('href','dist/theme/${theme.name.toLower()}.css'); return false;"
+                  "document.getElementById('theme').setAttribute('href','revealjs/dist/theme/${theme.name.toLower()}.css'); return false;"
                 +theme.name
               }
               if (index < PresentationTheme.values().size - 1)
                 +"-"
+              rawHtml("\n\t\t\t\t\t\t\t")
             }
         }
       }
@@ -1797,7 +1800,14 @@ presentation {
             <p>
               You can select from different transitions, like:
               <br>
-              <a href="?transition=none#/transitions">NONE</a>-<a href="?transition=fade#/transitions">FADE</a>-<a href="?transition=slide#/transitions">SLIDE</a>-<a href="?transition=convex#/transitions">CONVEX</a>-<a href="?transition=concave#/transitions">CONCAVE</a>-<a href="?transition=zoom#/transitions">ZOOM</a>-<a href="?transition=unassigned#/transitions">UNASSIGNED</a>
+              <a href="?transition=none#/transitions">NONE</a>-
+							<a href="?transition=fade#/transitions">FADE</a>-
+							<a href="?transition=slide#/transitions">SLIDE</a>-
+							<a href="?transition=convex#/transitions">CONVEX</a>-
+							<a href="?transition=concave#/transitions">CONCAVE</a>-
+							<a href="?transition=zoom#/transitions">ZOOM</a>-
+							<a href="?transition=unassigned#/transitions">UNASSIGNED</a>
+							
             </p>
           </section>
           
@@ -1818,6 +1828,7 @@ dslSlide {
           a { href = "?transition=${transition.name.toLower()}#/transitions"; +transition.name }
           if (index < Transition.values().size - 1)
             +"-"
+          rawHtml("\n\t\t\t\t\t\t\t")
         }
     }
   }
@@ -1834,7 +1845,18 @@ dslSlide {
             <p>
               reveal.js comes with some built-in themes:
               <br>
-              <a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/beige.css'); return false;">BEIGE</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/black.css'); return false;">BLACK</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/blood.css'); return false;">BLOOD</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/league.css'); return false;">LEAGUE</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/moon.css'); return false;">MOON</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/night.css'); return false;">NIGHT</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/serif.css'); return false;">SERIF</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/simple.css'); return false;">SIMPLE</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/sky.css'); return false;">SKY</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/solarized.css'); return false;">SOLARIZED</a>-<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','dist/theme/white.css'); return false;">WHITE</a>
+              <a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/beige.css'); return false;">BEIGE</a>-
+							<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/black.css'); return false;">BLACK</a>-
+							<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/blood.css'); return false;">BLOOD</a>-
+							<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/league.css'); return false;">LEAGUE</a>-
+							<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/moon.css'); return false;">MOON</a>-
+							<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/night.css'); return false;">NIGHT</a>-
+							<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/serif.css'); return false;">SERIF</a>-
+							<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/simple.css'); return false;">SIMPLE</a>-
+							<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/sky.css'); return false;">SKY</a>-
+							<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/solarized.css'); return false;">SOLARIZED</a>-
+							<a href="#/themes" onclick="document.getElementById('theme').setAttribute('href','revealjs/dist/theme/white.css'); return false;">WHITE</a>
+							
             </p>
           </section>
           
@@ -1845,6 +1867,7 @@ dslSlide {
 dslSlide {
   id = "themes"
   content {
+    // Hack to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck.
     h2 { +"Themes" }
     p {
       +"reveal.js comes with some built-in themes:"
@@ -1855,11 +1878,12 @@ dslSlide {
           a {
             href = "#/themes"
             onClick =
-              "document.getElementById('theme').setAttribute('href','dist/theme/${theme.name.toLower()}.css'); return false;"
+              "document.getElementById('theme').setAttribute('href','revealjs/dist/theme/${theme.name.toLower()}.css'); return false;"
             +theme.name
           }
           if (index < PresentationTheme.values().size - 1)
             +"-"
+          rawHtml("\n\t\t\t\t\t\t\t")
         }
     }
   }
