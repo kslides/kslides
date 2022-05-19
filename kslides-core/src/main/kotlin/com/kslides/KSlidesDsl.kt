@@ -52,18 +52,27 @@ fun DslSlide.playground(
 ) {
   val iframeId = _iframeCount++
   val kslides = presentation.kslides
+  val localConfig = PlaygroundConfig().also { configBlock(it) }
   val mergedConfig =
     PlaygroundConfig()
       .apply { merge(presentation.kslides.globalPresentationConfig.playgroundConfig) }
       .apply { merge(presentation.presentationConfig.playgroundConfig) }
-      .apply { merge(PlaygroundConfig().also { configBlock(it) }) }
+      .apply { merge(localConfig) }
+
+  // CSS values are additive
+  val combinedCss =
+    CssValue(
+      presentation.kslides.globalPresentationConfig.playgroundConfig.css,
+      presentation.presentationConfig.playgroundConfig.css,
+      localConfig.css
+    )
 
   recordContent(
     kslides,
     mergedConfig.staticContent,
     filename(iframeId),
     kslides.outputConfig.playgroundPath
-  ) { playgroundContent(kslides, mergedConfig, srcName, otherSrcs.toList()) }
+  ) { playgroundContent(kslides, mergedConfig, combinedCss, srcName, otherSrcs.toList()) }
 
   _section?.iframe {
     src = playgroundFilename(iframeId)
@@ -77,7 +86,7 @@ fun DslSlide.playground(
 @KSlidesDslMarker
 fun DslSlide.plotly(
   dimensions: Dimensions? = null,
-  iframeConfig: PlotlyIframeConfig  = PlotlyIframeConfig(),
+  iframeConfig: PlotlyIframeConfig = PlotlyIframeConfig(),
   plotlyConfig: PlotlyConfig = PlotlyConfig(),
   block: Plot.() -> Unit,
 ) {

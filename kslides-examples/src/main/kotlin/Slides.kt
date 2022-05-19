@@ -1,8 +1,10 @@
 import com.github.pambrose.common.util.*
 import com.kslides.*
+import com.kslides.Transition
 import com.kslides.config.*
 import kotlinx.css.*
 import kotlinx.css.Float
+import kotlinx.css.properties.*
 import kotlinx.html.*
 import space.kscience.dataforge.meta.*
 import space.kscience.dataforge.values.*
@@ -61,7 +63,23 @@ fun main() {
         lines = true
         style = "border:none;"
         width = "100%"
-        height = "250px"
+        height = "350px"
+
+        // Increase the default playground font size
+        css += """
+          .CodeMirror pre {
+            line-height: 25px;
+          }
+
+          .CodeMirror {
+            font-size: 20px;
+          }
+
+          .code-output {
+            line-height: 25px;
+            font-size: 20px;
+          }
+        """
       }
 
       slideConfig {}
@@ -288,10 +306,10 @@ fun main() {
 
       verticalSlides {
 
-        val pg = "kslides-examples/src/main/kotlin/playground"
-
         // pg1 begin
+        val pg = "kslides-examples/src/main/kotlin/playground"
         dslSlide {
+          id = "playground"
           content {
             h2 { +"Kotlin Playground Support" }
             playground("$pg/HelloWorld.kt") {
@@ -326,7 +344,7 @@ fun main() {
               +" )"
             }
             playground("$pg/TestLambdas.kt") {
-              height = "250px"
+              height = "450px"
               dataTargetPlatform = TargetPlatform.JUNIT
             }
           }
@@ -355,10 +373,27 @@ fun main() {
           content {
             h2 { +"Playground Support for other Languages" }
             playground("kslides-examples/src/main/kotlin/content/helloworld.html") {
+              //style = "border: 2px solid #586E75;"
+              height = "375px"
               theme = PlaygroundTheme.DARCULA
               mode = PlaygroundMode.XML
+              // Decrease the font size for just this playground
+              css {
+                rule(".CodeMirror pre") {
+                  lineHeight = LineHeight("20px")
+                }
+
+                rule(".CodeMirror") {
+                  fontSize = LinearDimension("15px")
+                }
+
+                rule(".code-output") {
+                  lineHeight = LineHeight("20px")
+                  fontSize = LinearDimension("15px")
+                }
+              }
             }
-            p { +"Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C" }
+            +"Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C"
           }
         }
         // pg5 end

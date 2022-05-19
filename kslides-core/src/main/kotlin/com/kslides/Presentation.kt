@@ -12,8 +12,8 @@ class Presentation(val kslides: KSlides) {
   internal val plugins = mutableListOf<String>()
   internal val dependencies = mutableListOf<String>()
   internal val presentationConfig = PresentationConfig()
-  internal lateinit var finalConfig: PresentationConfig
   internal val slides = mutableListOf<Slide>()
+  internal lateinit var finalConfig: PresentationConfig
 
   // User variables
   var path = "/"

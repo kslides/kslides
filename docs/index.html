@@ -55,8 +55,7 @@
 		    top: 15px;
 		    right: 15px;
 		    z-index: 1;
-		}
-		</style>
+		}</style>
     
     <style media="screen" type="text/css">
 			img[alt=slideimg] { 
@@ -511,16 +510,18 @@ for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
         </section>
         
         <section>
-          <section>
+          <section id="playground">
             <h2>Kotlin Playground Support</h2>
-            <iframe height="250px" src="playground/slide-20-1.html" style="border:none;" width="100%"></iframe>
+            <iframe height="350px" src="playground/slide-20-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition    
 ```kotlin []
+val pg = "kslides-examples/src/main/kotlin/playground"
 dslSlide {
+  id = "playground"
   content {
     h2 { +"Kotlin Playground Support" }
     playground("$pg/HelloWorld.kt") {
@@ -534,7 +535,7 @@ dslSlide {
           
           <section>
             <h2>Playground with Additional Code</h2>
-            <iframe height="250px" src="playground/slide-22-1.html" style="border:none;" width="100%"></iframe>
+            <iframe height="350px" src="playground/slide-22-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -556,7 +557,7 @@ dslSlide {
           <section>
             <h2>Playground Using JUnit</h2>
             <small>( Replace TODO() with: <em>it%2==0</em> )</small>
-            <iframe height="250px" src="playground/slide-24-1.html" style="border:none;" width="100%"></iframe>
+            <iframe height="450px" src="playground/slide-24-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -572,7 +573,7 @@ dslSlide {
       +" )"
     }
     playground("$pg/TestLambdas.kt") {
-      height = "250px"
+      height = "450px"
       dataTargetPlatform = TargetPlatform.JUNIT
     }
   }
@@ -583,7 +584,7 @@ dslSlide {
           
           <section>
             <h2>Playground Using Kotlin/JS</h2>
-            <iframe height="250px" src="playground/slide-26-1.html" style="border:none;" width="100%"></iframe>
+            <iframe height="350px" src="playground/slide-26-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -606,8 +607,8 @@ dslSlide {
           
           <section>
             <h2>Playground Support for other Languages</h2>
-            <iframe height="250px" src="playground/slide-28-1.html" style="border:none;" width="100%"></iframe>
-            <p>Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C</p>
+            <iframe height="375px" src="playground/slide-28-1.html" style="border:none;" width="100%"></iframe>
+            Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -618,10 +619,27 @@ dslSlide {
   content {
     h2 { +"Playground Support for other Languages" }
     playground("kslides-examples/src/main/kotlin/content/helloworld.html") {
+      //style = "border: 2px solid #586E75;"
+      height = "375px"
       theme = PlaygroundTheme.DARCULA
       mode = PlaygroundMode.XML
+      // Decrease the font size for just this playground
+      css {
+        rule(".CodeMirror pre") {
+          lineHeight = LineHeight("20px")
+        }
+
+        rule(".CodeMirror") {
+          fontSize = LinearDimension("15px")
+        }
+
+        rule(".code-output") {
+          lineHeight = LineHeight("20px")
+          fontSize = LinearDimension("15px")
+        }
+      }
     }
-    p { +"Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C" }
+    +"Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C"
   }
 }
 ```

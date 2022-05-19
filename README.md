@@ -160,7 +160,7 @@ kslides {
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
 
 * A `css{}` block applies to all presentations and uses Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
-  Presentation CSS can also be specified using raw CSS strings. A combination of the two approaches is also allowed.
+  Presentation CSS can also be specified using multi-line strings. A combination of the two approaches is also allowed.
 
 * A `presentation{}` block includes one or more slide descriptions. There are 3 types of slides:
   _MarkdownSlide_, _HtmlSlide_ and _DslSlide_.
@@ -173,7 +173,9 @@ kslides {
 presentationConfig {      // Optional
   menuConfig {}           // Optional
   copyCodeConfig {}       // Optional
-  playgroundConfig {}     // Optional
+  playgroundConfig {      // Optional
+    css{}                 // Optional
+  }     
   plotlyIframeConfig {}   // Optional
   slideConfig {}          // Optional
 }
@@ -192,6 +194,10 @@ presentationConfig {      // Optional
 * A `playgroundConfig{}` block specifies the default attributes for
   [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframes and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt).
+
+  * The `css{}` block inside the `playgroundConfig{}` block specifies the css for the playground content that is 
+  displayed in the iframe. It is usually used to control the _font-size_ of the code. The css values can be specified
+  via multi-line strings or using the CSS DSL. 
 
 * A `plotlyIframeConfig{}` block specifies the default attributes for
   [plotly-kt](https://github.com/mipt-npm/plotly.kt) iframes and has these

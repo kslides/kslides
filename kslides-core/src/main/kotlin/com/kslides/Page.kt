@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.github.pambrose.common.util.*
+import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.config.*
 import kotlinx.html.*
 import kotlinx.html.dom.*
@@ -127,18 +128,7 @@ internal object Page {
             ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"))
       }
 
-      p.css.also { css ->
-        if (css.isNotBlank()) {
-          rawHtml("\n")
-          style("text/css") {
-            media = "screen"
-            rawHtml("\n")
-            rawHtml(css.prependIndent("\t\t\t"))
-            rawHtml("\n\t\t")
-          }
-          rawHtml("\n")
-        }
-      }
+      writeCssToHead(p.css)
     }
 
   private fun HTML.generateBody(p: Presentation, config: PresentationConfig, srcPrefix: String, useHttp: Boolean) =

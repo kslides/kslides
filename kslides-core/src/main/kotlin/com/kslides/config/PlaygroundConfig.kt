@@ -1,6 +1,8 @@
 package com.kslides.config
 
 import com.kslides.*
+import com.kslides.CssValue
+import kotlinx.css.*
 import kotlin.reflect.full.*
 
 class PlaygroundConfig : AbstractConfig() {
@@ -33,12 +35,19 @@ class PlaygroundConfig : AbstractConfig() {
   var title by ConfigProperty<String>(kslidesManagedValues) // For screen readers
   var staticContent by ConfigProperty<Boolean>(kslidesManagedValues) // Prevents recompute of playground content
 
-  fun assignDefaults() {
-    width = ""
-    height = ""
+  val css = CssValue()
+
+  internal fun assignDefaults() {
+    width = "100%"
+    height = "250px"
     style = ""
     title = ""
     staticContent = false
+  }
+
+  @KSlidesDslMarker
+  fun css(block: CssBuilder.() -> Unit) {
+    css += block
   }
 
   internal fun toAttributes() =
