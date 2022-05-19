@@ -249,8 +249,8 @@ class Presentation(val kslides: KSlides) {
   }
 
   internal fun assignCssFiles() {
-    cssFiles += CssFile("dist/theme/${finalConfig.theme.name.toLower()}.css", "theme")
-    cssFiles += CssFile("plugin/highlight/${finalConfig.highlight.name.toLower()}.css", "highlight-theme")
+    cssFiles += CssFile(finalConfig.theme.cssSrc, "theme")
+    cssFiles += CssFile(finalConfig.highlight.cssSrc, "highlight-theme")
 
     if (finalConfig.enableCodeCopy)
       cssFiles += CssFile("plugin/copycode/copycode.css")

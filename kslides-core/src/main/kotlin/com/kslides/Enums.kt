@@ -3,11 +3,15 @@ package com.kslides
 import com.github.pambrose.common.util.*
 
 enum class Highlight {
-  MONOKAI, ZENBURN
+  MONOKAI, ZENBURN;
+
+  val cssSrc get() = "plugin/highlight/${name.toLower()}.css"
 }
 
 enum class PresentationTheme {
-  BEIGE, BLACK, BLOOD, LEAGUE, MOON, NIGHT, SERIF, SIMPLE, SKY, SOLARIZED, WHITE
+  BEIGE, BLACK, BLOOD, LEAGUE, MOON, NIGHT, SERIF, SIMPLE, SKY, SOLARIZED, WHITE;
+
+  val cssSrc get() = "dist/theme/${name.toLower()}.css"
 }
 
 enum class Speed {

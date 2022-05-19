@@ -869,7 +869,7 @@ fun main() {
                   a {
                     href = "#/themes"
                     onClick =
-                      "document.getElementById('theme').setAttribute('href','revealjs/dist/theme/${theme.name.toLower()}.css'); return false;"
+                      "document.getElementById('theme').setAttribute('href','revealjs/${theme.cssSrc}'); return false;"
                     +theme.name
                   }
                   if (index < PresentationTheme.values().size - 1)
