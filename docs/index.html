@@ -1010,6 +1010,53 @@ dslSlide {
         </section>
         
         <section>
+          <section>
+            <h2>Twitter Content</h2>
+            <blockquote class="twitter-tweet tw-align-center" style="">
+              <p dir="ltr" lang="en">Procedural programming is good.Object oriented programming is good.Functional programming is good.Programming with all three is best.</p>
+              &amp;mdash; Uncle Bob Martin (@unclebobmartin)<a href="https://twitter.com/unclebobmartin/status/1522904306948657160">May 7, 2022</a>
+            </blockquote>
+            <script async="async" charset="utf-8" src="https://platform.twitter.com/widgets.js"></script>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"Twitter Content" }
+    // tw-align-center added to center tweet on slide
+    blockQuote(classes = "twitter-tweet tw-align-center") {
+      style = ""
+      p {
+        lang = "en"
+        dir = Dir.ltr
+        +"Procedural programming is good."
+        +"Object oriented programming is good."
+        +"Functional programming is good."
+        +"Programming with all three is best."
+      }
+      +"&mdash; Uncle Bob Martin (@unclebobmartin)"
+      a {
+        href = "https://twitter.com/unclebobmartin/status/1522904306948657160"
+        +"May 7, 2022"
+      }
+    }
+    script {
+      async = true
+      src = "https://platform.twitter.com/widgets.js"
+      charset = "utf-8"
+    }
+  }
+}
+```
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
           <section id="tables">
             <h2>Tables</h2>
             <table>

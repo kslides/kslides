@@ -15,8 +15,8 @@ fun main() {
       enableHttp = false
     }
 
-    // Default values for all presentations
     presentationConfig {
+      // Default config values for all presentations
     }
 
     presentation {
@@ -26,10 +26,10 @@ fun main() {
       // Specify css styles as a string
       css +=
         """
-        .htmlslide h2 {
-          color: yellow;
-        }
-        """
+      .htmlslide h2 {
+        color: yellow;
+      }
+      """
       // or use the Kotlin CSS DSL
       css {
         rule("#mdslide h2") {
@@ -37,13 +37,12 @@ fun main() {
         }
       }
 
-      // Config values for this presentation
       presentationConfig {
+        // Default config values for this presentation
         transition = Transition.FADE
         topLeftHref = ""  // Turn off top left href
         topRightHref = "" // Turn off top right href
 
-        // Default values for all slides in this presentation
         slideConfig {
           backgroundColor = "#2A9EEE"
         }
@@ -55,13 +54,12 @@ fun main() {
 
         content {
           """
-          # Markdown
-          ## Hello World
-          """
+        # Markdown
+        ## Hello World
+        """
         }
       }
 
-      // Two vertical slides slides
       verticalSlides {
         // Slide that uses HTML content
         htmlSlide {
@@ -74,9 +72,9 @@ fun main() {
 
           content {
             """
-            <h1>HTML</h1>
-            <h2>Hello World</h2>
-            """
+          <h1>HTML</h1>
+          <h2>Hello World</h2>
+          """
           }
         }
 

@@ -727,6 +727,40 @@ fun main() {
         slideDefinition(slides, "youtube")
       }
 
+      verticalSlides {
+        // twitter begin
+        dslSlide {
+          content {
+            h2 { +"Twitter Content" }
+            // tw-align-center added to center tweet on slide
+            blockQuote(classes = "twitter-tweet tw-align-center") {
+              style = ""
+              p {
+                lang = "en"
+                dir = Dir.ltr
+                +"Procedural programming is good."
+                +"Object oriented programming is good."
+                +"Functional programming is good."
+                +"Programming with all three is best."
+              }
+              +"&mdash; Uncle Bob Martin (@unclebobmartin)"
+              a {
+                href = "https://twitter.com/unclebobmartin/status/1522904306948657160"
+                +"May 7, 2022"
+              }
+            }
+            script {
+              async = true
+              src = "https://platform.twitter.com/widgets.js"
+              charset = "utf-8"
+            }
+          }
+        }
+        // twitter end
+
+        slideDefinition(slides, "twitter")
+      }
+
       css +=
         """
         #tables th {

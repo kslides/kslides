@@ -45,12 +45,12 @@ kslides {
   output {
     // Write the presentations to a file
     enableFileSystem = true
-    // Also serve up the presentations via HTTP
-    enableHttp = true
+    // Do not serve up the presentations via HTTP
+    enableHttp = false
   }
 
-  // Default values for all presentations
   presentationConfig {
+    // Default config values for all presentations
   }
 
   presentation {
@@ -71,13 +71,12 @@ kslides {
       }
     }
 
-    // Config values for this presentation
     presentationConfig {
+      // Default config values for this presentation
       transition = Transition.FADE
       topLeftHref = ""  // Turn off top left href
       topRightHref = "" // Turn off top right href
 
-      // Default values for all slides in this presentation
       slideConfig {
         backgroundColor = "#2A9EEE"
       }
@@ -95,7 +94,6 @@ kslides {
       }
     }
 
-    // Two vertical slides slides
     verticalSlides {
       // Slide that uses HTML content
       htmlSlide {
