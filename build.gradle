@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'maven-publish'
     id 'org.jetbrains.kotlin.jvm' version '1.6.21' apply false
+    id 'org.jetbrains.dokka' version "1.6.21" apply false
     id 'org.jmailen.kotlinter' version "3.10.0" apply false
     id "com.github.ben-manes.versions" version '0.42.0' apply false
     id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
@@ -11,11 +12,12 @@ plugins {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.10.1'
+    version '0.10.2'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
+    apply plugin: 'org.jetbrains.dokka'
     apply plugin: 'org.jmailen.kotlinter'
     apply plugin: 'org.jetbrains.kotlin.jvm'
     apply plugin: 'com.github.ben-manes.versions'
@@ -49,9 +51,6 @@ allprojects {
 
 subprojects {
     dependencies {
-        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-
         implementation "org.jetbrains.kotlin-wrappers:kotlin-css:$css_version"
 
         implementation "io.ktor:ktor-server:$ktor_version"

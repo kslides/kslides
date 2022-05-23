@@ -22,40 +22,54 @@
     <link href="revealjs/plugin/copycode/copycode.css" rel="stylesheet">
     
     <style media="screen" type="text/css">
-		/* These CSS settings are embedded directly in the presentation html */
+			/* These CSS settings are embedded directly in the presentation html */
 		
-		/* This prevents auto-capitalization of headers */
-		.reveal h1,
-		.reveal h2,
-		.reveal h3,
-		.reveal h4,
-		.reveal h5,
-		.reveal h6 {
-		    text-transform: none;
-		}
+			/* This prevents auto-capitalization of headers */
+			.reveal h1,
+			.reveal h2,
+			.reveal h3,
+			.reveal h4,
+			.reveal h5,
+			.reveal h6 {
+			    text-transform: none;
+			}
 		
-		a.top-left {
-		    position: absolute;
-		    z-index: 1;
-		    width: clamp(50px, 8vmax, 80px);
-		    line-height: 0;
-		    color: rgba(255, 255, 255, 0.5);
-		}
+			a.top-left {
+			    position: absolute;
+			    z-index: 1;
+			    width: clamp(50px, 8vmax, 80px);
+			    line-height: 0;
+			    color: rgba(255, 255, 255, 0.5);
+			}
 		
-		a.top-left path {
-		    fill: #258bd2;
-		}
+			a.top-left path {
+			    fill: #258bd2;
+			}
 		
-		a.top-left:hover {
-		    color: white;
-		}
+			a.top-left:hover {
+			    color: white;
+			}
 		
-		a.top-right {
-		    position: absolute;
-		    top: 15px;
-		    right: 15px;
-		    z-index: 1;
-		}</style>
+			a.top-right {
+			    position: absolute;
+			    top: 15px;
+			    right: 15px;
+			    z-index: 1;
+			}
+		</style>
+    
+    <style media="screen" type="text/css">
+			
+			.reveal h4 {
+			color: #586E75;
+			}
+			.reveal.h5 {
+			  color: blue;
+			}
+			
+			
+		</style>
+    
   </head>
   <body>
     <div class="reveal">
@@ -360,6 +374,10 @@ dslSlide {
 
 			slideNumber: 'c/t',
 
+			menu: {
+				numbers: true
+			},
+			
 			copycode: {
 				timeout: 2000,
 				copy: 'Copy',

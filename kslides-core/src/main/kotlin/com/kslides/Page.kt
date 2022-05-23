@@ -125,7 +125,9 @@ internal object Page {
             ?.readText()
             ?.lines()
             ?.joinToString("\n") { "\t\t$it" }
+            ?.prependIndent("\t")
             ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"))
+        rawHtml("\n\t\t")
       }
 
       writeCssToHead(p.css)

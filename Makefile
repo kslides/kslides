@@ -22,6 +22,9 @@ dist:
 stage:
 	./gradlew stage
 
+dokka:
+	./gradlew dokkaHtml
+
 cleandocs:
 	rm -rf docs/playground docs/plotly
 

@@ -129,7 +129,8 @@ kslides {
 
 ### kslides Block
 
-A `kslides{}` block contains configuration values, output directives, presentation configuration defaults,
+A `kslides{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=kslides+%5C%7B&offset=0&occurrence=1&topdown=true)) 
+contains configuration values, output directives, presentation configuration defaults,
 css defaults, and presentation definitions. The child blocks can be declared in any order.
 
 #### Options
@@ -150,20 +151,25 @@ kslides {
 }
 ```
 
-* A `kslidesConfig{}` block specifies the kslides configuration for all presentations and has these
+* A `kslidesConfig{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=kslidesConfig+%5C%7B&offset=0&occurrence=1&topdown=true))
+  specifies the kslides configuration for all presentations and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt).
 
-* A `presentationConfig{}` block specifies the default presentation configuration values
+* A `presentationConfig{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=presentationConfig+%5C%7B&offset=0&occurrence=1&topdown=true))
+  specifies the default presentation configuration values
   for all presentations and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt).
 
-* An `output{}` block specifies how and where presentation slides are published and has these
+* An `output{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=output+%5C%7B&offset=0&occurrence=1&topdown=true))
+  specifies how and where presentation slides are published and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
 
-* A `css{}` block applies to all presentations and uses Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
+* A `css{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=css+%5C%7B&occurrence=1&offset=0&topdown=true)) 
+  applies to all presentations and uses Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
   Presentation CSS can also be specified using multi-line strings. A combination of the two approaches is also allowed.
 
-* A `presentation{}` block includes one or more slide descriptions. There are 3 types of slides:
+* A `presentation{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=presentation+%5C%7B&occurrence=1&offset=0&topdown=true))
+  includes one or more slide descriptions. There are 3 types of slides:
   _MarkdownSlide_, _HtmlSlide_ and _DslSlide_.
 
 ### presentationConfig Block
@@ -182,7 +188,8 @@ presentationConfig {      // Optional
 }
 ```
 
-* A `menuConfig{}` block specifies the configuration for the
+* A `menuConfig{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=menuConfig+%5C%7B&occurrence=1&offset=0&topdown=true)) 
+  specifies the configuration for the
   reveal.js [Menu plugin](https://github.com/denehyg/reveal.js-menu)
   and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/MenuConfig.kt).

@@ -21,10 +21,24 @@ fun main() {
       // kslides configuration options
     }
 
+    // Optional
     output {
       enableFileSystem = true
       enableHttp = true
     }
+
+    // Optional
+    css {
+      rule(".reveal h4") {
+        color = Color("#586E75");
+      }
+    }
+    // Or use the string version
+    css += """
+      .reveal.h5 {
+        color: blue;
+      }
+    """
 
     // Optional
     presentationConfig {
@@ -50,7 +64,9 @@ fun main() {
       theme = PresentationTheme.SOLARIZED
       center = true
 
-      menuConfig {}
+      menuConfig {
+        numbers = true
+      }
 
       copyCodeConfig {
         timeout = 2000
