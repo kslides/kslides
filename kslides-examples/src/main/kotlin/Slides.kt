@@ -1565,14 +1565,14 @@ fun main() {
           content {
             h2 { +"Two Column Slide"; style = "margin-bottom:20px;" }
             div("multiColumn2") {
-              val fmt = "font-size:30px; padding-top:10px; list-style-type:circle;"
+              val fmt = "font-size:30px; padding-top:10px;"
               div("column2") {
                 p { +"Header 1"; style = "color: red;" }
-                unorderedList("Item 1", "Item 2", "Item 3", "Item 4") { style = fmt }
+                unorderedList("Item 1", "Item 2", "Item 3", "Item 4") { style = "$fmt list-style-type:circle;" }
               }
               div("column2") {
                 p { +"Header 2"; style = "color: red;" }
-                unorderedList("Item 5", "Item 6", "Item 7", "Item 8") { style = fmt }
+                orderedList("Item 5", "Item 6", "Item 7", "Item 8") { style = fmt }
               }
             }
           }
