@@ -155,7 +155,7 @@ kslides {
   specifies the kslides configuration for all presentations and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt).
 
-* A `presentationConfig{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=presentationConfig+%5C%7B&offset=0&occurrence=1&topdown=true))
+* A `presentationConfig{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=presentationConfig+%5C%7B&occurrence=1&offset=0&topdown=true))
   specifies the default presentation configuration values
   for all presentations and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt).
