@@ -104,6 +104,7 @@ fun main() {
     val slides = "kslides-examples/src/main/kotlin/Slides.kt"
 
     presentation {
+      path = "/"
 
       // Optional
       presentationConfig {
@@ -1514,7 +1515,6 @@ fun main() {
     }
 
     presentation {
-
       path = "multicols.html"
 
       presentationConfig {
