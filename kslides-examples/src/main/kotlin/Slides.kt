@@ -30,7 +30,7 @@ fun main() {
     // Optional
     css {
       rule(".reveal h4") {
-        color = Color("#586E75");
+        color = Color("#586E75")
       }
     }
     // Or use the string version
@@ -762,6 +762,7 @@ fun main() {
       verticalSlides {
         // youtube begin
         dslSlide {
+          id = "youtube"
           content {
             h2 { +"YouTube Content" }
             iframe {
@@ -783,6 +784,7 @@ fun main() {
       verticalSlides {
         // twitter begin
         dslSlide {
+          id = "twitter"
           content {
             h2 { +"Twitter Content" }
             // tw-align-center added to center tweet on slide
@@ -1020,18 +1022,18 @@ fun main() {
         slideDefinition(slides, "navigation")
       }
 
-      verticalSlides {
-        // slidedef begin
-        slideDefinition(
-          "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
-          "slideDefinition",
-          title = "Slide Definition Source",
-          id = "lastslide"
-        )
-        // slidedef end
-
-        slideDefinition(slides, "slidedef")
-      }
+//      verticalSlides {
+//        // slidedef begin
+//        slideDefinition(
+//          "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+//          "slideDefinition",
+//          title = "Slide Definition Source",
+//          id = "lastslide"
+//        )
+//        // slidedef end
+//
+//        slideDefinition(slides, "slidedef")
+//      }
     }
 
     presentation {

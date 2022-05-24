@@ -4,6 +4,7 @@ import com.github.pambrose.common.util.*
 import com.kslides.InternalUtils.indentInclude
 import com.kslides.config.*
 import com.kslides.slide.*
+import com.pambrose.srcref.Utils.srcRefUrl
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
@@ -188,6 +189,16 @@ class Presentation(val kslides: KSlides) {
       }
     }.also { verticalSlides += it }
 
+  private fun srcref(token: String) =
+    srcRefUrl(
+      "https://www.srcref.com",
+      "kslides",
+      "kslides",
+      "kslides-examples/src/main/kotlin/Slides.kt",
+      "//\\s*$token\\s+begin",
+      offset = 1
+    )
+
   @KSlidesDslMarker
   // slideDefinition begin
   fun slideDefinition(
@@ -206,6 +217,7 @@ class Presentation(val kslides: KSlides) {
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
+        <a href="${srcref(token).encodeUrl()}" target="_blank" style="text-decoration: underline;">GitHub Source</a>
         """
       }
     }
@@ -226,12 +238,14 @@ class Presentation(val kslides: KSlides) {
       slideConfig {
         markdownNotesSeparator = "^^"
       }
+
       content {
         """
         ## $title    
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
+        <a href="${srcref(token).encodeUrl()}" target="_blank" style="text-decoration: underline;">GitHub Source</a>
         """
       }
     }

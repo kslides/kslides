@@ -65,6 +65,8 @@ subprojects {
 
         implementation "space.kscience:plotlykt-core:$plotly_version"
 
+        implementation "com.github.pambrose:srcref:$srcref_version"
+
         implementation "org.apache.commons:commons-text:$text_version"
 
         implementation "io.github.microutils:kotlin-logging:$logging_version"

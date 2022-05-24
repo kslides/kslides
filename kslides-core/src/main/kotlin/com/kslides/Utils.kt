@@ -102,6 +102,13 @@ fun DslSlide.include(
   trimIndent: Boolean = true,
 ) = include(src, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
+fun String.encodeUrl() =
+  replace("<", "&lt;")
+    .replace(">", "&gt;")
+    .replace("&", "&amp;")
+    .replace("\"", "&quot;")
+    .replace("'", "&#39;")
+
 class Dimensions(val width: Int, val height: Int)
 
 infix fun Int.by(that: Int): Dimensions = Dimensions(this, that)
