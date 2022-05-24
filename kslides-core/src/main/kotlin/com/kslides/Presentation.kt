@@ -191,12 +191,13 @@ class Presentation(val kslides: KSlides) {
 
   private fun srcref(token: String) =
     srcRefUrl(
-      "https://www.srcref.com",
-      "kslides",
-      "kslides",
-      "kslides-examples/src/main/kotlin/Slides.kt",
-      "//\\s*$token\\s+begin",
-      offset = 1
+      prefix = "https://www.srcref.com",
+      account = "kslides",
+      repo = "kslides",
+      path = "kslides-examples/src/main/kotlin/Slides.kt",
+      regex = "//\\s*$token\\s+begin",
+      offset = 1,
+      escapeHtml4 = true,
     )
 
   @KSlidesDslMarker
@@ -217,7 +218,7 @@ class Presentation(val kslides: KSlides) {
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        <a href="${srcref(token).encodeUrl()}" target="_blank" style="text-decoration: underline;">GitHub Source</a>
+        <a href="${srcref(token)}" target="_blank" style="text-decoration: underline;">GitHub Source</a>
         """
       }
     }
@@ -245,7 +246,7 @@ class Presentation(val kslides: KSlides) {
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        <a href="${srcref(token).encodeUrl()}" target="_blank" style="text-decoration: underline;">GitHub Source</a>
+        <a href="${srcref(token)}" target="_blank" style="text-decoration: underline;">GitHub Source</a>
         """
       }
     }
