@@ -129,7 +129,7 @@ kslides {
 
 ### kslides Block
 
-A `kslides{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=kslides+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=false)) 
+A `kslides{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=kslides+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+kslides+end&eoccur=1&eoffset=0&etopd=false)) 
 contains configuration values, output directives, presentation configuration defaults,
 css defaults, and presentation definitions. The child blocks can be declared in any order.
 
@@ -151,7 +151,7 @@ kslides {
 }
 ```
 
-* A `kslidesConfig{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=kslides+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+kslides+end&eoccur=1&eoffset=-1&etopd=true))
+* A `kslidesConfig{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=kslidesConfig+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=kslidesConfig+%5C%7B&eoccur=1&eoffset=2&etopd=true))
   specifies the kslides configuration for all presentations and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt).
 
