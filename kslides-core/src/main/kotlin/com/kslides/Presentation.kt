@@ -4,7 +4,7 @@ import com.github.pambrose.common.util.*
 import com.kslides.InternalUtils.indentInclude
 import com.kslides.config.*
 import com.kslides.slide.*
-import com.pambrose.srcref.Utils.srcRefUrl
+import com.pambrose.srcref.Api.srcrefUrl
 import kotlinx.css.*
 import kotlinx.html.*
 import mu.*
@@ -190,15 +190,18 @@ class Presentation(val kslides: KSlides) {
     }.also { verticalSlides += it }
 
   private fun srcref(token: String) =
-    srcRefUrl(
-      prefix = "https://www.srcref.com",
+    srcrefUrl(
       account = "kslides",
       repo = "kslides",
       path = "kslides-examples/src/main/kotlin/Slides.kt",
-      regex = "//\\s*$token\\s+begin",
-      offset = 1,
+      beginRegex = "//\\s*$token\\s+begin",
+      beginOffset = 1,
+      endRegex = "//\\s*$token\\s+end",
+      endOffset = -1,
       escapeHtml4 = true,
     )
+
+  private fun githubLink(href: String) = """<a id="ghsrc" href="$href" target="_blank">GitHub Source</a>"""
 
   @KSlidesDslMarker
   // slideDefinition begin
@@ -218,7 +221,7 @@ class Presentation(val kslides: KSlides) {
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        <a href="${srcref(token)}" target="_blank" style="text-decoration: underline;">GitHub Source</a>
+        ${githubLink(srcref(token))}
         """
       }
     }
@@ -246,7 +249,7 @@ class Presentation(val kslides: KSlides) {
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        <a href="${srcref(token)}" target="_blank" style="text-decoration: underline;">GitHub Source</a>
+        ${githubLink(srcref(token))}
         """
       }
     }

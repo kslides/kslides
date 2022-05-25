@@ -100,6 +100,7 @@ fun main() {
 
       slideConfig {}
     }
+    // playgroundConfig end
 
     val slides = "kslides-examples/src/main/kotlin/Slides.kt"
 
@@ -118,6 +119,10 @@ fun main() {
 
       css +=
         """
+        #ghsrc {
+          font-size: 30px;
+          text-decoration: underline;
+        }  
         img[alt=slideimg] { 
           width: 150px; 
         }
@@ -1035,6 +1040,7 @@ fun main() {
 //        slideDefinition(slides, "slidedef")
 //      }
     }
+    // presentation end
 
     presentation {
       path = "layouts.html"
@@ -1703,4 +1709,5 @@ fun main() {
       slideDefinition(slides, "vmultislide")
     }
   }
+  // kslides end
 }

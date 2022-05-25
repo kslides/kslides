@@ -7,7 +7,7 @@ import com.kslides.config.*
 import kotlinx.css.*
 import kotlinx.html.*
 
-typealias SlideArgs = (DIV, Slide, Boolean) -> Unit
+typealias SlideArgs = (div: DIV, slide: Slide, useHttp: Boolean) -> Unit
 
 abstract class Slide(private val presentation: Presentation, internal val content: SlideArgs) {
   private val slideConfig = SlideConfig() // Do not call init on this because it is merged with the presentation config

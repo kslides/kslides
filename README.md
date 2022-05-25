@@ -129,7 +129,7 @@ kslides {
 
 ### kslides Block
 
-A `kslides{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=kslides+%5C%7B&offset=0&occurrence=1&topdown=true)) 
+A `kslides{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=kslides+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=false)) 
 contains configuration values, output directives, presentation configuration defaults,
 css defaults, and presentation definitions. The child blocks can be declared in any order.
 
@@ -151,24 +151,26 @@ kslides {
 }
 ```
 
-* A `kslidesConfig{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=kslidesConfig+%5C%7B&offset=0&occurrence=1&topdown=true))
+* A `kslidesConfig{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=kslides+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+kslides+end&eoccur=1&eoffset=-1&etopd=true))
   specifies the kslides configuration for all presentations and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/KSlidesConfig.kt).
 
-* A `presentationConfig{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=presentationConfig+%5C%7B&occurrence=1&offset=0&topdown=true))
+* A `presentationConfig{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=presentationConfig+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=slideConfig+%5C%7B%5C%7D&eoccur=1&eoffset=1&etopd=true))
   specifies the default presentation configuration values
   for all presentations and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PresentationConfig.kt).
 
-* An `output{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=output+%5C%7B&offset=0&occurrence=1&topdown=true))
+* An `output{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=output+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=output+%5C%7B&eoccur=1&eoffset=3&etopd=true))
   specifies how and where presentation slides are published and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
 
-* A `css{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=css+%5C%7B&occurrence=1&offset=0&topdown=true)) 
+* A `css{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=css+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=css+%5C%7B&eoccur=1&eoffset=4&etopd=true)) 
   applies to all presentations and uses Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
-  Presentation CSS can also be specified using multi-line strings. A combination of the two approaches is also allowed.
+  Presentation CSS can also be specified using multi-line strings 
+  [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=css+%5C%2B%3D&boccur=1&boffset=0&btopd=true&eregex=css+%5C%2B%3D&eoccur=1&eoffset=4&etopd=true). 
+  A combination of the two approaches is also allowed.
 
-* A `presentation{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=presentation+%5C%7B&occurrence=1&offset=0&topdown=true))
+* A `presentation{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=presentation+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+presentation+end&eoccur=1&eoffset=-1&etopd=true))
   includes one or more slide descriptions. There are 3 types of slides:
   _MarkdownSlide_, _HtmlSlide_ and _DslSlide_.
 
@@ -188,7 +190,7 @@ presentationConfig {      // Optional
 }
 ```
 
-* A `menuConfig{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=menuConfig+%5C%7B&occurrence=1&offset=0&topdown=true)) 
+* A `menuConfig{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=menuConfig+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=menuConfig+%5C%7B&eoccur=1&eoffset=2&etopd=true)) 
   specifies the configuration for the
   reveal.js [Menu plugin](https://github.com/denehyg/reveal.js-menu)
   and has these
@@ -199,7 +201,7 @@ presentationConfig {      // Optional
   and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/CopyCodeConfig.kt).
 
-* A `playgroundConfig{}` block ([example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=playgroundConfig+%5C%7B&occurrence=1&offset=0&topdown=true))
+* A `playgroundConfig{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=playgroundConfig+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+playgroundConfig+end&eoccur=1&eoffset=-1&etopd=true))
   specifies the default attributes for
   [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframes and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt).
@@ -222,12 +224,12 @@ a different `path` value.
 
 #### Options
 
-| Name       | Default                              | Description                             | Usage                                                                                                                                                                                                     |
-|------------|--------------------------------------|-----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| _path_     | "/"                                  | Presentation directory or filename      | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=path+%3D+%22&occurrence=1&offset=0&topdown=true)      |
-| _css_      | kslides.css value                    | String alternative to the css{} block   | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=css+%5C%2B%3D+%22&occurrence=3&offset=0&topdown=true) |
-| _cssFiles_ | kslides.kslidesConfig.cssFiles value | List for including additional css files |                                                                                                                                                                                                           |
-| _jsFiles_  | kslides.kslidesConfig.jsFiles value  | List for including additional js files  |                                                                                                                                                                                                           |
+| Name       | Default                              | Description                             | Usage                                                                                                                                                                                                                                                |
+|------------|--------------------------------------|-----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _path_     | "/"                                  | Presentation directory or filename      | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=path+%3D&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                   |
+| _css_      | kslides.css value                    | String alternative to the css{} block   | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=css+%5C%2B%3D&boccur=1&boffset=0&btopd=true&eregex=css+%5C%2B%3D&eoccur=1&eoffset=4&etopd=true) |
+| _cssFiles_ | kslides.kslidesConfig.cssFiles value | List for including additional css files |                                                                                                                                                                                                                                                      |
+| _jsFiles_  | kslides.kslidesConfig.jsFiles value  | List for including additional js files  |                                                                                                                                                                                                                                                      |
 
 #### Structure
 
@@ -316,7 +318,7 @@ _kslides.presentation.presentationConfig.slideConfig{}_.
 
 ### verticalSlides Block
 
-A `verticalSlides{}` block ([exammple](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=verticalSlides+%5C%7B&occurrence=1&offset=0&topdown=true)) 
+A `verticalSlides{}` block ([exammple](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=verticalSlides+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=slideDefinition%5C%28slides%2C+%22intro%22%5C%29&eoccur=1&eoffset=1&etopd=true)) 
 contains one or more slides and presents them vertically.
 
 #### Options
@@ -344,15 +346,15 @@ defined [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/m
 Examples of their usage can be
 found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt).
 
-| Function name             | Context         | Description                                | Usage                                                                                                                                                                                                               |
-|---------------------------|-----------------|--------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `slideBackground()`       | MarkdownSlides  |                                            |                                                                                                                                                                                                                     |
-| `fragment()`              | MarkdownSlides  |                                            | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=fragment%5C%28&occurrence=1&offset=0&topdown=true)              |
-| `HTMLTag.rawHtml()`       | DslSlides       | Allows embedding of raw HTML in a DslSlide |                                                                                                                                                                                                                     |
-| `List<T>.permuteBy()`     | Animations      |                                            | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=permuteBy%5C%28&occurrence=1&offset=0&topdown=true)             |
-| `String.toLinePatterns()` | Animations      |                                            | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=toLinePatterns%5C%28&occurrence=1&offset=0&topdown=true)        |
-| `githubRawUrl()`          | include() calls | Returns URL for raw github content         | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fexamples%2FMisc.kt&regex=githubRawUrl%5C%28&occurrence=1&offset=0&topdown=true) |
-| `include()`               | All Slides      | Preferred to embedding raw code in slides  | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=include%5C%28&occurrence=1&offset=0&topdown=true)               |
+| Function name             | Context         | Description                                | Usage                                                                                                                                                                                                                                                    |
+|---------------------------|-----------------|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `slideBackground()`       | MarkdownSlides  |                                            |                                                                                                                                                                                                                                                          |
+| `fragment()`              | MarkdownSlides  |                                            | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=fragment%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                 |
+| `HTMLTag.rawHtml()`       | DslSlides       | Allows embedding of raw HTML in a DslSlide |                                                                                                                                                                                                                                                          |
+| `List<T>.permuteBy()`     | Animations      |                                            | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=permuteBy%5C%28&boccur=1&boffset=0&btopd=true&eregex=permuteBy%5C%28&eoccur=1&eoffset=8&etopd=true) |
+| `String.toLinePatterns()` | Animations      |                                            | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=toLinePatterns%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)              |
+| `githubRawUrl()`          | include() calls | Returns URL for raw github content         | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2Fexamples%2FMisc.kt&bregex=githubRawUrl%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)       |
+| `include()`               | All Slides      | Preferred to embedding raw code in slides  | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=include%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                     |
 
 The `include()` call accepts a filename or a URL _src_ argument. A filename value is relative to the root of the repo
 and a URL value requires an _http://_ or _https://_ prefix.
@@ -364,16 +366,16 @@ defined [here](https://github.com/kslides/kslides/blob/master/kslides-core/src/m
 Examples of their usage can be
 found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt).
 
-| Function name                 | Description                  | Usage                                                                                                                                                                                                     |
-|-------------------------------|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `DslSlide.codeSnippet{}`      | Embeds a code snippet        | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=codeSnippet+%5C%7B&occurrence=1&offset=0&topdown=true) |
-| `DslSlide.playground{}`       | Embeds a Kotlin Playground   | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=playground%5C%28&occurrence=1&offset=0&topdown=true)  |
-| `DslSlide.plotly{}`           | Embeds a plotly-kt figure    | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=plotly%5C%28&occurrence=1&offset=0&topdown=true)      |
-| `FlowContent.unorderedList{}` | Generates an unordered list  | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=unorderedList%5C%28&occurrence=1&offset=0&topdown=true) |
-| `FlowContent.orderedList{}`   | Generates an ordered list    | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=+orderedList%5C%28&occurrence=1&offset=0&topdown=true) |
-| `LI.listHref()`               | Generates a list href        | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=listHref%5C%28&occurrence=1&offset=0&topdown=true)    |
-| `THEAD.headRow()`             | Generates a table header row | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=headRow%5C%28&occurrence=1&offset=0&topdown=true)     |
-| `TBODY.bodyRow()`             | Generates a table body row   | [Example](https://www.srcref.com/githubRef?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&regex=bodyRow%5C%28&occurrence=1&offset=0&topdown=true)     |
+| Function name                 | Description                  | Usage                                                                                                                                                                                                                                                       |
+|-------------------------------|------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `DslSlide.codeSnippet{}`      | Embeds a code snippet        | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=codeSnippet+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=codeSnippet+%5C%7B&eoccur=1&eoffset=4&etopd=true) |
+| `DslSlide.playground{}`       | Embeds a Kotlin Playground   | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=playground%5C%28&boccur=1&boffset=0&btopd=true&eregex=playground%5C%28&eoccur=1&eoffset=2&etopd=true)     |
+| `DslSlide.plotly{}`           | Embeds a plotly-kt figure    | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=plotly%5C%28&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+plotly1+end&eoccur=1&eoffset=-3&etopd=true)      |
+| `FlowContent.unorderedList{}` | Generates an unordered list  | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=unorderedList%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                  |
+| `FlowContent.orderedList{}`   | Generates an ordered list    | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=+orderedList%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                   |
+| `LI.listHref()`               | Generates a list href        | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=listHref%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                       |
+| `THEAD.headRow()`             | Generates a table header row | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=headRow%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                        |
+| `TBODY.bodyRow()`             | Generates a table body row   | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=bodyRow%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                        |
 
 ## Misc Notes
 
