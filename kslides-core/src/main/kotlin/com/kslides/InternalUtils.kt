@@ -68,7 +68,6 @@ object InternalUtils {
     var fenceLine = -1
 
     return lines()
-      .asSequence()
       .mapIndexed { i, str ->
         val trimmed = str.trimStart()
         if (insideFence) {

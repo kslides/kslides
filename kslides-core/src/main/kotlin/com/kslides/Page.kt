@@ -91,6 +91,7 @@ internal object Page {
         title { +config.title }
 
       if (config.gaPropertyId.isNotBlank()) {
+        rawHtml("\n")
         script { async = true; src = "https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K" }
         rawHtml("\n\n\t\t")
         script {
@@ -115,6 +116,10 @@ internal object Page {
             id = it.id
         }
       }
+
+      rawHtml("\n")
+      link { rel = "shortcut icon"; href = "/favicon.ico"; type = "image/x-icon" }
+      link { rel = "icon"; href = "/favicon.ico"; type = "image/x-icon" }
 
       rawHtml("\n")
       style("text/css") {
