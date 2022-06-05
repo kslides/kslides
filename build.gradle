@@ -84,6 +84,7 @@ subprojects {
     compileKotlin {
         kotlinOptions {
             jvmTarget = '11'
+            useIR = true
             //languageVersion = '1.7'
             //apiVersion = '1.7'
             freeCompilerArgs += ['-Xbackend-threads=8',
@@ -96,6 +97,7 @@ subprojects {
     compileTestKotlin {
         kotlinOptions {
             jvmTarget = '11'
+            useIR = true
             //languageVersion = '1.7'
             //apiVersion = '1.7'
             freeCompilerArgs += ['-Xbackend-threads=8',

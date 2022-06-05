@@ -1,17 +1,15 @@
 package com.kslides
 
-import com.github.pambrose.common.util.*
-
 enum class Highlight {
   MONOKAI, ZENBURN;
 
-  val cssSrc get() = "plugin/highlight/${name.toLower()}.css"
+  val cssSrc get() = "plugin/highlight/${name.lowercase()}.css"
 }
 
 enum class PresentationTheme {
   BEIGE, BLACK, BLOOD, LEAGUE, MOON, NIGHT, SERIF, SIMPLE, SKY, SOLARIZED, WHITE;
 
-  val cssSrc get() = "dist/theme/${name.toLower()}.css"
+  val cssSrc get() = "dist/theme/${name.lowercase()}.css"
 }
 
 enum class Speed {
@@ -21,9 +19,9 @@ enum class Speed {
 enum class Transition {
   NONE, FADE, SLIDE, CONVEX, CONCAVE, ZOOM, UNASSIGNED;
 
-  fun asInOut() = name.toLower()
-  fun asIn() = "${name.toLower()}-in"
-  fun asOut() = "${name.toLower()}-out"
+  fun asInOut() = name.lowercase()
+  fun asIn() = "${name.lowercase()}-in"
+  fun asOut() = "${name.lowercase()}-out"
 }
 
 enum class Effect {
@@ -46,7 +44,7 @@ enum class Effect {
   HIGHLIGHT_CURRENT_GREEN,
   HIGHLIGHT_CURRENT_BLUE;
 
-  fun toOutput() = "class=\"fragment${if (this != NONE) (" " + name.toLower().replace('_', '-')) else ""}\""
+  fun toOutput() = "class=\"fragment${if (this != NONE) (" " + name.lowercase().replace('_', '-')) else ""}\""
 }
 
 enum class NavigationMode {

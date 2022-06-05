@@ -363,8 +363,8 @@ class Presentation(val kslides: KSlides) {
     when (value) {
       is Boolean, is Number -> "$key: $value"
       is String -> "$key: '$value'"
-      is Transition -> "$key: '${value.name.toLower()}'"
-      is Speed -> "$key: '${value.name.toLower()}'"
+      is Transition -> "$key: '${value.name.lowercase()}'"
+      is Speed -> "$key: '${value.name.lowercase()}'"
       is List<*> -> "$key: [${value.joinToString(", ") { "'$it'" }}]"
       else -> throw IllegalArgumentException("Invalid value for $key: $value")
     }

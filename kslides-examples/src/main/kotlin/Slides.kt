@@ -1,4 +1,3 @@
-import com.github.pambrose.common.util.*
 import com.kslides.*
 import com.kslides.Transition
 import com.kslides.config.*
@@ -900,7 +899,7 @@ fun main() {
               // The Transition enum includes all the built-in transitions
               Transition.values()
                 .forEachIndexed { index, transition ->
-                  a { href = "?transition=${transition.name.toLower()}#/transitions"; +transition.name }
+                  a { href = "?transition=${transition.name.lowercase()}#/transitions"; +transition.name }
                   if (index < Transition.values().size - 1)
                     +"-"
                   rawHtml("\n\t\t\t\t\t\t\t")

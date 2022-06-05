@@ -1,6 +1,5 @@
 package com.kslides.config
 
-import com.github.pambrose.common.util.*
 import com.kslides.*
 import com.kslides.Transition.SLIDE
 import com.kslides.Utils.INDENT_TOKEN
@@ -80,7 +79,7 @@ class SlideConfig : AbstractConfig() {
       }
 
     if (transitionSpeed != Speed.UNASSIGNED)
-      section.attributes["data-transition-speed"] = transitionSpeed.name.toLower()
+      section.attributes["data-transition-speed"] = transitionSpeed.name.lowercase()
 
     if (background.isNotBlank())
       section.attributes["data-background"] = background

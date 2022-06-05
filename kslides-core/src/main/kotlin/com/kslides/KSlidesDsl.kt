@@ -27,7 +27,7 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
       attributes["data-cc-copied"] = config.copyButtonMsg
 
     code(config.language.nullIfBlank()) {
-      if (!config.highlightPattern.toLower().contains("none"))
+      if (!config.highlightPattern.lowercase().contains("none"))
         attributes["data-line-numbers"] = config.highlightPattern.stripBraces()
       if (config.lineOffSet != -1)
         attributes["data-ln-start-from"] = config.lineOffSet.toString()
