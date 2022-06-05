@@ -1,0 +1,4 @@
+jdk:
+  - openjdk17
+env:
+  JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8 -Dhttps.protocols=TLSv1.1"
