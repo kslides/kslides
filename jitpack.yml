@@ -1,10 +1,8 @@
 jdk:
   - openjdk11
-before_install:
-  - sdk install java 11.0.10-open
-  - sdk use java 11.0.10-open
 install:
   - echo "Running a custom install command"
-  - ./gradlew clean install -xtest
+  - ./gradlew build -xtest
+  - ./gradlew publishToMavenLocal
 env:
   JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8 -Dhttps.protocols=TLSv1.1"
