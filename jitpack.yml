@@ -4,5 +4,5 @@ install:
   - echo "Running a custom install command"
   - rm -rf $HOME_DIR/.gradle/caches
   - export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -Dhttps.protocols=TLSv1.2 -Djdk.tls.client.protocols=TLSv1.2"
-  - ./gradlew build -xtest
+  - ./gradlew --refresh-dependencies clean build -xtest
   - ./gradlew publishToMavenLocal
