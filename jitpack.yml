@@ -1,6 +1,7 @@
 jdk:
   - openjdk11
 install:
+  - export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -Dhttps.protocols=TLSv1.1"
   - echo "Running a custom install command"
   - ./gradlew build -xtest
   - ./gradlew publishToMavenLocal
