@@ -2,6 +2,6 @@ jdk:
   - openjdk11
 install:
   - echo "Running a custom install command"
-  - export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -Dhttps.protocols=TLSv1.3"
+  - export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -Dhttps.protocols=TLSv1.2 -Djdk.tls.client.protocols=TLSv1.2 -Djavax.net.debug=all"
   - ./gradlew build -xtest
   - ./gradlew publishToMavenLocal
