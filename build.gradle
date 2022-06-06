@@ -27,7 +27,7 @@ allprojects {
         mavenCentral()
         maven {
             url = 'https://repo.kotlin.link'
-            allowInsecureProtocol = true
+//            allowInsecureProtocol = true
         }
         maven { url = 'https://jitpack.io' }
     }
