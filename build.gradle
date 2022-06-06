@@ -25,7 +25,10 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url = 'https://repo.kotlin.link' }
+        maven {
+            url = 'https://repo.kotlin.link'
+            allowInsecureProtocol = true
+        }
         maven { url = 'https://jitpack.io' }
     }
 
