@@ -1,5 +1,5 @@
 jdk:
-  - openjdk11
+  - openjdk17
 install:
   - export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8 -Dhttps.protocols=SSLv3,TLSv1,TLSv1.1,TLSv1.2,TLSv1.3"
   - ./gradlew clean build -xtest
