@@ -3,7 +3,7 @@ plugins {
     id 'application'
     id 'maven-publish'
     id 'org.jetbrains.kotlin.jvm' version '1.7.0' apply false
-    id 'org.jmailen.kotlinter' version "3.10.0" apply false
+    id 'org.jmailen.kotlinter' version "3.11.0" apply false
     id "com.github.ben-manes.versions" version '0.42.0' apply false
     id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
 }
@@ -11,7 +11,7 @@ plugins {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.10.6'
+    version '0.10.7'
 
     apply plugin: 'application'
     apply plugin: 'java-library'

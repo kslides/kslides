@@ -1,15 +1,42 @@
-import com.kslides.*
+import com.kslides.Effect
+import com.kslides.PlaygroundMode
+import com.kslides.PlaygroundTheme
+import com.kslides.PresentationTheme
+import com.kslides.Speed
+import com.kslides.TargetPlatform
 import com.kslides.Transition
-import com.kslides.config.*
+import com.kslides.bodyRow
+import com.kslides.by
+import com.kslides.codeSnippet
+import com.kslides.config.PlotlyIframeConfig
+import com.kslides.fragment
+import com.kslides.headRow
+import com.kslides.include
+import com.kslides.kslides
+import com.kslides.listHref
+import com.kslides.orderedList
+import com.kslides.permuteBy
+import com.kslides.playground
+import com.kslides.plotly
+import com.kslides.rawHtml
+import com.kslides.toLinePatterns
+import com.kslides.unorderedList
 import kotlinx.css.*
 import kotlinx.css.Float
 import kotlinx.css.properties.*
 import kotlinx.html.*
-import space.kscience.dataforge.meta.*
-import space.kscience.dataforge.values.*
-import space.kscience.plotly.*
-import space.kscience.plotly.palettes.*
-import kotlin.random.*
+import space.kscience.dataforge.meta.configure
+import space.kscience.dataforge.values.Value
+import space.kscience.dataforge.values.asValue
+import space.kscience.plotly.PlotlyConfig
+import space.kscience.plotly.heatmap
+import space.kscience.plotly.histogram
+import space.kscience.plotly.layout
+import space.kscience.plotly.palettes.T10
+import space.kscience.plotly.scatter
+import space.kscience.plotly.trace
+import kotlin.collections.set
+import kotlin.random.Random
 
 fun main() {
 
@@ -255,11 +282,10 @@ fun main() {
         dslSlide {
           content {
             h2 { +"Highlighted Code with a dslSlide" }
-            val file = "kslides-examples/src/main/kotlin/content/HelloWorldK.kt"
             codeSnippet {
               language = "kotlin"
               highlightPattern = "[|3,7|4,6|5|4-6]"
-              +include(file)
+              +include("kslides-examples/src/main/kotlin/content/HelloWorldK.kt")
             }
             h3 { +"👇" }
             aside("notes") {
@@ -281,11 +307,10 @@ fun main() {
             autoAnimate = true
             content {
               h2 { +"Animated Code with a dslSlide" }
-              val file = "kslides-examples/src/main/kotlin/content/assign.js"
               codeSnippet {
                 language = "javascript"
                 dataId = "code-animation"
-                +include(file, linePattern)
+                +include("kslides-examples/src/main/kotlin/content/assign.js", linePattern)
               }
               h3 { +"👇" }
               aside("notes") {

@@ -340,11 +340,10 @@ fun main() {
 dslSlide {
   content {
     h2 { +"Highlighted Code with a dslSlide" }
-    val file = "kslides-examples/src/main/kotlin/content/HelloWorldK.kt"
     codeSnippet {
       language = "kotlin"
       highlightPattern = "[|3,7|4,6|5|4-6]"
-      +include(file)
+      +include("kslides-examples/src/main/kotlin/content/HelloWorldK.kt")
     }
     h3 { +"👇" }
     aside("notes") {
@@ -417,11 +416,10 @@ for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
     autoAnimate = true
     content {
       h2 { +"Animated Code with a dslSlide" }
-      val file = "kslides-examples/src/main/kotlin/content/assign.js"
       codeSnippet {
         language = "javascript"
         dataId = "code-animation"
-        +include(file, linePattern)
+        +include("kslides-examples/src/main/kotlin/content/assign.js", linePattern)
       }
       h3 { +"👇" }
       aside("notes") {
