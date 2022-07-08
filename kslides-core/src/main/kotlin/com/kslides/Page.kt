@@ -1,11 +1,12 @@
 package com.kslides
 
-import com.github.pambrose.common.util.*
+import com.github.pambrose.common.util.ensureSuffix
+import com.github.pambrose.common.util.isNotNull
 import com.kslides.CssValue.Companion.writeCssToHead
-import com.kslides.config.*
+import com.kslides.config.PresentationConfig
 import kotlinx.html.*
 import kotlinx.html.dom.*
-import java.io.*
+import java.io.FileNotFoundException
 
 internal object Page {
   private val preRegex = Regex("\\s*<pre.*>\\s*")
@@ -131,7 +132,8 @@ internal object Page {
             ?.lines()
             ?.joinToString("\n") { "\t\t$it" }
             ?.prependIndent("\t")
-            ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"))
+            ?: throw FileNotFoundException("File not found: src/main/resources/slides.css")
+        )
         rawHtml("\n\t\t")
       }
 

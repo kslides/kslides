@@ -8,11 +8,11 @@ import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
 import com.kslides.Playground.logger
 import com.kslides.Utils.INDENT_TOKEN
-import com.kslides.slide.*
+import com.kslides.slide.DslSlide
 import kotlinx.html.*
-import mu.*
-import java.io.*
-import java.net.*
+import mu.KLogging
+import java.io.File
+import java.net.URL
 
 object Utils : KLogging() {
   internal const val INDENT_TOKEN = "--indent--"
@@ -32,7 +32,8 @@ fun <T> List<T>.permuteBy(vararg orders: List<Int>): Sequence<List<T>> =
         yield(
           buildList {
             order.forEach { this@buildList += this@permuteBy[it] }
-          })
+          }
+        )
       }
   }
 

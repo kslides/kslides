@@ -39,9 +39,7 @@ import kotlin.collections.set
 import kotlin.random.Random
 
 fun main() {
-
   kslides {
-
     // Optional
     kslidesConfig {
       // kslides configuration options
@@ -351,7 +349,6 @@ fun main() {
       }
 
       verticalSlides {
-
         // pg1 begin
         val pg = "kslides-examples/src/main/kotlin/playground"
         dslSlide {
@@ -646,7 +643,6 @@ fun main() {
       }
 
       verticalSlides {
-
         dslSlide {
           style = "height: 600px"
           autoAnimate = true
@@ -985,7 +981,6 @@ fun main() {
       }
 
       verticalSlides {
-
         // webcontent begin
         dslSlide {
           content {
@@ -1334,7 +1329,6 @@ fun main() {
       }
 
       verticalSlides {
-
         // fragment-md begin
         markdownSlide {
           content {
