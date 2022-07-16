@@ -1,13 +1,12 @@
 package examples
 
-import com.kslides.*
+import com.kslides.Transition
+import com.kslides.kslides
 import kotlinx.css.*
 import kotlinx.html.*
 
 fun main() {
-
   kslides {
-
     output {
       // Write the presentations to a file
       enableFileSystem = true

@@ -1,13 +1,17 @@
 package examples
 
-import com.kslides.*
+import com.kslides.PresentationTheme
+import com.kslides.Speed
+import com.kslides.Transition
+import com.kslides.fragment
+import com.kslides.githubRawUrl
+import com.kslides.include
+import com.kslides.kslides
 import kotlinx.css.*
 import kotlinx.html.*
 
 fun main() {
-
   kslides {
-
     presentationConfig {
       slideNumber = "c/t"
       transition = Transition.FADE
@@ -374,7 +378,6 @@ fun main() {
       }
 
       markdownSlide {
-
         slideConfig {
           backgroundColor = "#FFFF00"
         }

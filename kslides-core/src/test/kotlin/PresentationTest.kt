@@ -1,10 +1,11 @@
 package com.github.readingbat
 
-import com.kslides.*
+import com.kslides.KSlides
 import com.kslides.Page.generatePage
-import io.kotest.assertions.throwables.*
-import io.kotest.core.spec.style.*
-import io.kotest.matchers.*
+import com.kslides.kslidesTest
+import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
 class PresentationTest : StringSpec(
   {
@@ -245,4 +246,5 @@ class PresentationTest : StringSpec(
           }
         }
     }
-  })
+  }
+)

@@ -2,8 +2,8 @@ plugins {
     id 'java'
     id 'application'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm' version '1.7.0' apply false
-    id 'org.jmailen.kotlinter' version "3.10.0" apply false
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10' apply false
+    id 'org.jmailen.kotlinter' version "3.11.1" apply false
     id "com.github.ben-manes.versions" version '0.42.0' apply false
     id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
 }
@@ -11,7 +11,7 @@ plugins {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.10.6'
+    version '0.10.7'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
@@ -82,8 +82,6 @@ subprojects {
     compileKotlin {
         kotlinOptions {
             jvmTarget = '11'
-            //languageVersion = '1.7'
-            //apiVersion = '1.7'
             freeCompilerArgs += ['-Xbackend-threads=8',
                                  //'-Xcontext-receivers',
                                  //'-Xskip-prerelease-check',
@@ -94,8 +92,6 @@ subprojects {
     compileTestKotlin {
         kotlinOptions {
             jvmTarget = '11'
-            //languageVersion = '1.7'
-            //apiVersion = '1.7'
             freeCompilerArgs += ['-Xbackend-threads=8',
                                  //'-Xcontext-receivers',
                                  //'-Xskip-prerelease-check',
@@ -117,6 +113,15 @@ subprojects {
         ignoreFailures = false
         reporters = ['checkstyle', 'plain']
         experimentalRules = false
-        disabledRules = ["no-wildcard-imports", "indent", "final-newline", "comment-spacing", "max-line-length", "no-multi-spaces", "wrapping"]
+        disabledRules = ["no-wildcard-imports",
+                         "indent",
+                         "final-newline",
+                         "comment-spacing",
+                         "max-line-length",
+                         "no-multi-spaces",
+                         "wrapping",
+                         "multiline-if-else",
+                         "filename",
+                         "annotation-spacing",]
     }
 }
