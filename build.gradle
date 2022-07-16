@@ -23,7 +23,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url = 'https://repo.kotlin.link' }
+//        maven { url = 'https://repo.kotlin.link' }
+        maven { url = 'https://maven.pkg.jetbrains.space/mipt-npm/p/sci/maven' }
         maven { url = 'https://jitpack.io' }
     }
 
