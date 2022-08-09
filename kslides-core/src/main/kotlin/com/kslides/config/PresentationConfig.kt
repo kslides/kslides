@@ -1,6 +1,11 @@
 package com.kslides.config
 
-import com.kslides.*
+import com.kslides.Highlight
+import com.kslides.HrefTarget
+import com.kslides.KSlidesDslMarker
+import com.kslides.PresentationTheme
+import com.kslides.Speed
+import com.kslides.Transition
 
 class PresentationConfig : AbstractConfig() {
 
@@ -259,6 +264,8 @@ class PresentationConfig : AbstractConfig() {
   var enableMathJax3 by ConfigProperty<Boolean>(kslidesManagedValues)
   var enableCodeCopy by ConfigProperty<Boolean>(kslidesManagedValues)
   var enableMenu by ConfigProperty<Boolean>(kslidesManagedValues)
+  var enableMermaid by ConfigProperty<Boolean>(kslidesManagedValues)
+
   var topLeftHref by ConfigProperty<String>(kslidesManagedValues)
   var topLeftTarget by ConfigProperty<HrefTarget>(kslidesManagedValues)
   var topLeftTitle by ConfigProperty<String>(kslidesManagedValues)
@@ -310,6 +317,7 @@ class PresentationConfig : AbstractConfig() {
     enableMathJax3 = false
     enableCodeCopy = true
     enableMenu = false
+    enableMermaid = false
 
     topLeftHref = ""
     topLeftTarget = HrefTarget.BLANK
@@ -349,17 +357,17 @@ class PresentationConfig : AbstractConfig() {
   }
 
   @KSlidesDslMarker
-  fun menuConfig(block: MenuConfig.() -> Unit) = block.invoke(menuConfig)
+  fun menuConfig(block: MenuConfig.() -> Unit) = menuConfig.block()
 
   @KSlidesDslMarker
-  fun copyCodeConfig(block: CopyCodeConfig.() -> Unit) = block.invoke(copyCodeConfig)
+  fun copyCodeConfig(block: CopyCodeConfig.() -> Unit) = copyCodeConfig.block()
 
   @KSlidesDslMarker
-  fun slideConfig(block: SlideConfig.() -> Unit) = block.invoke(slideConfig)
+  fun slideConfig(block: SlideConfig.() -> Unit) = slideConfig.block()
 
   @KSlidesDslMarker
-  fun playgroundConfig(block: PlaygroundConfig.() -> Unit) = block.invoke(playgroundConfig)
+  fun playgroundConfig(block: PlaygroundConfig.() -> Unit) = playgroundConfig.block()
 
   @KSlidesDslMarker
-  fun plotlyIframeConfig(block: PlotlyIframeConfig.() -> Unit) = block.invoke(plotlyIframeConfig)
+  fun plotlyIframeConfig(block: PlotlyIframeConfig.() -> Unit) = plotlyIframeConfig.block()
 }

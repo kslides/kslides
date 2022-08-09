@@ -1,8 +1,8 @@
 package com.kslides
 
 import com.kslides.CssValue.Companion.cssError
-import com.kslides.config.*
-import com.kslides.slide.*
+import com.kslides.config.SlideConfig
+import com.kslides.slide.VerticalSlide
 import kotlinx.css.*
 
 class VerticalSlidesContext {
@@ -22,7 +22,7 @@ class VerticalSlidesContext {
   fun css(@Suppress("UNUSED_PARAMETER") block: CssBuilder.() -> Unit): Unit = cssError()
 
   @KSlidesDslMarker
-  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
+  fun slideConfig(block: SlideConfig.() -> Unit) = slideConfig.block()
 
   internal fun resetContext() {
     verticalSlides.clear()

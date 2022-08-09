@@ -677,9 +677,133 @@ dslSlide {
         </section>
         
         <section>
+          <section>
+            <h2>
+              <a href="https://mermaid-js.github.io/mermaid/#/" target="_blank">Mermaid Support &#128071;</a>
+            </h2>
+          </section>
+          
+          <section>
+            <h2>
+              Mermaid <a href="https://mermaid-js.github.io/mermaid/#/flowchart" target="_blank">Flowchart</a>
+            </h2>
+            <div class="mermaid">
+              flowchart TD
+                  A[Start] --&gt; B{Is it?}
+                  B --&gt;|Yes| C[OK]
+                  C --&gt; D[Rethink]
+                  D --&gt; B
+                  B ----&gt;|No| E[End]
+            </div>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 {
+      +"Mermaid "
+      atag("Flowchart", "https://mermaid-js.github.io/mermaid/#/flowchart")
+    }
+    mermaid(
+      """
+      flowchart TD
+          A[Start] --> B{Is it?}
+          B -->|Yes| C[OK]
+          C --> D[Rethink]
+          D --> B
+          B ---->|No| E[End]
+    """
+    )
+  }
+}
+```
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*mermaid1%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*mermaid1%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+</script>
+          </section>
+          
+          <section>
+            <h2>
+              Mermaid <a href="https://mermaid-js.github.io/mermaid/#/pie" target="_blank">Pie Charts</a>
+            </h2>
+            <div class="mermaid">
+                pie title Pets adopted by volunteers
+                    "Dogs" : 386
+                    "Cats" : 85
+                    "Rats" : 15
+              </div>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 {
+      +"Mermaid "
+      atag("Pie Charts", "https://mermaid-js.github.io/mermaid/#/pie")
+    }
+    div("mermaid") {
+      +"""
+        pie title Pets adopted by volunteers
+            "Dogs" : 386
+            "Cats" : 85
+            "Rats" : 15
+      """
+    }
+  }
+}
+```
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*mermaid2%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*mermaid2%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+</script>
+          </section>
+          
+          <section>
+            <h2>
+              Mermaid <a href="https://mermaid-js.github.io/mermaid/#/sequenceDiagram" target="_blank">Sequence Diagram</a>
+            </h2>
+            <div class="mermaid">
+              sequenceDiagram
+                  Alice-&gt;&gt;John: Hello John, how are you?
+                  John--&gt;&gt;Alice: Great!
+                  Alice-)John: See you later!
+            </div>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 {
+      +"Mermaid "
+      atag("Sequence Diagram", "https://mermaid-js.github.io/mermaid/#/sequenceDiagram")
+    }
+    mermaid(
+      """
+      sequenceDiagram
+          Alice->>John: Hello John, how are you?
+          John-->>Alice: Great!
+          Alice-)John: See you later!
+    """
+    )
+  }
+}
+```
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*mermaid3%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*mermaid3%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
           <section id="plotly">
             <h2>A plotly-kt Plot</h2>
-            <iframe height="415px" src="plotly/slide-30-1.html" style="width: 85%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="415px" src="plotly/slide-37-1.html" style="width: 85%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -717,7 +841,7 @@ dslSlide {
           
           <section>
             <h2>A plotly-kt Histogram</h2>
-            <iframe height="500px" src="plotly/slide-32-1.html" style="width: 65%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="plotly/slide-39-1.html" style="width: 65%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -764,7 +888,7 @@ dslSlide {
           
           <section>
             <h2>A plotly-kt 3D Surface Plot</h2>
-            <iframe height="500px" src="plotly/slide-34-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="plotly/slide-41-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -818,7 +942,7 @@ dslSlide {
           
           <section>
             <h2>A plotly-kt 3D Scatter Plot</h2>
-            <iframe height="500px" src="plotly/slide-36-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="plotly/slide-43-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -857,7 +981,7 @@ dslSlide {
           
           <section>
             <h2>A plotly-kt Heatmap</h2>
-            <iframe height="500px" src="plotly/slide-38-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="plotly/slide-45-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -1369,7 +1493,7 @@ dslSlide {
 //        slideDefinition(slides, "slidedef")
 //      }
     }
-    // presentation end
+// presentation end
 
     presentation {
       path = "layouts.html"
@@ -2112,6 +2236,7 @@ markdownSlide {
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
 	<script src="revealjs/plugin/copycode/copycode.js"></script>
 	<script src="revealjs/plugin/menu/menu.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 
 	<script>
 		Reveal.initialize({
@@ -2135,6 +2260,9 @@ markdownSlide {
 			
 			plugins: [ RevealNotes, RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight, RevealMenu, CopyCode ]
 		});
+
+
+		mermaid.initialize({startOnLoad:true});
 
 </script>
   </body>

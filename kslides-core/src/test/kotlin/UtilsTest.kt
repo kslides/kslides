@@ -7,10 +7,11 @@ import com.kslides.InternalUtils.stripBraces
 import com.kslides.InternalUtils.toIntList
 import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.trimIndentWithInclude
-import com.kslides.config.*
-import io.kotest.core.spec.style.*
-import io.kotest.matchers.*
-import io.kotest.matchers.string.*
+import com.kslides.config.PresentationConfig
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
 
 class UtilsTest : StringSpec(
   {
@@ -126,9 +127,9 @@ val y = 1              // NO TAB
       val p2 = PresentationConfig()
       val p3 =
         PresentationConfig()
-          .apply {
-            mergeConfig(p1)
-            mergeConfig(p2)
+          .also { config ->
+            config.mergeConfig(p1)
+            config.mergeConfig(p2)
           }
       p3.enableMenu shouldBe false
     }
@@ -141,9 +142,9 @@ val y = 1              // NO TAB
       val p2 = PresentationConfig()
       val p3 =
         PresentationConfig()
-          .apply {
-            mergeConfig(p1)
-            mergeConfig(p2)
+          .also { config ->
+            config.mergeConfig(p1)
+            config.mergeConfig(p2)
           }
       p3.enableMenu shouldBe false
     }
@@ -158,9 +159,9 @@ val y = 1              // NO TAB
       }
       val p3 =
         PresentationConfig()
-          .apply {
-            mergeConfig(p1)
-            mergeConfig(p2)
+          .also { config ->
+            config.mergeConfig(p1)
+            config.mergeConfig(p2)
           }
       p3.enableMenu shouldBe true
     }
@@ -175,9 +176,9 @@ val y = 1              // NO TAB
       }
       val p3 =
         PresentationConfig()
-          .apply {
-            mergeConfig(p1)
-            mergeConfig(p2)
+          .also { config ->
+            config.mergeConfig(p1)
+            config.mergeConfig(p2)
           }
       p3.enableMenu shouldBe false
     }

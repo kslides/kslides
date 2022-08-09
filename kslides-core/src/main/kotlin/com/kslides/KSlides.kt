@@ -1,12 +1,14 @@
 package com.kslides
 
-import com.github.pambrose.common.response.*
-import com.github.pambrose.common.util.*
+import com.github.pambrose.common.response.respondWith
+import com.github.pambrose.common.util.ensureSuffix
 import com.kslides.KSlides.Companion.logger
 import com.kslides.KSlides.Companion.runHttpServer
 import com.kslides.KSlides.Companion.writeSlidesToFileSystem
 import com.kslides.Page.generatePage
-import com.kslides.config.*
+import com.kslides.config.KSlidesConfig
+import com.kslides.config.OutputConfig
+import com.kslides.config.PresentationConfig
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -16,8 +18,8 @@ import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.routing.*
 import kotlinx.css.*
-import mu.*
-import java.io.*
+import mu.KLogging
+import java.io.File
 
 @DslMarker
 annotation class KSlidesDslMarker
@@ -36,15 +38,15 @@ fun kslides(block: KSlides.() -> Unit) =
       presentationBlocks.forEach { presentationBlock ->
         Presentation(this)
           .apply {
-            presentationBlock(this)
+            presentationBlock()
             require(slides.isNotEmpty()) { "At least one slide must be defined for a presentation" }
             validatePath()
 
             finalConfig =
               PresentationConfig()
-                .apply {
-                  mergeConfig(kslides.globalPresentationConfig)
-                  mergeConfig(presentationConfig)
+                .also {config->
+                  config.mergeConfig(kslides.globalPresentationConfig)
+                  config.mergeConfig(presentationConfig)
                 }
 
             assignCssFiles()
@@ -80,6 +82,7 @@ class KSlides {
   internal val kslidesConfig = KSlidesConfig()
   internal val globalPresentationConfig = PresentationConfig().apply { assignDefaults() }
   internal val outputConfig = OutputConfig(this)
+
   internal var kslidesConfigBlock: KSlidesConfig.() -> Unit = {}
   internal var globalPresentationConfigBlock: PresentationConfig.() -> Unit = {}
   internal var outputConfigBlock: OutputConfig.() -> Unit = {}

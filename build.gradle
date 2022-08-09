@@ -49,6 +49,8 @@ allprojects {
 
 subprojects {
     dependencies {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
+
         implementation "org.jetbrains.kotlin-wrappers:kotlin-css:$css_version"
 
         implementation "io.ktor:ktor-server:$ktor_version"
@@ -60,8 +62,6 @@ subprojects {
 
         implementation "com.github.pambrose.common-utils:core-utils:$utils_version"
         implementation "com.github.pambrose.common-utils:ktor-server-utils:$utils_version"
-
-        implementation "space.kscience:plotlykt-core:$plotly_version"
 
         implementation "com.github.pambrose:srcref:$srcref_version"
 

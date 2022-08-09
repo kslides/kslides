@@ -1,7 +1,8 @@
 package com.kslides.slide
 
-import com.github.pambrose.common.util.*
-import com.kslides.*
+import com.github.pambrose.common.util.toPath
+import com.kslides.KSlidesDslMarker
+import com.kslides.Presentation
 import kotlinx.html.*
 
 interface DslSlide {
@@ -17,6 +18,14 @@ interface DslSlide {
   var id: String
   var style: String
 
+  // These expose internal values
+  val globalPlaygroundConfig get() = presentation.kslides.globalPresentationConfig.playgroundConfig
+  val presentationPlaygroundConfig get() = presentation.presentationConfig.playgroundConfig
+  val playgroundPath get() = presentation.kslides.outputConfig.playgroundPath
+  val globalPlotlyConfig get() = presentation.kslides.globalPresentationConfig.plotlyIframeConfig
+  val presentationPlotlyConfig get() = presentation.presentationConfig.plotlyIframeConfig
+  val plotlyPath get() = presentation.kslides.outputConfig.plotlyPath
+
   fun processSlide(section: SECTION)
 
   fun filename(iframeId: Int) = "slide-$_slideId-$iframeId.html"
@@ -28,6 +37,13 @@ interface DslSlide {
   fun plotlyFilename(iframeId: Int) =
     listOf(presentation.kslides.outputConfig.plotlyDir, filename(iframeId))
       .toPath(addPrefix = false, addTrailing = false)
+
+  @KSlidesDslMarker
+  fun SECTION.mermaid(text: String) {
+    div("mermaid") {
+      +text
+    }
+  }
 }
 
 class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :
