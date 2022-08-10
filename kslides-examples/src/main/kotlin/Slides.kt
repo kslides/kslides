@@ -447,7 +447,6 @@ fun main() {
       }
 
       verticalSlides {
-
         dslSlide {
           content {
             h2 {

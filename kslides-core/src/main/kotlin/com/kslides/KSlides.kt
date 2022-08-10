@@ -44,7 +44,7 @@ fun kslides(block: KSlides.() -> Unit) =
 
             finalConfig =
               PresentationConfig()
-                .also {config->
+                .also { config ->
                   config.mergeConfig(kslides.globalPresentationConfig)
                   config.mergeConfig(presentationConfig)
                 }
