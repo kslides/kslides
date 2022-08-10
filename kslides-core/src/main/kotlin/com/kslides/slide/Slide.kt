@@ -1,9 +1,11 @@
 package com.kslides.slide
 
-import com.kslides.*
 import com.kslides.CssValue
 import com.kslides.CssValue.Companion.cssError
-import com.kslides.config.*
+import com.kslides.KSlidesDslMarker
+import com.kslides.Presentation
+import com.kslides.VerticalSlidesContext
+import com.kslides.config.SlideConfig
 import kotlinx.css.*
 import kotlinx.html.*
 
@@ -15,9 +17,11 @@ abstract class Slide(private val presentation: Presentation, internal val conten
 
   internal val mergedSlideConfig by lazy {
     SlideConfig()
-      .apply { merge(presentation.kslides.globalPresentationConfig.slideConfig) }
-      .apply { merge(presentation.presentationConfig.slideConfig) }
-      .apply { merge(slideConfig) }
+      .also { config ->
+        config.merge(presentation.kslides.globalPresentationConfig.slideConfig)
+        config.merge(presentation.presentationConfig.slideConfig)
+        config.merge(slideConfig)
+      }
   }
 
   // This is used to catch incorrect usages of css
@@ -36,7 +40,7 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   fun css(@Suppress("UNUSED_PARAMETER") block: CssBuilder.() -> Unit): Unit = cssError()
 
   @KSlidesDslMarker
-  fun slideConfig(block: SlideConfig.() -> Unit) = block(slideConfig)
+  fun slideConfig(block: SlideConfig.() -> Unit) = slideConfig.block()
 
   fun processSlide(section: SECTION) {
     if (id.isNotBlank())

@@ -12,6 +12,9 @@ application {
 
 dependencies {
     implementation project(':kslides-core')
+    implementation project(':kslides-plotly')
+
+    implementation "space.kscience:plotlykt-core:$plotly_version"
 }
 
 // Include build uberjars in heroku deploy

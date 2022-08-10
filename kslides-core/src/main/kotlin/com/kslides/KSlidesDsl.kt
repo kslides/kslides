@@ -1,21 +1,18 @@
 package com.kslides
 
-import com.github.pambrose.common.util.*
+import com.github.pambrose.common.util.nullIfBlank
 import com.kslides.InternalUtils.stripBraces
 import com.kslides.InternalUtils.writeIframeContent
-import com.kslides.Playground.playgroundContent
-import com.kslides.Plotly.plotlyContent
-import com.kslides.config.*
-import com.kslides.slide.*
+import com.kslides.config.CodeSnippetConfig
+import com.kslides.slide.DslSlide
 import kotlinx.html.*
-import mu.*
-import space.kscience.plotly.*
+import mu.KLogging
 
 object KSlidesDsl : KLogging()
 
 @HtmlTagMarker
 fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
-  val config = CodeSnippetConfig().apply { block(this) }
+  val config = CodeSnippetConfig().apply { block() }
   pre {
     if (config.dataId.isNotBlank())
       attributes["data-id"] = config.dataId
@@ -43,91 +40,8 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
   }
 }
 
-//context(Presentation, DslSlide, SECTION)
-@KSlidesDslMarker
-fun DslSlide.playground(
-  srcName: String,
-  vararg otherSrcs: String = emptyArray(),
-  configBlock: PlaygroundConfig.() -> Unit = {},
-) {
-  val iframeId = _iframeCount++
-  val kslides = presentation.kslides
-  val localConfig = PlaygroundConfig().also { configBlock(it) }
-  val mergedConfig =
-    PlaygroundConfig()
-      .apply { merge(presentation.kslides.globalPresentationConfig.playgroundConfig) }
-      .apply { merge(presentation.presentationConfig.playgroundConfig) }
-      .apply { merge(localConfig) }
-
-  // CSS values are additive
-  val combinedCss =
-    CssValue(
-      presentation.kslides.globalPresentationConfig.playgroundConfig.css,
-      presentation.presentationConfig.playgroundConfig.css,
-      localConfig.css
-    )
-
-  recordContent(
-    kslides,
-    mergedConfig.staticContent,
-    filename(iframeId),
-    kslides.outputConfig.playgroundPath
-  ) { playgroundContent(kslides, mergedConfig, combinedCss, srcName, otherSrcs.toList()) }
-
-  _section?.iframe {
-    src = playgroundFilename(iframeId)
-    mergedConfig.width.also { if (it.isNotBlank()) width = it }
-    mergedConfig.height.also { if (it.isNotBlank()) height = it }
-    mergedConfig.style.also { if (it.isNotBlank()) style = it }
-    mergedConfig.title.also { if (it.isNotBlank()) title = it }
-  } ?: error("playground{} must be called from within a content{} block")
-}
-
-@KSlidesDslMarker
-fun DslSlide.plotly(
-  dimensions: Dimensions? = null,
-  iframeConfig: PlotlyIframeConfig = PlotlyIframeConfig(),
-  plotlyConfig: PlotlyConfig = PlotlyConfig(),
-  block: Plot.() -> Unit,
-) {
-  val iframeId = _iframeCount++
-  val kslides = presentation.kslides
-  val mergedConfig =
-    PlotlyIframeConfig()
-      .apply { merge(presentation.kslides.globalPresentationConfig.plotlyIframeConfig) }
-      .apply { merge(presentation.presentationConfig.plotlyIframeConfig) }
-      .apply { merge(iframeConfig) }
-
-  recordContent(
-    kslides,
-    mergedConfig.staticContent,
-    filename(iframeId),
-    kslides.outputConfig.plotlyPath
-  ) {
-    plotlyContent(kslides.kslidesConfig) {
-      plot(config = plotlyConfig) {
-        block()
-        // Override the layout dimensions with those supplied in the args
-        layout {
-          dimensions?.also { d ->
-            d.width.let { this@layout.width = d.width }
-            d.height.let { this@layout.height = d.height }
-          }
-        }
-      }
-    }
-  }
-
-  _section?.iframe {
-    src = plotlyFilename(iframeId)
-    mergedConfig.width.also { if (it.isNotBlank()) this.width = it }
-    mergedConfig.height.also { if (it.isNotBlank()) this.height = it }
-    mergedConfig.style.also { if (it.isNotBlank()) this.style = it }
-    mergedConfig.title.also { if (it.isNotBlank()) this.title = it }
-  } ?: error("plotly{} must be called from within a content{} block")
-}
-
-private fun DslSlide.recordContent(
+// Changed from internal
+fun DslSlide.recordContent(
   kslides: KSlides,
   staticContent: Boolean,
   filename: String,
@@ -232,3 +146,12 @@ fun TBODY.bodyRow(vararg items: TD.() -> Unit) =
       td { it() }
     }
   }
+
+@HtmlTagMarker
+fun FlowOrInteractiveOrPhrasingContent.atag(text: String, href: String, newWindow: Boolean = true) {
+  a {
+    +text
+    this.href = href
+    if (newWindow) this.target = "_blank"
+  }
+}

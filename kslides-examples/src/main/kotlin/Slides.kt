@@ -5,6 +5,7 @@ import com.kslides.PresentationTheme
 import com.kslides.Speed
 import com.kslides.TargetPlatform
 import com.kslides.Transition
+import com.kslides.atag
 import com.kslides.bodyRow
 import com.kslides.by
 import com.kslides.codeSnippet
@@ -25,9 +26,9 @@ import kotlinx.css.*
 import kotlinx.css.Float
 import kotlinx.css.properties.*
 import kotlinx.html.*
+import space.kscience.dataforge.meta.Value
+import space.kscience.dataforge.meta.asValue
 import space.kscience.dataforge.meta.configure
-import space.kscience.dataforge.values.Value
-import space.kscience.dataforge.values.asValue
 import space.kscience.plotly.PlotlyConfig
 import space.kscience.plotly.heatmap
 import space.kscience.plotly.histogram
@@ -87,6 +88,7 @@ fun main() {
       enableMenu = true
       theme = PresentationTheme.SOLARIZED
       center = true
+      enableMermaid = true
 
       menuConfig {
         numbers = true
@@ -442,6 +444,82 @@ fun main() {
         // pg5 end
 
         slideDefinition(slides, "pg5")
+      }
+
+      verticalSlides {
+
+        dslSlide {
+          content {
+            h2 {
+              atag("Mermaid Support 👇", "https://mermaid-js.github.io/mermaid/#/")
+            }
+          }
+        }
+
+        // mermaid1 begin
+        dslSlide {
+          content {
+            h2 {
+              +"Mermaid "
+              atag("Flowchart", "https://mermaid-js.github.io/mermaid/#/flowchart")
+            }
+            mermaid(
+              """
+              flowchart TD
+                  A[Start] --> B{Is it?}
+                  B -->|Yes| C[OK]
+                  C --> D[Rethink]
+                  D --> B
+                  B ---->|No| E[End]
+            """
+            )
+          }
+        }
+        // mermaid1 end
+
+        slideDefinition(slides, "mermaid1")
+
+        // mermaid2 begin
+        dslSlide {
+          content {
+            h2 {
+              +"Mermaid "
+              atag("Pie Charts", "https://mermaid-js.github.io/mermaid/#/pie")
+            }
+            div("mermaid") {
+              +"""
+                pie title Pets adopted by volunteers
+                    "Dogs" : 386
+                    "Cats" : 85
+                    "Rats" : 15
+              """
+            }
+          }
+        }
+        // mermaid2 end
+
+        slideDefinition(slides, "mermaid2")
+
+//        // mermaid3 begin
+//        dslSlide {
+//          content {
+//            h2 {
+//              +"Mermaid "
+//              atag("Sequence Diagram", "https://mermaid-js.github.io/mermaid/#/sequenceDiagram")
+//            }
+//            mermaid(
+//              """
+//              sequenceDiagram
+//                  Alice->>John: Hello John, how are you?
+//                  John-->>Alice: Great!
+//                  Alice-)John: See you later!
+//            """
+//            )
+//          }
+//        }
+//        // mermaid3 end
+//
+//        slideDefinition(slides, "mermaid3")
       }
 
       verticalSlides {
@@ -1059,7 +1137,7 @@ fun main() {
 //        slideDefinition(slides, "slidedef")
 //      }
     }
-    // presentation end
+// presentation end
 
     presentation {
       path = "layouts.html"
@@ -1727,5 +1805,5 @@ fun main() {
       slideDefinition(slides, "vmultislide")
     }
   }
-  // kslides end
+// kslides end
 }

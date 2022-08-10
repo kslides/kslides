@@ -1,8 +1,8 @@
 package com.kslides.config
 
-import com.github.pambrose.common.util.*
-import com.kslides.*
-import org.slf4j.event.*
+import com.github.pambrose.common.util.toPath
+import com.kslides.KSlides
+import org.slf4j.event.Level
 
 class OutputConfig(val kslides: KSlides) {
   var enableFileSystem = true

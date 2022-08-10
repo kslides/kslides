@@ -6,7 +6,6 @@ import com.kslides.InternalUtils.isUrl
 import com.kslides.InternalUtils.pad
 import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
-import com.kslides.Playground.logger
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
 import kotlinx.html.*
@@ -79,7 +78,7 @@ fun include(
         .fixIndents(indentToken, trimIndent, escapeHtml)
     }
   } catch (e: Exception) {
-    logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
+    KSlides.logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
     ""
   }
 

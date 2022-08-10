@@ -1,13 +1,24 @@
 package com.kslides
 
-import com.github.pambrose.common.util.*
+import com.github.pambrose.common.util.nullIfBlank
 import com.kslides.InternalUtils.indentInclude
-import com.kslides.config.*
-import com.kslides.slide.*
+import com.kslides.config.PresentationConfig
+import com.kslides.config.SlideConfig
+import com.kslides.slide.DslSlide
+import com.kslides.slide.HorizontalDslSlide
+import com.kslides.slide.HorizontalHtmlSlide
+import com.kslides.slide.HortizontalMarkdownSlide
+import com.kslides.slide.HtmlSlide
+import com.kslides.slide.MarkdownSlide
+import com.kslides.slide.Slide
+import com.kslides.slide.VerticalDslSlide
+import com.kslides.slide.VerticalHtmlSlide
+import com.kslides.slide.VerticalMarkdownSlide
+import com.kslides.slide.VerticalSlide
 import com.pambrose.srcref.Api.srcrefUrl
 import kotlinx.css.*
 import kotlinx.html.*
-import mu.*
+import mu.KLogging
 
 class Presentation(val kslides: KSlides) {
   internal val plugins = mutableListOf<String>()
@@ -28,7 +39,7 @@ class Presentation(val kslides: KSlides) {
   }
 
   @KSlidesDslMarker
-  fun presentationConfig(block: PresentationConfig.() -> Unit) = block(presentationConfig)
+  fun presentationConfig(block: PresentationConfig.() -> Unit) = presentationConfig.block()
 
   @KSlidesDslMarker
   fun verticalSlides(block: VerticalSlidesContext.() -> Unit) =
@@ -39,7 +50,7 @@ class Presentation(val kslides: KSlides) {
             // Calling resetContext() is a bit of a hack. It is required because the vertical slide lambdas are executed
             // for both http and the filesystem. Without resetting the slide context, you will end up with double the slides
             vcontext.resetContext()
-            block(vcontext)
+            vcontext.block()
 
             require(vcontext.verticalSlides.isNotEmpty()) {
               throw IllegalArgumentException("A verticalSlides{} block requires one or more slides")
@@ -66,7 +77,7 @@ class Presentation(val kslides: KSlides) {
     HortizontalMarkdownSlide(this) { div, slide, _ ->
       div.apply {
         (slide as HortizontalMarkdownSlide).also { s ->
-          slideContent(s)
+          s.slideContent()
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
             require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} block" }
@@ -92,7 +103,7 @@ class Presentation(val kslides: KSlides) {
     VerticalMarkdownSlide(this@Presentation) { div, slide, _ ->
       div.apply {
         (slide as VerticalMarkdownSlide).also { s ->
-          slideContent(s)
+          s.slideContent()
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
             require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} block" }
@@ -134,7 +145,7 @@ class Presentation(val kslides: KSlides) {
           .also { s ->
             s._iframeCount = 1
             s._useHttp = useHttp
-            slideContent(s)
+            s.slideContent()
             processDsl(s)
           }
       }
@@ -148,7 +159,7 @@ class Presentation(val kslides: KSlides) {
           .also { s ->
             s._iframeCount = 1
             s._useHttp = useHttp
-            slideContent(s)
+            s.slideContent()
             processDsl(s)
           }
       }
@@ -171,7 +182,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as HorizontalHtmlSlide)
           .also { s ->
-            slideContent(s)
+            s.slideContent()
             processHtml(s, s.mergedSlideConfig)
           }
       }
@@ -183,7 +194,7 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as VerticalHtmlSlide)
           .also { s ->
-            slideContent(s)
+            s.slideContent()
             processHtml(s, s.mergedSlideConfig)
           }
       }
@@ -301,6 +312,9 @@ class Presentation(val kslides: KSlides) {
 
     if (finalConfig.enableMenu)
       jsFiles += JsFile("plugin/menu/menu.js")
+
+    if (finalConfig.enableMermaid)
+      jsFiles += JsFile("https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js")
 
     // if (finalConfig.toolbar) {
     //   jsFiles += "plugin/toolbar/toolbar.js"

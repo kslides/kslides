@@ -7,7 +7,7 @@ class PlotlyIframeConfig : AbstractConfig() {
   var title by ConfigProperty<String>(kslidesManagedValues) // For screen readers
   var staticContent by ConfigProperty<Boolean>(kslidesManagedValues) // Prevents plotly{} recompute
 
-  fun assignDefaults() {
+  internal fun assignDefaults() {
     width = "100%"
     height = ""
     style = ""

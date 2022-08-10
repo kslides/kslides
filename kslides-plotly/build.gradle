@@ -1,0 +1,8 @@
+description = 'kslides-plotly'
+
+dependencies {
+    implementation project(':kslides-core')
+
+    implementation "space.kscience:plotlykt-core:$plotly_version"
+}
+
