@@ -457,6 +457,10 @@ If additional space is required for plotly output, you can adjust the slide
 presentation space with the _PresentationConfig.width_ and _PresentationConfig.height_ values.
 More details can be found [here](https://revealjs.com/presentation-size/).
 
+### Mermaid
+
+[Mermaid](https://mermaid-js.github.io/) content is enabled with `PresentationConfig.enableMermaid`.
+
 ### Heroku
 
 Go to your Heroku dashboard, choose your kslides app and click
