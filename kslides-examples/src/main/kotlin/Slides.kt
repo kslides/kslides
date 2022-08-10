@@ -26,9 +26,9 @@ import kotlinx.css.*
 import kotlinx.css.Float
 import kotlinx.css.properties.*
 import kotlinx.html.*
+import space.kscience.dataforge.meta.Value
+import space.kscience.dataforge.meta.asValue
 import space.kscience.dataforge.meta.configure
-import space.kscience.dataforge.values.Value
-import space.kscience.dataforge.values.asValue
 import space.kscience.plotly.PlotlyConfig
 import space.kscience.plotly.heatmap
 import space.kscience.plotly.histogram
@@ -500,26 +500,26 @@ fun main() {
 
         slideDefinition(slides, "mermaid2")
 
-        // mermaid3 begin
-        dslSlide {
-          content {
-            h2 {
-              +"Mermaid "
-              atag("Sequence Diagram", "https://mermaid-js.github.io/mermaid/#/sequenceDiagram")
-            }
-            mermaid(
-              """
-              sequenceDiagram
-                  Alice->>John: Hello John, how are you?
-                  John-->>Alice: Great!
-                  Alice-)John: See you later!
-            """
-            )
-          }
-        }
-        // mermaid3 end
-
-        slideDefinition(slides, "mermaid3")
+//        // mermaid3 begin
+//        dslSlide {
+//          content {
+//            h2 {
+//              +"Mermaid "
+//              atag("Sequence Diagram", "https://mermaid-js.github.io/mermaid/#/sequenceDiagram")
+//            }
+//            mermaid(
+//              """
+//              sequenceDiagram
+//                  Alice->>John: Hello John, how are you?
+//                  John-->>Alice: Great!
+//                  Alice-)John: See you later!
+//            """
+//            )
+//          }
+//        }
+//        // mermaid3 end
+//
+//        slideDefinition(slides, "mermaid3")
       }
 
       verticalSlides {
