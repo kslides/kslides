@@ -687,14 +687,12 @@ dslSlide {
             <h2>
               Mermaid <a href="https://mermaid-js.github.io/mermaid/#/flowchart" target="_blank">Flowchart</a>
             </h2>
-            <div class="mermaid">
-              flowchart TD
-                  A[Start] --&gt; B{Is it?}
-                  B --&gt;|Yes| C[OK]
-                  C --&gt; D[Rethink]
-                  D --&gt; B
-                  B ----&gt;|No| E[End]
-            </div>
+            <div class="mermaid">flowchart TD
+A[Start] --&gt; B{Is it?}
+B --&gt;|Yes| C[OK]
+C --&gt; D[Rethink]
+D --&gt; B
+B ----&gt;|No| E[End]</div>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -709,13 +707,13 @@ dslSlide {
     }
     mermaid(
       """
-      flowchart TD
+        flowchart TD
           A[Start] --> B{Is it?}
           B -->|Yes| C[OK]
           C --> D[Rethink]
           D --> B
           B ---->|No| E[End]
-    """
+      """
     )
   }
 }
@@ -728,12 +726,10 @@ dslSlide {
             <h2>
               Mermaid <a href="https://mermaid-js.github.io/mermaid/#/pie" target="_blank">Pie Charts</a>
             </h2>
-            <div class="mermaid">
-                pie title Pets adopted by volunteers
-                    "Dogs" : 386
-                    "Cats" : 85
-                    "Rats" : 15
-              </div>
+            <div class="mermaid">pie title Pets adopted by volunteers
+"Dogs" : 386
+"Cats" : 85
+"Birds" : 25</div>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -746,14 +742,14 @@ dslSlide {
       +"Mermaid "
       atag("Pie Charts", "https://mermaid-js.github.io/mermaid/#/pie")
     }
-    div("mermaid") {
-      +"""
+    mermaid(
+      """
         pie title Pets adopted by volunteers
             "Dogs" : 386
             "Cats" : 85
-            "Rats" : 15
+            "Birds" : 25
       """
-    }
+    )
   }
 }
 ```

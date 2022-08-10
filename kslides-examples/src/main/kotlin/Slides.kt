@@ -465,13 +465,13 @@ fun main() {
             }
             mermaid(
               """
-              flowchart TD
+                flowchart TD
                   A[Start] --> B{Is it?}
                   B -->|Yes| C[OK]
                   C --> D[Rethink]
                   D --> B
                   B ---->|No| E[End]
-            """
+              """
             )
           }
         }
@@ -486,40 +486,19 @@ fun main() {
               +"Mermaid "
               atag("Pie Charts", "https://mermaid-js.github.io/mermaid/#/pie")
             }
-            div("mermaid") {
-              +"""
+            mermaid(
+              """
                 pie title Pets adopted by volunteers
                     "Dogs" : 386
                     "Cats" : 85
-                    "Rats" : 15
+                    "Birds" : 25
               """
-            }
+            )
           }
         }
         // mermaid2 end
 
         slideDefinition(slides, "mermaid2")
-
-//        // mermaid3 begin
-//        dslSlide {
-//          content {
-//            h2 {
-//              +"Mermaid "
-//              atag("Sequence Diagram", "https://mermaid-js.github.io/mermaid/#/sequenceDiagram")
-//            }
-//            mermaid(
-//              """
-//              sequenceDiagram
-//                  Alice->>John: Hello John, how are you?
-//                  John-->>Alice: Great!
-//                  Alice-)John: See you later!
-//            """
-//            )
-//          }
-//        }
-//        // mermaid3 end
-//
-//        slideDefinition(slides, "mermaid3")
       }
 
       verticalSlides {

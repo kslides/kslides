@@ -41,7 +41,11 @@ interface DslSlide {
   @KSlidesDslMarker
   fun SECTION.mermaid(text: String) {
     div("mermaid") {
-      +text
+      // Remove the leading and trailing newlines, which the mermaid parser doesn't like
+      +text.lines()
+        .filter { it.isNotBlank() }
+        .map { it.trimStart() }
+        .joinToString("\n")
     }
   }
 }
