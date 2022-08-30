@@ -150,7 +150,9 @@ internal object Page {
             if (config.topLeftTitle.isNotBlank())
               title = config.topLeftTitle
             if (config.topLeftSvg.isNotBlank())
-              img { src = config.topLeftSvg }
+              rawHtml(config.topLeftSvg)
+            if (config.topLeftSvgSrc.isNotBlank())
+              img { src = config.topLeftSvgSrc }
             if (config.topLeftText.isNotBlank())
               +config.topLeftText
           }
@@ -162,7 +164,9 @@ internal object Page {
             if (config.topRightTitle.isNotBlank())
               title = config.topRightTitle
             if (config.topRightSvg.isNotBlank())
-              img { src = config.topRightSvg }
+              rawHtml(config.topRightSvg)
+            if (config.topRightSvgSrc.isNotBlank())
+              img { src = config.topRightSvgSrc }
             if (config.topRightText.isNotBlank())
               +config.topRightText
           }
