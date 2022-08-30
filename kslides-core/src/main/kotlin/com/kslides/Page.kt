@@ -66,10 +66,12 @@ internal object Page {
               preFound = true
               append(it)
             }
+
             preFound && it.matches(codeRegex) -> {
               preFound = false
               append("${it.trimStart()}\n")
             }
+
             else -> {
               append("$it\n")
             }
@@ -148,7 +150,7 @@ internal object Page {
             if (config.topLeftTitle.isNotBlank())
               title = config.topLeftTitle
             if (config.topLeftSvg.isNotBlank())
-              rawHtml(config.topLeftSvg)
+              img { src = config.topLeftSvg }
             if (config.topLeftText.isNotBlank())
               +config.topLeftText
           }
@@ -160,7 +162,7 @@ internal object Page {
             if (config.topRightTitle.isNotBlank())
               title = config.topRightTitle
             if (config.topRightSvg.isNotBlank())
-              rawHtml(config.topRightSvg)
+              img { src = config.topRightSvg }
             if (config.topRightText.isNotBlank())
               +config.topRightText
           }
