@@ -271,12 +271,16 @@ class PresentationConfig : AbstractConfig() {
   var topLeftTitle by ConfigProperty<String>(kslidesManagedValues)
   var topLeftSvg by ConfigProperty<String>(kslidesManagedValues)
   var topLeftSvgSrc by ConfigProperty<String>(kslidesManagedValues)
+  var topLeftSvgClass by ConfigProperty<String>(kslidesManagedValues)
+  var topLeftSvgStyle by ConfigProperty<String>(kslidesManagedValues)
   var topLeftText by ConfigProperty<String>(kslidesManagedValues)
   var topRightHref by ConfigProperty<String>(kslidesManagedValues)
   var topRightTarget by ConfigProperty<HrefTarget>(kslidesManagedValues)
   var topRightTitle by ConfigProperty<String>(kslidesManagedValues)
   var topRightSvg by ConfigProperty<String>(kslidesManagedValues)
   var topRightSvgSrc by ConfigProperty<String>(kslidesManagedValues)
+  var topRightSvgClass by ConfigProperty<String>(kslidesManagedValues)
+  var topRightSvgStyle by ConfigProperty<String>(kslidesManagedValues)
   var topRightText by ConfigProperty<String>(kslidesManagedValues)
   var gaPropertyId by ConfigProperty<String>(kslidesManagedValues)
 
@@ -331,6 +335,8 @@ class PresentationConfig : AbstractConfig() {
         </svg>
       """
     topLeftSvgSrc = ""
+    topLeftSvgClass = ""
+    topLeftSvgStyle = ""
     topLeftText = ""
 
     // Doesn't appear when href is assigned an empty string
@@ -339,6 +345,8 @@ class PresentationConfig : AbstractConfig() {
     topLeftTitle = ""
     topRightSvg = ""
     topRightSvgSrc = ""
+    topRightSvgClass = ""
+    topRightSvgStyle = ""
     topRightText = ""
 
     gaPropertyId = ""
