@@ -335,7 +335,7 @@ class PresentationConfig : AbstractConfig() {
         </svg>
       """
     topLeftSvgSrc = ""
-    topLeftSvgClass = ""
+    topLeftSvgClass = "top-left-svg"
     topLeftSvgStyle = ""
     topLeftText = ""
 
@@ -345,7 +345,7 @@ class PresentationConfig : AbstractConfig() {
     topLeftTitle = ""
     topRightSvg = ""
     topRightSvgSrc = ""
-    topRightSvgClass = ""
+    topRightSvgClass = "top-right-svg"
     topRightSvgStyle = ""
     topRightText = ""
 

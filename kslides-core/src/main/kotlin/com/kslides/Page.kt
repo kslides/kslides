@@ -151,14 +151,12 @@ internal object Page {
               title = config.topLeftTitle
             if (config.topLeftSvg.isNotBlank())
               rawHtml(config.topLeftSvg)
-            if (config.topLeftSvgSrc.isNotBlank()) {
-              val clazz = if (config.topLeftSvgClass.isNotBlank()) config.topLeftSvgClass else "top-left-svg"
-              img(classes = clazz) {
+            if (config.topLeftSvgSrc.isNotBlank())
+              img(classes = config.topLeftSvgClass) {
                 src = config.topLeftSvgSrc
                 if (config.topLeftSvgStyle.isNotBlank())
                   style = config.topLeftSvgStyle
               }
-            }
             if (config.topLeftText.isNotBlank())
               +config.topLeftText
           }
@@ -171,14 +169,12 @@ internal object Page {
               title = config.topRightTitle
             if (config.topRightSvg.isNotBlank())
               rawHtml(config.topRightSvg)
-            if (config.topRightSvgSrc.isNotBlank()) {
-              val clazz = if (config.topRightSvgClass.isNotBlank()) config.topRightSvgClass else "top-right-svg"
-              img(classes = clazz) {
+            if (config.topRightSvgSrc.isNotBlank())
+              img(classes = config.topRightSvgClass) {
                 src = config.topRightSvgSrc
                 if (config.topRightSvgStyle.isNotBlank())
                   style = config.topRightSvgStyle
               }
-            }
             if (config.topRightText.isNotBlank())
               +config.topRightText
           }
