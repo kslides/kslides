@@ -152,7 +152,7 @@ internal object Page {
             if (config.topLeftSvg.isNotBlank())
               rawHtml(config.topLeftSvg)
             if (config.topLeftSvgSrc.isNotBlank())
-              img { src = config.topLeftSvgSrc }
+              img(classes = "top-left-svg") { src = config.topLeftSvgSrc }
             if (config.topLeftText.isNotBlank())
               +config.topLeftText
           }
@@ -166,7 +166,7 @@ internal object Page {
             if (config.topRightSvg.isNotBlank())
               rawHtml(config.topRightSvg)
             if (config.topRightSvgSrc.isNotBlank())
-              img { src = config.topRightSvgSrc }
+              img(classes = "top-right-svg") { src = config.topRightSvgSrc }
             if (config.topRightText.isNotBlank())
               +config.topRightText
           }
