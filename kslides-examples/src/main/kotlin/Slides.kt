@@ -459,8 +459,8 @@ fun main() {
         dslSlide {
           content {
             h2 {
-              +"Mermaid "
-              atag("Flowchart", "https://mermaid-js.github.io/mermaid/#/flowchart")
+              atag("Mermaid", "https://mermaid-js.github.io/mermaid/#/flowchart")
+              +" Flowchart"
             }
             mermaid(
               """
