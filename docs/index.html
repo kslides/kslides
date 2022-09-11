@@ -685,14 +685,9 @@ dslSlide {
           
           <section>
             <h2>
-              Mermaid <a href="https://mermaid-js.github.io/mermaid/#/flowchart" target="_blank">Flowchart</a>
+              <a href="https://mermaid-js.github.io/mermaid/#/flowchart" target="_blank">Mermaid</a> Flowchart
             </h2>
-            <div class="mermaid">flowchart TD
-A[Start] --&gt; B{Is it?}
-B --&gt;|Yes| C[OK]
-C --&gt; D[Rethink]
-D --&gt; B
-B ----&gt;|No| E[End]</div>
+            <iframe height="500px" src="mermaid/slide-31-1.html" style="border: 1px solid black;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -702,11 +697,12 @@ B ----&gt;|No| E[End]</div>
 dslSlide {
   content {
     h2 {
-      +"Mermaid "
-      atag("Flowchart", "https://mermaid-js.github.io/mermaid/#/flowchart")
+      atag("Mermaid", "https://mermaid-js.github.io/mermaid/#/flowchart")
+      +" Flowchart"
     }
-    mermaid(
+    mermaid(MermaidIframeConfig { style = "border: 1px solid black;" }) {
       """
+        %%{init: { "flowchart": { "curve": "linear" } } }%%
         flowchart TD
           A[Start] --> B{Is it?}
           B -->|Yes| C[OK]
@@ -714,7 +710,7 @@ dslSlide {
           D --> B
           B ---->|No| E[End]
       """
-    )
+    }
   }
 }
 ```
@@ -726,10 +722,7 @@ dslSlide {
             <h2>
               Mermaid <a href="https://mermaid-js.github.io/mermaid/#/pie" target="_blank">Pie Charts</a>
             </h2>
-            <div class="mermaid">pie title Pets adopted by volunteers
-"Dogs" : 386
-"Cats" : 85
-"Birds" : 25</div>
+            <iframe height="500px" src="mermaid/slide-33-1.html" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -742,14 +735,14 @@ dslSlide {
       +"Mermaid "
       atag("Pie Charts", "https://mermaid-js.github.io/mermaid/#/pie")
     }
-    mermaid(
+    mermaid {
       """
         pie title Pets adopted by volunteers
             "Dogs" : 386
             "Cats" : 85
             "Birds" : 25
       """
-    )
+    }
   }
 }
 ```
@@ -2195,7 +2188,6 @@ markdownSlide {
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
 	<script src="revealjs/plugin/copycode/copycode.js"></script>
 	<script src="revealjs/plugin/menu/menu.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 
 	<script>
 		Reveal.initialize({
@@ -2219,9 +2211,6 @@ markdownSlide {
 			
 			plugins: [ RevealNotes, RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight, RevealMenu, CopyCode ]
 		});
-
-
-		mermaid.initialize({startOnLoad:true});
 
 </script>
   </body>

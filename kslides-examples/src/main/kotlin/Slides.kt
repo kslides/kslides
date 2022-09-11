@@ -9,12 +9,14 @@ import com.kslides.atag
 import com.kslides.bodyRow
 import com.kslides.by
 import com.kslides.codeSnippet
+import com.kslides.config.MermaidIframeConfig
 import com.kslides.config.PlotlyIframeConfig
 import com.kslides.fragment
 import com.kslides.headRow
 import com.kslides.include
 import com.kslides.kslides
 import com.kslides.listHref
+import com.kslides.mermaid
 import com.kslides.orderedList
 import com.kslides.permuteBy
 import com.kslides.playground
@@ -88,7 +90,6 @@ fun main() {
       enableMenu = true
       theme = PresentationTheme.SOLARIZED
       center = true
-      enableMermaid = true
 
       menuConfig {
         numbers = true
@@ -459,11 +460,12 @@ fun main() {
         dslSlide {
           content {
             h2 {
-              +"Mermaid "
-              atag("Flowchart", "https://mermaid-js.github.io/mermaid/#/flowchart")
+              atag("Mermaid", "https://mermaid-js.github.io/mermaid/#/flowchart")
+              +" Flowchart"
             }
-            mermaid(
+            mermaid(MermaidIframeConfig { style = "border: 1px solid black;" }) {
               """
+                %%{init: { "flowchart": { "curve": "linear" } } }%%
                 flowchart TD
                   A[Start] --> B{Is it?}
                   B -->|Yes| C[OK]
@@ -471,7 +473,7 @@ fun main() {
                   D --> B
                   B ---->|No| E[End]
               """
-            )
+            }
           }
         }
         // mermaid1 end
@@ -485,14 +487,14 @@ fun main() {
               +"Mermaid "
               atag("Pie Charts", "https://mermaid-js.github.io/mermaid/#/pie")
             }
-            mermaid(
+            mermaid {
               """
                 pie title Pets adopted by volunteers
                     "Dogs" : 386
                     "Cats" : 85
                     "Birds" : 25
               """
-            )
+            }
           }
         }
         // mermaid2 end

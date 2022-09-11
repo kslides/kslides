@@ -12,8 +12,7 @@ fun DslSlide.playground(
   vararg otherSrcs: String = emptyArray(),
   configBlock: PlaygroundConfig.() -> Unit = {},
 ) {
-  val iframeId = _iframeCount++
-  val kslides = presentation.kslides
+  val filename = newFilename()
   val localConfig = PlaygroundConfig().apply { configBlock() }
   val mergedConfig =
     PlaygroundConfig()
@@ -31,15 +30,15 @@ fun DslSlide.playground(
       localConfig.css
     )
 
-  recordContent(kslides, mergedConfig.staticContent, filename(iframeId), playgroundPath) {
-    playgroundContent(kslides, mergedConfig, combinedCss, srcName, otherSrcs.toList())
+  recordContent(presentation.kslides, mergedConfig.staticContent, filename, playgroundPath, _useHttp) {
+    playgroundContent(presentation.kslides, mergedConfig, combinedCss, srcName, otherSrcs.toList())
   }
 
   _section?.iframe {
-    src = playgroundFilename(iframeId)
+    src = playgroundFilename(filename)
     mergedConfig.width.also { if (it.isNotBlank()) width = it }
     mergedConfig.height.also { if (it.isNotBlank()) height = it }
     mergedConfig.style.also { if (it.isNotBlank()) style = it }
     mergedConfig.title.also { if (it.isNotBlank()) title = it }
-  } ?: error("playground{} must be called from within a content{} block")
+  } ?: error("playground() must be called from within a content{} block")
 }

@@ -1,6 +1,7 @@
 package com.kslides.slide
 
-import com.kslides.*
+import com.kslides.KSlidesDslMarker
+import com.kslides.Presentation
 import kotlinx.html.*
 
 interface HtmlSlide {
@@ -14,8 +15,8 @@ interface HtmlSlide {
   fun processSlide(section: SECTION)
 }
 
-class HorizontalHtmlSlide(presentation: Presentation, content: SlideArgs) : HorizontalSlide(presentation, content),
-  HtmlSlide {
+class HorizontalHtmlSlide(presentation: Presentation, content: SlideArgs) :
+  HorizontalSlide(presentation, content), HtmlSlide {
   override var _htmlBlock: () -> String = { "" }
   override var _htmlAssigned = false
 
@@ -26,8 +27,8 @@ class HorizontalHtmlSlide(presentation: Presentation, content: SlideArgs) : Hori
   }
 }
 
-class VerticalHtmlSlide(presentation: Presentation, content: SlideArgs) : VerticalSlide(presentation, content),
-  HtmlSlide {
+class VerticalHtmlSlide(presentation: Presentation, content: SlideArgs) :
+  VerticalSlide(presentation, content), HtmlSlide {
   override var _htmlBlock: () -> String = { "" }
   override var _htmlAssigned = false
 

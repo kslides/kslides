@@ -173,7 +173,7 @@ class KSlides {
           }
 
         routing {
-          listOf(config.playgroundDir, config.plotlyDir)
+          listOf(config.playgroundDir, config.plotlyDir, config.mermaidDir)
             .forEach {
               get("$it/{fname}") {
                 respondWith {
