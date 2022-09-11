@@ -313,9 +313,6 @@ class Presentation(val kslides: KSlides) {
     if (finalConfig.enableMenu)
       jsFiles += JsFile("plugin/menu/menu.js")
 
-    if (finalConfig.enableMermaid)
-      jsFiles += JsFile("https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js")
-
     // if (finalConfig.toolbar) {
     //   jsFiles += "plugin/toolbar/toolbar.js"
     // }

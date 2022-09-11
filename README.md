@@ -437,8 +437,7 @@ Playground code using `dataTargetPlatform = JUNIT` should not have a `package` d
 
 A DslSlide embeds plotly-kt content with an [iframe](https://www.w3schools.com/tags/tag_iframe.asp).
 
-If `output.enableFileSystem` is true, each `plotly()` call generates 
-an html file in `docs/plotly`.
+If `output.enableFileSystem` is true, each `plotly()` call generates an html file in `docs/plotly`.
 
 The `plotly()` _iframeConfig_ args are the attributes for the iframe referencing the plotly-kt content.
 
@@ -459,7 +458,13 @@ More details can be found [here](https://revealjs.com/presentation-size/).
 
 ### Mermaid
 
-[Mermaid](https://mermaid-js.github.io/) content is enabled with `PresentationConfig.enableMermaid`.
+A DslSlide embeds [Mermaid](https://mermaid-js.github.io/) content with an [iframe](https://www.w3schools.com/tags/tag_iframe.asp).
+
+If `output.enableFileSystem` is true, each `mermaid()` call generates an html file in `docs/mermaid`.
+
+The `mermaid()` _iframeConfig_ args are the attributes for the iframe referencing the mermaid content.
+
+Adding `border: 1px solid black;` to _iframeConfig.style_ makes it easier to adjust the iframe dimensions.
 
 ### Heroku
 

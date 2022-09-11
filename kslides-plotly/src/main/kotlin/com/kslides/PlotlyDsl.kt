@@ -16,9 +16,7 @@ fun DslSlide.plotly(
   plotlyConfig: PlotlyConfig = PlotlyConfig(),
   block: Plot.() -> Unit,
 ) {
-  val iframeId = _iframeCount++
-  val kslides = presentation.kslides
-
+  val filename = newFilename()
   val mergedConfig =
     PlotlyIframeConfig()
       .also { config ->
@@ -27,8 +25,8 @@ fun DslSlide.plotly(
         config.merge(iframeConfig)
       }
 
-  recordContent(kslides, mergedConfig.staticContent, filename(iframeId), plotlyPath) {
-    plotlyContent(kslides) {
+  recordContent(presentation.kslides, mergedConfig.staticContent, filename, plotlyPath, _useHttp) {
+    plotlyContent(presentation.kslides) {
       plot(config = plotlyConfig) {
         block()
         // Override the layout dimensions with those supplied in the args
@@ -43,10 +41,10 @@ fun DslSlide.plotly(
   }
 
   _section?.iframe {
-    src = plotlyFilename(iframeId)
+    src = plotlyFilename(filename)
     mergedConfig.width.also { if (it.isNotBlank()) this.width = it }
     mergedConfig.height.also { if (it.isNotBlank()) this.height = it }
     mergedConfig.style.also { if (it.isNotBlank()) this.style = it }
     mergedConfig.title.also { if (it.isNotBlank()) this.title = it }
-  } ?: error("plotly{} must be called from within a content{} block")
+  } ?: error("plotly() must be called from within a content{} block")
 }

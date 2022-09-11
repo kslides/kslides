@@ -264,7 +264,6 @@ class PresentationConfig : AbstractConfig() {
   var enableMathJax3 by ConfigProperty<Boolean>(kslidesManagedValues)
   var enableCodeCopy by ConfigProperty<Boolean>(kslidesManagedValues)
   var enableMenu by ConfigProperty<Boolean>(kslidesManagedValues)
-  var enableMermaid by ConfigProperty<Boolean>(kslidesManagedValues)
 
   var topLeftHref by ConfigProperty<String>(kslidesManagedValues)
   var topLeftTarget by ConfigProperty<HrefTarget>(kslidesManagedValues)
@@ -307,6 +306,7 @@ class PresentationConfig : AbstractConfig() {
   internal val slideConfig = SlideConfig()
   internal val playgroundConfig = PlaygroundConfig()
   internal val plotlyIframeConfig = PlotlyIframeConfig()
+  internal val mermaidIframeConfig = MermaidIframeConfig()
 
   // Only the global default config is initialized with default values
   internal fun assignDefaults() {
@@ -323,7 +323,6 @@ class PresentationConfig : AbstractConfig() {
     enableMathJax3 = false
     enableCodeCopy = true
     enableMenu = false
-    enableMermaid = false
 
     topLeftHref = ""
     topLeftTarget = HrefTarget.BLANK
@@ -357,6 +356,7 @@ class PresentationConfig : AbstractConfig() {
     slideConfig.assignDefaults()
     playgroundConfig.assignDefaults()
     plotlyIframeConfig.assignDefaults()
+    mermaidIframeConfig.assignDefaults()
   }
 
   internal fun mergeConfig(other: PresentationConfig) {

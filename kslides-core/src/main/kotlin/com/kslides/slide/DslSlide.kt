@@ -22,32 +22,27 @@ interface DslSlide {
   val globalPlaygroundConfig get() = presentation.kslides.globalPresentationConfig.playgroundConfig
   val presentationPlaygroundConfig get() = presentation.presentationConfig.playgroundConfig
   val playgroundPath get() = presentation.kslides.outputConfig.playgroundPath
+
   val globalPlotlyConfig get() = presentation.kslides.globalPresentationConfig.plotlyIframeConfig
   val presentationPlotlyConfig get() = presentation.presentationConfig.plotlyIframeConfig
   val plotlyPath get() = presentation.kslides.outputConfig.plotlyPath
 
+  val globalMermaidConfig get() = presentation.kslides.globalPresentationConfig.mermaidIframeConfig
+  val presentationMermaidConfig get() = presentation.presentationConfig.mermaidIframeConfig
+  val mermaidPath get() = presentation.kslides.outputConfig.mermaidPath
+
   fun processSlide(section: SECTION)
 
-  fun filename(iframeId: Int) = "slide-$_slideId-$iframeId.html"
+  fun newFilename() = "slide-$_slideId-${_iframeCount++}.html"
 
-  fun playgroundFilename(iframeId: Int) =
-    listOf(presentation.kslides.outputConfig.playgroundDir, filename(iframeId))
-      .toPath(addPrefix = false, addTrailing = false)
+  fun playgroundFilename(filename: String) =
+    listOf(presentation.kslides.outputConfig.playgroundDir, filename).toPath(addPrefix = false, addTrailing = false)
 
-  fun plotlyFilename(iframeId: Int) =
-    listOf(presentation.kslides.outputConfig.plotlyDir, filename(iframeId))
-      .toPath(addPrefix = false, addTrailing = false)
+  fun plotlyFilename(filename: String) =
+    listOf(presentation.kslides.outputConfig.plotlyDir, filename).toPath(addPrefix = false, addTrailing = false)
 
-  @KSlidesDslMarker
-  fun SECTION.mermaid(text: String) {
-    div("mermaid") {
-      // Remove the leading and trailing newlines, which the mermaid parser doesn't like
-      +text.lines()
-        .filter { it.isNotBlank() }
-        .map { it.trimStart() }
-        .joinToString("\n")
-    }
-  }
+  fun mermaidFilename(filename: String) =
+    listOf(presentation.kslides.outputConfig.mermaidDir, filename).toPath(addPrefix = false, addTrailing = false)
 }
 
 class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :

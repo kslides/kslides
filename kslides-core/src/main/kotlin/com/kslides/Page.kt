@@ -196,10 +196,6 @@ internal object Page {
       rawHtml("\n\t")
       script {
         rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config, srcPrefix)}\t\t});\n\n")
-
-        if (config.enableMermaid) {
-          rawHtml("\n\t\tmermaid.initialize({startOnLoad:true});\n\n")
-        }
       }
     }
 }

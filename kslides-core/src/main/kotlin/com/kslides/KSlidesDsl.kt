@@ -4,7 +4,6 @@ import com.github.pambrose.common.util.nullIfBlank
 import com.kslides.InternalUtils.stripBraces
 import com.kslides.InternalUtils.writeIframeContent
 import com.kslides.config.CodeSnippetConfig
-import com.kslides.slide.DslSlide
 import kotlinx.html.*
 import mu.KLogging
 
@@ -41,22 +40,23 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
 }
 
 // Changed from internal
-fun DslSlide.recordContent(
+fun recordContent(
   kslides: KSlides,
   staticContent: Boolean,
   filename: String,
   path: String,
+  useHttp: Boolean,
   content: () -> String
 ) {
-  if (_useHttp) {
+  if (useHttp) {
     if (staticContent) {
       kslides.staticIframeContent.computeIfAbsent(filename) {
-        KSlidesDsl.logger.info { "Saving source: $filename" }
+        KSlidesDsl.logger.debug { "Saving source: $filename" }
         content()
       }
     } else {
       kslides.dynamicIframeContent.computeIfAbsent(filename) {
-        KSlidesDsl.logger.info { "Saving lambda: $filename" }
+        KSlidesDsl.logger.debug { "Saving lambda: $filename" }
         content
       }
     }
