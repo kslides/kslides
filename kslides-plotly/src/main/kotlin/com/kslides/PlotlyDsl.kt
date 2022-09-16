@@ -25,7 +25,7 @@ fun DslSlide.plotly(
         config.merge(iframeConfig)
       }
 
-  recordContent(presentation.kslides, mergedConfig.staticContent, filename, plotlyPath, _useHttp) {
+  recordIframeContent(_useHttp, mergedConfig.staticContent, presentation.kslides, plotlyPath, filename) {
     plotlyContent(presentation.kslides) {
       plot(config = plotlyConfig) {
         block()

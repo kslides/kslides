@@ -19,7 +19,7 @@ fun DslSlide.mermaid(
         config.merge(iframeConfig)
       }
 
-  recordContent(presentation.kslides, mergedConfig.staticContent, filename, mermaidPath, _useHttp) {
+  recordIframeContent(_useHttp, mergedConfig.staticContent, presentation.kslides, mermaidPath, filename) {
     mermaidContent(presentation.kslides, mermaidText())
   }
 

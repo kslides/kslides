@@ -30,7 +30,7 @@ fun DslSlide.playground(
       localConfig.css
     )
 
-  recordContent(presentation.kslides, mergedConfig.staticContent, filename, playgroundPath, _useHttp) {
+  recordIframeContent(_useHttp, mergedConfig.staticContent, presentation.kslides, playgroundPath, filename) {
     playgroundContent(presentation.kslides, mergedConfig, combinedCss, srcName, otherSrcs.toList())
   }
 

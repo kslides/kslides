@@ -753,9 +753,90 @@ dslSlide {
         </section>
         
         <section>
+          <section>
+            <h2>
+              <a href="https://kroki.io" target="_blank">Kroki Support &#128071;</a>
+            </h2>
+          </section>
+          
+          <section>
+            <h2>Graphviz</h2>
+            <img src="kroki/slide-36-1.svg" style="zoom: 2.0">
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"Graphviz" }
+    kroki("graphviz") {
+      """
+        digraph G {Hello->World}
+      """
+    }
+  }
+}
+```
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*kroki1%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*kroki1%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+</script>
+          </section>
+          
+          <section>
+            <h2>PlantUML</h2>
+            <img src="kroki/slide-38-1.svg" style="zoom: 2.0">
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+dslSlide {
+  content {
+    h2 { +"PlantUML" }
+    kroki("plantuml") {
+      """
+        skinparam monochrome true
+        skinparam ranksep 20
+        skinparam dpi 150
+        skinparam arrowThickness 0.7
+        skinparam packageTitleAlignment left
+        skinparam usecaseBorderThickness 0.4
+        skinparam defaultFontSize 12
+        skinparam rectangleBorderThickness 1
+
+        rectangle "Main" {
+          (main.view)
+          (singleton)
+        }
+        rectangle "Base" {
+          (base.component)
+          (component)
+          (model)
+        }
+        rectangle "<b>main.ts</b>" as main_ts
+
+        (component) ..> (base.component)
+        main_ts ==> (main.view)
+        (main.view) --> (component)
+        (main.view) ...> (singleton)
+        (singleton) ---> (model)
+      """
+    }
+  }
+}
+```
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*kroki2%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*kroki2%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
           <section id="plotly">
             <h2>A plotly-kt Plot</h2>
-            <iframe height="415px" src="plotly/slide-35-1.html" style="width: 85%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="415px" src="plotly/slide-40-1.html" style="width: 85%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -793,7 +874,7 @@ dslSlide {
           
           <section>
             <h2>A plotly-kt Histogram</h2>
-            <iframe height="500px" src="plotly/slide-37-1.html" style="width: 65%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="plotly/slide-42-1.html" style="width: 65%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -840,7 +921,7 @@ dslSlide {
           
           <section>
             <h2>A plotly-kt 3D Surface Plot</h2>
-            <iframe height="500px" src="plotly/slide-39-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="plotly/slide-44-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -894,7 +975,7 @@ dslSlide {
           
           <section>
             <h2>A plotly-kt 3D Scatter Plot</h2>
-            <iframe height="500px" src="plotly/slide-41-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="plotly/slide-46-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -933,7 +1014,7 @@ dslSlide {
           
           <section>
             <h2>A plotly-kt Heatmap</h2>
-            <iframe height="500px" src="plotly/slide-43-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="plotly/slide-48-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">

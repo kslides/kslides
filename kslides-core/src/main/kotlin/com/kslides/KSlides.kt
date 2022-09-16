@@ -9,6 +9,8 @@ import com.kslides.Page.generatePage
 import com.kslides.config.KSlidesConfig
 import com.kslides.config.OutputConfig
 import com.kslides.config.PresentationConfig
+import io.ktor.client.*
+import io.ktor.http.ContentType.Image.SVG
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -91,10 +93,13 @@ class KSlides {
   internal val presentations get() = presentationMap.values
   internal val staticIframeContent = mutableMapOf<String, String>()
   internal val dynamicIframeContent = mutableMapOf<String, () -> String>()
+  internal val staticKorkiContent = mutableMapOf<String, String>()
   internal var slideCount = 1
 
   internal fun presentation(name: String) =
     presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
+
+  internal val client by lazy { HttpClient(io.ktor.client.engine.cio.CIO) }
 
   // User variables
   val css = CssValue()
@@ -173,17 +178,27 @@ class KSlides {
           }
 
         routing {
+          // playground, plotly, and mermaid iframe endpoints
           listOf(config.playgroundDir, config.plotlyDir, config.mermaidDir)
             .forEach {
               get("$it/{fname}") {
                 respondWith {
-                  val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing slide arg $it")
+                  val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing $it arg")
                   kslides.dynamicIframeContent[path]?.invoke()
                     ?: kslides.staticIframeContent[path]
-                    ?: throw IllegalArgumentException("Invalid slide path: $path")
+                    ?: throw IllegalArgumentException("Invalid $it path: $path")
                 }
               }
             }
+
+          // kroki endpoint
+          get("${config.krokiDir}/{fname}") {
+            respondWith(SVG) {
+              val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing ${config.krokiDir} arg")
+              kslides.staticKorkiContent[path]
+                ?: throw IllegalArgumentException("Invalid ${config.krokiDir} path: $path")
+            }
+          }
 
           if (config.defaultHttpRoot.isNotBlank())
             static("/") {

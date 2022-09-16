@@ -2,7 +2,7 @@ package com.kslides
 
 import com.github.pambrose.common.util.nullIfBlank
 import com.kslides.InternalUtils.stripBraces
-import com.kslides.InternalUtils.writeIframeContent
+import com.kslides.InternalUtils.writeContent
 import com.kslides.config.CodeSnippetConfig
 import kotlinx.html.*
 import mu.KLogging
@@ -40,28 +40,45 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
 }
 
 // Changed from internal
-fun recordContent(
-  kslides: KSlides,
-  staticContent: Boolean,
-  filename: String,
-  path: String,
+fun recordIframeContent(
   useHttp: Boolean,
+  staticContent: Boolean,
+  kslides: KSlides,
+  path: String,
+  filename: String,
   content: () -> String
 ) {
   if (useHttp) {
     if (staticContent) {
       kslides.staticIframeContent.computeIfAbsent(filename) {
-        KSlidesDsl.logger.debug { "Saving source: $filename" }
+        KSlidesDsl.logger.info { "Saving source: $filename" }
         content()
       }
     } else {
       kslides.dynamicIframeContent.computeIfAbsent(filename) {
-        KSlidesDsl.logger.debug { "Saving lambda: $filename" }
+        KSlidesDsl.logger.info { "Saving lambda: $filename" }
         content
       }
     }
   } else {
-    writeIframeContent(path, filename, content())
+    writeContent(path, filename, content())
+  }
+}
+
+internal fun recordKrokiContent(
+  useHttp: Boolean,
+  kslides: KSlides,
+  path: String,
+  filename: String,
+  content: () -> String
+) {
+  if (useHttp) {
+    kslides.staticKorkiContent.computeIfAbsent(filename) {
+      KSlidesDsl.logger.info { "Saving source: $filename" }
+      content()
+    }
+  } else {
+    writeContent(path, filename, content())
   }
 }
 

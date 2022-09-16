@@ -14,6 +14,7 @@ import com.kslides.config.PlotlyIframeConfig
 import com.kslides.fragment
 import com.kslides.headRow
 import com.kslides.include
+import com.kslides.kroki
 import com.kslides.kslides
 import com.kslides.listHref
 import com.kslides.mermaid
@@ -500,6 +501,70 @@ fun main() {
         // mermaid2 end
 
         slideDefinition(slides, "mermaid2")
+      }
+
+      verticalSlides {
+        dslSlide {
+          content {
+            h2 {
+              atag("Kroki Support 👇", "https://kroki.io")
+            }
+          }
+        }
+
+        // kroki1 begin
+        dslSlide {
+          content {
+            h2 { +"Graphviz" }
+            kroki("graphviz") {
+              """
+                digraph G {Hello->World}
+              """
+            }
+          }
+        }
+        // kroki1 end
+
+        slideDefinition(slides, "kroki1")
+
+        // kroki2 begin
+        dslSlide {
+          content {
+            h2 { +"PlantUML" }
+            kroki("plantuml") {
+              """
+                skinparam monochrome true
+                skinparam ranksep 20
+                skinparam dpi 150
+                skinparam arrowThickness 0.7
+                skinparam packageTitleAlignment left
+                skinparam usecaseBorderThickness 0.4
+                skinparam defaultFontSize 12
+                skinparam rectangleBorderThickness 1
+
+                rectangle "Main" {
+                  (main.view)
+                  (singleton)
+                }
+                rectangle "Base" {
+                  (base.component)
+                  (component)
+                  (model)
+                }
+                rectangle "<b>main.ts</b>" as main_ts
+
+                (component) ..> (base.component)
+                main_ts ==> (main.view)
+                (main.view) --> (component)
+                (main.view) ...> (singleton)
+                (singleton) ---> (model)
+              """
+            }
+          }
+        }
+        // kroki2 end
+
+        slideDefinition(slides, "kroki2")
       }
 
       verticalSlides {

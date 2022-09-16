@@ -31,9 +31,11 @@ interface DslSlide {
   val presentationMermaidConfig get() = presentation.presentationConfig.mermaidIframeConfig
   val mermaidPath get() = presentation.kslides.outputConfig.mermaidPath
 
+  val krokiPath get() = presentation.kslides.outputConfig.krokiPath
+
   fun processSlide(section: SECTION)
 
-  fun newFilename() = "slide-$_slideId-${_iframeCount++}.html"
+  fun newFilename(suffix: String = "html") = "slide-$_slideId-${_iframeCount++}.$suffix"
 
   fun playgroundFilename(filename: String) =
     listOf(presentation.kslides.outputConfig.playgroundDir, filename).toPath(addPrefix = false, addTrailing = false)
@@ -43,6 +45,9 @@ interface DslSlide {
 
   fun mermaidFilename(filename: String) =
     listOf(presentation.kslides.outputConfig.mermaidDir, filename).toPath(addPrefix = false, addTrailing = false)
+
+  fun krokiFilename(filename: String) =
+    listOf(presentation.kslides.outputConfig.krokiDir, filename).toPath(addPrefix = false, addTrailing = false)
 }
 
 class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :
