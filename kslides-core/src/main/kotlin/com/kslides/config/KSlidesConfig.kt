@@ -1,6 +1,8 @@
 package com.kslides.config
 
-import com.kslides.*
+import com.kslides.CssFile
+import com.kslides.JsFile
+import com.kslides.StaticRoot
 
 class KSlidesConfig {
   val httpStaticRoots =
@@ -21,8 +23,10 @@ class KSlidesConfig {
       JsFile("dist/reveal.js"),
     )
 
-  var playgroundSelector = "playground-code"
-  var playgroundUrl = "https://unpkg.com/kotlin-playground@1"
+  val playgroundSelector = "playground-code"
+  val playgroundUrl = "https://unpkg.com/kotlin-playground@1"
 
-  var plotlyUrl = "https://cdn.plot.ly/plotly-1.54.6.min.js"
+  val plotlyUrl = "https://cdn.plot.ly/plotly-1.54.6.min.js"
+
+  val krokiUrl = "https://kroki.io"
 }

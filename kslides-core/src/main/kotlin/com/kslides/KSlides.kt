@@ -93,7 +93,7 @@ class KSlides {
   internal val presentations get() = presentationMap.values
   internal val staticIframeContent = mutableMapOf<String, String>()
   internal val dynamicIframeContent = mutableMapOf<String, () -> String>()
-  internal val staticKorkiContent = mutableMapOf<String, String>()
+  internal val staticKrokiContent = mutableMapOf<String, String>()
   internal var slideCount = 1
 
   internal fun presentation(name: String) =
@@ -195,7 +195,7 @@ class KSlides {
           get("${config.krokiDir}/{fname}") {
             respondWith(SVG) {
               val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing ${config.krokiDir} arg")
-              kslides.staticKorkiContent[path]
+              kslides.staticKrokiContent[path]
                 ?: throw IllegalArgumentException("Invalid ${config.krokiDir} path: $path")
             }
           }

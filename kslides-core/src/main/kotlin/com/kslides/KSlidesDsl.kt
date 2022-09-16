@@ -46,22 +46,22 @@ fun recordIframeContent(
   kslides: KSlides,
   path: String,
   filename: String,
-  content: () -> String
+  contentBlock: () -> String
 ) {
   if (useHttp) {
     if (staticContent) {
       kslides.staticIframeContent.computeIfAbsent(filename) {
-        KSlidesDsl.logger.info { "Saving source: $filename" }
-        content()
+        KSlidesDsl.logger.info { "Caching iframe source: $filename" }
+        contentBlock()
       }
     } else {
       kslides.dynamicIframeContent.computeIfAbsent(filename) {
-        KSlidesDsl.logger.info { "Saving lambda: $filename" }
-        content
+        KSlidesDsl.logger.info { "Caching iframe lambda: $filename" }
+        contentBlock
       }
     }
   } else {
-    writeContent(path, filename, content())
+    writeContent(path, filename, contentBlock())
   }
 }
 
@@ -70,16 +70,17 @@ internal fun recordKrokiContent(
   kslides: KSlides,
   path: String,
   filename: String,
-  content: () -> String
+  krokiBlock: () -> String
 ) {
-  if (useHttp) {
-    kslides.staticKorkiContent.computeIfAbsent(filename) {
-      KSlidesDsl.logger.info { "Saving source: $filename" }
-      content()
+  // This will limit the calls to the Kroki server
+  val svg =
+    kslides.staticKrokiContent.computeIfAbsent(filename) {
+      KSlidesDsl.logger.info { "Caching kroki source: $filename" }
+      krokiBlock()
     }
-  } else {
-    writeContent(path, filename, content())
-  }
+
+  if (!useHttp)
+    writeContent(path, filename, svg)
 }
 
 @HtmlTagMarker

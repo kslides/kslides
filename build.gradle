@@ -2,10 +2,11 @@ plugins {
     id 'java'
     id 'application'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm' version '1.7.10' apply false
-    id 'org.jmailen.kotlinter' version "3.12.0" apply false
-    id "com.github.ben-manes.versions" version '0.42.0' apply false
-    id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.10'
+    id 'org.jmailen.kotlinter' version "3.12.0"
+    id "com.github.ben-manes.versions" version '0.42.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 allprojects {
@@ -16,8 +17,9 @@ allprojects {
     apply plugin: 'application'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
-    apply plugin: 'org.jmailen.kotlinter'
     apply plugin: 'org.jetbrains.kotlin.jvm'
+    apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+    apply plugin: 'org.jmailen.kotlinter'
     apply plugin: 'com.github.ben-manes.versions'
 
     repositories {
@@ -50,6 +52,8 @@ allprojects {
 subprojects {
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version"
+
+        implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
 
         implementation "org.jetbrains.kotlin-wrappers:kotlin-css:$css_version"
 

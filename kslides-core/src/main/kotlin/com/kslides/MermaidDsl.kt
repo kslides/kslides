@@ -8,7 +8,7 @@ import kotlinx.html.*
 @KSlidesDslMarker
 fun DslSlide.mermaid(
   iframeConfig: MermaidIframeConfig = MermaidIframeConfig(),
-  mermaidText: () -> String,
+  mermaidBlock: () -> String,
 ) {
   val filename = newFilename()
   val mergedConfig =
@@ -20,7 +20,7 @@ fun DslSlide.mermaid(
       }
 
   recordIframeContent(_useHttp, mergedConfig.staticContent, presentation.kslides, mermaidPath, filename) {
-    mermaidContent(presentation.kslides, mermaidText())
+    mermaidContent(presentation.kslides, mermaidBlock())
   }
 
   _section?.iframe {
