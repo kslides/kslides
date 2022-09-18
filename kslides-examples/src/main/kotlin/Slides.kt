@@ -10,7 +10,6 @@ import com.kslides.atag
 import com.kslides.bodyRow
 import com.kslides.by
 import com.kslides.codeSnippet
-import com.kslides.config.MermaidIframeConfig
 import com.kslides.config.PlotlyIframeConfig
 import com.kslides.diagram
 import com.kslides.fragment
@@ -18,7 +17,6 @@ import com.kslides.headRow
 import com.kslides.include
 import com.kslides.kslides
 import com.kslides.listHref
-import com.kslides.mermaid
 import com.kslides.orderedList
 import com.kslides.permuteBy
 import com.kslides.playground
@@ -455,62 +453,8 @@ fun main() {
         dslSlide {
           content {
             h2 {
-              atag("Mermaid Support 👇", "https://mermaid-js.github.io/mermaid/#/")
-            }
-          }
-        }
-
-        // mermaid1 begin
-        dslSlide {
-          content {
-            h2 {
-              atag("Mermaid", "https://mermaid-js.github.io/mermaid/#/flowchart")
-              +" Flowchart"
-            }
-            mermaid(MermaidIframeConfig { style = "border: 1px solid black;" }) {
-              """
-                %%{init: { "flowchart": { "curve": "linear" } } }%%
-                flowchart TD
-                  A[Start] --> B{Is it?}
-                  B -->|Yes| C[OK]
-                  C --> D[Rethink]
-                  D --> B
-                  B ---->|No| E[End]
-              """
-            }
-          }
-        }
-        // mermaid1 end
-
-        slideDefinition(slides, "mermaid1")
-
-        // mermaid2 begin
-        dslSlide {
-          content {
-            h2 {
-              +"Mermaid "
-              atag("Pie Charts", "https://mermaid-js.github.io/mermaid/#/pie")
-            }
-            mermaid {
-              """
-                pie title Pets adopted by volunteers
-                    "Dogs" : 386
-                    "Cats" : 85
-                    "Birds" : 25
-              """
-            }
-          }
-        }
-        // mermaid2 end
-
-        slideDefinition(slides, "mermaid2")
-      }
-
-      verticalSlides {
-        dslSlide {
-          content {
-            h2 {
-              atag("Kroki Support 👇", "https://kroki.io")
+              atag("Kroki Diagram ", "https://kroki.io")
+              +"Support 👇"
             }
           }
         }
@@ -524,8 +468,7 @@ fun main() {
               style = "zoom: 2.0"
               options = mapOf(
                 "graph-attribute-fontcolor" to "red",
-                "graph-attribute-label" to "My favorite letters",
-                "edge-attribute-color" to "blue",
+                "graph-attribute-label" to "A Simple Title",
                 "edge-attribute-color" to "blue",
                 "edge-attribute-arrowhead" to "diamond"
               )
@@ -547,7 +490,7 @@ fun main() {
             diagram("plantuml") {
               outputType = DiagramOutputType.SVG
               style = "width: 300px;"
-              options = mapOf("theme" to "hacker")
+              options = mapOf("theme" to "spacelab")
               content =
                 """
                 skinparam monochrome true
@@ -582,6 +525,92 @@ fun main() {
         // kroki2 end
 
         slideDefinition(slides, "kroki2")
+
+
+        // kroki3 begin
+        dslSlide {
+          content {
+            h2 { +"BlockDiag" }
+            diagram("blockdiag") {
+              outputType = DiagramOutputType.SVG
+              //style = "zoom: 2.0"
+              options = mapOf("size" to "320x240")
+              content =
+                """
+                  blockdiag {
+                    blockdiag -> generates -> "block-diagrams";
+                    blockdiag -> is -> "very easy!";
+                  
+                    blockdiag [color = "greenyellow"];
+                    "block-diagrams" [color = "pink"];
+                    "very easy!" [color = "orange"];
+}              """
+            }
+          }
+        }
+        // kroki3 end
+
+        slideDefinition(slides, "kroki3")
+      }
+
+      verticalSlides {
+        dslSlide {
+          content {
+            h2 {
+              atag("Mermaid Support 👇", "https://mermaid-js.github.io/mermaid/#/")
+            }
+          }
+        }
+
+        // mermaid1 begin
+        dslSlide {
+          content {
+            h2 {
+              atag("Mermaid", "https://mermaid-js.github.io/mermaid/#/flowchart")
+              +" Flowchart"
+            }
+            diagram("mermaid") {
+              outputType = DiagramOutputType.PNG
+              style = "border: 1px solid black;"
+              content =
+                """
+                %%{init: { "flowchart": { "curve": "linear" } } }%%
+                flowchart TD
+                  A[Start] --> B{Is it?}
+                  B -->|Yes| C[OK]
+                  C --> D[Rethink]
+                  D --> B
+                  B ---->|No| E[End]
+                """
+            }
+          }
+        }
+        // mermaid1 end
+
+        slideDefinition(slides, "mermaid1")
+
+        // mermaid2 begin
+        dslSlide {
+          content {
+            h2 {
+              +"Mermaid "
+              atag("Pie Charts", "https://mermaid-js.github.io/mermaid/#/pie")
+            }
+            diagram("mermaid") {
+              outputType = DiagramOutputType.PNG
+              content =
+                """
+                pie title Pets adopted by volunteers
+                    "Dogs" : 386
+                    "Cats" : 85
+                    "Birds" : 25
+                """
+            }
+          }
+        }
+        // mermaid2 end
+
+        slideDefinition(slides, "mermaid2")
       }
 
       verticalSlides {
