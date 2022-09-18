@@ -522,12 +522,13 @@ fun main() {
             diagram("graphviz") {
               outputType = DiagramOutputType.SVG
               style = "zoom: 2.0"
-
               options = mapOf(
                 "graph-attribute-fontcolor" to "red",
                 "graph-attribute-label" to "My favorite letters",
+                "edge-attribute-color" to "blue",
+                "edge-attribute-color" to "blue",
+                "edge-attribute-arrowhead" to "diamond"
               )
-
               content =
                 """
                   digraph G {Hello->World}
@@ -545,8 +546,8 @@ fun main() {
             h2 { +"PlantUML" }
             diagram("plantuml") {
               outputType = DiagramOutputType.SVG
-              style = "width: 200px; height: 200px;"
-
+              style = "width: 300px;"
+              options = mapOf("theme" to "hacker")
               content =
                 """
                 skinparam monochrome true

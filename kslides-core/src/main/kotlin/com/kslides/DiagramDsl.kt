@@ -61,7 +61,7 @@ fun DslSlide.diagram(
 
 private fun DslSlide.fetchKrokiContent(filename: String, desc: Map<String, Any>): ByteArray =
   runBlocking {
-    DiagramDescription.logger.info { "Fetching kroki content for $filename - $desc" }
+    DiagramDescription.logger.info { "Fetching kroki content for $filename" }
     val json =
       buildJsonObject {
         desc.forEach { k, v ->

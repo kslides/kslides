@@ -780,6 +780,9 @@ dslSlide {
       options = mapOf(
         "graph-attribute-fontcolor" to "red",
         "graph-attribute-label" to "My favorite letters",
+        "edge-attribute-color" to "blue",
+        "edge-attribute-color" to "blue",
+        "edge-attribute-arrowhead" to "diamond"
       )
 
       content =
@@ -797,7 +800,7 @@ dslSlide {
           <section>
             <h2>PlantUML</h2>
             <div>
-              <img src="kroki/slide-38-1.svg" style="width: 200px; height: 200px;">
+              <img src="kroki/slide-38-1.svg" style="width: 300px;">
             </div>
           </section>
           
@@ -810,7 +813,9 @@ dslSlide {
     h2 { +"PlantUML" }
     diagram("plantuml") {
       outputType = DiagramOutputType.SVG
-      style = "width: 200px; height: 200px;"
+      style = "width: 300px;"
+
+      options = mapOf("theme" to "hacker")
 
       content =
         """
