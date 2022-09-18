@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" contentStyleType="text/css" height="725px" preserveAspectRatio="none"
+     style="width:464px;height:725px;background:#00000000;" version="1.1" viewBox="0 0 464 725" width="464.0625px"
+     zoomAndPan="magnify"><defs/><g><!--MD5=[e80bd461753d6c5ec111731420959425]
+cluster Main--><g id="cluster_Main"><rect fill="#8B8B8B" height="284.375" rx="6.25" ry="6.25" style="stroke:#4C4C4C;stroke-width:1.5625;" width="225" x="26.5625" y="120.3125"/><text fill="#FFFFFF" font-family="&quot;Verdana&quot;" font-size="18.75" font-weight="bold" lengthAdjust="spacing" textLength="42.1875" x="39.0625" y="150.0001">Main</text></g><!--MD5=[64d5e6a70a29946089aa2bd5a6c51607]
+cluster Base--><g id="cluster_Base"><rect fill="#8B8B8B" height="251.5625" rx="6.25" ry="6.25" style="stroke:#4C4C4C;stroke-width:1.5625;" width="414.0625" x="32.8125" y="456.25"/><text fill="#FFFFFF" font-family="&quot;Verdana&quot;" font-size="18.75" font-weight="bold" lengthAdjust="spacing" textLength="45.3125" x="45.3125" y="485.9376">Base</text></g><g id="elem_main.view"><ellipse cx="139.1141" cy="219.1461" fill="#555555" rx="87.5516" ry="31.6461" style="stroke:#4C4C4C;stroke-width:0.625;"/><text fill="#FFFFFF" font-family="&quot;Verdana&quot;" font-size="18.75" lengthAdjust="spacing" textLength="82.8125" x="97.7078" y="223.5211">main.view</text></g><g id="elem_singleton"><ellipse cx="134.5051" cy="347.2711" fill="#555555" rx="79.8176" ry="31.6461" style="stroke:#4C4C4C;stroke-width:0.625;"/><text fill="#FFFFFF" font-family="&quot;Verdana&quot;" font-size="18.75" lengthAdjust="spacing" textLength="71.875" x="98.5676" y="351.6461">singleton</text></g><g id="elem_base.component"><ellipse cx="298.6882" cy="650.3961" fill="#555555" rx="122.9069" ry="31.6461" style="stroke:#4C4C4C;stroke-width:0.625;"/><text fill="#FFFFFF" font-family="&quot;Verdana&quot;" font-size="18.75" lengthAdjust="spacing" textLength="132.8125" x="232.2819" y="654.7711">base.component</text></g><g id="elem_component"><ellipse cx="331.4911" cy="555.0836" fill="#555555" rx="90.8661" ry="31.6461" style="stroke:#4C4C4C;stroke-width:0.625;"/><text fill="#FFFFFF" font-family="&quot;Verdana&quot;" font-size="18.75" lengthAdjust="spacing" textLength="87.5" x="287.7411" y="559.4586">component</text></g><g id="elem_model"><ellipse cx="122.1621" cy="555.0836" fill="#555555" rx="64.3496" ry="31.6461" style="stroke:#4C4C4C;stroke-width:0.625;"/><text fill="#FFFFFF" font-family="&quot;Verdana&quot;" font-size="18.75" lengthAdjust="spacing" textLength="50" x="97.1621" y="559.4586">model</text></g><!--MD5=[e4debf9f501b0b216ec672912727c4c4]
+entity main_ts--><g id="elem_main_ts"><rect fill="#979797" height="69.3752" rx="6.25" ry="6.25" style="stroke:#4C4C4C;stroke-width:1.5625;" width="112.5" x="82.8125" y="26.5625"/><text fill="#FFFFFF" font-family="&quot;Verdana&quot;" font-size="18.75" font-weight="bold" lengthAdjust="spacing" textLength="65.625" x="106.25" y="68.7501">main.ts</text></g><!--MD5=[148b5042eb5e419fc7041d7724d0786a]
+link component to base.component--><g id="link_component_base.component"><path d="M320.3281,587.7344 C317.6875,595.1094 314.8594,603.0938 312.125,610.7813 " fill="none" id="component-to-base.component" style="stroke:#555555;stroke-width:1.09375;stroke-dasharray:7.0,7.0;"/><polygon fill="#555555" points="309.4219,618.3438,320.0118,607.1782,312.0325,610.9804,308.2303,603.0011,309.4219,618.3438" style="stroke:#555555;stroke-width:1.09375;"/></g><!--MD5=[a0e21e09820a7842d12098adfbb2e81d]
+link main_ts to main.view--><g id="link_main_ts_main.view"><path d="M139.0625,95.4688 C139.0625,119.8125 139.0625,153.0469 139.0625,178.75 " fill="none" id="main_ts-to-main.view" style="stroke:#555555;stroke-width:3.125;"/><polygon fill="#555555" points="139.0625,187.1562,145.3125,173.0937,139.0625,179.3437,132.8125,173.0937,139.0625,187.1562" style="stroke:#555555;stroke-width:3.125;"/></g><!--MD5=[4441bedd105933de0d7532f2ab638273]
+link main.view to component--><g id="link_main.view_component"><path d="M176.4375,248.7656 C197.625,266.0469 223.2813,289.8438 240.625,315.625 C283.5469,379.4063 309.9531,466.3438 322.4844,515.6406 " fill="none" id="main.view-to-component" style="stroke:#555555;stroke-width:1.09375;"/><polygon fill="#555555" points="324.375,523.2188,327.0697,508.0677,322.5012,515.6343,314.9346,511.0658,324.375,523.2188" style="stroke:#555555;stroke-width:1.09375;"/></g><!--MD5=[13ad85ba1f11006a238f12e2f77a82bd]
+link main.view to singleton--><g id="link_main.view_singleton"><path d="M137.9063,252 C137.2813,268.7969 136.4844,289.7344 135.8125,307.5938 " fill="none" id="main.view-to-singleton" style="stroke:#555555;stroke-width:1.09375;stroke-dasharray:7.0,7.0;"/><polygon fill="#555555" points="135.5156,315.5469,142.2833,301.726,135.8056,307.7398,129.7919,301.2621,135.5156,315.5469" style="stroke:#555555;stroke-width:1.09375;"/></g><!--MD5=[aa7a8951c655979b364d27a3b63fee25]
+link singleton to model--><g id="link_singleton_model"><path d="M132.5,379.8594 C130.2969,415.8906 126.6563,475.7344 124.25,515 " fill="none" id="singleton-to-model" style="stroke:#555555;stroke-width:1.09375;"/><polygon fill="#555555" points="123.7656,523.0469,130.8466,509.3839,124.2335,515.2484,118.3691,508.6353,123.7656,523.0469" style="stroke:#555555;stroke-width:1.09375;"/></g><!--MD5=[6768062f6e52d014c8d273fb7abd2971]
+@startuml
+!theme sandstone
+skinparam monochrome true
+                skinparam ranksep 20
+                skinparam dpi 150
+                skinparam arrowThickness 0.7
+                skinparam packageTitleAlignment left
+                skinparam usecaseBorderThickness 0.4
+                skinparam defaultFontSize 12
+                skinparam rectangleBorderThickness 1
+
+                rectangle "Main" {
+                  (main.view)
+                  (singleton)
+                }
+                rectangle "Base" {
+                  (base.component)
+                  (component)
+                  (model)
+                }
+                rectangle "<b>main.ts</b>" as main_ts
+
+                (component) ..> (base.component)
+                main_ts ==> (main.view)
+                (main.view) - -> (component)
+                (main.view) ...> (singleton)
+                (singleton) - - -> (model)
+@enduml
+
+@startuml
+
+
+
+skinparam backgroundColor transparent
+skinparam useBetaStyle false
+
+
+
+
+
+
+<style>
+  root {
+    BackgroundColor transparent
+    FontColor #fff
+    HyperLinkColor #f47c3c
+    LineColor #2d547a
+    LineThickness 1
+    Margin 10
+    Padding 6
+    Shadowing 0.0
+  }
+  node {
+   Padding 15
+   roundcorner 20
+   BackgroundColor #325d88-#2d547a
+  }
+  caption {
+    LineThickness 0
+  }
+  footer {
+    LineThickness 0
+  }
+  groupHeader {
+    BackgroundColor #8e8c84
+    FontColor #29abe0
+    FontStyle bold
+  }
+  header {
+    LineThickness 0
+  }
+  referenceHeader {
+    BackgroundColor transparent
+    FontColor #3e3f3a
+    FontStyle bold
+  }
+  separator {
+    BackgroundColor #fff
+    FontColor transparent
+    FontStyle bold
+  }
+  title {
+	FontSize 20
+	BorderRoundCorner            8
+	BorderThickness 	         1
+	BackgroundColor  #999890-#8e8c84
+	FontColor #325d88
+	BorderColor #8e8c84
+  }
+  nwdiagDiagram {
+	network {
+			FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88    
+		LineColor #325d88
+		LineThickness 1.0
+		FontColor #2d547a
+	}
+	server {
+			FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+	}
+	arrow {
+		FontColor #2d547a
+		LineColor #2d547a
+	}
+	group {
+		BackGroundColor #f8f5f0
+		LineColor #dfddd8
+		LineThickness 2.0
+		Margin 5
+		Padding 5
+	}
+  }
+  ganttDiagram {
+	task {
+			FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+		LineColor #325d88
+		Margin 10
+		Padding 6
+	}
+	note {
+		FontColor #fff
+		LineColor #259aca
+		BackGroundColor #29abe0
+	}
+	separator {
+		LineColor #8e8c84
+		BackGroundColor #8e8c84-#807e77
+		FontColor #fff
+	}
+	milestone {
+		FontColor #29abe0
+		FontSize 16
+		FontStyle italic
+		BackGroundColor #8e8c84
+		LineColor #807e77
+	}
+	timeline {
+		BackgroundColor #8e8c84
+		FontColor #fff
+	}
+	closed {
+		BackgroundColor #dc7036
+		FontColor #fff
+	}
+  }
+</style>
+skinparam defaultFontName       "Verdana"
+skinparam defaultFontSize       12
+skinparam dpi                   100
+skinparam shadowing             false
+skinparam roundcorner           8
+skinparam ParticipantPadding    40
+skinparam BoxPadding            40
+skinparam Padding               5
+skinparam ArrowColor            #3e3f3a
+skinparam stereotype {
+    CBackgroundColor #999890
+    CBorderColor #807e77
+    ABackgroundColor #9ecb5d
+    ABorderColor #84b144
+    IBackgroundColor #AE423F
+    IBorderColor #c34b47
+    EBackgroundColor #f58950
+    EBorderColor #dc7036
+    NBackgroundColor #3eb3e3
+    NBorderColor #259aca
+}
+skinparam title {
+	FontColor	                 #325d88
+	BorderColor	                 #807e77
+	FontSize	    	         20
+	BorderRoundCorner            8
+	BorderThickness 	         1
+	BackgroundColor              #999890-#8e8c84
+}
+
+skinparam legend {
+	BackgroundColor #8e8c84
+	BorderColor #807e77
+	FontColor #f8f5f0
+}
+
+skinparam swimlane {
+	BorderColor #29abe0
+	BorderThickness 2
+	TitleBackgroundColor  #999890-#8e8c84
+	TitleFontColor #325d88
+}
+
+
+skinparam activity {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+	BarColor #93c54b
+	StartColor #29abe0
+	EndColor #29abe0
+	DiamondBackgroundColor #999890
+  	DiamondBorderColor #807e77
+  	DiamondFontColor #fff
+}
+
+
+skinparam participant {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+	ParticipantBorderThickness 2
+}
+
+
+skinparam actor {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+}
+
+
+skinparam arrow {
+	Thickness 3
+	Color #325d88
+	FontColor #fff
+}
+
+
+skinparam sequence {
+	BorderColor #325d88
+	TitleFontColor #325d88
+	BackgroundColor transparent
+	StartColor #325d88
+	EndColor #325d88
+	BoxBackgroundColor transparent
+	BoxBorderColor #3e3f3a
+	BoxFontColor #3e3f3a
+	DelayFontColor #3e3f3a
+	LifeLineBorderColor #8e8c84
+	LifeLineBorderThickness 2
+	LifeLineBackgroundColor #807e77
+	GroupBorderColor #3e3f3a
+	GroupFontColor #3e3f3a
+	GroupHeaderFontColor #29abe0
+	GroupBackgroundColor #8e8c84
+	GroupHeaderBackgroundColor transparent
+	DividerBackgroundColor #3e3f3a
+    DividerBorderColor #3e3f3a
+    DividerBorderThickness 2
+    DividerFontColor #f8f5f0
+	ReferenceBackgroundColor transparent
+	ReferenceBorderColor #3e3f3a
+	ReferenceFontColor #3e3f3a
+	ReferenceHeaderFontColor #29abe0
+	ReferenceHeaderBackgroundColor #8e8c84
+	StereotypeFontColor #fff
+}
+
+
+skinparam partition {
+	BorderColor #325d88
+	FontColor #325d88
+	BackgroundColor transparent
+}
+
+
+skinparam collections {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+}
+
+
+skinparam control {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+}
+
+
+skinparam entity {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+}
+
+
+skinparam boundary {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+}
+
+
+skinparam agent {
+	BackgroundColor #f47c3c
+	BorderColor #f58950
+	FontColor #3e3f3a
+}
+
+
+skinparam note {
+	BorderThickness 1
+	BackgroundColor #29abe0
+	BorderColor #259aca
+	FontColor #fff
+}
+
+
+skinparam artifact {
+	BackgroundColor #3e3f3a
+	BorderColor #383934
+	FontColor #f8f5f0
+}
+
+
+skinparam component {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+}
+
+
+skinparam interface {
+	BackgroundColor  #c34b47
+	BorderColor  #d9534f
+	FontColor #3e3f3a
+}
+
+
+skinparam storage {
+	BackgroundColor #f47c3c
+  	BorderColor #dc7036
+	FontColor #fff
+}
+
+
+skinparam node {
+	BackgroundColor  #8e8c84
+	BorderColor #f8f5f0
+	FontColor #f8f5f0
+}
+
+
+skinparam cloud {
+	BackgroundColor #F2FCFE-#eeeeee
+	BorderColor #F2FCFE
+	FontColor #3e3f3a
+}
+
+
+skinparam database {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+}
+
+
+skinparam class {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+	HeaderBackgroundColor #476d94
+	StereotypeFontColor #3e3f3a
+	BorderThickness 1
+	AttributeFontColor #fff
+	AttributeFontSize 11
+}
+
+
+skinparam object {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+	StereotypeFontColor #3e3f3a
+	BorderThickness 1
+	AttributeFontColor #fff
+	AttributeFontSize 11
+}
+
+
+skinparam usecase {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+	BorderThickness 2
+	StereotypeFontColor #325d88
+}
+
+
+skinparam rectangle {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+	BackgroundColor #999890
+	BorderThickness 2
+	StereotypeFontColor #325d88
+}
+
+
+skinparam package {
+	BackgroundColor #8e8c84
+  	BorderColor #325d88
+	FontColor #325d88
+	BorderThickness 2
+}
+
+
+skinparam folder {
+	BackgroundColor #999890
+  	BorderColor #f47c3c
+	FontColor #f47c3c
+	BorderThickness 2
+}
+
+
+skinparam frame {
+	BackgroundColor #999890
+  	BorderColor #29abe0
+	FontColor #29abe0
+	BorderThickness 2
+}
+
+
+skinparam state {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+	BackgroundColor #476d94
+	StartColor #29abe0
+	EndColor #29abe0
+	AttributeFontColor #fff
+	AttributeFontSize 11
+}
+
+
+skinparam queue {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+}
+
+
+skinparam card {
+	BackgroundColor #29abe0
+	BorderColor #259aca
+	FontColor #fff
+}
+
+
+skinparam file {
+	BackgroundColor #807e77
+	BorderColor #f8f5f0
+	FontColor #f8f5f0
+}
+
+
+skinparam stack {
+		FontColor #fff
+	BorderColor #2d547a
+	BackgroundColor #325d88
+}
+skinparam monochrome true
+                skinparam ranksep 20
+                skinparam dpi 150
+                skinparam arrowThickness 0.7
+                skinparam packageTitleAlignment left
+                skinparam usecaseBorderThickness 0.4
+                skinparam defaultFontSize 12
+                skinparam rectangleBorderThickness 1
+
+                rectangle "Main" {
+                  (main.view)
+                  (singleton)
+                }
+                rectangle "Base" {
+                  (base.component)
+                  (component)
+                  (model)
+                }
+                rectangle "<b>main.ts</b>" as main_ts
+
+                (component) ..> (base.component)
+                main_ts ==> (main.view)
+                (main.view) - -> (component)
+                (main.view) ...> (singleton)
+                (singleton) - - -> (model)
+@enduml
+
+PlantUML version 1.2022.5(Sat Apr 30 10:55:52 GMT 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

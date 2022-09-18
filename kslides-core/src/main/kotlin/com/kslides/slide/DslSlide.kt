@@ -27,10 +27,6 @@ interface DslSlide {
   val presentationPlotlyConfig get() = presentation.presentationConfig.plotlyIframeConfig
   val plotlyPath get() = presentation.kslides.outputConfig.plotlyPath
 
-  val globalMermaidConfig get() = presentation.kslides.globalPresentationConfig.mermaidIframeConfig
-  val presentationMermaidConfig get() = presentation.presentationConfig.mermaidIframeConfig
-  val mermaidPath get() = presentation.kslides.outputConfig.mermaidPath
-
   val globalDiagramConfig get() = presentation.kslides.globalPresentationConfig.diagramConfig
   val presentationDiagramConfig get() = presentation.presentationConfig.diagramConfig
   val krokiPath get() = presentation.kslides.outputConfig.krokiPath
@@ -44,9 +40,6 @@ interface DslSlide {
 
   fun plotlyFilename(filename: String) =
     listOf(presentation.kslides.outputConfig.plotlyDir, filename).toPath(addPrefix = false, addTrailing = false)
-
-  fun mermaidFilename(filename: String) =
-    listOf(presentation.kslides.outputConfig.mermaidDir, filename).toPath(addPrefix = false, addTrailing = false)
 
   fun krokiFilename(filename: String) =
     listOf(presentation.kslides.outputConfig.krokiDir, filename).toPath(addPrefix = false, addTrailing = false)

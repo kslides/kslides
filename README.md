@@ -371,7 +371,7 @@ found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src
 | `DslSlide.codeSnippet{}`      | Embeds a code snippet        | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=codeSnippet+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=codeSnippet+%5C%7B&eoccur=1&eoffset=4&etopd=true) |
 | `DslSlide.playground{}`       | Embeds a Kotlin Playground   | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=playground%5C%28&boccur=1&boffset=0&btopd=true&eregex=playground%5C%28&eoccur=1&eoffset=2&etopd=true)     |
 | `DslSlide.plotly{}`           | Embeds a plotly-kt figure    | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=plotly%5C%28&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+plotly1+end&eoccur=1&eoffset=-3&etopd=true)      |
-| `DslSlide.diagram{}`          | Embeds a diagram             | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=diagram%5C%28&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+kroki1+end&eoccur=1&eoffset=-2&etopd=true)      |
+| `DslSlide.diagram{}`          | Embeds a diagram             | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=diagram%5C%28&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+graphviz1+end&eoccur=1&eoffset=-2&etopd=true)      |
 | `FlowContent.unorderedList{}` | Generates an unordered list  | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=unorderedList%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                  |
 | `FlowContent.orderedList{}`   | Generates an ordered list    | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=+orderedList%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                   |
 | `LI.listHref()`               | Generates a list href        | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=listHref%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                       |
@@ -466,6 +466,13 @@ and [here](https://kroki.io/examples.html).
 Each diagram type has its own set of configuration options. The options are specified with an `options` value.
 The options values are specified as a map and the possible option values are listed in 
 the [Kroki documentation](https://docs.kroki.io/kroki/setup/diagram-options/).
+
+The `outputType` value specifies the image type and defaults to `DiagramOutputType.SVG`. As indicated in the
+Kroki docs, not all output types apply to all diagram types.
+
+The `style` value specifies the CSS style for the image.
+
+The `content` value specifies the diagram content.
 
 ### Heroku
 

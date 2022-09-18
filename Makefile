@@ -26,7 +26,7 @@ dokka:
 	./gradlew dokkaHtml
 
 cleandocs:
-	rm -rf docs/playground docs/plotly docs/mermaid docs/kroki
+	rm -rf docs/playground docs/plotly docs/kroki
 
 versioncheck:
 	./gradlew dependencyUpdates

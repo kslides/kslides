@@ -180,8 +180,8 @@ class KSlides {
           }
 
         routing {
-          // playground, plotly, and mermaid iframe endpoints
-          listOf(config.playgroundDir, config.plotlyDir, config.mermaidDir)
+          // playground, and plotly iframe endpoints
+          listOf(config.playgroundDir, config.plotlyDir)
             .forEach {
               get("$it/{fname}") {
                 respondWith {
