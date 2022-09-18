@@ -16,36 +16,40 @@ import mu.KLogging
 
 class DiagramDescription : DiagramConfig() {
   var content = ""
+
   companion object : KLogging()
 }
 
 @KSlidesDslMarker
 fun DslSlide.diagram(
   diagramType: String,
-  descriptionBlock: DiagramDescription.() -> Unit,
+  diagramBlock: DiagramDescription.() -> Unit,
 ) {
+  val diagram = DiagramDescription().apply(diagramBlock)
   val mergedConfig =
     DiagramConfig()
       .also { config ->
         config.merge(globalDiagramConfig)
         config.merge(presentationDiagramConfig)
-        config.merge(DiagramDescription().apply(descriptionBlock))
+        config.merge(diagram)
       }
 
   val filename = newFilename(mergedConfig.outputType.suffix)
 
   recordKrokiContent(_useHttp, presentation.kslides, mergedConfig.outputType, krokiPath, filename) {
-    val descMap: MutableMap<String, Any> =
+    val configMap: MutableMap<String, Any> =
       mutableMapOf(
-        "diagram_source" to DiagramDescription().apply(descriptionBlock).content,
+        "diagram_source" to diagram.content,
         "diagram_type" to diagramType.lowercase(),
         "output_format" to mergedConfig.outputType.suffix,
       )
+
     mergedConfig.options.also { options ->
       if (options.isNotEmpty())
-        descMap["diagram_options"] = options
+        configMap["diagram_options"] = options
     }
-    fetchKrokiContent(filename, descMap)
+
+    fetchKrokiContent(filename, configMap)
   }
 
   _section?.div(classes.nullIfBlank()) {
