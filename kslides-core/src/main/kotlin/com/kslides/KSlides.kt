@@ -2,6 +2,8 @@ package com.kslides
 
 import com.github.pambrose.common.response.respondWith
 import com.github.pambrose.common.util.ensureSuffix
+import com.kslides.DiagramOutputType.Companion.outputTypeFromSuffix
+import com.kslides.DiagramOutputType.SVG
 import com.kslides.KSlides.Companion.logger
 import com.kslides.KSlides.Companion.runHttpServer
 import com.kslides.KSlides.Companion.writeSlidesToFileSystem
@@ -10,7 +12,6 @@ import com.kslides.config.KSlidesConfig
 import com.kslides.config.OutputConfig
 import com.kslides.config.PresentationConfig
 import io.ktor.client.*
-import io.ktor.http.ContentType.Image.SVG
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -18,6 +19,7 @@ import io.ktor.server.http.content.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.defaultheaders.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.css.*
 import mu.KLogging
@@ -93,7 +95,7 @@ class KSlides {
   internal val presentations get() = presentationMap.values
   internal val staticIframeContent = mutableMapOf<String, String>()
   internal val dynamicIframeContent = mutableMapOf<String, () -> String>()
-  internal val staticKrokiContent = mutableMapOf<String, String>()
+  internal val staticKrokiContent = mutableMapOf<String, ByteArray>()
   internal var slideCount = 1
 
   internal fun presentation(name: String) =
@@ -193,10 +195,16 @@ class KSlides {
 
           // kroki endpoint
           get("${config.krokiDir}/{fname}") {
-            respondWith(SVG) {
-              val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing ${config.krokiDir} arg")
-              kslides.staticKrokiContent[path]
-                ?: throw IllegalArgumentException("Invalid ${config.krokiDir} path: $path")
+            val filename =
+              call.parameters["fname"] ?: throw IllegalArgumentException("Missing ${config.krokiDir} filename")
+            val bytes =
+              kslides.staticKrokiContent[filename]
+                ?: throw IllegalArgumentException("Invalid ${config.krokiDir} path: $filename")
+            val suffix = filename.substringAfterLast(".")
+            val outputType = outputTypeFromSuffix(suffix)
+            when (outputType) {
+              SVG -> call.respondText(String(bytes), outputType.contentType)
+              else -> call.respondBytes(bytes, outputType.contentType)
             }
           }
 

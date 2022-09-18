@@ -31,6 +31,8 @@ interface DslSlide {
   val presentationMermaidConfig get() = presentation.presentationConfig.mermaidIframeConfig
   val mermaidPath get() = presentation.kslides.outputConfig.mermaidPath
 
+  val globalDiagramConfig get() = presentation.kslides.globalPresentationConfig.diagramConfig
+  val presentationDiagramConfig get() = presentation.presentationConfig.diagramConfig
   val krokiPath get() = presentation.kslides.outputConfig.krokiPath
 
   fun processSlide(section: SECTION)

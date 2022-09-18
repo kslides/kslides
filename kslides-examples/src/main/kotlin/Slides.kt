@@ -1,3 +1,4 @@
+import com.kslides.DiagramOutputType
 import com.kslides.Effect
 import com.kslides.PlaygroundMode
 import com.kslides.PlaygroundTheme
@@ -11,10 +12,10 @@ import com.kslides.by
 import com.kslides.codeSnippet
 import com.kslides.config.MermaidIframeConfig
 import com.kslides.config.PlotlyIframeConfig
+import com.kslides.diagram
 import com.kslides.fragment
 import com.kslides.headRow
 import com.kslides.include
-import com.kslides.kroki
 import com.kslides.kslides
 import com.kslides.listHref
 import com.kslides.mermaid
@@ -143,6 +144,8 @@ fun main() {
         playgroundConfig {}
         slideConfig {}
         plotlyIframeConfig {}
+        mermaidIframeConfig {}
+        diagramConfig {}
       }
 
       css +=
@@ -516,10 +519,19 @@ fun main() {
         dslSlide {
           content {
             h2 { +"Graphviz" }
-            kroki("graphviz") {
-              """
-                digraph G {Hello->World}
-              """
+            diagram("graphviz") {
+              outputType = DiagramOutputType.SVG
+              style = "zoom: 2.0"
+
+              options = mapOf(
+                "graph-attribute-fontcolor" to "red",
+                "graph-attribute-label" to "My favorite letters",
+              )
+
+              content =
+                """
+                  digraph G {Hello->World}
+                """
             }
           }
         }
@@ -531,8 +543,12 @@ fun main() {
         dslSlide {
           content {
             h2 { +"PlantUML" }
-            kroki("plantuml") {
-              """
+            diagram("plantuml") {
+              outputType = DiagramOutputType.SVG
+              style = "width: 200px; height: 200px;"
+
+              content =
+                """
                 skinparam monochrome true
                 skinparam ranksep 20
                 skinparam dpi 150

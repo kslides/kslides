@@ -1,8 +1,10 @@
 package com.kslides
 
 import com.github.pambrose.common.util.nullIfBlank
+import com.kslides.DiagramOutputType.SVG
 import com.kslides.InternalUtils.stripBraces
-import com.kslides.InternalUtils.writeContent
+import com.kslides.InternalUtils.writeByteArray
+import com.kslides.InternalUtils.writeString
 import com.kslides.config.CodeSnippetConfig
 import kotlinx.html.*
 import mu.KLogging
@@ -51,7 +53,7 @@ fun recordIframeContent(
   if (useHttp) {
     if (staticContent) {
       kslides.staticIframeContent.computeIfAbsent(filename) {
-        KSlidesDsl.logger.info { "Caching iframe source: $filename" }
+        KSlidesDsl.logger.info { "Caching iframe content: $filename" }
         contentBlock()
       }
     } else {
@@ -61,26 +63,31 @@ fun recordIframeContent(
       }
     }
   } else {
-    writeContent(path, filename, contentBlock())
+    writeString(path, filename, contentBlock())
   }
 }
 
 internal fun recordKrokiContent(
   useHttp: Boolean,
   kslides: KSlides,
+  outputType: DiagramOutputType,
   path: String,
   filename: String,
-  krokiBlock: () -> String
+  diagramBlock: () -> ByteArray
 ) {
-  // This will limit the calls to the Kroki server
-  val svg =
+  // Caching the content will limit the calls to the Kroki server
+  val bytes =
     kslides.staticKrokiContent.computeIfAbsent(filename) {
-      KSlidesDsl.logger.info { "Caching kroki source: $filename" }
-      krokiBlock()
+      KSlidesDsl.logger.info { "Caching kroki content: $filename" }
+      diagramBlock()
     }
 
-  if (!useHttp)
-    writeContent(path, filename, svg)
+  if (!useHttp) {
+    when (outputType) {
+      SVG -> writeString(path, filename, String(bytes))
+      else -> writeByteArray(path, filename, bytes)
+    }
+  }
 }
 
 @HtmlTagMarker

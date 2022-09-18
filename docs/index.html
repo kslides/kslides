@@ -761,7 +761,9 @@ dslSlide {
           
           <section>
             <h2>Graphviz</h2>
-            <img src="kroki/slide-36-1.svg">
+            <div>
+              <img src="kroki/slide-36-1.svg" style="zoom: 2.0">
+            </div>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -771,10 +773,19 @@ dslSlide {
 dslSlide {
   content {
     h2 { +"Graphviz" }
-    kroki("graphviz") {
-      """
-        digraph G {Hello->World}
-      """
+    diagram("graphviz") {
+      outputType = DiagramOutputType.SVG
+      style = "zoom: 2.0"
+
+      options = mapOf(
+        "graph-attribute-fontcolor" to "red",
+        "graph-attribute-label" to "My favorite letters",
+      )
+
+      content =
+        """
+          digraph G {Hello->World}
+        """
     }
   }
 }
@@ -785,7 +796,9 @@ dslSlide {
           
           <section>
             <h2>PlantUML</h2>
-            <img src="kroki/slide-38-1.svg">
+            <div>
+              <img src="kroki/slide-38-1.svg" style="width: 200px; height: 200px;">
+            </div>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -795,8 +808,12 @@ dslSlide {
 dslSlide {
   content {
     h2 { +"PlantUML" }
-    kroki("plantuml") {
-      """
+    diagram("plantuml") {
+      outputType = DiagramOutputType.SVG
+      style = "width: 200px; height: 200px;"
+
+      content =
+        """
         skinparam monochrome true
         skinparam ranksep 20
         skinparam dpi 150
