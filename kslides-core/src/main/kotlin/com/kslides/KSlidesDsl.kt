@@ -1,8 +1,10 @@
 package com.kslides
 
 import com.github.pambrose.common.util.nullIfBlank
+import com.kslides.DiagramOutputType.SVG
 import com.kslides.InternalUtils.stripBraces
-import com.kslides.InternalUtils.writeIframeContent
+import com.kslides.InternalUtils.writeByteArray
+import com.kslides.InternalUtils.writeString
 import com.kslides.config.CodeSnippetConfig
 import kotlinx.html.*
 import mu.KLogging
@@ -40,28 +42,51 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
 }
 
 // Changed from internal
-fun recordContent(
-  kslides: KSlides,
-  staticContent: Boolean,
-  filename: String,
-  path: String,
+fun recordIframeContent(
   useHttp: Boolean,
-  content: () -> String
+  staticContent: Boolean,
+  kslides: KSlides,
+  path: String,
+  filename: String,
+  contentBlock: () -> String
 ) {
   if (useHttp) {
     if (staticContent) {
       kslides.staticIframeContent.computeIfAbsent(filename) {
-        KSlidesDsl.logger.debug { "Saving source: $filename" }
-        content()
+        KSlidesDsl.logger.info { "Caching iframe content: $filename" }
+        contentBlock()
       }
     } else {
       kslides.dynamicIframeContent.computeIfAbsent(filename) {
-        KSlidesDsl.logger.debug { "Saving lambda: $filename" }
-        content
+        KSlidesDsl.logger.info { "Caching iframe lambda: $filename" }
+        contentBlock
       }
     }
   } else {
-    writeIframeContent(path, filename, content())
+    writeString(path, filename, contentBlock())
+  }
+}
+
+internal fun recordKrokiContent(
+  useHttp: Boolean,
+  kslides: KSlides,
+  outputType: DiagramOutputType,
+  path: String,
+  filename: String,
+  diagramBlock: () -> ByteArray
+) {
+  // Caching the content will limit the calls to the Kroki server
+  val bytes =
+    kslides.staticKrokiContent.computeIfAbsent(filename) {
+      KSlidesDsl.logger.info { "Caching kroki content: $filename" }
+      diagramBlock()
+    }
+
+  if (!useHttp) {
+    when (outputType) {
+      SVG -> writeString(path, filename, String(bytes))
+      else -> writeByteArray(path, filename, bytes)
+    }
   }
 }
 

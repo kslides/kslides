@@ -1,3 +1,4 @@
+import com.kslides.DiagramOutputType
 import com.kslides.Effect
 import com.kslides.PlaygroundMode
 import com.kslides.PlaygroundTheme
@@ -9,14 +10,13 @@ import com.kslides.atag
 import com.kslides.bodyRow
 import com.kslides.by
 import com.kslides.codeSnippet
-import com.kslides.config.MermaidIframeConfig
 import com.kslides.config.PlotlyIframeConfig
+import com.kslides.diagram
 import com.kslides.fragment
 import com.kslides.headRow
 import com.kslides.include
 import com.kslides.kslides
 import com.kslides.listHref
-import com.kslides.mermaid
 import com.kslides.orderedList
 import com.kslides.permuteBy
 import com.kslides.playground
@@ -142,6 +142,7 @@ fun main() {
         playgroundConfig {}
         slideConfig {}
         plotlyIframeConfig {}
+        diagramConfig {}
       }
 
       css +=
@@ -451,10 +452,35 @@ fun main() {
         dslSlide {
           content {
             h2 {
-              atag("Mermaid Support 👇", "https://mermaid-js.github.io/mermaid/#/")
+              atag("Kroki Diagram ", "https://kroki.io")
+              +"Support 👇"
             }
           }
         }
+
+        // graphviz1 begin
+        dslSlide {
+          content {
+            h2 {
+              atag("Graphviz ", "https://www.graphviz.org")
+              +" Diagram"
+            }
+            diagram("graphviz") {
+              outputType = DiagramOutputType.SVG
+              style = "zoom: 2.0"
+              options = mapOf(
+                "graph-attribute-fontcolor" to "red",
+                "graph-attribute-label" to "A Simple Title",
+                "edge-attribute-color" to "blue",
+                "edge-attribute-arrowhead" to "diamond"
+              )
+              content = "digraph G {Hello->World}"
+            }
+          }
+        }
+        // graphviz1 end
+
+        slideDefinition(slides, "graphviz1")
 
         // mermaid1 begin
         dslSlide {
@@ -463,8 +489,11 @@ fun main() {
               atag("Mermaid", "https://mermaid-js.github.io/mermaid/#/flowchart")
               +" Flowchart"
             }
-            mermaid(MermaidIframeConfig { style = "border: 1px solid black;" }) {
-              """
+            diagram("mermaid") {
+              outputType = DiagramOutputType.PNG
+              //style = "border: 1px solid black;"
+              content =
+                """
                 %%{init: { "flowchart": { "curve": "linear" } } }%%
                 flowchart TD
                   A[Start] --> B{Is it?}
@@ -472,7 +501,7 @@ fun main() {
                   C --> D[Rethink]
                   D --> B
                   B ---->|No| E[End]
-              """
+                """
             }
           }
         }
@@ -485,21 +514,98 @@ fun main() {
           content {
             h2 {
               +"Mermaid "
-              atag("Pie Charts", "https://mermaid-js.github.io/mermaid/#/pie")
+              atag("Pie Chart", "https://mermaid-js.github.io/mermaid/#/pie")
             }
-            mermaid {
-              """
+            diagram("mermaid") {
+              outputType = DiagramOutputType.PNG
+              content =
+                """
                 pie title Pets adopted by volunteers
                     "Dogs" : 386
                     "Cats" : 85
                     "Birds" : 25
-              """
+                """
             }
           }
         }
         // mermaid2 end
 
         slideDefinition(slides, "mermaid2")
+
+        // plantuml1 begin
+        dslSlide {
+          content {
+            h2 {
+              atag("PlantUML", "https://plantuml.com")
+              +" Diagram"
+            }
+            diagram("plantuml") {
+              outputType = DiagramOutputType.SVG
+              style = "width: 300px;"
+              options = mapOf("theme" to "sandstone")
+              content =
+                """
+                skinparam monochrome true
+                skinparam ranksep 20
+                skinparam dpi 150
+                skinparam arrowThickness 0.7
+                skinparam packageTitleAlignment left
+                skinparam usecaseBorderThickness 0.4
+                skinparam defaultFontSize 12
+                skinparam rectangleBorderThickness 1
+
+                rectangle "Main" {
+                  (main.view)
+                  (singleton)
+                }
+                rectangle "Base" {
+                  (base.component)
+                  (component)
+                  (model)
+                }
+                rectangle "<b>main.ts</b>" as main_ts
+
+                (component) ..> (base.component)
+                main_ts ==> (main.view)
+                (main.view) --> (component)
+                (main.view) ...> (singleton)
+                (singleton) ---> (model)
+                """
+            }
+          }
+        }
+        // plantuml1 end
+
+        slideDefinition(slides, "plantuml1")
+
+        // blockdiag1 begin
+        dslSlide {
+          content {
+            h2 {
+              atag("BlockDiag", "http://blockdiag.com/en/")
+              +" Diagram"
+            }
+            diagram("blockdiag") {
+              outputType = DiagramOutputType.SVG
+              //style = "zoom: 2.0"
+              options = mapOf("size" to "320x240")
+              content =
+                """
+                  blockdiag {
+                    blockdiag -> generates -> "block-diagrams";
+                    blockdiag -> is -> "very easy!";
+                  
+                    blockdiag [color = "greenyellow"];
+                    "block-diagrams" [color = "pink"];
+                    "very easy!" [color = "orange"];
+                  }
+                """
+            }
+          }
+        }
+        // blockdiag1 end
+
+        slideDefinition(slides, "blockdiag1")
       }
 
       verticalSlides {

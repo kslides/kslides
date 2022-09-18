@@ -10,7 +10,7 @@ object Plotly : KLogging() {
     document {
       append.html {
         head {
-          //script { src = kslides.internalKSlidesConfig.plotlyUrl; type = "text/javascript" }
+          //script { src = kslides.kslidesConfig.plotlyUrl; type = "text/javascript" }
         }
         body {
           cdnPlotlyHeader.visit(consumer)

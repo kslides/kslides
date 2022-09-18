@@ -306,7 +306,7 @@ class PresentationConfig : AbstractConfig() {
   internal val slideConfig = SlideConfig()
   internal val playgroundConfig = PlaygroundConfig()
   internal val plotlyIframeConfig = PlotlyIframeConfig()
-  internal val mermaidIframeConfig = MermaidIframeConfig()
+  internal val diagramConfig = DiagramConfig()
 
   // Only the global default config is initialized with default values
   internal fun assignDefaults() {
@@ -356,7 +356,7 @@ class PresentationConfig : AbstractConfig() {
     slideConfig.assignDefaults()
     playgroundConfig.assignDefaults()
     plotlyIframeConfig.assignDefaults()
-    mermaidIframeConfig.assignDefaults()
+    diagramConfig.assignDefaults()
   }
 
   internal fun mergeConfig(other: PresentationConfig) {
@@ -366,6 +366,7 @@ class PresentationConfig : AbstractConfig() {
     this.slideConfig.merge(other.slideConfig)
     this.playgroundConfig.merge(other.playgroundConfig)
     this.plotlyIframeConfig.merge(other.plotlyIframeConfig)
+    this.diagramConfig.merge(other.diagramConfig)
   }
 
   @KSlidesDslMarker
@@ -382,4 +383,7 @@ class PresentationConfig : AbstractConfig() {
 
   @KSlidesDslMarker
   fun plotlyIframeConfig(block: PlotlyIframeConfig.() -> Unit) = plotlyIframeConfig.block()
+
+  @KSlidesDslMarker
+  fun diagramConfig(block: DiagramConfig.() -> Unit) = diagramConfig.block()
 }

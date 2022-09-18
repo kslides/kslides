@@ -10,7 +10,7 @@ class OutputConfig(val kslides: KSlides) {
   var staticRootDir = "revealjs"      // directory containing revealjs content
   var playgroundDir = "playground"    // directory where playground content is written
   var plotlyDir = "plotly"            // directory where plotly content is written
-  var mermaidDir = "mermaid"          // directory where mermaid content is written
+  var krokiDir = "kroki"              // directory where kroki content is written
 
   var enableHttp = true
   var httpPort = 8080
@@ -21,5 +21,5 @@ class OutputConfig(val kslides: KSlides) {
 
   internal val playgroundPath: String get() = listOf(outputDir, playgroundDir).toPath(false)
   internal val plotlyPath: String get() = listOf(outputDir, plotlyDir).toPath(false)
-  internal val mermaidPath: String get() = listOf(outputDir, mermaidDir).toPath(false)
+  internal val krokiPath: String get() = listOf(outputDir, krokiDir).toPath(false)
 }

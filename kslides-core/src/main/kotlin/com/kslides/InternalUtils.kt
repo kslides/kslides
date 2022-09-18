@@ -1,7 +1,7 @@
 package com.kslides
 
-import org.apache.commons.text.*
-import java.io.*
+import org.apache.commons.text.StringEscapeUtils
+import java.io.File
 
 object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
@@ -177,12 +177,21 @@ object InternalUtils {
       .map { "$indentToken$it" }
       .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeHtml4(it) else it }
 
-  internal fun writeIframeContent(path: String, slideName: String, content: String) {
+  internal fun writeString(path: String, slideName: String, content: String) {
     mkdir(path)    // Create directory if missing
     "$path$slideName"
       .also {
-        KSlides.logger.info { "Writing iframe content to: $it" }
+        KSlides.logger.info { "Writing String content to: $it" }
         File(it).writeText(content)
+      }
+  }
+
+  internal fun writeByteArray(path: String, slideName: String, bytes: ByteArray) {
+    mkdir(path)    // Create directory if missing
+    "$path$slideName"
+      .also {
+        KSlides.logger.info { "Writing ByteArray content to: $it" }
+        File(it).writeBytes(bytes)
       }
   }
 
