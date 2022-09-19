@@ -474,6 +474,8 @@ The `style` value specifies the CSS style for the image.
 
 The `content` value specifies the diagram content.
 
+[Niolesk](https://niolesk.top/) is a great tool for generating Kroki diagrams.
+
 ### Heroku
 
 Go to your Heroku dashboard, choose your kslides app and click

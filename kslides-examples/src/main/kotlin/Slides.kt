@@ -450,6 +450,7 @@ fun main() {
 
       verticalSlides {
         dslSlide {
+          id = "kroki"
           content {
             h2 {
               atag("Kroki Diagram ", "https://kroki.io")
@@ -486,8 +487,8 @@ fun main() {
         dslSlide {
           content {
             h2 {
-              atag("Mermaid", "https://mermaid-js.github.io/mermaid/#/flowchart")
-              +" Flowchart"
+              atag("Mermaid ", "https://mermaid-js.github.io/mermaid/#/flowchart")
+              +"Flowchart"
             }
             diagram("mermaid") {
               outputType = DiagramOutputType.PNG
@@ -513,8 +514,8 @@ fun main() {
         dslSlide {
           content {
             h2 {
-              +"Mermaid "
-              atag("Pie Chart", "https://mermaid-js.github.io/mermaid/#/pie")
+              atag("Mermaid ", "https://mermaid-js.github.io/mermaid/#/pie")
+              +"Pie Chart"
             }
             diagram("mermaid") {
               outputType = DiagramOutputType.PNG
@@ -536,8 +537,8 @@ fun main() {
         dslSlide {
           content {
             h2 {
-              atag("PlantUML", "https://plantuml.com")
-              +" Diagram"
+              atag("PlantUML ", "https://plantuml.com")
+              +"Diagram"
             }
             diagram("plantuml") {
               outputType = DiagramOutputType.SVG
@@ -582,8 +583,8 @@ fun main() {
         dslSlide {
           content {
             h2 {
-              atag("BlockDiag", "http://blockdiag.com/en/")
-              +" Diagram"
+              atag("BlockDiag ", "http://blockdiag.com/en/")
+              +"Diagram"
             }
             diagram("blockdiag") {
               outputType = DiagramOutputType.SVG
