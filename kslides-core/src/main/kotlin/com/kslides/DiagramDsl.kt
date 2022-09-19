@@ -15,7 +15,7 @@ import kotlinx.serialization.json.putJsonObject
 import mu.KLogging
 
 class DiagramDescription : DiagramConfig() {
-  var content = ""
+  var source = ""
 
   companion object : KLogging()
 }
@@ -39,7 +39,7 @@ fun DslSlide.diagram(
   recordKrokiContent(_useHttp, presentation.kslides, mergedConfig.outputType, krokiPath, filename) {
     val configMap: MutableMap<String, Any> =
       mutableMapOf(
-        "diagram_source" to diagram.content,
+        "diagram_source" to diagram.source,
         "diagram_type" to diagramType.lowercase(),
         "output_format" to mergedConfig.outputType.suffix,
       )

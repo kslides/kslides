@@ -475,7 +475,7 @@ fun main() {
                 "edge-attribute-color" to "blue",
                 "edge-attribute-arrowhead" to "diamond"
               )
-              content = "digraph G {Hello->World}"
+              source = "digraph G {Hello->World}"
             }
           }
         }
@@ -493,7 +493,7 @@ fun main() {
             diagram("mermaid") {
               outputType = DiagramOutputType.PNG
               //style = "border: 1px solid black;"
-              content =
+              source =
                 """
                 %%{init: { "flowchart": { "curve": "linear" } } }%%
                 flowchart TD
@@ -519,7 +519,7 @@ fun main() {
             }
             diagram("mermaid") {
               outputType = DiagramOutputType.PNG
-              content =
+              source =
                 """
                 pie title Pets adopted by volunteers
                     "Dogs" : 386
@@ -544,7 +544,7 @@ fun main() {
               outputType = DiagramOutputType.SVG
               style = "width: 300px;"
               options = mapOf("theme" to "sandstone")
-              content =
+              source =
                 """
                 skinparam monochrome true
                 skinparam ranksep 20
@@ -590,7 +590,7 @@ fun main() {
               outputType = DiagramOutputType.SVG
               style = "zoom: 1.5"
               options = mapOf("size" to "320x240")
-              content =
+              source =
                 """
                   blockdiag {
                     blockdiag -> generates -> "block-diagrams";
