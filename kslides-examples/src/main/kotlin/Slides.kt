@@ -587,7 +587,7 @@ fun main() {
             }
             diagram("blockdiag") {
               outputType = DiagramOutputType.SVG
-              //style = "zoom: 2.0"
+              style = "zoom: 1.5"
               options = mapOf("size" to "320x240")
               content =
                 """
