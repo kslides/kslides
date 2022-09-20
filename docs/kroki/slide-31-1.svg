@@ -25,8 +25,8 @@
 <!-- Hello&#45;&gt;World -->
 <g id="edge1" class="edge">
 <title>Hello&#45;&gt;World</title>
-<path fill="none" stroke="blue" d="M49,-94.7C49,-87.58 49,-79.13 49,-71.11"/>
-<polygon fill="blue" stroke="blue" points="49,-71.1 45,-65.1 49,-59.1 53,-65.1 49,-71.1"/>
+<path fill="none" stroke="blue" d="M49,-94.7C49,-86.98 49,-77.71 49,-69.11"/>
+<polygon fill="blue" stroke="blue" points="52.5,-69.1 49,-59.1 45.5,-69.1 52.5,-69.1"/>
 </g>
 </g>
 </svg>

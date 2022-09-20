@@ -473,7 +473,6 @@ fun main() {
                 "graph-attribute-fontcolor" to "red",
                 "graph-attribute-label" to "A Simple Title",
                 "edge-attribute-color" to "blue",
-                "edge-attribute-arrowhead" to "diamond"
               )
               source = "digraph G {Hello->World}"
             }
