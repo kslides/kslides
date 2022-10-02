@@ -201,8 +201,7 @@ class KSlides {
               kslides.staticKrokiContent[filename]
                 ?: throw IllegalArgumentException("Invalid ${config.krokiDir} path: $filename")
             val suffix = filename.substringAfterLast(".")
-            val outputType = outputTypeFromSuffix(suffix)
-            when (outputType) {
+            when (val outputType = outputTypeFromSuffix(suffix)) {
               SVG -> call.respondText(String(bytes), outputType.contentType)
               else -> call.respondBytes(bytes, outputType.contentType)
             }

@@ -68,22 +68,24 @@ private fun DslSlide.fetchKrokiContent(filename: String, desc: Map<String, Any>)
     DiagramDescription.logger.info { "Fetching kroki content for $filename" }
     val json =
       buildJsonObject {
-        desc.forEach { k, v ->
-          if (v is String)
-            put(k, JsonPrimitive(v))
-          else if (v is Map<*, *>) {
-            putJsonObject(k) {
-              v.forEach { k, v ->
-                when {
-                  k !is String -> error("Invalid key type: $k")
-                  v is Boolean -> put(k, JsonPrimitive(v))
-                  v is String -> put(k, JsonPrimitive(v))
-                  v is Number -> put(k, JsonPrimitive(v))
-                  else -> error("Invalid value type: $v")
+        desc.forEach { (k, v) ->
+          when (v) {
+            is String -> put(k, JsonPrimitive(v))
+            is Map<*, *> -> {
+              putJsonObject(k) {
+                v.forEach { k, v ->
+                  when {
+                    k !is String -> error("Invalid key type: $k")
+                    v is Boolean -> put(k, JsonPrimitive(v))
+                    v is String -> put(k, JsonPrimitive(v))
+                    v is Number -> put(k, JsonPrimitive(v))
+                    else -> error("Invalid value type: $v")
+                  }
                 }
               }
             }
-          } else error("Unexpected value type: ${v::class}")
+            else -> error("Unexpected value type: ${v::class}")
+          }
         }
       }.toString()
 
