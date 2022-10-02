@@ -28,9 +28,9 @@ import kotlinx.css.*
 import kotlinx.css.Float
 import kotlinx.css.properties.*
 import kotlinx.html.*
-import space.kscience.dataforge.meta.Value
-import space.kscience.dataforge.meta.asValue
 import space.kscience.dataforge.meta.configure
+import space.kscience.dataforge.values.Value
+import space.kscience.dataforge.values.asValue
 import space.kscience.plotly.PlotlyConfig
 import space.kscience.plotly.heatmap
 import space.kscience.plotly.histogram

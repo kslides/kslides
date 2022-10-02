@@ -12,7 +12,7 @@ plugins {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.15.0'
+    version '0.15.1'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
@@ -23,7 +23,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url = 'https://maven.pkg.jetbrains.space/mipt-npm/p/sci/maven' }
+//      maven { url = 'https://maven.pkg.jetbrains.space/mipt-npm/p/sci/maven' }
         maven { url = 'https://jitpack.io' }
     }
 
