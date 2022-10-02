@@ -12,7 +12,7 @@ plugins {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.14.1'
+    version '0.15.0'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
