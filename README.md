@@ -487,6 +487,13 @@ When a `markdownSlide` is in a `verticalSlides{}` block and references an extern
 is interpreted as a vertical page separator and "--- " (with a space suffix) is rendered as a markdown horizontal
 line.
 
+### Slide Functions
+
+If you want to move slide content into a function, be aware that there are two versions of 
+`dslSlide{}`, `markdownSlide{}`, and `htmlSlides{}`. Each version has different contexts, depending on whether it 
+is in a `VerticalSlidesContext` context. Examples of both versions 
+are [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/ExtensionExample.kt).
+
 ## Helpful Links
 
 * [reveal.js](https://revealjs.com)
