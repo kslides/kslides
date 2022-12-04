@@ -12,10 +12,10 @@ export const MathJax3 = () => {
 
     let defaultOptions = {
         tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']]
+            inlineMath: [ [ '$', '$' ], [ '\\(', '\\)' ]  ]
         },
         options: {
-            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            skipHtmlTags: [ 'script', 'noscript', 'style', 'textarea', 'pre' ]
         },
         startup: {
             ready: () => {
@@ -27,9 +27,9 @@ export const MathJax3 = () => {
         }
     };
 
-    function loadScript(url, callback) {
+    function loadScript( url, callback ) {
 
-        let script = document.createElement('script');
+        let script = document.createElement( 'script' );
         script.type = "text/javascript"
         script.id = "MathJax-script"
         script.src = url;
@@ -43,20 +43,20 @@ export const MathJax3 = () => {
             }
         };
 
-        document.head.appendChild(script);
+        document.head.appendChild( script );
 
     }
 
     return {
         id: 'mathjax3',
-        init: function (reveal) {
+        init: function(reveal) {
 
             deck = reveal;
 
             let revealOptions = deck.getConfig().mathjax3 || {};
             let options = {...defaultOptions, ...revealOptions};
             options.tex = {...defaultOptions.tex, ...revealOptions.tex}
-            options.options = {...options.options, ...defaultOptions.options}
+            options.options = {...defaultOptions.options, ...revealOptions.options}
             options.startup = {...defaultOptions.startup, ...revealOptions.startup}
 
             let url = options.mathjax || 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
@@ -64,12 +64,12 @@ export const MathJax3 = () => {
 
             window.MathJax = options;
 
-            loadScript(url, function () {
+            loadScript( url, function() {
                 // Reprocess equations in slides when they turn visible
-                Reveal.addEventListener('slidechanged', function (event) {
+                Reveal.addEventListener( 'slidechanged', function( event ) {
                     MathJax.typeset();
-                });
-            });
+                } );
+            } );
 
         }
     }
