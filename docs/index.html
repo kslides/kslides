@@ -1578,18 +1578,18 @@ dslSlide {
         slideDefinition(slides, "navigation")
       }
 
-//      verticalSlides {
-//        // slidedef begin
-//        slideDefinition(
-//          "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
-//          "slideDefinition",
-//          title = "Slide Definition Source",
-//          id = "lastslide"
-//        )
-//        // slidedef end
-//
-//        slideDefinition(slides, "slidedef")
-//      }
+      verticalSlides {
+        // slidedef begin
+        slideDefinition(
+          "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+          "slideDefinition",
+          title = "Slide Definition Source",
+          id = "lastslide"
+        )
+        // slidedef end
+
+        slideDefinition(slides, "slidedef")
+      }
     }
 // presentation end
 
@@ -2317,6 +2317,54 @@ markdownSlide {
 }
 ```
 <a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*navigation%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*navigation%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="" id="lastslide">
+            <script type="text/template">
+## Slide Definition Source    
+```kotlin []
+fun slideDefinition(
+  source: String,
+  token: String,
+  title: String = "Slide Definition",
+  highlightPattern: String = "[]",
+  id: String = "",
+  language: String = "kotlin",
+) {
+  markdownSlide {
+    if (id.isNotBlank()) this.id = id
+    content {
+      """
+      ## $title    
+      ```$language $highlightPattern
+      ${include(source, beginToken = "$token begin", endToken = "$token end")}
+      ```
+      ${githubLink(srcref(token))}
+      """
+    }
+  }
+}
+```
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*slideDefinition%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*slideDefinition%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+</script>
+          </section>
+          
+          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition    
+```kotlin []
+slideDefinition(
+  "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+  "slideDefinition",
+  title = "Slide Definition Source",
+  id = "lastslide"
+)
+```
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*slidedef%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*slidedef%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
 </script>
           </section>
           

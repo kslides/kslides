@@ -1210,18 +1210,18 @@ fun main() {
         slideDefinition(slides, "navigation")
       }
 
-//      verticalSlides {
-//        // slidedef begin
-//        slideDefinition(
-//          "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
-//          "slideDefinition",
-//          title = "Slide Definition Source",
-//          id = "lastslide"
-//        )
-//        // slidedef end
-//
-//        slideDefinition(slides, "slidedef")
-//      }
+      verticalSlides {
+        // slidedef begin
+        slideDefinition(
+          "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+          "slideDefinition",
+          title = "Slide Definition Source",
+          id = "lastslide"
+        )
+        // slidedef end
+
+        slideDefinition(slides, "slidedef")
+      }
     }
 // presentation end
 
