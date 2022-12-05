@@ -1,2 +1,4 @@
 gradlew binary
 gradlew.bat binary
+* linguist-vendored
+*.kt linguist-vendored=false
