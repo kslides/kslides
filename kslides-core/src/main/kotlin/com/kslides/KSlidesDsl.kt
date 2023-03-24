@@ -7,7 +7,7 @@ import com.kslides.InternalUtils.writeByteArray
 import com.kslides.InternalUtils.writeString
 import com.kslides.config.CodeSnippetConfig
 import kotlinx.html.*
-import mu.KLogging
+import mu.two.KLogging
 
 object KSlidesDsl : KLogging()
 

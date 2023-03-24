@@ -22,7 +22,7 @@ import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.css.*
-import mu.KLogging
+import mu.two.KLogging
 import java.io.File
 
 @DslMarker

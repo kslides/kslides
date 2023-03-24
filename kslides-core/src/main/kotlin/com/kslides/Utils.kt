@@ -9,7 +9,7 @@ import com.kslides.InternalUtils.whiteSpace
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
 import kotlinx.html.*
-import mu.KLogging
+import mu.two.KLogging
 import java.io.File
 import java.net.URL
 

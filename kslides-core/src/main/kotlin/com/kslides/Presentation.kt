@@ -18,7 +18,7 @@ import com.kslides.slide.VerticalSlide
 import com.pambrose.srcref.Api.srcrefUrl
 import kotlinx.css.*
 import kotlinx.html.*
-import mu.KLogging
+import mu.two.KLogging
 
 class Presentation(val kslides: KSlides) {
   internal val plugins = mutableListOf<String>()

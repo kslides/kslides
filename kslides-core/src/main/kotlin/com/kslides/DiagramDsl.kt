@@ -12,7 +12,7 @@ import kotlinx.html.*
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonObject
-import mu.KLogging
+import mu.two.KLogging
 
 class DiagramDescription : DiagramConfig() {
   var source = ""

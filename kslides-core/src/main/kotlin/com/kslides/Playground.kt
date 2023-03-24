@@ -1,11 +1,11 @@
 package com.kslides
 
 import com.kslides.CssValue.Companion.writeCssToHead
-import com.kslides.config.*
+import com.kslides.config.PlaygroundConfig
 import com.kslides.config.PlaygroundConfig.Companion.toPropertyName
 import kotlinx.html.*
 import kotlinx.html.dom.*
-import mu.*
+import mu.two.KLogging
 import kotlin.collections.set
 
 object Playground : KLogging() {

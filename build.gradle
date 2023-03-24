@@ -2,22 +2,23 @@ plugins {
     id 'java'
     id 'application'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm' version '1.8.0'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.0'
-    id 'org.jmailen.kotlinter' version "3.12.0"
-    id "com.github.ben-manes.versions" version '0.44.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.8.10'
+    id 'org.jmailen.kotlinter' version "3.12.0" apply false
+    id "com.github.ben-manes.versions" version '0.46.0'
     id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
 }
 
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.17.0'
+    version '0.18.0'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
     apply plugin: 'org.jetbrains.kotlin.jvm'
+    apply plugin: 'org.jmailen.kotlinter'
     apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
 
     repositories {
@@ -27,8 +28,8 @@ allprojects {
         maven { url = 'https://jitpack.io' }
     }
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 17
+    targetCompatibility = 17
 
     publishing {
         publications {
@@ -80,13 +81,13 @@ subprojects {
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
-        archiveClassifier = 'sources'
         from sourceSets.main.allSource
+        archiveClassifier = 'sources'
     }
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = '11'
+            jvmTarget = '17'
             freeCompilerArgs += ['-Xbackend-threads=8',
                                  //'-Xcontext-receivers',
                                  //'-Xskip-prerelease-check',
@@ -96,7 +97,7 @@ subprojects {
 
     compileTestKotlin {
         kotlinOptions {
-            jvmTarget = '11'
+            jvmTarget = '17'
             freeCompilerArgs += ['-Xbackend-threads=8',
                                  //'-Xcontext-receivers',
                                  //'-Xskip-prerelease-check',

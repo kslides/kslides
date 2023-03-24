@@ -2,7 +2,7 @@ package com.kslides
 
 import kotlinx.html.*
 import kotlinx.html.dom.*
-import mu.KLogging
+import mu.two.KLogging
 import space.kscience.plotly.cdnPlotlyHeader
 
 object Plotly : KLogging() {
