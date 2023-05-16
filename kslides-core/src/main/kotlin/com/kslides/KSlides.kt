@@ -21,7 +21,7 @@ import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.css.*
+import kotlinx.css.CssBuilder
 import mu.two.KLogging
 import java.io.File
 
@@ -207,10 +207,11 @@ class KSlides {
         }
 
         if (config.defaultHttpRoot.isNotBlank())
-          static("/") {
-            staticBasePackage = config.defaultHttpRoot
-            resources(".")
-          }
+          staticResources("/", config.defaultHttpRoot)
+//        static("/") {
+//            staticBasePackage = config.defaultHttpRoot
+//            resources(".")
+//          }
 
         // This is hardcoded for http since it is shipped with the jar
         val rootDir = "revealjs"
