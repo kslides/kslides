@@ -398,12 +398,14 @@ class Presentation(val kslides: KSlides) {
               append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
               appendLine()
             }
+
             autoSlide is Int -> {
               if (autoSlide > 0) {
                 append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
                 appendLine()
               }
             }
+
             else -> error("Invalid value for autoSlide: $autoSlide")
           }
         }
@@ -417,11 +419,21 @@ class Presentation(val kslides: KSlides) {
                 appendLine()
               }
             }
+
             is String -> {
               append("\t\t\t${toJsValue("slideNumber", slideNumber)},\n")
               appendLine()
             }
+
             else -> error("Invalid value for slideNumber: $slideNumber")
+          }
+        }
+
+      config.jumpToSlide
+        .also { jumpToSlide ->
+          if (!jumpToSlide) {
+            append("\t\t\t${toJsValue("jumpToSlide", jumpToSlide)},\n")
+            appendLine()
           }
         }
 

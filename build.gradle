@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id 'java'
     id 'application'
@@ -12,7 +14,7 @@ plugins {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.18.2'
+    version '0.19.0'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
@@ -28,8 +30,8 @@ allprojects {
         maven { url = 'https://jitpack.io' }
     }
 
-    sourceCompatibility = 17
-    targetCompatibility = 17
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     publishing {
         publications {
@@ -80,29 +82,21 @@ subprojects {
         testImplementation "io.kotest:kotest-runner-junit5:$kotest_version"
     }
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
+    tasks.register('sourcesJar', Jar) {
+        dependsOn classes
         from sourceSets.main.allSource
         archiveClassifier = 'sources'
     }
 
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = '17'
-            freeCompilerArgs += ['-Xbackend-threads=8',
-                                 //'-Xcontext-receivers',
-                                 //'-Xskip-prerelease-check',
-            ]
-        }
+    kotlin {
+        jvmToolchain(17)
     }
 
-    compileTestKotlin {
-        kotlinOptions {
-            jvmTarget = '17'
-            freeCompilerArgs += ['-Xbackend-threads=8',
-                                 //'-Xcontext-receivers',
-                                 //'-Xskip-prerelease-check',
-            ]
-        }
+    tasks.withType(KotlinCompile).configureEach {
+        kotlinOptions.freeCompilerArgs += ['-Xbackend-threads=8',
+                                           //'-Xcontext-receivers',
+                                           //'-Xskip-prerelease-check',
+        ]
     }
 
     test {

@@ -60,7 +60,7 @@ fun include(
   indentToken: String = INDENT_TOKEN,
   escapeHtml: Boolean = true,
 ) =
-  try {
+  runCatching {
     if (src.isUrl()) {
       URL(src)
         .readText()
@@ -77,7 +77,7 @@ fun include(
         .toLineRanges(linePattern)
         .fixIndents(indentToken, trimIndent, escapeHtml)
     }
-  } catch (e: Exception) {
+  }.getOrElse { e ->
     KSlides.logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
     ""
   }
