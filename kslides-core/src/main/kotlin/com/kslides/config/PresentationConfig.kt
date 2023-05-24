@@ -301,6 +301,9 @@ class PresentationConfig : AbstractConfig() {
   // - "c/t":   Flattened slide number / total slides
   var slideNumber by ConfigProperty<Any>(kslidesManagedValues) // false
 
+  // Added in 4.5.0
+  var jumpToSlide by ConfigProperty<Boolean>(kslidesManagedValues)
+
   internal val menuConfig = MenuConfig()
   internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
@@ -352,6 +355,8 @@ class PresentationConfig : AbstractConfig() {
 
     autoSlide = 0
     slideNumber = false
+
+    jumpToSlide = true
 
     slideConfig.assignDefaults()
     playgroundConfig.assignDefaults()

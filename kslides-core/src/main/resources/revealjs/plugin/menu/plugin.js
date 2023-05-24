@@ -77,7 +77,8 @@ const Plugin = () => {
                 {name: 'Blood', theme: options.themesPath + 'blood.css'},
                 {name: 'Night', theme: options.themesPath + 'night.css'},
                 {name: 'Moon', theme: options.themesPath + 'moon.css'},
-                {name: 'Solarized', theme: options.themesPath + 'solarized.css'}
+                {name: 'Solarized', theme: options.themesPath + 'solarized.css'},
+                {name: 'Dracula', theme: options.themesPath + 'dracula.css'},
             ];
         } else if (!Array.isArray(options.themes)) {
             options.themes = false;

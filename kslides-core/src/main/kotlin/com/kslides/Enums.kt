@@ -7,9 +7,9 @@ enum class Highlight {
 }
 
 enum class PresentationTheme {
-  BEIGE, BLACK, BLOOD, LEAGUE, MOON, NIGHT, SERIF, SIMPLE, SKY, SOLARIZED, WHITE;
+  BEIGE, BLACK, BLOOD, LEAGUE, MOON, NIGHT, SERIF, SIMPLE, SKY, SOLARIZED, WHITE, DRACULA, BLACK_CONTRAST, WHITE_CONTRAST;
 
-  val cssSrc get() = "dist/theme/${name.lowercase()}.css"
+  val cssSrc get() = "dist/theme/${name.lowercase().replace("_","-")}.css"
 }
 
 enum class Speed {
