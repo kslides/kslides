@@ -8,7 +8,10 @@ import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.html.*
+import kotlinx.html.div
+import kotlinx.html.img
+import kotlinx.html.style
+import kotlinx.html.title
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonObject
@@ -84,14 +87,17 @@ private fun DslSlide.fetchKrokiContent(filename: String, desc: Map<String, Any>)
                 }
               }
             }
+
             else -> error("Unexpected value type: ${v::class}")
           }
         }
       }.toString()
 
+    val kslidesConfig = presentation.kslides.kslidesConfig
     val response =
-      presentation.kslides.client.post(presentation.kslides.kslidesConfig.krokiUrl) {
+      presentation.kslides.client.post(kslidesConfig.krokiUrl) {
         expectSuccess = true
+        timeout { requestTimeoutMillis = kslidesConfig.clientHttpTimeout.inWholeMilliseconds }
         contentType(ContentType.Application.Json)
         setBody(json)
         onDownload { bytesSentTotal, contentLength ->

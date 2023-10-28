@@ -4,7 +4,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/kslides/kslides)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/kslides/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=kslides/kslides&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://app.travis-ci.com/kslides/kslides.svg?branch=master)](https://app.travis-ci.com/kslides/kslides)
-[![Kotlin version](https://img.shields.io/badge/kotlin-1.8.21-red?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin version](https://img.shields.io/badge/kotlin-1.9.10-red?logo=kotlin)](http://kotlinlang.org)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/6d0c3c20-6eb5-4c74-8451-5fa06acf242f/deploy-status)](https://app.netlify.com/sites/kslides/deploys)
 
 **kslides** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com)

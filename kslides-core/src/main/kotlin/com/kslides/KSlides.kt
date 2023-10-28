@@ -12,6 +12,7 @@ import com.kslides.config.KSlidesConfig
 import com.kslides.config.OutputConfig
 import com.kslides.config.PresentationConfig
 import io.ktor.client.*
+import io.ktor.client.plugins.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
@@ -101,7 +102,11 @@ class KSlides {
   internal fun presentation(name: String) =
     presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
-  internal val client by lazy { HttpClient(io.ktor.client.engine.cio.CIO) }
+  internal val client by lazy {
+    HttpClient(io.ktor.client.engine.cio.CIO) {
+      install(HttpTimeout)
+    }
+  }
 
   // User variables
   val css = CssValue()
