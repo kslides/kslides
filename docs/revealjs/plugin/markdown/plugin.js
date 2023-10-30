@@ -7,7 +7,8 @@
 import {marked} from 'marked';
 
 const DEFAULT_SLIDE_SEPARATOR = '\r?\n---\r?\n',
-	  DEFAULT_NOTES_SEPARATOR = 'notes?:',
+	  DEFAULT_VERTICAL_SEPARATOR = null,
+	  DEFAULT_NOTES_SEPARATOR = '^\s*notes?:',
 	  DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\\.element\\\s*?(.+?)$',
 	  DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
 
@@ -37,15 +38,15 @@ const Plugin = () => {
 	function getMarkdownFromSlide( section ) {
 
 		// look for a <script> or <textarea data-template> wrapper
-		var template = section.querySelector( '[data-template]' ) || section.querySelector( 'script' );
+		const template = section.querySelector( '[data-template]' ) || section.querySelector( 'script' );
 
 		// strip leading whitespace so it isn't evaluated as code
-		var text = ( template || section ).textContent;
+		let text = ( template || section ).textContent;
 
 		// restore script end tags
 		text = text.replace( new RegExp( SCRIPT_END_PLACEHOLDER, 'g' ), '</script>' );
 
-		var leadingWs = text.match( /^\n?(\s*)/ )[1].length,
+		const leadingWs = text.match( /^\n?(\s*)/ )[1].length,
 			leadingTabs = text.match( /^\n?(\t*)/ )[1].length;
 
 		if( leadingTabs > 0 ) {
@@ -67,11 +68,11 @@ const Plugin = () => {
 	 */
 	function getForwardedAttributes( section ) {
 
-		var attributes = section.attributes;
-		var result = [];
+		const attributes = section.attributes;
+		const result = [];
 
-		for( var i = 0, len = attributes.length; i < len; i++ ) {
-			var name = attributes[i].name,
+		for( let i = 0, len = attributes.length; i < len; i++ ) {
+			const name = attributes[i].name,
 				value = attributes[i].value;
 
 			// disregard attributes that are used for markdown loading/parsing
@@ -94,10 +95,12 @@ const Plugin = () => {
 	 * values for what's not defined.
 	 */
 	function getSlidifyOptions( options ) {
+		const markdownConfig = deck.getConfig().markdown;
 
 		options = options || {};
-		options.separator = options.separator || DEFAULT_SLIDE_SEPARATOR;
-		options.notesSeparator = options.notesSeparator || DEFAULT_NOTES_SEPARATOR;
+		options.separator = options.separator || markdownConfig?.separator || DEFAULT_SLIDE_SEPARATOR;
+		options.verticalSeparator = options.verticalSeparator || markdownConfig?.verticalSeparator || DEFAULT_VERTICAL_SEPARATOR;
+		options.notesSeparator = options.notesSeparator || markdownConfig?.notesSeparator || DEFAULT_NOTES_SEPARATOR;
 		options.attributes = options.attributes || '';
 
 		return options;
@@ -111,7 +114,7 @@ const Plugin = () => {
 
 		options = getSlidifyOptions( options );
 
-		var notesMatch = content.split( new RegExp( options.notesSeparator, 'mgi' ) );
+		const notesMatch = content.split( new RegExp( options.notesSeparator, 'mgi' ) );
 
 		if( notesMatch.length === 2 ) {
 			content = notesMatch[0] + '<aside class="notes">' + marked(notesMatch[1].trim()) + '</aside>';
@@ -133,10 +136,10 @@ const Plugin = () => {
 
 		options = getSlidifyOptions( options );
 
-		var separatorRegex = new RegExp( options.separator + ( options.verticalSeparator ? '|' + options.verticalSeparator : '' ), 'mg' ),
+		const separatorRegex = new RegExp( options.separator + ( options.verticalSeparator ? '|' + options.verticalSeparator : '' ), 'mg' ),
 			horizontalSeparatorRegex = new RegExp( options.separator );
 
-		var matches,
+		let matches,
 			lastIndex = 0,
 			isHorizontal,
 			wasHorizontal = true,
@@ -145,7 +148,7 @@ const Plugin = () => {
 
 		// iterate until all blocks between separators are stacked up
 		while( matches = separatorRegex.exec( markdown ) ) {
-			var notes = null;
+			const notes = null;
 
 			// determine direction (horizontal by default)
 			isHorizontal = horizontalSeparatorRegex.test( matches[0] );
@@ -174,10 +177,10 @@ const Plugin = () => {
 		// add the remaining slide
 		( wasHorizontal ? sectionStack : sectionStack[sectionStack.length-1] ).push( markdown.substring( lastIndex ) );
 
-		var markdownSections = '';
+		let markdownSections = '';
 
 		// flatten the hierarchical stack, and insert <section data-markdown> tags
-		for( var i = 0, len = sectionStack.length; i < len; i++ ) {
+		for( let i = 0, len = sectionStack.length; i < len; i++ ) {
 			// vertical
 			if( sectionStack[i] instanceof Array ) {
 				markdownSections += '<section '+ options.attributes +'>';
@@ -206,7 +209,7 @@ const Plugin = () => {
 
 		return new Promise( function( resolve ) {
 
-			var externalPromises = [];
+			const externalPromises = [];
 
 			[].slice.call( scope.querySelectorAll( 'section[data-markdown]:not([data-markdown-parsed])') ).forEach( function( section, i ) {
 
@@ -259,13 +262,13 @@ const Plugin = () => {
 
 		return new Promise( function( resolve, reject ) {
 
-			var xhr = new XMLHttpRequest(),
+			const xhr = new XMLHttpRequest(),
 				url = section.getAttribute( 'data-markdown' );
 
-			var datacharset = section.getAttribute( 'data-charset' );
+			const datacharset = section.getAttribute( 'data-charset' );
 
 			// see https://developer.mozilla.org/en-US/docs/Web/API/element.getAttribute#Notes
-			if( datacharset != null && datacharset != '' ) {
+			if( datacharset !== null && datacharset !== '' ) {
 				xhr.overrideMimeType( 'text/html; charset=' + datacharset );
 			}
 
@@ -310,17 +313,17 @@ const Plugin = () => {
 	 */
 	function addAttributeInElement( node, elementTarget, separator ) {
 
-		var mardownClassesInElementsRegex = new RegExp( separator, 'mg' );
-		var mardownClassRegex = new RegExp( "([^\"= ]+?)=\"([^\"]+?)\"|(data-[^\"= ]+?)(?=[\" ])", 'mg' );
-		var nodeValue = node.nodeValue;
-		var matches,
+		const markdownClassesInElementsRegex = new RegExp( separator, 'mg' );
+		const markdownClassRegex = new RegExp( "([^\"= ]+?)=\"([^\"]+?)\"|(data-[^\"= ]+?)(?=[\" ])", 'mg' );
+		let nodeValue = node.nodeValue;
+		let matches,
 			matchesClass;
-		if( matches = mardownClassesInElementsRegex.exec( nodeValue ) ) {
+		if( matches = markdownClassesInElementsRegex.exec( nodeValue ) ) {
 
-			var classes = matches[1];
-			nodeValue = nodeValue.substring( 0, matches.index ) + nodeValue.substring( mardownClassesInElementsRegex.lastIndex );
+			const classes = matches[1];
+			nodeValue = nodeValue.substring( 0, matches.index ) + nodeValue.substring( markdownClassesInElementsRegex.lastIndex );
 			node.nodeValue = nodeValue;
-			while( matchesClass = mardownClassRegex.exec( classes ) ) {
+			while( matchesClass = markdownClassRegex.exec( classes ) ) {
 				if( matchesClass[2] ) {
 					elementTarget.setAttribute( matchesClass[1], matchesClass[2] );
 				} else {
@@ -338,34 +341,34 @@ const Plugin = () => {
 	 */
 	function addAttributes( section, element, previousElement, separatorElementAttributes, separatorSectionAttributes ) {
 
-		if ( element != null && element.childNodes != undefined && element.childNodes.length > 0 ) {
-			var previousParentElement = element;
-			for( var i = 0; i < element.childNodes.length; i++ ) {
-				var childElement = element.childNodes[i];
+		if ( element !== null && element.childNodes !== undefined && element.childNodes.length > 0 ) {
+			let previousParentElement = element;
+			for( let i = 0; i < element.childNodes.length; i++ ) {
+				const childElement = element.childNodes[i];
 				if ( i > 0 ) {
-					var j = i - 1;
+					let j = i - 1;
 					while ( j >= 0 ) {
-						var aPreviousChildElement = element.childNodes[j];
-						if ( typeof aPreviousChildElement.setAttribute == 'function' && aPreviousChildElement.tagName != "BR" ) {
+						const aPreviousChildElement = element.childNodes[j];
+						if ( typeof aPreviousChildElement.setAttribute === 'function' && aPreviousChildElement.tagName !== "BR" ) {
 							previousParentElement = aPreviousChildElement;
 							break;
 						}
 						j = j - 1;
 					}
 				}
-				var parentSection = section;
-				if( childElement.nodeName ==  "section" ) {
+				let parentSection = section;
+				if( childElement.nodeName ===  "section" ) {
 					parentSection = childElement ;
 					previousParentElement = childElement ;
 				}
-				if ( typeof childElement.setAttribute == 'function' || childElement.nodeType == Node.COMMENT_NODE ) {
+				if ( typeof childElement.setAttribute === 'function' || childElement.nodeType === Node.COMMENT_NODE ) {
 					addAttributes( parentSection, childElement, previousParentElement, separatorElementAttributes, separatorSectionAttributes );
 				}
 			}
 		}
 
-		if ( element.nodeType == Node.COMMENT_NODE ) {
-			if ( addAttributeInElement( element, previousElement, separatorElementAttributes ) == false ) {
+		if ( element.nodeType === Node.COMMENT_NODE ) {
+			if ( addAttributeInElement( element, previousElement, separatorElementAttributes ) === false ) {
 				addAttributeInElement( element, section, separatorSectionAttributes );
 			}
 		}
@@ -377,14 +380,14 @@ const Plugin = () => {
 	 */
 	function convertSlides() {
 
-		var sections = deck.getRevealElement().querySelectorAll( '[data-markdown]:not([data-markdown-parsed])');
+		const sections = deck.getRevealElement().querySelectorAll( '[data-markdown]:not([data-markdown-parsed])');
 
 		[].slice.call( sections ).forEach( function( section ) {
 
 			section.setAttribute( 'data-markdown-parsed', true )
 
-			var notes = section.querySelector( 'aside.notes' );
-			var markdown = getMarkdownFromSlide( section );
+			const notes = section.querySelector( 'aside.notes' );
+			const markdown = getMarkdownFromSlide( section );
 
 			section.innerHTML = marked( markdown );
 			addAttributes( 	section, section, null, section.getAttribute( 'data-element-attributes' ) ||
@@ -458,7 +461,7 @@ const Plugin = () => {
 					code = escapeForHTML( code );
 
 					// return `<pre><code ${lineNumbers} class="${language}">${code}</code></pre>`;
-					
+
 					return `<pre><code ${lineNumbers} ${lineNumberOffset} class="${language}">${code}</code></pre>`;
 				};
 			}

@@ -9,6 +9,7 @@ The upgrade steps for both are:
 
 * Rename the `docs/revealjs` dir to `docs/revealjs-old`.
 * Download the latest version of Reveal.js from [GitHub](https://github.com/hakimel/reveal.js/releases).
+* Create a new docs/revealjs dir.
 * Copy the new `examples/assets`, `css`, `dist`, `js``, and `plugin` dirs to `docs/revealjs`.
 * Copy the `docs/revealjs-old/plugin/copycode` and `docs/revealjs-old/plugin/menu` dirs to `docs/revealjs/plugin`.
 * Delete the `docs/revealjs-old` dir.

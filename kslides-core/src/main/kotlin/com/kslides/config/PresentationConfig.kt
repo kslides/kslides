@@ -1,11 +1,6 @@
 package com.kslides.config
 
-import com.kslides.Highlight
-import com.kslides.HrefTarget
-import com.kslides.KSlidesDslMarker
-import com.kslides.PresentationTheme
-import com.kslides.Speed
-import com.kslides.Transition
+import com.kslides.*
 
 class PresentationConfig : AbstractConfig() {
 
@@ -304,6 +299,19 @@ class PresentationConfig : AbstractConfig() {
   // Added in 4.5.0
   var jumpToSlide by ConfigProperty<Boolean>(kslidesManagedValues)
 
+  // Added in 5.0.0
+  var view by ConfigProperty<ViewType>(kslidesManagedValues)
+  var scrollLayout by ConfigProperty<ScrollLayout>(kslidesManagedValues)
+  // - auto:     Show the scrollbar while scrolling, hide while idle
+  // - true:     Always show the scrollbar
+  // - false:    Never show the scrollbar
+  var scrollProgress by ConfigProperty<Any>(kslidesManagedValues)
+  var scrollActivationWidth by ConfigProperty<Int>(kslidesManagedValues)
+  // - false:      No snapping, scrolling is continuous
+  // - proximity:  Snap when close to a slide
+  // - mandatory:  Always snap to the closest slide
+  var scrollSnap by ConfigProperty<Any>(kslidesManagedValues)
+
   internal val menuConfig = MenuConfig()
   internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
@@ -357,6 +365,12 @@ class PresentationConfig : AbstractConfig() {
     slideNumber = false
 
     jumpToSlide = true
+
+    view = ViewType.DEFAULT
+    scrollLayout = ScrollLayout.FULL
+    scrollProgress = ScrollProgress.AUTO
+    scrollActivationWidth = 1
+    scrollSnap = ScrollSnap.MANDATORY
 
     slideConfig.assignDefaults()
     playgroundConfig.assignDefaults()

@@ -1,13 +1,8 @@
 package examples
 
-import com.kslides.PresentationTheme
-import com.kslides.Speed
-import com.kslides.Transition
-import com.kslides.fragment
-import com.kslides.githubRawUrl
-import com.kslides.include
-import com.kslides.kslides
-import kotlinx.css.*
+import com.kslides.*
+import kotlinx.css.Color
+import kotlinx.css.color
 import kotlinx.html.*
 
 fun main() {
@@ -16,6 +11,9 @@ fun main() {
       slideNumber = "c/t"
       transition = Transition.FADE
       gaPropertyId = "G-XXXXXXXXX"
+
+      view = ViewType.DEFAULT
+      scrollProgress = true
 
       slideConfig {
         backgroundColor = "green"

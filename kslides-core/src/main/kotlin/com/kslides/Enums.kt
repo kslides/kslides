@@ -9,7 +9,7 @@ enum class Highlight {
 enum class PresentationTheme {
   BEIGE, BLACK, BLOOD, LEAGUE, MOON, NIGHT, SERIF, SIMPLE, SKY, SOLARIZED, WHITE, DRACULA, BLACK_CONTRAST, WHITE_CONTRAST;
 
-  val cssSrc get() = "dist/theme/${name.lowercase().replace("_","-")}.css"
+  val cssSrc get() = "dist/theme/${name.lowercase().replace("_", "-")}.css"
 }
 
 enum class Speed {
@@ -84,3 +84,11 @@ enum class HrefTarget {
 
   val htmlVal get() = "_${name.lowercase()}"
 }
+
+enum class ViewType { DEFAULT, SCROLL }
+
+enum class ScrollProgress { AUTO }
+
+enum class ScrollLayout { COMPACT, FULL }
+
+enum class ScrollSnap { PROXIMITY, MANDATORY }
