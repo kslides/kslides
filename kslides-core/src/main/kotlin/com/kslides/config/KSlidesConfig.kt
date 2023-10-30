@@ -3,6 +3,7 @@ package com.kslides.config
 import com.kslides.CssFile
 import com.kslides.JsFile
 import com.kslides.StaticRoot
+import kotlin.time.Duration.Companion.seconds
 
 class KSlidesConfig {
   val httpStaticRoots =
@@ -29,4 +30,6 @@ class KSlidesConfig {
   //var plotlyUrl = "https://cdn.plot.ly/plotly-1.54.6.min.js"
 
   var krokiUrl = "https://kroki.io"
+
+  var clientHttpTimeout = 30.seconds
 }

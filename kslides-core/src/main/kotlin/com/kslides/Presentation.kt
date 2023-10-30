@@ -4,19 +4,9 @@ import com.github.pambrose.common.util.nullIfBlank
 import com.kslides.InternalUtils.indentInclude
 import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
-import com.kslides.slide.DslSlide
-import com.kslides.slide.HorizontalDslSlide
-import com.kslides.slide.HorizontalHtmlSlide
-import com.kslides.slide.HortizontalMarkdownSlide
-import com.kslides.slide.HtmlSlide
-import com.kslides.slide.MarkdownSlide
-import com.kslides.slide.Slide
-import com.kslides.slide.VerticalDslSlide
-import com.kslides.slide.VerticalHtmlSlide
-import com.kslides.slide.VerticalMarkdownSlide
-import com.kslides.slide.VerticalSlide
+import com.kslides.slide.*
 import com.pambrose.srcref.Api.srcrefUrl
-import kotlinx.css.*
+import kotlinx.css.CssBuilder
 import kotlinx.html.*
 import mu.two.KLogging
 
@@ -375,6 +365,10 @@ class Presentation(val kslides: KSlides) {
       is Boolean, is Number -> "$key: $value"
       is String -> "$key: '$value'"
       is Transition -> "$key: '${value.name.lowercase()}'"
+      is ViewType -> "$key: '${value.name.lowercase()}'"
+      is ScrollProgress -> "$key: '${value.name.lowercase()}'"
+      is ScrollLayout -> "$key: '${value.name.lowercase()}'"
+      is ScrollSnap -> "$key: '${value.name.lowercase()}'"
       is Speed -> "$key: '${value.name.lowercase()}'"
       is List<*> -> "$key: [${value.joinToString(", ") { "'$it'" }}]"
       else -> throw IllegalArgumentException("Invalid value for $key: $value")
@@ -385,7 +379,7 @@ class Presentation(val kslides: KSlides) {
       config.revealjsManagedValues.also { vals ->
         if (vals.isNotEmpty()) {
           vals.forEach { (k, v) ->
-            append("\t\t\t${toJsValue(k, v)},\n")
+            append("$indent${toJsValue(k, v)},\n")
           }
           appendLine()
         }
@@ -395,13 +389,13 @@ class Presentation(val kslides: KSlides) {
         .also { autoSlide ->
           when {
             autoSlide is Boolean && !autoSlide -> {
-              append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
+              append("$indent${toJsValue("autoSlide", autoSlide)},\n")
               appendLine()
             }
 
             autoSlide is Int -> {
               if (autoSlide > 0) {
-                append("\t\t\t${toJsValue("autoSlide", autoSlide)},\n")
+                append("$indent${toJsValue("autoSlide", autoSlide)},\n")
                 appendLine()
               }
             }
@@ -415,13 +409,13 @@ class Presentation(val kslides: KSlides) {
           when (slideNumber) {
             is Boolean -> {
               if (slideNumber) {
-                append("\t\t\t${toJsValue("slideNumber", slideNumber)},\n")
+                append("$indent${toJsValue("slideNumber", slideNumber)},\n")
                 appendLine()
               }
             }
 
             is String -> {
-              append("\t\t\t${toJsValue("slideNumber", slideNumber)},\n")
+              append("$indent${toJsValue("slideNumber", slideNumber)},\n")
               appendLine()
             }
 
@@ -432,31 +426,79 @@ class Presentation(val kslides: KSlides) {
       config.jumpToSlide
         .also { jumpToSlide ->
           if (!jumpToSlide) {
-            append("\t\t\t${toJsValue("jumpToSlide", jumpToSlide)},\n")
+            append("$indent${toJsValue("jumpToSlide", jumpToSlide)},\n")
             appendLine()
           }
         }
 
-      config.menuConfig.revealjsManagedValues.also { vals ->
-        if (vals.isNotEmpty()) {
+      config.view
+        .also { view ->
+          if (view == ViewType.SCROLL) {
+            append("$indent${toJsValue("view", view)},\n")
+            appendLine()
+          }
+        }
+
+      config.scrollLayout
+        .also { scrollLayout ->
+          append("$indent${toJsValue("scrollLayout", scrollLayout)},\n")
+          appendLine()
+        }
+
+      config.scrollProgress
+        .also { scrollProgress ->
+          when (scrollProgress) {
+            is Boolean,
+            is ScrollProgress -> {
+              append("$indent${toJsValue("scrollProgress", scrollProgress)},\n")
+              appendLine()
+            }
+
+            else -> error("Invalid value for scrollProgress: $scrollProgress")
+          }
+        }
+
+      config.scrollActivationWidth
+        .also { scrollActivationWidth ->
+          if (scrollActivationWidth != 0) {
+            append("$indent${toJsValue("scrollActivationWidth", scrollActivationWidth)},\n")
+            appendLine()
+          }
+        }
+
+      config.scrollSnap
+        .also { scrollSnap ->
+          when (scrollSnap) {
+            is Boolean,
+            is ScrollSnap -> {
+              append("$indent${toJsValue("scrollSnap", scrollSnap)},\n")
+              appendLine()
+            }
+
+            else -> error("Invalid value for scrollSnap: $scrollSnap")
+          }
+        }
+
+      config.menuConfig.revealjsManagedValues.also { valMap ->
+        if (valMap.isNotEmpty()) {
           appendLine(
             buildString {
               appendLine("menu: {")
-              appendLine(vals.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
+              appendLine(valMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
               appendLine("},")
-            }.prependIndent("\t\t\t")
+            }.prependIndent(indent)
           )
         }
       }
 
-      config.copyCodeConfig.revealjsManagedValues.also { vals ->
-        if (vals.isNotEmpty()) {
+      config.copyCodeConfig.revealjsManagedValues.also { valMap ->
+        if (valMap.isNotEmpty()) {
           appendLine(
             buildString {
               appendLine("copycode: {")
-              appendLine(vals.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
+              appendLine(valMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
               appendLine("},")
-            }.prependIndent("\t\t\t")
+            }.prependIndent(indent)
           )
         }
       }
@@ -467,14 +509,16 @@ class Presentation(val kslides: KSlides) {
             appendLine("dependencies: [")
             appendLine(dependencies.joinToString(",\n") { "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }" })
             appendLine("],")
-          }.prependIndent("\t\t\t")
+          }.prependIndent(indent)
         )
       }
 
-      appendLine("\t\t\tplugins: [ ${plugins.joinToString(", ")} ]")
+      appendLine("${indent}plugins: [ ${plugins.joinToString(", ")} ]")
     }
 
-  companion object : KLogging()
+  companion object : KLogging() {
+    private const val indent = "\t\t\t"
+  }
 }
 
 data class StaticRoot(val dirname: String)
