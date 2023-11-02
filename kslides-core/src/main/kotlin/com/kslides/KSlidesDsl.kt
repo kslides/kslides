@@ -48,7 +48,7 @@ fun recordIframeContent(
   kslides: KSlides,
   path: String,
   filename: String,
-  contentBlock: () -> String
+  contentBlock: () -> String,
 ) {
   if (useHttp) {
     if (staticContent) {
@@ -73,7 +73,7 @@ internal fun recordKrokiContent(
   outputType: DiagramOutputType,
   path: String,
   filename: String,
-  diagramBlock: () -> ByteArray
+  diagramBlock: () -> ByteArray,
 ) {
   // Caching the content will limit the calls to the Kroki server
   val bytes =
@@ -91,42 +91,56 @@ internal fun recordKrokiContent(
 }
 
 @HtmlTagMarker
-inline fun FlowContent.unorderedList(items: List<String>, crossinline block: UL.() -> Unit = {}) =
-  unorderedList(*items.toTypedArray(), block = block)
+inline fun FlowContent.unorderedList(
+  items: List<String>,
+  crossinline block: UL.() -> Unit = {},
+) = unorderedList(*items.toTypedArray(), block = block)
 
 @HtmlTagMarker
-inline fun FlowContent.unorderedList(vararg items: String, crossinline block: UL.() -> Unit = {}) {
+inline fun FlowContent.unorderedList(
+  vararg items: String,
+  crossinline block: UL.() -> Unit = {},
+) {
   val funcs: List<LI.() -> Unit> = items.map { { +it } }
   unorderedList(*funcs.toTypedArray(), block = block)
 }
 
 @HtmlTagMarker
-inline fun FlowContent.unorderedList(vararg items: LI.() -> Unit, crossinline block: UL.() -> Unit = {}) =
-  ul {
-    block()
-    items.forEach {
-      li { it() }
-    }
+inline fun FlowContent.unorderedList(
+  vararg items: LI.() -> Unit,
+  crossinline block: UL.() -> Unit = {},
+) = ul {
+  block()
+  items.forEach {
+    li { it() }
   }
+}
 
 @HtmlTagMarker
-inline fun FlowContent.orderedList(items: List<String>, crossinline block: OL.() -> Unit = {}) =
-  orderedList(*items.toTypedArray(), block = block)
+inline fun FlowContent.orderedList(
+  items: List<String>,
+  crossinline block: OL.() -> Unit = {},
+) = orderedList(*items.toTypedArray(), block = block)
 
 @HtmlTagMarker
-inline fun FlowContent.orderedList(vararg items: String, crossinline block: OL.() -> Unit = {}) {
+inline fun FlowContent.orderedList(
+  vararg items: String,
+  crossinline block: OL.() -> Unit = {},
+) {
   val funcs: List<LI.() -> Unit> = items.map { { +it } }
   orderedList(*funcs.toTypedArray(), block = block)
 }
 
 @HtmlTagMarker
-inline fun FlowContent.orderedList(vararg items: LI.() -> Unit, crossinline block: OL.() -> Unit = {}) =
-  ol {
-    block()
-    items.forEach {
-      li { it() }
-    }
+inline fun FlowContent.orderedList(
+  vararg items: LI.() -> Unit,
+  crossinline block: OL.() -> Unit = {},
+) = ol {
+  block()
+  items.forEach {
+    li { it() }
   }
+}
 
 @HtmlTagMarker
 inline fun LI.listHref(
@@ -134,7 +148,7 @@ inline fun LI.listHref(
   text: String = "",
   target: HrefTarget = HrefTarget.SELF,
   classes: String = "",
-  crossinline block: A.() -> Unit = {}
+  crossinline block: A.() -> Unit = {},
 ) {
   a(classes = classes.nullIfBlank()) {
     if (target != HrefTarget.SELF) this.target = target.htmlVal
@@ -173,7 +187,11 @@ fun TBODY.bodyRow(vararg items: TD.() -> Unit) =
   }
 
 @HtmlTagMarker
-fun FlowOrInteractiveOrPhrasingContent.atag(text: String, href: String, newWindow: Boolean = true) {
+fun FlowOrInteractiveOrPhrasingContent.atag(
+  text: String,
+  href: String,
+  newWindow: Boolean = true,
+) {
   a {
     +text
     this.href = href

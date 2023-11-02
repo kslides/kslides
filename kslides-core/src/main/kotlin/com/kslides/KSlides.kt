@@ -166,90 +166,97 @@ class KSlides {
         }
     }
 
-    private fun appModule(config: OutputConfig): Application.() -> Unit = {
-      // By embedding this logic here, rather than in an Application.module() call, we are not able to use auto-reload
-      install(CallLogging) { level = config.callLoggingLogLevel }
-      install(DefaultHeaders) { header("X-Engine", "Ktor") }
-      install(Compression) {
-        gzip { priority = 1.0 }
-        deflate { priority = 10.0; minimumSize(1024) /* condition*/ }
-      }
-
-      val kslides = config.kslides
-
-      kslides.presentationMap
-        .apply {
-          if (!containsKey("/") && !containsKey("/index.html"))
-            logger.warn { """Missing a presentation with: path = "/"""" }
+    private fun appModule(config: OutputConfig): Application.() -> Unit =
+      {
+        // By embedding this logic here, rather than in an Application.module() call, we are not able to use auto-reload
+        install(CallLogging) { level = config.callLoggingLogLevel }
+        install(DefaultHeaders) { header("X-Engine", "Ktor") }
+        install(Compression) {
+          gzip { priority = 1.0 }
+          deflate {
+            priority = 10.0
+            minimumSize(1024) // condition
+          }
         }
 
-      routing {
-        // playground, and plotly iframe endpoints
-        listOf(config.playgroundDir, config.plotlyDir)
-          .forEach {
-            get("$it/{fname}") {
-              respondWith {
-                val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing $it arg")
-                kslides.dynamicIframeContent[path]?.invoke()
-                  ?: kslides.staticIframeContent[path]
-                  ?: throw IllegalArgumentException("Invalid $it path: $path")
+        val kslides = config.kslides
+
+        kslides.presentationMap
+          .apply {
+            if (!containsKey("/") && !containsKey("/index.html"))
+              logger.warn { """Missing a presentation with: path = "/"""" }
+          }
+
+        routing {
+          // playground, and plotly iframe endpoints
+          listOf(config.playgroundDir, config.plotlyDir)
+            .forEach {
+              get("$it/{fname}") {
+                respondWith {
+                  val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing $it arg")
+                  kslides.dynamicIframeContent[path]?.invoke()
+                    ?: kslides.staticIframeContent[path]
+                    ?: throw IllegalArgumentException("Invalid $it path: $path")
+                }
               }
+            }
+
+          // kroki endpoint
+          get("${config.krokiDir}/{fname}") {
+            val filename =
+              call.parameters["fname"] ?: throw IllegalArgumentException("Missing ${config.krokiDir} filename")
+            val bytes =
+              kslides.staticKrokiContent[filename]
+                ?: throw IllegalArgumentException("Invalid ${config.krokiDir} path: $filename")
+            val suffix = filename.substringAfterLast(".")
+            when (val outputType = outputTypeFromSuffix(suffix)) {
+              SVG -> call.respondText(String(bytes), outputType.contentType)
+              else -> call.respondBytes(bytes, outputType.contentType)
             }
           }
 
-        // kroki endpoint
-        get("${config.krokiDir}/{fname}") {
-          val filename =
-            call.parameters["fname"] ?: throw IllegalArgumentException("Missing ${config.krokiDir} filename")
-          val bytes =
-            kslides.staticKrokiContent[filename]
-              ?: throw IllegalArgumentException("Invalid ${config.krokiDir} path: $filename")
-          val suffix = filename.substringAfterLast(".")
-          when (val outputType = outputTypeFromSuffix(suffix)) {
-            SVG -> call.respondText(String(bytes), outputType.contentType)
-            else -> call.respondBytes(bytes, outputType.contentType)
-          }
-        }
-
-        if (config.defaultHttpRoot.isNotBlank())
-          staticResources("/", config.defaultHttpRoot)
+          if (config.defaultHttpRoot.isNotBlank())
+            staticResources("/", config.defaultHttpRoot)
 //        static("/") {
 //            staticBasePackage = config.defaultHttpRoot
 //            resources(".")
 //          }
 
-        // This is hardcoded for http since it is shipped with the jar
-        val rootDir = "revealjs"
-        val baseDirs =
-          kslides.kslidesConfig.httpStaticRoots
-            .filter { it.dirname.isNotBlank() }
-            .map { it.dirname }
+          // This is hardcoded for http since it is shipped with the jar
+          val rootDir = "revealjs"
+          val baseDirs =
+            kslides.kslidesConfig.httpStaticRoots
+              .filter { it.dirname.isNotBlank() }
+              .map { it.dirname }
 
-        if (baseDirs.isNotEmpty())
-          static("/") {
-            staticBasePackage = rootDir
-            static(rootDir) {
-              baseDirs.forEach {
-                static(it) {
-                  logger.debug { "Registering http dir $it" }
-                  resources(it)
+          if (baseDirs.isNotEmpty())
+            static("/") {
+              staticBasePackage = rootDir
+              static(rootDir) {
+                baseDirs.forEach {
+                  static(it) {
+                    logger.debug { "Registering http dir $it" }
+                    resources(it)
+                  }
                 }
               }
             }
-          }
 
-        kslides.presentationMap
-          .forEach { (key, p) ->
-            get(key) {
-              respondWith {
-                generatePage(p, true, "/$rootDir")
+          kslides.presentationMap
+            .forEach { (key, p) ->
+              get(key) {
+                respondWith {
+                  generatePage(p, true, "/$rootDir")
+                }
               }
             }
-          }
+        }
       }
-    }
 
-    internal fun runHttpServer(config: OutputConfig, wait: Boolean) {
+    internal fun runHttpServer(
+      config: OutputConfig,
+      wait: Boolean,
+    ) {
       embeddedServer(CIO, port = config.port, module = appModule(config)).start(wait = wait)
     }
   }

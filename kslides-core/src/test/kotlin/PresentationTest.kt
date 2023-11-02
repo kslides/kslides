@@ -185,7 +185,7 @@ class PresentationTest : StringSpec(
           css += "aaa"
           presentation {
             css += "bbb"
-            dslSlide {  content { } }
+            dslSlide { content { } }
           }
         }.apply {
           presentations.forEach { p ->
@@ -198,53 +198,54 @@ class PresentationTest : StringSpec(
     }
 
     "Css Test 1" {
-        shouldThrowExactly<IllegalArgumentException> {
-          kslidesTest {
-            presentation {
-              dslSlide {
-                css += "bbb"; content { }
-              }
-            }
-          }.apply {
-            presentations.forEach { p ->
-              generatePage(p)
+      shouldThrowExactly<IllegalArgumentException> {
+        kslidesTest {
+          presentation {
+            dslSlide {
+              css += "bbb"
+              content { }
             }
           }
+        }.apply {
+          presentations.forEach { p ->
+            generatePage(p)
+          }
         }
+      }
     }
 
     "Css Test 2" {
-        shouldThrowExactly<IllegalArgumentException> {
-          kslidesTest {
-            presentation {
-              verticalSlides {
-                css += "bbb"
-                dslSlide {
-                  content { }
-                }
+      shouldThrowExactly<IllegalArgumentException> {
+        kslidesTest {
+          presentation {
+            verticalSlides {
+              css += "bbb"
+              dslSlide {
+                content { }
               }
             }
-          }.apply {
-            presentations.forEach { p ->
-              generatePage(p)
-            }
+          }
+        }.apply {
+          presentations.forEach { p ->
+            generatePage(p)
           }
         }
+      }
     }
 
     "Vertical Slides Test" {
-        shouldThrowExactly<IllegalArgumentException> {
-          kslidesTest {
-            presentation {
-              verticalSlides {
-              }
-            }
-          }.apply {
-            presentations.forEach { p ->
-              generatePage(p)
+      shouldThrowExactly<IllegalArgumentException> {
+        kslidesTest {
+          presentation {
+            verticalSlides {
             }
           }
+        }.apply {
+          presentations.forEach { p ->
+            generatePage(p)
+          }
         }
+      }
     }
-  }
+  },
 )

@@ -3,7 +3,9 @@ package com.kslides
 import com.kslides.Playground.playgroundContent
 import com.kslides.config.PlaygroundConfig
 import com.kslides.slide.DslSlide
-import kotlinx.html.*
+import kotlinx.html.iframe
+import kotlinx.html.style
+import kotlinx.html.title
 
 //context(Presentation, DslSlide, SECTION)
 @KSlidesDslMarker
@@ -27,7 +29,7 @@ fun DslSlide.playground(
     CssValue(
       globalPlaygroundConfig.css,
       presentationPlaygroundConfig.css,
-      localConfig.css
+      localConfig.css,
     )
 
   recordIframeContent(_useHttp, mergedConfig.staticContent, presentation.kslides, playgroundPath, filename) {

@@ -2,6 +2,9 @@ default: versioncheck
 
 build-all: clean stage
 
+stop:
+	./gradlew --stop
+
 clean:
 	./gradlew clean
 

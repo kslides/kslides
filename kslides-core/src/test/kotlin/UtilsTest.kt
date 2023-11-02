@@ -48,7 +48,7 @@ class UtilsTest : StringSpec(
       val s =
         """
         # Presentation // NO TAB
-  
+
         ````kotlin     // NO TAB
            val x = 1   // WITH TAB
         ````           // NO TAB
@@ -69,7 +69,7 @@ class UtilsTest : StringSpec(
       val s =
         """
         # Presentation // NO TAB
-  
+
         ````kotlin     // NO TAB
         val x = 1      // NO TAB
 val y = 1              // NO TAB
@@ -79,9 +79,9 @@ val y = 1              // NO TAB
       s.trimIndentWithInclude()
         .lines()
         .forEach {
-          if (it.contains("NO TAB"))
+          if (it.contains("NO TAB")) {
             it.trimStart().length shouldBe it.length
-          else {
+          } else {
             if (it.isNotBlank()) it.trimStart().length shouldNotBe it.length
           }
         }
@@ -255,8 +255,8 @@ val y = 1              // NO TAB
           // Size of image is controlled by css above
           content {
             ""${'"'}
-            ## Images 
-                
+            ## Images
+
             ![revealjs-image](images/revealjs.png)
             ""${'"'}
           }
@@ -265,8 +265,8 @@ val y = 1              // NO TAB
 
         markdownSlide {
           content {
-            ""${'"'}            
-            ## Images Slide Description    
+            ""${'"'}
+            ## Images Slide Description
             ```kotlin []
             include(slides, beginToken = "image begin", endToken = "image end")
             ```
@@ -345,5 +345,5 @@ val y = 1              // NO TAB
       "[123]".stripBraces() shouldBe "123"
       "123".stripBraces() shouldBe "123"
     }
-  }
+  },
 )

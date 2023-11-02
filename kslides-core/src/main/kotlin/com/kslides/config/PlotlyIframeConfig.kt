@@ -1,10 +1,10 @@
 package com.kslides.config
 
 class PlotlyIframeConfig : AbstractConfig() {
-  var width by ConfigProperty<String>(kslidesManagedValues)  // iframe width
-  var height by ConfigProperty<String>(kslidesManagedValues) // iframe height
-  var style by ConfigProperty<String>(kslidesManagedValues)  // iframe style
-  var title by ConfigProperty<String>(kslidesManagedValues) // For screen readers
+  var width by ConfigProperty<String>(kslidesManagedValues)            // iframe width
+  var height by ConfigProperty<String>(kslidesManagedValues)           // iframe height
+  var style by ConfigProperty<String>(kslidesManagedValues)            // iframe style
+  var title by ConfigProperty<String>(kslidesManagedValues)            // For screen readers
   var staticContent by ConfigProperty<Boolean>(kslidesManagedValues) // Prevents plotly{} recompute
 
   internal fun assignDefaults() {
@@ -16,6 +16,7 @@ class PlotlyIframeConfig : AbstractConfig() {
   }
 
   companion object {
-    inline operator fun invoke(action: PlotlyIframeConfig.() -> Unit): PlotlyIframeConfig = PlotlyIframeConfig().apply(action)
+    inline operator fun invoke(action: PlotlyIframeConfig.() -> Unit): PlotlyIframeConfig =
+      PlotlyIframeConfig().apply(action)
   }
 }
