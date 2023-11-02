@@ -3,7 +3,6 @@ package com.kslides.config
 import com.kslides.*
 
 class PresentationConfig : AbstractConfig() {
-
   // The "normal" size of the presentation, aspect ratio will
   // be preserved when the presentation is scaled to fit different
   // resolutions. Can be specified using percentage units.
@@ -301,12 +300,16 @@ class PresentationConfig : AbstractConfig() {
 
   // Added in 5.0.0
   var view by ConfigProperty<ViewType>(kslidesManagedValues)
+
   var scrollLayout by ConfigProperty<ScrollLayout>(kslidesManagedValues)
+
   // - auto:     Show the scrollbar while scrolling, hide while idle
   // - true:     Always show the scrollbar
   // - false:    Never show the scrollbar
   var scrollProgress by ConfigProperty<Any>(kslidesManagedValues)
+
   var scrollActivationWidth by ConfigProperty<Int>(kslidesManagedValues)
+
   // - false:      No snapping, scrolling is continuous
   // - proximity:  Snap when close to a slide
   // - mandatory:  Always snap to the closest slide

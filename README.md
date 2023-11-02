@@ -4,8 +4,9 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/kslides/kslides)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/kslides/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=kslides/kslides&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://app.travis-ci.com/kslides/kslides.svg?branch=master)](https://app.travis-ci.com/kslides/kslides)
-[![Kotlin version](https://img.shields.io/badge/kotlin-1.9.10-red?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin version](https://img.shields.io/badge/kotlin-1.9.20-red?logo=kotlin)](http://kotlinlang.org)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/6d0c3c20-6eb5-4c74-8451-5fa06acf242f/deploy-status)](https://app.netlify.com/sites/kslides/deploys)
+[![ktlint](https://img.shields.io/badge/ktlint%20code--style-%E2%9D%A4-FF4081)](https://pinterest.github.io/ktlint/)
 
 **kslides** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com)
 presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint.
@@ -129,13 +130,13 @@ kslides {
 
 ### kslides Block
 
-A `kslides{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=kslides+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+kslides+end&eoccur=1&eoffset=0&etopd=false)) 
+A `kslides{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=kslides+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+kslides+end&eoccur=1&eoffset=0&etopd=false))
 contains configuration values, output directives, presentation configuration defaults,
 css defaults, and presentation definitions. The child blocks can be declared in any order.
 
 #### Options
 
-| Name  | Default | Description                           | 
+| Name  | Default | Description                           |
 |-------|---------|---------------------------------------|
 | _css_ | ""      | String alternative to the css{} block |
 
@@ -164,10 +165,10 @@ kslides {
   specifies how and where presentation slides are published and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/OutputConfig.kt).
 
-* A `css{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=css+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=css+%5C%7B&eoccur=1&eoffset=4&etopd=true)) 
+* A `css{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=css+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=css+%5C%7B&eoccur=1&eoffset=4&etopd=true))
   applies to all presentations and uses Kotlin [CSS DSL](https://ktor.io/docs/css-dsl.html) calls.
-  Presentation CSS can also be specified using multi-line strings 
-  [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=css+%5C%2B%3D&boccur=1&boffset=0&btopd=true&eregex=css+%5C%2B%3D&eoccur=1&eoffset=4&etopd=true). 
+  Presentation CSS can also be specified using multi-line strings
+  [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=css+%5C%2B%3D&boccur=1&boffset=0&btopd=true&eregex=css+%5C%2B%3D&eoccur=1&eoffset=4&etopd=true).
   A combination of the two approaches is also allowed.
 
 * A `presentation{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=presentation+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+presentation+end&eoccur=1&eoffset=-1&etopd=true))
@@ -184,13 +185,13 @@ presentationConfig {      // Optional
   copyCodeConfig {}       // Optional
   playgroundConfig {      // Optional
     css{}                 // Optional
-  }     
+  }
   plotlyIframeConfig {}   // Optional
   slideConfig {}          // Optional
 }
 ```
 
-* A `menuConfig{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=menuConfig+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=menuConfig+%5C%7B&eoccur=1&eoffset=2&etopd=true)) 
+* A `menuConfig{}` block ([example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=menuConfig+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=menuConfig+%5C%7B&eoccur=1&eoffset=2&etopd=true))
   specifies the configuration for the
   reveal.js [Menu plugin](https://github.com/denehyg/reveal.js-menu)
   and has these
@@ -206,9 +207,9 @@ presentationConfig {      // Optional
   [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframes and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlaygroundConfig.kt).
 
-  * The `css{}` block inside the `playgroundConfig{}` block specifies the css for the playground content that is 
+  * The `css{}` block inside the `playgroundConfig{}` block specifies the css for the playground content that is
   displayed in the iframe. It is usually used to control the _font-size_ of the code. The css values can be specified
-  via multi-line strings or using the CSS DSL. 
+  via multi-line strings or using the CSS DSL.
 
 * A `plotlyIframeConfig{}` block specifies the default attributes for
   [plotly-kt](https://github.com/mipt-npm/plotly.kt) iframes and has these
@@ -263,7 +264,7 @@ they are referenced.
 
 #### Options
 
-| Name                 | Default | Description                                                               | 
+| Name                 | Default | Description                                                               |
 |----------------------|---------|---------------------------------------------------------------------------|
 | _classes_            | ""      | _class_ value for underlying html tag                                     |
 | _id_                 | ""      | _id_ value for underlying html tag                                        |
@@ -275,7 +276,7 @@ they are referenced.
 
 #### markdownSlide-specific Options
 
-| Name       | Default | Description                                                 | 
+| Name       | Default | Description                                                 |
 |------------|---------|-------------------------------------------------------------|
 | _filename_ | false   | [Details](https://revealjs.com/markdown/#external-markdown) |
 
@@ -318,12 +319,12 @@ _kslides.presentation.presentationConfig.slideConfig{}_.
 
 ### verticalSlides Block
 
-A `verticalSlides{}` block ([exammple](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=verticalSlides+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=slideDefinition%5C%28slides%2C+%22intro%22%5C%29&eoccur=1&eoffset=1&etopd=true)) 
+A `verticalSlides{}` block ([exammple](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=%2Fkslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=verticalSlides+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=slideDefinition%5C%28slides%2C+%22intro%22%5C%29&eoccur=1&eoffset=1&etopd=true))
 contains one or more slides and presents them vertically.
 
 #### Options
 
-| Name      | Default | Description                           | 
+| Name      | Default | Description                           |
 |-----------|---------|---------------------------------------|
 | _classes_ | ""      | _class_ value for underlying html tag |
 | _id_      | ""      | _id_ value for underlying html tag    |
@@ -429,7 +430,7 @@ though.
 
 A DslSlide embeds Playground content with an [iframe](https://www.w3schools.com/tags/tag_iframe.asp).
 
-If `output.enableFileSystem` is true, each `playground()` call generates 
+If `output.enableFileSystem` is true, each `playground()` call generates
 an html file in `docs/playground`.
 
 Playground code using `dataTargetPlatform = JUNIT` should not have a `package` decl.
@@ -442,13 +443,13 @@ If `output.enableFileSystem` is true, each `plotly()` call generates an html fil
 
 The `plotly()` _iframeConfig_ args are the attributes for the iframe referencing the plotly-kt content.
 
-The `plotly()` _dimensions_ are automatically added as the _width_ and _height_ values 
+The `plotly()` _dimensions_ are automatically added as the _width_ and _height_ values
 in a `Plot.layout{}` block, thus controlling the dimensions of the plotly-kt content.
 
 The _dimensions_ and the _iframeConfig_ args must be synchronized.
 Specifically, the _dimensions.width_ value must work with the
 _width_ value in the _iframeConfig.style_, and the _dimensions.height_ value
-must work with the _iframeConfig.height_ value. 
+must work with the _iframeConfig.height_ value.
 
 Adding `border: 1px solid black;` to _iframeConfig.style_ makes it easier to synchronize the dimension values.
 Once the iframe and content width and height values are correct, you can remove the border.
@@ -464,7 +465,7 @@ KSlides supports using [Kroki](https://kroki.io/) to generate diagrams. Kroki su
 and [here](https://kroki.io/examples.html).
 
 Each diagram type has its own set of configuration options. The options are specified with an `options` value.
-The options values are specified as a map and the possible option values are listed in 
+The options values are specified as a map and the possible option values are listed in
 the [Kroki documentation](https://docs.kroki.io/kroki/setup/diagram-options/).
 
 The `outputType` value specifies the image type and defaults to `DiagramOutputType.SVG`. As indicated in the
@@ -489,9 +490,9 @@ line.
 
 ### Slide Functions
 
-If you want to move slide content into a function, be aware that there are two versions of 
-`dslSlide{}`, `markdownSlide{}`, and `htmlSlides{}`. Each version has different contexts, depending on whether it 
-is in a `VerticalSlidesContext` context. Examples of both versions 
+If you want to move slide content into a function, be aware that there are two versions of
+`dslSlide{}`, `markdownSlide{}`, and `htmlSlides{}`. Each version has different contexts, depending on whether it
+is in a `VerticalSlidesContext` context. Examples of both versions
 are [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/ExtensionExample.kt).
 
 ## Helpful Links

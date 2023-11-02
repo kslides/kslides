@@ -1,6 +1,7 @@
 package com.kslides.slide
 
-import com.kslides.*
+import com.kslides.KSlidesDslMarker
+import com.kslides.Presentation
 
 interface MarkdownSlide {
   var _markdownBlock: () -> String
@@ -11,7 +12,10 @@ interface MarkdownSlide {
   var filename: String
 }
 
-class HortizontalMarkdownSlide(presentation: Presentation, content: SlideArgs) : HorizontalSlide(presentation, content),
+class HortizontalMarkdownSlide(
+  presentation: Presentation,
+  content: SlideArgs,
+) : HorizontalSlide(presentation, content),
   MarkdownSlide {
   internal var markdownAssigned = false
   override var _markdownBlock: () -> String = { "" }
@@ -26,8 +30,10 @@ class HortizontalMarkdownSlide(presentation: Presentation, content: SlideArgs) :
   }
 }
 
-class VerticalMarkdownSlide(presentation: Presentation, content: SlideArgs) : VerticalSlide(presentation, content),
-  MarkdownSlide {
+class VerticalMarkdownSlide(
+  presentation: Presentation,
+  content: SlideArgs,
+) : VerticalSlide(presentation, content), MarkdownSlide {
   internal var markdownAssigned = false
   override var _markdownBlock: () -> String = { "" }
 

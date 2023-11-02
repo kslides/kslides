@@ -1,12 +1,10 @@
 package com.kslides.config
 
 import com.kslides.*
-import com.kslides.CssValue
-import kotlinx.css.*
-import kotlin.reflect.full.*
+import kotlinx.css.CssBuilder
+import kotlin.reflect.full.isSubclassOf
 
 class PlaygroundConfig : AbstractConfig() {
-
   var args by ConfigProperty<String>(revealjsManagedValues)
   var dataTargetPlatform by ConfigProperty<TargetPlatform>(revealjsManagedValues)
   var dataHighlightOnly by ConfigProperty<Boolean>(revealjsManagedValues)
@@ -53,12 +51,14 @@ class PlaygroundConfig : AbstractConfig() {
   internal fun toAttributes() =
     revealjsManagedValues
       .map { (k, v) ->
-        k to (when {
-          v is TargetPlatform -> v.queryVal
-          v is PlaygroundMode -> v.queryVal
-          v::class.isSubclassOf(Enum::class) -> (v as Enum<*>).name.lowercase()
-          else -> v.toString()
-        })
+        k to (
+          when {
+            v is TargetPlatform -> v.queryVal
+            v is PlaygroundMode -> v.queryVal
+            v::class.isSubclassOf(Enum::class) -> (v as Enum<*>).name.lowercase()
+            else -> v.toString()
+          }
+          )
       }
 
   companion object {

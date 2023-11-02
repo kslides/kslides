@@ -5,14 +5,20 @@ import com.github.pambrose.common.util.isNotNull
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.config.PresentationConfig
 import kotlinx.html.*
-import kotlinx.html.dom.*
+import kotlinx.html.dom.append
+import kotlinx.html.dom.document
+import kotlinx.html.dom.serialize
 import java.io.FileNotFoundException
 
 internal object Page {
   private val preRegex = Regex("\\s*<pre.*>\\s*")
   private val codeRegex = Regex("\\s*<code.*>\\s*")
 
-  internal fun generatePage(p: Presentation, useHttp: Boolean = true, srcPrefix: String = "/"): String {
+  internal fun generatePage(
+    p: Presentation,
+    useHttp: Boolean = true,
+    srcPrefix: String = "/",
+  ): String {
     p.kslides.slideCount = 0
     val htmldoc =
       document {
@@ -80,122 +86,148 @@ internal object Page {
     }
   }
 
-  private fun HTML.generateHead(p: Presentation, config: PresentationConfig, srcPrefix: String) =
-    head {
-      meta { charset = "utf-8" }
-      meta { name = "apple-mobile-web-app-capable"; content = "yes" }
-      meta { name = "apple-mobile-web-app-status-bar-style"; content = "black-translucent" }
-      meta {
-        name = "viewport"
-        content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-      }
+  private fun HTML.generateHead(
+    p: Presentation,
+    config: PresentationConfig,
+    srcPrefix: String,
+  ) = head {
+    meta {
+      charset = "utf-8"
+    }
+    meta {
+      name = "apple-mobile-web-app-capable"
+      content = "yes"
+    }
+    meta {
+      name = "apple-mobile-web-app-status-bar-style"
+      content = "black-translucent"
+    }
+    meta {
+      name = "viewport"
+      content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    }
 
-      if (config.title.isNotBlank())
-        title { +config.title }
+    if (config.title.isNotBlank())
+      title { +config.title }
 
-      if (config.gaPropertyId.isNotBlank()) {
-        rawHtml("\n")
-        script { async = true; src = "https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K" }
-        rawHtml("\n\n\t\t")
-        script {
-          rawHtml("\n")
-          rawHtml(
-            """
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date()); 
-              gtag('config', '${config.gaPropertyId}');
-            """.trimIndent().prependIndent("\t\t\t")
-          )
-          rawHtml("\n\t\t")
-        }
-      }
-
+    if (config.gaPropertyId.isNotBlank()) {
       rawHtml("\n")
-      p.cssFiles.forEach {
-        link(rel = "stylesheet") {
-          href = if (it.filename.startsWith("http")) it.filename else "$srcPrefix${it.filename}"
-          if (it.id.isNotBlank())
-            id = it.id
-        }
+      script {
+        async = true
+        src = "https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K"
       }
-
-      rawHtml("\n")
-      link { rel = "shortcut icon"; href = "/favicon.ico"; type = "image/x-icon" }
-      link { rel = "icon"; href = "/favicon.ico"; type = "image/x-icon" }
-
-      rawHtml("\n")
-      style("text/css") {
-        media = "screen"
+      rawHtml("\n\n\t\t")
+      script {
         rawHtml("\n")
         rawHtml(
-          Page::class.java.classLoader.getResource("slides.css")
-            ?.readText()
-            ?.lines()
-            ?.joinToString("\n") { "\t\t$it" }
-            ?.prependIndent("\t")
-            ?: throw FileNotFoundException("File not found: src/main/resources/slides.css")
+          """
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${config.gaPropertyId}');
+          """.trimIndent().prependIndent("\t\t\t"),
         )
         rawHtml("\n\t\t")
       }
-
-      writeCssToHead(p.css)
     }
 
-  private fun HTML.generateBody(p: Presentation, config: PresentationConfig, srcPrefix: String, useHttp: Boolean) =
-    body {
-      div("reveal") {
-        if (config.topLeftHref.isNotBlank()) {
-          a(href = config.topLeftHref, target = config.topLeftTarget.htmlVal, classes = "top-left") {
-            if (config.topLeftTitle.isNotBlank())
-              title = config.topLeftTitle
-            if (config.topLeftSvg.isNotBlank())
-              rawHtml(config.topLeftSvg)
-            if (config.topLeftSvgSrc.isNotBlank())
-              img(classes = config.topLeftSvgClass) {
-                src = config.topLeftSvgSrc
-                if (config.topLeftSvgStyle.isNotBlank())
-                  style = config.topLeftSvgStyle
-              }
-            if (config.topLeftText.isNotBlank())
-              +config.topLeftText
-          }
-        }
-
-        if (config.topRightHref.isNotBlank()) {
-          rawHtml("\n\t\t\t")
-          a(href = config.topRightHref, target = config.topRightTarget.htmlVal, classes = "top-right") {
-            if (config.topRightTitle.isNotBlank())
-              title = config.topRightTitle
-            if (config.topRightSvg.isNotBlank())
-              rawHtml(config.topRightSvg)
-            if (config.topRightSvgSrc.isNotBlank())
-              img(classes = config.topRightSvgClass) {
-                src = config.topRightSvgSrc
-                if (config.topRightSvgStyle.isNotBlank())
-                  style = config.topRightSvgStyle
-              }
-            if (config.topRightText.isNotBlank())
-              +config.topRightText
-          }
-        }
-
-        rawHtml("\n")
-        div("slides") {
-          p.slides.forEach { slide -> slide.content(this, slide, useHttp) }
-        }
-      }
-
-      rawHtml("\n\t\n")
-      p.jsFiles.forEach { jsFile ->
-        rawHtml("\t")
-        script { src = if (jsFile.filename.startsWith("http")) jsFile.filename else "$srcPrefix${jsFile.filename}" }
-        rawHtml("\n")
-      }
-
-      rawHtml("\n\t")
-      script {
-        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config, srcPrefix)}\t\t});\n\n")
+    rawHtml("\n")
+    p.cssFiles.forEach {
+      link(rel = "stylesheet") {
+        href = if (it.filename.startsWith("http")) it.filename else "$srcPrefix${it.filename}"
+        if (it.id.isNotBlank())
+          id = it.id
       }
     }
+
+    rawHtml("\n")
+    link {
+      rel = "shortcut icon"
+      href = "/favicon.ico"
+      type = "image/x-icon"
+    }
+    link {
+      rel = "icon"
+      href = "/favicon.ico"
+      type = "image/x-icon"
+    }
+
+    rawHtml("\n")
+    style("text/css") {
+      media = "screen"
+      rawHtml("\n")
+      rawHtml(
+        Page::class.java.classLoader.getResource("slides.css")
+          ?.readText()
+          ?.lines()
+          ?.joinToString("\n") { "\t\t$it" }
+          ?.prependIndent("\t")
+          ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"),
+      )
+      rawHtml("\n\t\t")
+    }
+
+    writeCssToHead(p.css)
+  }
+
+  private fun HTML.generateBody(
+    p: Presentation,
+    config: PresentationConfig,
+    srcPrefix: String,
+    useHttp: Boolean,
+  ) = body {
+    div("reveal") {
+      if (config.topLeftHref.isNotBlank()) {
+        a(href = config.topLeftHref, target = config.topLeftTarget.htmlVal, classes = "top-left") {
+          if (config.topLeftTitle.isNotBlank())
+            title = config.topLeftTitle
+          if (config.topLeftSvg.isNotBlank())
+            rawHtml(config.topLeftSvg)
+          if (config.topLeftSvgSrc.isNotBlank())
+            img(classes = config.topLeftSvgClass) {
+              src = config.topLeftSvgSrc
+              if (config.topLeftSvgStyle.isNotBlank())
+                style = config.topLeftSvgStyle
+            }
+          if (config.topLeftText.isNotBlank())
+            +config.topLeftText
+        }
+      }
+
+      if (config.topRightHref.isNotBlank()) {
+        rawHtml("\n\t\t\t")
+        a(href = config.topRightHref, target = config.topRightTarget.htmlVal, classes = "top-right") {
+          if (config.topRightTitle.isNotBlank())
+            title = config.topRightTitle
+          if (config.topRightSvg.isNotBlank())
+            rawHtml(config.topRightSvg)
+          if (config.topRightSvgSrc.isNotBlank())
+            img(classes = config.topRightSvgClass) {
+              src = config.topRightSvgSrc
+              if (config.topRightSvgStyle.isNotBlank())
+                style = config.topRightSvgStyle
+            }
+          if (config.topRightText.isNotBlank())
+            +config.topRightText
+        }
+      }
+
+      rawHtml("\n")
+      div("slides") {
+        p.slides.forEach { slide -> slide.content(this, slide, useHttp) }
+      }
+    }
+
+    rawHtml("\n\t\n")
+    p.jsFiles.forEach { jsFile ->
+      rawHtml("\t")
+      script { src = if (jsFile.filename.startsWith("http")) jsFile.filename else "$srcPrefix${jsFile.filename}" }
+      rawHtml("\n")
+    }
+
+    rawHtml("\n\t")
+    script {
+      rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config, srcPrefix)}\t\t});\n\n")
+    }
+  }
 }

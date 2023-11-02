@@ -144,7 +144,7 @@ fun main() {
 
         content {
           """
-          # Java Code  
+          # Java Code
           ```java [3|4|5]
           ${include("kslides-examples/src/main/kotlin/content/HelloWorldJ.java")}
           ```
@@ -195,10 +195,10 @@ fun main() {
 
         content {
           """
-          # Markdown List Items 
+          # Markdown List Items
           * Item 1
           * Item 2
-          * Item 3  
+          * Item 3
           """
         }
       }
@@ -222,9 +222,9 @@ fun main() {
         }
 
         content {
-          """ 
+          """
           <h1>HTML Slide</h1>
-          <h2>This is an H2</h2> 
+          <h2>This is an H2</h2>
           <h3>This is an H3</h3>
           <p>This is a P</p>
           """
@@ -240,7 +240,12 @@ fun main() {
 
         content {
           h3 { +"Examples" }
-          h4 { a { href = "/demo.html"; +"Demo Deck" } }
+          h4 {
+            a {
+              href = "/demo.html"
+              +"Demo Deck"
+            }
+          }
         }
       }
 
@@ -287,14 +292,14 @@ fun main() {
             """
             ## Demo 1
             Slide 1
-    
+
             ---
-    
+
             ## Demo 1
             Slide 2
-    
+
             ---
-    
+
             ## Demo 1
             Slide 3
             """
@@ -345,14 +350,14 @@ fun main() {
           """
           ## Demo 2
           Slide 1.1
-    
+
           --
-    
+
           ## Demo 2
           Slide 1.2
-    
+
           ---
-    
+
           ## Demo 2
           Slide 2
           """
@@ -363,13 +368,13 @@ fun main() {
         content {
           """
           A
-    
+
           ---
-    
+
           B
-    
+
           ---
-    
+
           C
           """
         }
@@ -391,11 +396,11 @@ fun main() {
         content {
           """
           ## Element attributes
-    
+
           Item 1 ${fragment()}
-    
+
           Item 2 ${fragment()}
-    
+
           Item 3 ${fragment()}
           """
         }
@@ -418,7 +423,12 @@ fun main() {
       dslSlide {
         content {
           +"Slide 3"
-          h4 { a { href = "#/home"; +"Home" } }
+          h4 {
+            a {
+              href = "#/home"
+              +"Home"
+            }
+          }
         }
       }
 

@@ -1,43 +1,14 @@
-import com.kslides.DiagramOutputType
-import com.kslides.Effect
-import com.kslides.PlaygroundMode
-import com.kslides.PlaygroundTheme
-import com.kslides.PresentationTheme
-import com.kslides.Speed
-import com.kslides.TargetPlatform
-import com.kslides.Transition
-import com.kslides.atag
-import com.kslides.bodyRow
-import com.kslides.by
-import com.kslides.codeSnippet
+import com.kslides.*
 import com.kslides.config.PlotlyIframeConfig
-import com.kslides.diagram
-import com.kslides.fragment
-import com.kslides.headRow
-import com.kslides.include
-import com.kslides.kslides
-import com.kslides.listHref
-import com.kslides.orderedList
-import com.kslides.permuteBy
-import com.kslides.playground
-import com.kslides.plotly
-import com.kslides.rawHtml
-import com.kslides.toLinePatterns
-import com.kslides.unorderedList
 import kotlinx.css.*
 import kotlinx.css.Float
-import kotlinx.css.properties.*
+import kotlinx.css.properties.LineHeight
 import kotlinx.html.*
 import space.kscience.dataforge.meta.configure
 import space.kscience.dataforge.values.Value
 import space.kscience.dataforge.values.asValue
-import space.kscience.plotly.PlotlyConfig
-import space.kscience.plotly.heatmap
-import space.kscience.plotly.histogram
-import space.kscience.plotly.layout
+import space.kscience.plotly.*
 import space.kscience.plotly.palettes.T10
-import space.kscience.plotly.scatter
-import space.kscience.plotly.trace
 import kotlin.collections.set
 import kotlin.random.Random
 
@@ -150,9 +121,9 @@ fun main() {
         #ghsrc {
           font-size: 30px;
           text-decoration: underline;
-        }  
-        img[alt=slideimg] { 
-          width: 150px; 
+        }
+        img[alt=slideimg] {
+          width: 150px;
         }
         """
       // Or use the Kotlin CSS DSL. Instead of #intro h1 { color: #FF5533; } use:
@@ -179,13 +150,13 @@ fun main() {
         }
         // intro end
 
-        slideDefinition(slides, "intro")
+        slideDefinition(source = slides, token = "intro")
       }
 
       css +=
         """
-        #markdownslide p { 
-          color: #FF6836; 
+        #markdownslide p {
+          color: #FF6836;
         }
         """
 
@@ -197,11 +168,11 @@ fun main() {
             """
             # A Markdown Slide
             ## 🍒
-            
+
             Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
-            
+
             Press ESC to see the presentation overview ${fragment(Effect.FADE_LEFT)}
-                      
+
             Press the down arrow to see the slide definition 👇 ${fragment(Effect.FADE_LEFT)}
 
             Notes: This is a note for the Markdown slide 📝
@@ -210,7 +181,7 @@ fun main() {
         }
         // mdslide end
 
-        slideDefinition(slides, "mdslide")
+        slideDefinition(source = slides, token = "mdslide")
       }
 
       css {
@@ -227,9 +198,9 @@ fun main() {
             """
             <h1>An HTML Slide</h1>
             <h2>🐦</h2>
-            <p class="fragment fade-up">Press S to see the speaker notes</p> 
-            <p class="fragment fade-up">Press M to see the menu</p> 
-            <p class="fragment fade-up">Press B or . to pause the presentation</p> 
+            <p class="fragment fade-up">Press S to see the speaker notes</p>
+            <p class="fragment fade-up">Press M to see the menu</p>
+            <p class="fragment fade-up">Press B or . to pause the presentation</p>
             <p class="fragment fade-up">Press the down arrow to see the slide definition 👇</p>
 
             <aside class="notes">
@@ -240,7 +211,7 @@ fun main() {
         }
         // htmlslide end
 
-        slideDefinition(slides, "htmlslide")
+        slideDefinition(source = slides, token = "htmlslide")
       }
 
       verticalSlides {
@@ -257,7 +228,7 @@ fun main() {
         }
         // dslslide end
 
-        slideDefinition(slides, "dslslide")
+        slideDefinition(source = slides, token = "dslslide")
       }
 
       verticalSlides {
@@ -265,18 +236,18 @@ fun main() {
         markdownSlide {
           content {
             """
-            ## Highlighted Code with a markdownSlide   
+            ## Highlighted Code with a markdownSlide
             ```kotlin [|3,7|4,6|5|4-6]
             ${include("kslides-examples/src/main/kotlin/content/HelloWorldK.kt")}
             ```
-            ### 👇 
+            ### 👇
             Note: This slide shows code highlights. You can specify the lines you want to highlight.
             """
           }
         }
         // highlights1 end
 
-        slideDefinition(slides, "highlights1")
+        slideDefinition(source = slides, token = "highlights1")
       }
 
       verticalSlides {
@@ -297,7 +268,7 @@ fun main() {
         }
         // highlights2 end
 
-        slideDefinition(slides, "highlights2")
+        slideDefinition(source = slides, token = "highlights2")
       }
 
       verticalSlides {
@@ -322,7 +293,7 @@ fun main() {
           }
         // animated1 end
 
-        slideDefinition(slides, "animated1")
+        slideDefinition(source = slides, token = "animated1")
       }
 
       verticalSlides {
@@ -349,7 +320,7 @@ fun main() {
           }
         // animated2 end
 
-        slideDefinition(slides, "animated2")
+        slideDefinition(source = slides, token = "animated2")
       }
 
       verticalSlides {
@@ -366,7 +337,7 @@ fun main() {
         }
         // pg1 end
 
-        slideDefinition(slides, "pg1")
+        slideDefinition(source = slides, token = "pg1")
 
         // pg2 begin
         dslSlide {
@@ -379,7 +350,7 @@ fun main() {
         }
         // pg2 end
 
-        slideDefinition(slides, "pg2")
+        slideDefinition(source = slides, token = "pg2")
 
         // pg3 begin
         dslSlide {
@@ -398,7 +369,7 @@ fun main() {
         }
         // pg3 end
 
-        slideDefinition(slides, "pg3")
+        slideDefinition(source = slides, token = "pg3")
 
         // pg4 begin
         dslSlide {
@@ -413,7 +384,7 @@ fun main() {
         }
         // pg4 end
 
-        slideDefinition(slides, "pg4")
+        slideDefinition(source = slides, token = "pg4")
 
         // pg5 begin
         dslSlide {
@@ -445,7 +416,7 @@ fun main() {
         }
         // pg5 end
 
-        slideDefinition(slides, "pg5")
+        slideDefinition(source = slides, token = "pg5")
       }
 
       verticalSlides {
@@ -480,7 +451,7 @@ fun main() {
         }
         // graphviz1 end
 
-        slideDefinition(slides, "graphviz1")
+        slideDefinition(source = slides, token = "graphviz1")
 
         // mermaid1 begin
         dslSlide {
@@ -507,7 +478,7 @@ fun main() {
         }
         // mermaid1 end
 
-        slideDefinition(slides, "mermaid1")
+        slideDefinition(source = slides, token = "mermaid1")
 
         // mermaid2 begin
         dslSlide {
@@ -530,7 +501,7 @@ fun main() {
         }
         // mermaid2 end
 
-        slideDefinition(slides, "mermaid2")
+        slideDefinition(source = slides, token = "mermaid2")
 
         // plantuml1 begin
         dslSlide {
@@ -576,7 +547,7 @@ fun main() {
         }
         // plantuml1 end
 
-        slideDefinition(slides, "plantuml1")
+        slideDefinition(source = slides, token = "plantuml1")
 
         // blockdiag1 begin
         dslSlide {
@@ -594,7 +565,7 @@ fun main() {
                   blockdiag {
                     blockdiag -> generates -> "block-diagrams";
                     blockdiag -> is -> "very easy!";
-                  
+
                     blockdiag [color = "greenyellow"];
                     "block-diagrams" [color = "pink"];
                     "very easy!" [color = "orange"];
@@ -605,7 +576,7 @@ fun main() {
         }
         // blockdiag1 end
 
-        slideDefinition(slides, "blockdiag1")
+        slideDefinition(source = slides, token = "blockdiag1")
       }
 
       verticalSlides {
@@ -620,7 +591,7 @@ fun main() {
                 style = "width: 85%; border: 2px solid #586E75;"
                 height = "415px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() }
+              plotlyConfig = PlotlyConfig { withEditorButton() },
             ) {
               layout {
                 title = "A Simple Random Plot"
@@ -636,7 +607,7 @@ fun main() {
         }
         // plotly1 end
 
-        slideDefinition(slides, "plotly1")
+        slideDefinition(source = slides, token = "plotly1")
 
         // plotly2 begin
         dslSlide {
@@ -648,7 +619,7 @@ fun main() {
                 style = "width: 65%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() }
+              plotlyConfig = PlotlyConfig { withEditorButton() },
             ) {
               layout {
                 title = "Horizontal Histogram"
@@ -674,24 +645,27 @@ fun main() {
         }
         // plotly2 end
 
-        slideDefinition(slides, "plotly2")
+        slideDefinition(source = slides, token = "plotly2")
 
         // plotly3 begin
         dslSlide {
           content {
             h2 { +"A plotly-kt 3D Surface Plot" }
+
             plotly(
               dimensions = 503 by 484,
               iframeConfig = PlotlyIframeConfig {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() }
+              plotlyConfig = PlotlyConfig { withEditorButton() },
             ) {
               layout {
                 title = "A 3D Surface Plot"
               }
+
               fun l(vararg numbers: Number) = numbers.map { it.asValue() }.asValue()
+
               trace {
                 z.value = listOf(
                   l(8.83, 8.89, 8.81, 8.87, 8.9, 8.87),
@@ -708,7 +682,7 @@ fun main() {
                   l(9.04, 9.08, 9.05, 9.25, 9.28, 9.27),
                   l(9, 9.01, 9, 9.2, 9.23, 9.2),
                   l(8.99, 8.99, 8.98, 9.18, 9.2, 9.19),
-                  l(8.93, 8.97, 8.97, 9.18, 9.2, 9.18)
+                  l(8.93, 8.97, 8.97, 9.18, 9.2, 9.18),
                 ).asValue()
                 configure {
                   "type" put "surface"
@@ -719,7 +693,7 @@ fun main() {
         }
         // plotly3 end
 
-        slideDefinition(slides, "plotly3")
+        slideDefinition(source = slides, token = "plotly3")
 
         // plotly4 begin
         dslSlide {
@@ -731,7 +705,7 @@ fun main() {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() }
+              plotlyConfig = PlotlyConfig { withEditorButton() },
             ) {
               layout {
                 title = "A 3D Scatter Plot"
@@ -749,7 +723,7 @@ fun main() {
         }
         // plotly4 end
 
-        slideDefinition(slides, "plotly4")
+        slideDefinition(source = slides, token = "plotly4")
 
         // plotly5 begin
         dslSlide {
@@ -761,7 +735,7 @@ fun main() {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() }
+              plotlyConfig = PlotlyConfig { withEditorButton() },
             ) {
               layout {
                 title = "Red Heatmap"
@@ -777,7 +751,7 @@ fun main() {
         }
         // plotly5 end
 
-        slideDefinition(slides, "plotly5")
+        slideDefinition(source = slides, token = "plotly5")
       }
 
       verticalSlides {
@@ -803,7 +777,7 @@ fun main() {
           }
         // swapping end
 
-        slideDefinition(slides, "swapping")
+        slideDefinition(source = slides, token = "swapping")
       }
 
       verticalSlides {
@@ -967,7 +941,7 @@ fun main() {
         }
         // youtube end
 
-        slideDefinition(slides, "youtube")
+        slideDefinition(source = slides, token = "youtube")
       }
 
       verticalSlides {
@@ -1002,13 +976,13 @@ fun main() {
         }
         // twitter end
 
-        slideDefinition(slides, "twitter")
+        slideDefinition(source = slides, token = "twitter")
       }
 
       css +=
         """
         #tables th {
-          color: red; 
+          color: red;
           border-bottom-color: #586E75;
         }
         """
@@ -1038,7 +1012,7 @@ fun main() {
         }
         // tabular end
 
-        slideDefinition(slides, "tabular")
+        slideDefinition(source = slides, token = "tabular")
       }
 
       verticalSlides {
@@ -1051,12 +1025,12 @@ fun main() {
             div {
               style =
                 """
-                  position: absolute; width: 40%; right: 0; 
-                  box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); 
-                  background-color: rgba(0, 0, 0, 0.9); 
-                  color: #fff; 
-                  padding: 20px; 
-                  font-size: 20px; 
+                  position: absolute; width: 40%; right: 0;
+                  box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2);
+                  background-color: rgba(0, 0, 0, 0.9);
+                  color: #fff;
+                  padding: 20px;
+                  font-size: 20px;
                   text-align: left;
                 """
               h2 { +"Iframe Backgrounds" }
@@ -1069,7 +1043,7 @@ fun main() {
         }
         // iframe end
 
-        slideDefinition(slides, "iframe")
+        slideDefinition(source = slides, token = "iframe")
       }
 
       verticalSlides {
@@ -1082,10 +1056,10 @@ fun main() {
               +"You can select from different transitions, like:"
               br {}
               // The Transition enum includes all the built-in transitions
-              Transition.values()
+              Transition.entries
                 .forEachIndexed { index, transition ->
                   a { href = "?transition=${transition.name.lowercase()}#/transitions"; +transition.name }
-                  if (index < Transition.values().size - 1)
+                  if (index < Transition.entries.size - 1)
                     +"-"
                   rawHtml("\n\t\t\t\t\t\t\t")
                 }
@@ -1094,7 +1068,7 @@ fun main() {
         }
         // transition end
 
-        slideDefinition(slides, "transition")
+        slideDefinition(source = slides, token = "transition")
       }
 
       verticalSlides {
@@ -1108,7 +1082,7 @@ fun main() {
               +"reveal.js comes with some built-in themes:"
               br {}
               // The Theme enum includes all the built in themes
-              PresentationTheme.values()
+              PresentationTheme.entries
                 .forEachIndexed { index, theme ->
                   a {
                     href = "#/themes"
@@ -1116,7 +1090,7 @@ fun main() {
                       "document.getElementById('theme').setAttribute('href','revealjs/${theme.cssSrc}'); return false;"
                     +theme.name
                   }
-                  if (index < PresentationTheme.values().size - 1)
+                  if (index < PresentationTheme.entries.size - 1)
                     +"-"
                   rawHtml("\n\t\t\t\t\t\t\t")
                 }
@@ -1125,7 +1099,7 @@ fun main() {
         }
         // themes end
 
-        slideDefinition(slides, "themes")
+        slideDefinition(source = slides, token = "themes")
       }
 
       verticalSlides {
@@ -1141,7 +1115,7 @@ fun main() {
         }
         // video1 end
 
-        slideDefinition(slides, "video1")
+        slideDefinition(source = slides, token = "video1")
       }
 
       verticalSlides {
@@ -1159,7 +1133,7 @@ fun main() {
         }
         // webcontent end
 
-        slideDefinition(slides, "webcontent")
+        slideDefinition(source = slides, token = "webcontent")
       }
 
       verticalSlides {
@@ -1169,16 +1143,16 @@ fun main() {
           content {
             """
             ## Other Features 🚡
-            
-            [Layouts](/layouts.html) 
-         
-            [Fragments](/fragments.html) 
-                        
-            [Backgrounds](/backgrounds.html) 
 
-            [Multi-Columns DSL Slides](/multicols.html) 
+            [Layouts](/layouts.html)
 
-            [Multi-Slide Markdown Slides](/multislide.html) 
+            [Fragments](/fragments.html)
+
+            [Backgrounds](/backgrounds.html)
+
+            [Multi-Columns DSL Slides](/multicols.html)
+
+            [Multi-Slide Markdown Slides](/multislide.html)
 
             👇 ${fragment()}
 
@@ -1187,7 +1161,7 @@ fun main() {
         }
         // other end
 
-        slideDefinition(slides, "other")
+        slideDefinition(source = slides, token = "other")
       }
 
       verticalSlides {
@@ -1195,32 +1169,32 @@ fun main() {
         markdownSlide {
           content {
             """
-            ## Presentation Navigation 🦊 
-            
+            ## Presentation Navigation 🦊
+
             [Go to the previous slide](#/features) ${fragment()}
-         
+
             [Go to the next slide](#/lastslide) ${fragment()}
-            
+
             [Go to the presentation source on GitHub](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt) ${fragment()}
             """
           }
         }
         // navigation end
 
-        slideDefinition(slides, "navigation")
+        slideDefinition(source = slides, token = "navigation")
       }
 
       verticalSlides {
         // slidedef begin
         slideDefinition(
-          "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
-          "slideDefinition",
+          source = "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+          token = "slideDefinition",
           title = "Slide Definition Source",
-          id = "lastslide"
+          id = "lastslide",
         )
         // slidedef end
 
-        slideDefinition(slides, "slidedef")
+        slideDefinition(source = slides, token = "slidedef")
       }
     }
 // presentation end
@@ -1251,7 +1225,7 @@ fun main() {
         }
         // layouts end
 
-        slideDefinition(slides, "layouts")
+        slideDefinition(source = slides, token = "layouts")
       }
 
       verticalSlides {
@@ -1285,7 +1259,7 @@ fun main() {
         }
         // ft1 end
 
-        slideDefinition(slides, "ft1")
+        slideDefinition(source = slides, token = "ft1")
 
         // fit-text2 begin
         dslSlide {
@@ -1296,7 +1270,7 @@ fun main() {
         }
         // fit-text2 end
 
-        slideDefinition(slides, "fit-text2")
+        slideDefinition(source = slides, token = "fit-text2")
       }
 
       verticalSlides {
@@ -1340,7 +1314,7 @@ fun main() {
         }
         // stretch end
 
-        slideDefinition(slides, "stretch")
+        slideDefinition(source = slides, token = "stretch")
       }
 
       verticalSlides {
@@ -1384,7 +1358,7 @@ fun main() {
         }
         // stack1 end
 
-        slideDefinition(slides, "stack1")
+        slideDefinition(source = slides, token = "stack1")
       }
 
       verticalSlides {
@@ -1415,7 +1389,7 @@ fun main() {
         }
         // hstack end
 
-        slideDefinition(slides, "hstack")
+        slideDefinition(source = slides, token = "hstack")
       }
 
       verticalSlides {
@@ -1446,7 +1420,7 @@ fun main() {
         }
         // vstack end
 
-        slideDefinition(slides, "vstack")
+        slideDefinition(source = slides, token = "vstack")
       }
     }
 
@@ -1489,7 +1463,7 @@ fun main() {
         }
         // fragment-styles end
 
-        slideDefinition(slides, "fragment-styles")
+        slideDefinition(source = slides, token = "fragment-styles")
       }
 
       verticalSlides {
@@ -1500,21 +1474,21 @@ fun main() {
             ## Markdown Slide with Fragments
 
             highlight-red ${fragment(Effect.HIGHLIGHT_RED)}
-            
+
             fade-in-then-semi-out ${fragment(Effect.FADE_IN_THEN_SEMI_OUT)}
-            
+
             fade-left ${fragment(Effect.FADE_LEFT)}
 
             fade-right ${fragment(Effect.FADE_RIGHT)}
-            
+
             fade-up 👇 ${fragment(Effect.FADE_UP)}
-           
+
             """
           }
         }
         // fragment-md end
 
-        slideDefinition(slides, "fragment-md")
+        slideDefinition(source = slides, token = "fragment-md")
       }
     }
 
@@ -1541,7 +1515,7 @@ fun main() {
         }
         // background1 end
 
-        slideDefinition(slides, "background1")
+        slideDefinition(source = slides, token = "background1")
       }
 
       verticalSlides {
@@ -1556,7 +1530,7 @@ fun main() {
         }
         // background2 end
 
-        slideDefinition(slides, "background2")
+        slideDefinition(source = slides, token = "background2")
       }
 
       verticalSlides {
@@ -1571,7 +1545,7 @@ fun main() {
         }
         // background3 end
 
-        slideDefinition(slides, "background3")
+        slideDefinition(source = slides, token = "background3")
       }
 
       verticalSlides {
@@ -1604,7 +1578,7 @@ fun main() {
         }
         // background4 end
 
-        slideDefinition(slides, "background4")
+        slideDefinition(source = slides, token = "background4")
       }
 
       // vertical-config begin
@@ -1634,7 +1608,7 @@ fun main() {
           }
         }
 
-        slideDefinition(slides, "vertical-config")
+        slideDefinition(source = slides, token = "vertical-config")
       }
       // vertical-config end
 
@@ -1651,7 +1625,7 @@ fun main() {
         }
         // background-image end
 
-        slideDefinition(slides, "background-image")
+        slideDefinition(source = slides, token = "background-image")
       }
 
       verticalSlides {
@@ -1669,7 +1643,7 @@ fun main() {
         }
         // repeat end
 
-        slideDefinition(slides, "repeat")
+        slideDefinition(source = slides, token = "repeat")
       }
 
       verticalSlides {
@@ -1685,7 +1659,7 @@ fun main() {
         }
         // background-video end
 
-        slideDefinition(slides, "background-video")
+        slideDefinition(source = slides, token = "background-video")
       }
 
       verticalSlides {
@@ -1700,7 +1674,8 @@ fun main() {
           }
         }
         // background-iframe end
-        slideDefinition(slides, "background-iframe")
+
+        slideDefinition(source = slides, token = "background-iframe")
       }
     }
 
@@ -1714,7 +1689,7 @@ fun main() {
       }
 
       css {
-        /* Clear floats after the columns */
+        // Clear floats after the columns
         rule(".multiColumn2:after") {
           content = QuotedString("")
           display = Display.table
@@ -1769,7 +1744,7 @@ fun main() {
         }
         // 2col end
 
-        slideDefinition(slides, "2col")
+        slideDefinition(source = slides, token = "2col")
       }
 
       css += """
@@ -1784,15 +1759,15 @@ fun main() {
           float: left;
           width: 33%;
         }
-        
+
         .column3 ul {
-          font-size:30px; 
+          font-size:30px;
           list-style-type:square;
         }
-        
+
         .column3 li {
           margin-bottom:10px;
-        }               
+        }
       """
 
       verticalSlides {
@@ -1820,7 +1795,7 @@ fun main() {
         }
         // 3col end
 
-        slideDefinition(slides, "3col")
+        slideDefinition(source = slides, token = "3col")
       }
     }
 
@@ -1838,26 +1813,26 @@ fun main() {
         content {
           """
             ## This is a multi-slide Markdown Slide
-            
+
             This is page 1 of 3
-            
+
             ---
-      
+
             ## This is a multi-slide Markdown Slide
-            
+
             This is page 2 of 3
-      
+
             ---
-      
+
             ## This is a multi-slide Markdown Slide
-            
+
             This is page 3 of 3
             """
         }
       }
       // hmultislide end
 
-      slideDefinition(slides, "hmultislide")
+      slideDefinition(source = slides, token = "hmultislide")
 
       // vmultislide begin
       verticalSlides {
@@ -1866,21 +1841,21 @@ fun main() {
             """
             ## This is a multi-slide Markdown Slide
             ### embedded in a verticalSlides{} block
-            
+
             This is page 1 of 3
-            
+
             ---
-      
+
             ## This is a multi-slide Markdown Slide
             ### embedded in a verticalSlides{} block
-            
+
             This is page 2 of 3
-      
+
             ---
-      
+
             ## This is a multi-slide Markdown Slide
             ### embedded in a verticalSlides{} block
-            
+
             This is page 3 of 3
             """
           }
@@ -1888,7 +1863,7 @@ fun main() {
       }
       // vmultislide end
 
-      slideDefinition(slides, "vmultislide")
+      slideDefinition(source = slides, token = "vmultislide")
     }
   }
 // kslides end

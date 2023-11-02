@@ -6,8 +6,11 @@ import com.kslides.KSlidesDslMarker
 import com.kslides.Presentation
 import com.kslides.VerticalSlidesContext
 import com.kslides.config.SlideConfig
-import kotlinx.css.*
-import kotlinx.html.*
+import kotlinx.css.CssBuilder
+import kotlinx.html.DIV
+import kotlinx.html.SECTION
+import kotlinx.html.id
+import kotlinx.html.style
 
 typealias SlideArgs = (div: DIV, slide: Slide, useHttp: Boolean) -> Unit
 
@@ -37,7 +40,9 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   var autoAnimateRestart = false
 
   @KSlidesDslMarker
-  fun css(@Suppress("UNUSED_PARAMETER") block: CssBuilder.() -> Unit): Unit = cssError()
+  fun css(
+    @Suppress("UNUSED_PARAMETER") block: CssBuilder.() -> Unit,
+  ): Unit = cssError()
 
   @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = slideConfig.block()

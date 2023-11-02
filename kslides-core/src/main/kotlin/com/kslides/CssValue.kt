@@ -1,10 +1,10 @@
 package com.kslides
 
-import kotlinx.css.*
-import kotlinx.html.*
+import kotlinx.css.CssBuilder
+import kotlinx.html.HEAD
+import kotlinx.html.style
 
 class CssValue(private var text: String = "", val valid: Boolean = true) {
-
   constructor(other: CssValue) : this(if (other.isNotBlank()) "$other\n" else "")
 
   constructor(vararg elems: CssValue) : this(elems.toList().joinToString("\n") { it.text.trimIndent() })

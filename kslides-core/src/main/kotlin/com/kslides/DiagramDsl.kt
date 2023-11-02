@@ -66,7 +66,10 @@ fun DslSlide.diagram(
   } ?: error("diagram() must be called from within a content{} block")
 }
 
-private fun DslSlide.fetchKrokiContent(filename: String, desc: Map<String, Any>): ByteArray =
+private fun DslSlide.fetchKrokiContent(
+  filename: String,
+  desc: Map<String, Any>,
+): ByteArray =
   runBlocking {
     DiagramDescription.logger.info { "Fetching kroki content for $filename" }
     val json =
