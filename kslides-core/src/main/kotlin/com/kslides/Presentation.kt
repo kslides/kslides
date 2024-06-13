@@ -6,9 +6,9 @@ import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
 import com.kslides.slide.*
 import com.pambrose.srcref.Api.srcrefUrl
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.css.CssBuilder
 import kotlinx.html.*
-import mu.two.KLogging
 
 class Presentation(val kslides: KSlides) {
   internal val plugins = mutableListOf<String>()
@@ -63,10 +63,10 @@ class Presentation(val kslides: KSlides) {
     }.also { slides += it }
 
   @KSlidesDslMarker
-  fun markdownSlide(slideContent: HortizontalMarkdownSlide.() -> Unit = {}) =
-    HortizontalMarkdownSlide(this) { div, slide, _ ->
+  fun markdownSlide(slideContent: HorizontalMarkdownSlide.() -> Unit = {}) =
+    HorizontalMarkdownSlide(this) { div, slide, _ ->
       div.apply {
-        (slide as HortizontalMarkdownSlide).also { s ->
+        (slide as HorizontalMarkdownSlide).also { s ->
           s.slideContent()
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
@@ -462,7 +462,7 @@ class Presentation(val kslides: KSlides) {
         when (scrollProgress) {
           is Boolean,
           is ScrollProgress,
-          -> {
+            -> {
             append("$INDENT${toJsValue("scrollProgress", scrollProgress)},\n")
             appendLine()
           }
@@ -484,7 +484,7 @@ class Presentation(val kslides: KSlides) {
         when (scrollSnap) {
           is Boolean,
           is ScrollSnap,
-          -> {
+            -> {
             append("$INDENT${toJsValue("scrollSnap", scrollSnap)},\n")
             appendLine()
           }
@@ -534,7 +534,8 @@ class Presentation(val kslides: KSlides) {
     appendLine("${INDENT}plugins: [ ${plugins.joinToString(", ")} ]")
   }
 
-  companion object : KLogging() {
+  companion object {
+    private val logger = KotlinLogging.logger {}
     private const val INDENT = "\t\t\t"
   }
 }

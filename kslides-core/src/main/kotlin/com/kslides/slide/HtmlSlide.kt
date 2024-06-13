@@ -2,7 +2,7 @@ package com.kslides.slide
 
 import com.kslides.KSlidesDslMarker
 import com.kslides.Presentation
-import kotlinx.html.*
+import kotlinx.html.SECTION
 
 interface HtmlSlide {
   var _htmlBlock: () -> String

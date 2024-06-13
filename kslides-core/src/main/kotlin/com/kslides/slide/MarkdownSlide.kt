@@ -12,7 +12,7 @@ interface MarkdownSlide {
   var filename: String
 }
 
-class HortizontalMarkdownSlide(
+class HorizontalMarkdownSlide(
   presentation: Presentation,
   content: SlideArgs,
 ) : HorizontalSlide(presentation, content),
@@ -24,8 +24,8 @@ class HortizontalMarkdownSlide(
   override var filename = ""
 
   @KSlidesDslMarker
-  fun content(markdownBlock: () -> String) {
-    _markdownBlock = markdownBlock
+  fun content(block: () -> String) {
+    _markdownBlock = block
     markdownAssigned = true
   }
 }

@@ -3,6 +3,7 @@ package com.kslides
 import com.github.pambrose.common.util.nullIfBlank
 import com.kslides.config.DiagramConfig
 import com.kslides.slide.DslSlide
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
@@ -15,12 +16,13 @@ import kotlinx.html.title
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonObject
-import mu.two.KLogging
 
 class DiagramDescription : DiagramConfig() {
   var source = ""
 
-  companion object : KLogging()
+  companion object {
+    internal val logger = KotlinLogging.logger {}
+  }
 }
 
 @KSlidesDslMarker
@@ -30,12 +32,11 @@ fun DslSlide.diagram(
 ) {
   val diagram = DiagramDescription().apply(diagramBlock)
   val mergedConfig =
-    DiagramConfig()
-      .also { config ->
-        config.merge(globalDiagramConfig)
-        config.merge(presentationDiagramConfig)
-        config.merge(diagram)
-      }
+    DiagramConfig().apply {
+      merge(globalDiagramConfig)
+      merge(presentationDiagramConfig)
+      merge(diagram)
+    }
 
   val filename = newFilename(mergedConfig.outputType.suffix)
 
@@ -72,40 +73,41 @@ private fun DslSlide.fetchKrokiContent(
 ): ByteArray =
   runBlocking {
     DiagramDescription.logger.info { "Fetching kroki content for $filename" }
-    val json =
-      buildJsonObject {
-        desc.forEach { (k, v) ->
-          when (v) {
-            is String -> put(k, JsonPrimitive(v))
-            is Map<*, *> -> {
-              putJsonObject(k) {
-                v.forEach { k, v ->
-                  when {
-                    k !is String -> error("Invalid key type: $k")
-                    v is Boolean -> put(k, JsonPrimitive(v))
-                    v is String -> put(k, JsonPrimitive(v))
-                    v is Number -> put(k, JsonPrimitive(v))
-                    else -> error("Invalid value type: $v")
-                  }
-                }
-              }
-            }
-
-            else -> error("Unexpected value type: ${v::class}")
-          }
-        }
-      }.toString()
-
+    val json = buildJsonObjectFromMap(desc)
     val kslidesConfig = presentation.kslides.kslidesConfig
     val response =
       presentation.kslides.client.post(kslidesConfig.krokiUrl) {
         expectSuccess = true
         timeout { requestTimeoutMillis = kslidesConfig.clientHttpTimeout.inWholeMilliseconds }
         contentType(ContentType.Application.Json)
-        setBody(json)
+        setBody(json.toString())
         onDownload { bytesSentTotal, contentLength ->
           DiagramDescription.logger.info { "Received $bytesSentTotal bytes of $contentLength for $filename" }
         }
       }
     response.body()
+  }
+
+private fun buildJsonObjectFromMap(desc: Map<String, Any>) =
+  buildJsonObject {
+    desc.forEach { (k, v) ->
+      when (v) {
+        is String -> put(k, JsonPrimitive(v))
+        is Map<*, *> -> {
+          putJsonObject(k) {
+            v.forEach { k, v ->
+              when {
+                k !is String -> error("Invalid key type: $k")
+                v is Boolean -> put(k, JsonPrimitive(v))
+                v is String -> put(k, JsonPrimitive(v))
+                v is Number -> put(k, JsonPrimitive(v))
+                else -> error("Invalid value type: $v")
+              }
+            }
+          }
+        }
+
+        else -> error("Unexpected value type: ${v::class}")
+      }
+    }
   }

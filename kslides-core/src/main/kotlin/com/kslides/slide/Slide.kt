@@ -19,12 +19,11 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   val _slideId = presentation.kslides.slideCount++
 
   internal val mergedSlideConfig by lazy {
-    SlideConfig()
-      .also { config ->
-        config.merge(presentation.kslides.globalPresentationConfig.slideConfig)
-        config.merge(presentation.presentationConfig.slideConfig)
-        config.merge(slideConfig)
-      }
+    SlideConfig().also { config ->
+      config.merge(presentation.kslides.globalPresentationConfig.slideConfig)
+      config.merge(presentation.presentationConfig.slideConfig)
+      config.merge(slideConfig)
+    }
   }
 
   // This is used to catch incorrect usages of css
