@@ -8,14 +8,15 @@ import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.html.CODE
 import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
-import mu.two.KLogging
 import java.io.File
 import java.net.URL
 
-object Utils : KLogging() {
+object Utils {
+  private val logger = KotlinLogging.logger {}
   internal const val INDENT_TOKEN = "--indent--"
 }
 

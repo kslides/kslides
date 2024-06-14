@@ -2,11 +2,11 @@ package com.kslides.slide
 
 import com.kslides.KSlidesDslMarker
 import com.kslides.Presentation
-import kotlinx.html.*
+import kotlinx.html.SECTION
 
 interface HtmlSlide {
-  var _htmlBlock: () -> String
-  var _htmlAssigned: Boolean
+  var private_htmlBlock: () -> String
+  var private_htmlAssigned: Boolean
 
   var classes: String
   var id: String
@@ -17,24 +17,24 @@ interface HtmlSlide {
 
 class HorizontalHtmlSlide(presentation: Presentation, content: SlideArgs) :
   HorizontalSlide(presentation, content), HtmlSlide {
-  override var _htmlBlock: () -> String = { "" }
-  override var _htmlAssigned = false
+  override var private_htmlBlock: () -> String = { "" }
+  override var private_htmlAssigned = false
 
   @KSlidesDslMarker
   fun content(htmlBlock: () -> String) {
-    _htmlBlock = htmlBlock
-    _htmlAssigned = true
+    private_htmlBlock = htmlBlock
+    private_htmlAssigned = true
   }
 }
 
 class VerticalHtmlSlide(presentation: Presentation, content: SlideArgs) :
   VerticalSlide(presentation, content), HtmlSlide {
-  override var _htmlBlock: () -> String = { "" }
-  override var _htmlAssigned = false
+  override var private_htmlBlock: () -> String = { "" }
+  override var private_htmlAssigned = false
 
   @KSlidesDslMarker
   fun content(htmlBlock: () -> String) {
-    _htmlBlock = htmlBlock
-    _htmlAssigned = true
+    private_htmlBlock = htmlBlock
+    private_htmlAssigned = true
   }
 }

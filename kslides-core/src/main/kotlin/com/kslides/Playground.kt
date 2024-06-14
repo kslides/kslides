@@ -3,14 +3,16 @@ package com.kslides
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.config.PlaygroundConfig
 import com.kslides.config.PlaygroundConfig.Companion.toPropertyName
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.html.*
 import kotlinx.html.dom.append
 import kotlinx.html.dom.document
 import kotlinx.html.dom.serialize
-import mu.two.KLogging
 import kotlin.collections.set
 
-object Playground : KLogging() {
+object Playground {
+  private val logger = KotlinLogging.logger {}
+
   internal fun playgroundContent(
     kslides: KSlides,
     config: PlaygroundConfig,

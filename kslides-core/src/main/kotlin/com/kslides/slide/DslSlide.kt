@@ -7,12 +7,12 @@ import kotlinx.html.*
 
 interface DslSlide {
   val presentation: Presentation
-  var _section: SECTION? // TODO This is a hack that will go away when context receivers work
-  val _slideId: Int
-  var _useHttp: Boolean
-  var _dslAssigned: Boolean
-  var _dslBlock: SECTION.() -> Unit
-  var _iframeCount: Int
+  var private_section: SECTION? // TODO This is a hack that will go away when context receivers work
+  val private_slideId: Int
+  var private_useHttp: Boolean
+  var private_dslAssigned: Boolean
+  var private_dslBlock: SECTION.() -> Unit
+  var private_iframeCount: Int
 
   var classes: String
   var id: String
@@ -33,7 +33,7 @@ interface DslSlide {
 
   fun processSlide(section: SECTION)
 
-  fun newFilename(suffix: String = "html") = "slide-$_slideId-${_iframeCount++}.$suffix"
+  fun newFilename(suffix: String = "html") = "slide-$private_slideId-${private_iframeCount++}.$suffix"
 
   fun playgroundFilename(filename: String) =
     listOf(presentation.kslides.outputConfig.playgroundDir, filename).toPath(addPrefix = false, addTrailing = false)
@@ -47,16 +47,16 @@ interface DslSlide {
 
 class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :
   HorizontalSlide(presentation, content), DslSlide {
-  override var _section: SECTION? = null
-  override var _dslBlock: SECTION.() -> Unit = { }
-  override var _iframeCount = 1
-  override var _useHttp: Boolean = false
-  override var _dslAssigned = false
+  override var private_section: SECTION? = null
+  override var private_dslBlock: SECTION.() -> Unit = { }
+  override var private_iframeCount = 1
+  override var private_useHttp: Boolean = false
+  override var private_dslAssigned = false
 
   @KSlidesDslMarker
   fun content(dslBlock: SECTION.() -> Unit) {
-    _dslBlock = dslBlock
-    _dslAssigned = true
+    private_dslBlock = dslBlock
+    private_dslAssigned = true
   }
 
   @KSlidesDslMarker
@@ -66,16 +66,16 @@ class HorizontalDslSlide(override val presentation: Presentation, content: Slide
 
 class VerticalDslSlide(override val presentation: Presentation, content: SlideArgs) :
   VerticalSlide(presentation, content), DslSlide {
-  override var _section: SECTION? = null
-  override var _dslBlock: SECTION.() -> Unit = { }
-  override var _iframeCount = 1
-  override var _useHttp: Boolean = false
-  override var _dslAssigned = false
+  override var private_section: SECTION? = null
+  override var private_dslBlock: SECTION.() -> Unit = { }
+  override var private_iframeCount = 1
+  override var private_useHttp: Boolean = false
+  override var private_dslAssigned = false
 
   @KSlidesDslMarker
   fun content(dslBlock: SECTION.() -> Unit) {
-    _dslBlock = dslBlock
-    _dslAssigned = true
+    private_dslBlock = dslBlock
+    private_dslAssigned = true
   }
 
   @KSlidesDslMarker

@@ -12,7 +12,7 @@
 		<script>
 			window.dataLayer = window.dataLayer || [];
 			function gtag(){dataLayer.push(arguments);}
-			gtag('js', new Date()); 
+			gtag('js', new Date());
 			gtag('config', 'G-TRY2Q243XC');
 		</script>
 
@@ -74,23 +74,23 @@
 			#ghsrc {
 			  font-size: 30px;
 			  text-decoration: underline;
-			}  
-			img[alt=slideimg] { 
-			  width: 150px; 
+			}
+			img[alt=slideimg] {
+			  width: 150px;
 			}
 			
 			#intro h1 {
 			color: #FF5533;
 			}
-			#markdownslide p { 
-			  color: #FF6836; 
+			#markdownslide p {
+			  color: #FF6836;
 			}
 			
 			#htmlslide p {
 			color: blue;
 			}
 			#tables th {
-			  color: red; 
+			  color: red;
 			  border-bottom-color: #586E75;
 			}
 			
@@ -124,7 +124,7 @@ Notes: This is a note for the opening slide 📝
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 markdownSlide {
   id = "intro"
@@ -157,7 +157,7 @@ Use the arrow keys to navigate
 
 Press ESC to see the presentation overview 
               <!-- .element: class="fragment fade-left" -->
-          
+
 Press the down arrow to see the slide definition 👇 
               <!-- .element: class="fragment fade-left" -->
 
@@ -167,7 +167,7 @@ Notes: This is a note for the Markdown slide 📝
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 markdownSlide {
   id = "markdownslide"
@@ -175,11 +175,11 @@ markdownSlide {
     """
     # A Markdown Slide
     ## 🍒
-    
+
     Use the arrow keys to navigate ${fragment(Effect.FADE_LEFT)}
-    
+
     Press ESC to see the presentation overview ${fragment(Effect.FADE_LEFT)}
-              
+
     Press the down arrow to see the slide definition 👇 ${fragment(Effect.FADE_LEFT)}
 
     Notes: This is a note for the Markdown slide 📝
@@ -201,14 +201,11 @@ markdownSlide {
             <h2>&#128038;</h2>
             
             <p class="fragment fade-up">Press S to see the speaker notes</p>
-             
-
+            
             <p class="fragment fade-up">Press M to see the menu</p>
-             
-
+            
             <p class="fragment fade-up">Press B or . to pause the presentation</p>
-             
-
+            
             <p class="fragment fade-up">Press the down arrow to see the slide definition &#128071;</p>
             
             <aside class="notes">
@@ -218,7 +215,7 @@ markdownSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 htmlSlide {
   id = "htmlslide"
@@ -226,9 +223,9 @@ htmlSlide {
     """
     <h1>An HTML Slide</h1>
     <h2>🐦</h2>
-    <p class="fragment fade-up">Press S to see the speaker notes</p> 
-    <p class="fragment fade-up">Press M to see the menu</p> 
-    <p class="fragment fade-up">Press B or . to pause the presentation</p> 
+    <p class="fragment fade-up">Press S to see the speaker notes</p>
+    <p class="fragment fade-up">Press M to see the menu</p>
+    <p class="fragment fade-up">Press B or . to pause the presentation</p>
     <p class="fragment fade-up">Press the down arrow to see the slide definition 👇</p>
 
     <aside class="notes">
@@ -256,7 +253,7 @@ htmlSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -278,7 +275,7 @@ dslSlide {
         <section>
           <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
             <script type="text/template">
-## Highlighted Code with a markdownSlide   
+## Highlighted Code with a markdownSlide
 ```kotlin [|3,7|4,6|5|4-6]
 package content
 
@@ -288,23 +285,23 @@ fun main() {
   }
 }
 ```
-### 👇 
+### 👇
 Note: This slide shows code highlights. You can specify the lines you want to highlight.
 </script>
           </section>
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 markdownSlide {
   content {
     """
-    ## Highlighted Code with a markdownSlide   
+    ## Highlighted Code with a markdownSlide
     ```kotlin [|3,7|4,6|5|4-6]
     ${include("kslides-examples/src/main/kotlin/content/HelloWorldK.kt")}
     ```
-    ### 👇 
+    ### 👇
     Note: This slide shows code highlights. You can specify the lines you want to highlight.
     """
   }
@@ -335,7 +332,7 @@ fun main() {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -407,7 +404,7 @@ let c = planets.reduce(circumferenceReducer, 0);
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 // A for loop generates a series of slides, each with a different set of lines
 // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
@@ -504,7 +501,7 @@ This slide shows animated code highlights.
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 // A for loop generates a series of slides, each with a different set of lines
 // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
@@ -540,7 +537,7 @@ for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 val pg = "kslides-examples/src/main/kotlin/playground"
 dslSlide {
@@ -564,7 +561,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -587,7 +584,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -615,7 +612,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -640,7 +637,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -694,7 +691,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -730,7 +727,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -770,7 +767,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -806,7 +803,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -865,7 +862,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -882,7 +879,7 @@ dslSlide {
           blockdiag {
             blockdiag -> generates -> "block-diagrams";
             blockdiag -> is -> "very easy!";
-          
+
             blockdiag [color = "greenyellow"];
             "block-diagrams" [color = "pink"];
             "very easy!" [color = "orange"];
@@ -906,7 +903,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   id = "plotly"
@@ -918,7 +915,7 @@ dslSlide {
         style = "width: 85%; border: 2px solid #586E75;"
         height = "415px"
       },
-      plotlyConfig = PlotlyConfig { withEditorButton() }
+      plotlyConfig = PlotlyConfig { withEditorButton() },
     ) {
       layout {
         title = "A Simple Random Plot"
@@ -944,7 +941,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -955,7 +952,7 @@ dslSlide {
         style = "width: 65%; border: 2px solid #586E75;"
         height = "500px"
       },
-      plotlyConfig = PlotlyConfig { withEditorButton() }
+      plotlyConfig = PlotlyConfig { withEditorButton() },
     ) {
       layout {
         title = "Horizontal Histogram"
@@ -991,23 +988,26 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
     h2 { +"A plotly-kt 3D Surface Plot" }
+
     plotly(
       dimensions = 503 by 484,
       iframeConfig = PlotlyIframeConfig {
         style = "width: 54%; border: 2px solid #586E75;"
         height = "500px"
       },
-      plotlyConfig = PlotlyConfig { withEditorButton() }
+      plotlyConfig = PlotlyConfig { withEditorButton() },
     ) {
       layout {
         title = "A 3D Surface Plot"
       }
+
       fun l(vararg numbers: Number) = numbers.map { it.asValue() }.asValue()
+
       trace {
         z.value = listOf(
           l(8.83, 8.89, 8.81, 8.87, 8.9, 8.87),
@@ -1024,7 +1024,7 @@ dslSlide {
           l(9.04, 9.08, 9.05, 9.25, 9.28, 9.27),
           l(9, 9.01, 9, 9.2, 9.23, 9.2),
           l(8.99, 8.99, 8.98, 9.18, 9.2, 9.19),
-          l(8.93, 8.97, 8.97, 9.18, 9.2, 9.18)
+          l(8.93, 8.97, 8.97, 9.18, 9.2, 9.18),
         ).asValue()
         configure {
           "type" put "surface"
@@ -1045,7 +1045,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -1056,7 +1056,7 @@ dslSlide {
         style = "width: 54%; border: 2px solid #586E75;"
         height = "500px"
       },
-      plotlyConfig = PlotlyConfig { withEditorButton() }
+      plotlyConfig = PlotlyConfig { withEditorButton() },
     ) {
       layout {
         title = "A 3D Scatter Plot"
@@ -1084,7 +1084,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -1095,7 +1095,7 @@ dslSlide {
         style = "width: 54%; border: 2px solid #586E75;"
         height = "500px"
       },
-      plotlyConfig = PlotlyConfig { withEditorButton() }
+      plotlyConfig = PlotlyConfig { withEditorButton() },
     ) {
       layout {
         title = "Red Heatmap"
@@ -1187,7 +1187,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 listOf("One", "Two", "Three", "Four", "👇")
   .permuteBy(
@@ -1262,7 +1262,7 @@ listOf("One", "Two", "Three", "Four", "👇")
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   id = "youtube"
@@ -1298,7 +1298,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   id = "twitter"
@@ -1360,7 +1360,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   id = "tables"
@@ -1393,12 +1393,12 @@ dslSlide {
         <section>
           <section data-background-iframe="https://revealjs.com/backgrounds/#iframe-backgrounds">
             <div style="
-                  position: absolute; width: 40%; right: 0; 
-                  box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); 
-                  background-color: rgba(0, 0, 0, 0.9); 
-                  color: #fff; 
-                  padding: 20px; 
-                  font-size: 20px; 
+                  position: absolute; width: 40%; right: 0;
+                  box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2);
+                  background-color: rgba(0, 0, 0, 0.9);
+                  color: #fff;
+                  padding: 20px;
+                  font-size: 20px;
                   text-align: left;
                 ">
               <h2>Iframe Backgrounds</h2>
@@ -1409,7 +1409,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
         dslSlide {
           slideConfig {
@@ -1419,12 +1419,12 @@ dslSlide {
             div {
               style =
                 """
-                  position: absolute; width: 40%; right: 0; 
-                  box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); 
-                  background-color: rgba(0, 0, 0, 0.9); 
-                  color: #fff; 
-                  padding: 20px; 
-                  font-size: 20px; 
+                  position: absolute; width: 40%; right: 0;
+                  box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2);
+                  background-color: rgba(0, 0, 0, 0.9);
+                  color: #fff;
+                  padding: 20px;
+                  font-size: 20px;
                   text-align: left;
                 """
               h2 { +"Iframe Backgrounds" }
@@ -1437,7 +1437,7 @@ dslSlide {
         }
         // iframe end
 
-        slideDefinition(slides, "iframe")
+        slideDefinition(source = slides, token = "iframe")
       }
 
       verticalSlides {
@@ -1450,10 +1450,10 @@ dslSlide {
               +"You can select from different transitions, like:"
               br {}
               // The Transition enum includes all the built-in transitions
-              Transition.values()
+              Transition.entries
                 .forEachIndexed { index, transition ->
                   a { href = "?transition=${transition.name.lowercase()}#/transitions"; +transition.name }
-                  if (index < Transition.values().size - 1)
+                  if (index < Transition.entries.size - 1)
                     +"-"
                   rawHtml("\n\t\t\t\t\t\t\t")
                 }
@@ -1462,7 +1462,7 @@ dslSlide {
         }
         // transition end
 
-        slideDefinition(slides, "transition")
+        slideDefinition(source = slides, token = "transition")
       }
 
       verticalSlides {
@@ -1476,7 +1476,7 @@ dslSlide {
               +"reveal.js comes with some built-in themes:"
               br {}
               // The Theme enum includes all the built in themes
-              PresentationTheme.values()
+              PresentationTheme.entries
                 .forEachIndexed { index, theme ->
                   a {
                     href = "#/themes"
@@ -1484,7 +1484,7 @@ dslSlide {
                       "document.getElementById('theme').setAttribute('href','revealjs/${theme.cssSrc}'); return false;"
                     +theme.name
                   }
-                  if (index < PresentationTheme.values().size - 1)
+                  if (index < PresentationTheme.entries.size - 1)
                     +"-"
                   rawHtml("\n\t\t\t\t\t\t\t")
                 }
@@ -1493,7 +1493,7 @@ dslSlide {
         }
         // themes end
 
-        slideDefinition(slides, "themes")
+        slideDefinition(source = slides, token = "themes")
       }
 
       verticalSlides {
@@ -1509,7 +1509,7 @@ dslSlide {
         }
         // video1 end
 
-        slideDefinition(slides, "video1")
+        slideDefinition(source = slides, token = "video1")
       }
 
       verticalSlides {
@@ -1527,7 +1527,7 @@ dslSlide {
         }
         // webcontent end
 
-        slideDefinition(slides, "webcontent")
+        slideDefinition(source = slides, token = "webcontent")
       }
 
       verticalSlides {
@@ -1537,16 +1537,16 @@ dslSlide {
           content {
             """
             ## Other Features 🚡
-            
-            [Layouts](/layouts.html) 
-         
-            [Fragments](/fragments.html) 
-                        
-            [Backgrounds](/backgrounds.html) 
 
-            [Multi-Columns DSL Slides](/multicols.html) 
+            [Layouts](/layouts.html)
 
-            [Multi-Slide Markdown Slides](/multislide.html) 
+            [Fragments](/fragments.html)
+
+            [Backgrounds](/backgrounds.html)
+
+            [Multi-Columns DSL Slides](/multicols.html)
+
+            [Multi-Slide Markdown Slides](/multislide.html)
 
             👇 ${fragment()}
 
@@ -1555,7 +1555,7 @@ dslSlide {
         }
         // other end
 
-        slideDefinition(slides, "other")
+        slideDefinition(source = slides, token = "other")
       }
 
       verticalSlides {
@@ -1563,32 +1563,32 @@ dslSlide {
         markdownSlide {
           content {
             """
-            ## Presentation Navigation 🦊 
-            
+            ## Presentation Navigation 🦊
+
             [Go to the previous slide](#/features) ${fragment()}
-         
+
             [Go to the next slide](#/lastslide) ${fragment()}
-            
+
             [Go to the presentation source on GitHub](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt) ${fragment()}
             """
           }
         }
         // navigation end
 
-        slideDefinition(slides, "navigation")
+        slideDefinition(source = slides, token = "navigation")
       }
 
       verticalSlides {
         // slidedef begin
         slideDefinition(
-          "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
-          "slideDefinition",
+          source = "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+          token = "slideDefinition",
           title = "Slide Definition Source",
-          id = "lastslide"
+          id = "lastslide",
         )
         // slidedef end
 
-        slideDefinition(slides, "slidedef")
+        slideDefinition(source = slides, token = "slidedef")
       }
     }
 // presentation end
@@ -1619,7 +1619,7 @@ dslSlide {
         }
         // layouts end
 
-        slideDefinition(slides, "layouts")
+        slideDefinition(source = slides, token = "layouts")
       }
 
       verticalSlides {
@@ -1653,7 +1653,7 @@ dslSlide {
         }
         // ft1 end
 
-        slideDefinition(slides, "ft1")
+        slideDefinition(source = slides, token = "ft1")
 
         // fit-text2 begin
         dslSlide {
@@ -1664,7 +1664,7 @@ dslSlide {
         }
         // fit-text2 end
 
-        slideDefinition(slides, "fit-text2")
+        slideDefinition(source = slides, token = "fit-text2")
       }
 
       verticalSlides {
@@ -1708,7 +1708,7 @@ dslSlide {
         }
         // stretch end
 
-        slideDefinition(slides, "stretch")
+        slideDefinition(source = slides, token = "stretch")
       }
 
       verticalSlides {
@@ -1752,7 +1752,7 @@ dslSlide {
         }
         // stack1 end
 
-        slideDefinition(slides, "stack1")
+        slideDefinition(source = slides, token = "stack1")
       }
 
       verticalSlides {
@@ -1783,7 +1783,7 @@ dslSlide {
         }
         // hstack end
 
-        slideDefinition(slides, "hstack")
+        slideDefinition(source = slides, token = "hstack")
       }
 
       verticalSlides {
@@ -1814,7 +1814,7 @@ dslSlide {
         }
         // vstack end
 
-        slideDefinition(slides, "vstack")
+        slideDefinition(source = slides, token = "vstack")
       }
     }
 
@@ -1857,7 +1857,7 @@ dslSlide {
         }
         // fragment-styles end
 
-        slideDefinition(slides, "fragment-styles")
+        slideDefinition(source = slides, token = "fragment-styles")
       }
 
       verticalSlides {
@@ -1868,21 +1868,21 @@ dslSlide {
             ## Markdown Slide with Fragments
 
             highlight-red ${fragment(Effect.HIGHLIGHT_RED)}
-            
+
             fade-in-then-semi-out ${fragment(Effect.FADE_IN_THEN_SEMI_OUT)}
-            
+
             fade-left ${fragment(Effect.FADE_LEFT)}
 
             fade-right ${fragment(Effect.FADE_RIGHT)}
-            
+
             fade-up 👇 ${fragment(Effect.FADE_UP)}
-           
+
             """
           }
         }
         // fragment-md end
 
-        slideDefinition(slides, "fragment-md")
+        slideDefinition(source = slides, token = "fragment-md")
       }
     }
 
@@ -1909,7 +1909,7 @@ dslSlide {
         }
         // background1 end
 
-        slideDefinition(slides, "background1")
+        slideDefinition(source = slides, token = "background1")
       }
 
       verticalSlides {
@@ -1924,7 +1924,7 @@ dslSlide {
         }
         // background2 end
 
-        slideDefinition(slides, "background2")
+        slideDefinition(source = slides, token = "background2")
       }
 
       verticalSlides {
@@ -1939,7 +1939,7 @@ dslSlide {
         }
         // background3 end
 
-        slideDefinition(slides, "background3")
+        slideDefinition(source = slides, token = "background3")
       }
 
       verticalSlides {
@@ -1972,7 +1972,7 @@ dslSlide {
         }
         // background4 end
 
-        slideDefinition(slides, "background4")
+        slideDefinition(source = slides, token = "background4")
       }
 
       // vertical-config begin
@@ -2002,7 +2002,7 @@ dslSlide {
           }
         }
 
-        slideDefinition(slides, "vertical-config")
+        slideDefinition(source = slides, token = "vertical-config")
       }
       // vertical-config end
 
@@ -2019,7 +2019,7 @@ dslSlide {
         }
         // background-image end
 
-        slideDefinition(slides, "background-image")
+        slideDefinition(source = slides, token = "background-image")
       }
 
       verticalSlides {
@@ -2037,7 +2037,7 @@ dslSlide {
         }
         // repeat end
 
-        slideDefinition(slides, "repeat")
+        slideDefinition(source = slides, token = "repeat")
       }
 
       verticalSlides {
@@ -2053,7 +2053,7 @@ dslSlide {
         }
         // background-video end
 
-        slideDefinition(slides, "background-video")
+        slideDefinition(source = slides, token = "background-video")
       }
 
       verticalSlides {
@@ -2093,7 +2093,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   id = "transitions"
@@ -2103,10 +2103,10 @@ dslSlide {
       +"You can select from different transitions, like:"
       br {}
       // The Transition enum includes all the built-in transitions
-      Transition.values()
+      Transition.entries
         .forEachIndexed { index, transition ->
           a { href = "?transition=${transition.name.lowercase()}#/transitions"; +transition.name }
-          if (index < Transition.values().size - 1)
+          if (index < Transition.entries.size - 1)
             +"-"
           rawHtml("\n\t\t\t\t\t\t\t")
         }
@@ -2146,7 +2146,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   id = "themes"
@@ -2157,7 +2157,7 @@ dslSlide {
       +"reveal.js comes with some built-in themes:"
       br {}
       // The Theme enum includes all the built in themes
-      PresentationTheme.values()
+      PresentationTheme.entries
         .forEachIndexed { index, theme ->
           a {
             href = "#/themes"
@@ -2165,7 +2165,7 @@ dslSlide {
               "document.getElementById('theme').setAttribute('href','revealjs/${theme.cssSrc}'); return false;"
             +theme.name
           }
-          if (index < PresentationTheme.values().size - 1)
+          if (index < PresentationTheme.entries.size - 1)
             +"-"
           rawHtml("\n\t\t\t\t\t\t\t")
         }
@@ -2186,7 +2186,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   slideConfig {
@@ -2212,7 +2212,7 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 dslSlide {
   content {
@@ -2237,15 +2237,15 @@ dslSlide {
             <script type="text/template">
 ## Other Features 🚡
 
-[Layouts](/layouts.html) 
+[Layouts](/layouts.html)
 
-[Fragments](/fragments.html) 
-            
-[Backgrounds](/backgrounds.html) 
+[Fragments](/fragments.html)
 
-[Multi-Columns DSL Slides](/multicols.html) 
+[Backgrounds](/backgrounds.html)
 
-[Multi-Slide Markdown Slides](/multislide.html) 
+[Multi-Columns DSL Slides](/multicols.html)
+
+[Multi-Slide Markdown Slides](/multislide.html)
 
 👇 
               <!-- .element: class="fragment" -->
@@ -2255,23 +2255,23 @@ dslSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 markdownSlide {
   id = "features"
   content {
     """
     ## Other Features 🚡
-    
-    [Layouts](/layouts.html) 
- 
-    [Fragments](/fragments.html) 
-                
-    [Backgrounds](/backgrounds.html) 
 
-    [Multi-Columns DSL Slides](/multicols.html) 
+    [Layouts](/layouts.html)
 
-    [Multi-Slide Markdown Slides](/multislide.html) 
+    [Fragments](/fragments.html)
+
+    [Backgrounds](/backgrounds.html)
+
+    [Multi-Columns DSL Slides](/multicols.html)
+
+    [Multi-Slide Markdown Slides](/multislide.html)
 
     👇 ${fragment()}
 
@@ -2288,7 +2288,7 @@ markdownSlide {
         <section>
           <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
             <script type="text/template">
-## Presentation Navigation 🦊 
+## Presentation Navigation 🦊
 
 [Go to the previous slide](#/features) 
               <!-- .element: class="fragment" -->
@@ -2303,17 +2303,17 @@ markdownSlide {
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 markdownSlide {
   content {
     """
-    ## Presentation Navigation 🦊 
-    
+    ## Presentation Navigation 🦊
+
     [Go to the previous slide](#/features) ${fragment()}
- 
+
     [Go to the next slide](#/lastslide) ${fragment()}
-    
+
     [Go to the presentation source on GitHub](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt) ${fragment()}
     """
   }
@@ -2328,7 +2328,7 @@ markdownSlide {
         <section>
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="" id="lastslide">
             <script type="text/template">
-## Slide Definition Source    
+## Slide Definition Source
 ```kotlin []
 fun slideDefinition(
   source: String,
@@ -2342,7 +2342,7 @@ fun slideDefinition(
     if (id.isNotBlank()) this.id = id
     content {
       """
-      ## $title    
+      ## $title
       ```$language $highlightPattern
       ${include(source, beginToken = "$token begin", endToken = "$token end")}
       ```
@@ -2358,13 +2358,13 @@ fun slideDefinition(
           
           <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
-## Slide Definition    
+## Slide Definition
 ```kotlin []
 slideDefinition(
-  "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
-  "slideDefinition",
+  source = "kslides-core/src/main/kotlin/com/kslides/Presentation.kt",
+  token = "slideDefinition",
   title = "Slide Definition Source",
-  id = "lastslide"
+  id = "lastslide",
 )
 ```
 <a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*slidedef%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*slidedef%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>

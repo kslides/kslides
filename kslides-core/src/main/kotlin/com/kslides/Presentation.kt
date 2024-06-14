@@ -6,9 +6,9 @@ import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
 import com.kslides.slide.*
 import com.pambrose.srcref.Api.srcrefUrl
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.css.CssBuilder
 import kotlinx.html.*
-import mu.two.KLogging
 
 class Presentation(val kslides: KSlides) {
   internal val plugins = mutableListOf<String>()
@@ -63,10 +63,10 @@ class Presentation(val kslides: KSlides) {
     }.also { slides += it }
 
   @KSlidesDslMarker
-  fun markdownSlide(slideContent: HortizontalMarkdownSlide.() -> Unit = {}) =
-    HortizontalMarkdownSlide(this) { div, slide, _ ->
+  fun markdownSlide(slideContent: HorizontalMarkdownSlide.() -> Unit = {}) =
+    HorizontalMarkdownSlide(this) { div, slide, _ ->
       div.apply {
-        (slide as HortizontalMarkdownSlide).also { s ->
+        (slide as HorizontalMarkdownSlide).also { s ->
           s.slideContent()
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
@@ -121,9 +121,9 @@ class Presentation(val kslides: KSlides) {
   private fun DIV.processDsl(s: DslSlide) {
     section(s.classes.nullIfBlank()) {
       s.processSlide(this)
-      s._section = this // TODO This is a hack that will go away when context receivers work
-      s._dslBlock(this)
-      require(s._dslAssigned) { "dslSlide missing content{} block" }
+      s.private_section = this // TODO This is a hack that will go away when context receivers work
+      s.private_dslBlock(this)
+      require(s.private_dslAssigned) { "dslSlide missing content{} block" }
     }.also { rawHtml("\n") }
   }
 
@@ -133,8 +133,8 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as HorizontalDslSlide)
           .also { s ->
-            s._iframeCount = 1
-            s._useHttp = useHttp
+            s.private_iframeCount = 1
+            s.private_useHttp = useHttp
             s.slideContent()
             processDsl(s)
           }
@@ -147,8 +147,8 @@ class Presentation(val kslides: KSlides) {
       div.apply {
         (slide as VerticalDslSlide)
           .also { s ->
-            s._iframeCount = 1
-            s._useHttp = useHttp
+            s.private_iframeCount = 1
+            s.private_useHttp = useHttp
             s.slideContent()
             processDsl(s)
           }
@@ -161,8 +161,8 @@ class Presentation(val kslides: KSlides) {
   ) {
     section(s.classes.nullIfBlank()) {
       s.processSlide(this)
-      require(s._htmlAssigned) { "htmlSlide missing content{} block" }
-      s._htmlBlock()
+      require(s.private_htmlAssigned) { "htmlSlide missing content{} block" }
+      s.private_htmlBlock()
         .indentInclude(config.indentToken)
         .let { if (!config.disableTrimIndent) it.trimIndent() else it }
         .also { rawHtml("\n$it") }
@@ -355,7 +355,7 @@ class Presentation(val kslides: KSlides) {
     config: SlideConfig,
   ) {
     if (s.filename.isBlank()) {
-      s._markdownBlock()
+      s.private_markdownBlock()
         .also { markdown ->
           if (markdown.isNotBlank())
             script("text/template") {
@@ -462,7 +462,7 @@ class Presentation(val kslides: KSlides) {
         when (scrollProgress) {
           is Boolean,
           is ScrollProgress,
-          -> {
+            -> {
             append("$INDENT${toJsValue("scrollProgress", scrollProgress)},\n")
             appendLine()
           }
@@ -484,7 +484,7 @@ class Presentation(val kslides: KSlides) {
         when (scrollSnap) {
           is Boolean,
           is ScrollSnap,
-          -> {
+            -> {
             append("$INDENT${toJsValue("scrollSnap", scrollSnap)},\n")
             appendLine()
           }
@@ -534,7 +534,8 @@ class Presentation(val kslides: KSlides) {
     appendLine("${INDENT}plugins: [ ${plugins.joinToString(", ")} ]")
   }
 
-  companion object : KLogging() {
+  companion object {
+    private val logger = KotlinLogging.logger {}
     private const val INDENT = "\t\t\t"
   }
 }

@@ -6,10 +6,12 @@ import com.kslides.InternalUtils.stripBraces
 import com.kslides.InternalUtils.writeByteArray
 import com.kslides.InternalUtils.writeString
 import com.kslides.config.CodeSnippetConfig
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.html.*
-import mu.two.KLogging
 
-object KSlidesDsl : KLogging()
+object KSlidesDsl {
+  internal val logger = KotlinLogging.logger {}
+}
 
 @HtmlTagMarker
 fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {

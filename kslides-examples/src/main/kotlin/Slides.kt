@@ -4,9 +4,9 @@ import kotlinx.css.*
 import kotlinx.css.Float
 import kotlinx.css.properties.LineHeight
 import kotlinx.html.*
+import space.kscience.dataforge.meta.Value
+import space.kscience.dataforge.meta.asValue
 import space.kscience.dataforge.meta.configure
-import space.kscience.dataforge.values.Value
-import space.kscience.dataforge.values.asValue
 import space.kscience.plotly.*
 import space.kscience.plotly.palettes.T10
 import kotlin.collections.set

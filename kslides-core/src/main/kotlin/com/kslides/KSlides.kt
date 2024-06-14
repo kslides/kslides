@@ -11,6 +11,7 @@ import com.kslides.Page.generatePage
 import com.kslides.config.KSlidesConfig
 import com.kslides.config.OutputConfig
 import com.kslides.config.PresentationConfig
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.plugins.*
 import io.ktor.server.application.*
@@ -23,7 +24,6 @@ import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.css.CssBuilder
-import mu.two.KLogging
 import java.io.File
 
 @DslMarker
@@ -136,7 +136,9 @@ class KSlides {
     presentationBlocks += block
   }
 
-  companion object : KLogging() {
+  companion object {
+    internal val logger = KotlinLogging.logger {}
+
     internal fun writeSlidesToFileSystem(config: OutputConfig) {
       require(config.outputDir.isNotBlank()) { "outputDir value must not be empty" }
 

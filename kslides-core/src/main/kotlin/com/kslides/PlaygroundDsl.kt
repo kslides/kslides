@@ -32,11 +32,11 @@ fun DslSlide.playground(
       localConfig.css,
     )
 
-  recordIframeContent(_useHttp, mergedConfig.staticContent, presentation.kslides, playgroundPath, filename) {
+  recordIframeContent(private_useHttp, mergedConfig.staticContent, presentation.kslides, playgroundPath, filename) {
     playgroundContent(presentation.kslides, mergedConfig, combinedCss, srcName, otherSrcs.toList())
   }
 
-  _section?.iframe {
+  private_section?.iframe {
     src = playgroundFilename(filename)
     mergedConfig.width.also { if (it.isNotBlank()) width = it }
     mergedConfig.height.also { if (it.isNotBlank()) height = it }
