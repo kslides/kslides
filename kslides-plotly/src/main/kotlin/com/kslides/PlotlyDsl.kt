@@ -3,7 +3,9 @@ package com.kslides
 import com.kslides.Plotly.plotlyContent
 import com.kslides.config.PlotlyIframeConfig
 import com.kslides.slide.DslSlide
-import kotlinx.html.*
+import kotlinx.html.iframe
+import kotlinx.html.style
+import kotlinx.html.title
 import space.kscience.plotly.Plot
 import space.kscience.plotly.PlotlyConfig
 import space.kscience.plotly.layout
@@ -25,7 +27,7 @@ fun DslSlide.plotly(
         config.merge(iframeConfig)
       }
 
-  recordIframeContent(_useHttp, mergedConfig.staticContent, presentation.kslides, plotlyPath, filename) {
+  recordIframeContent(private_useHttp, mergedConfig.staticContent, presentation.kslides, plotlyPath, filename) {
     plotlyContent(presentation.kslides) {
       plot(config = plotlyConfig) {
         block()
@@ -40,7 +42,7 @@ fun DslSlide.plotly(
     }
   }
 
-  _section?.iframe {
+  private_section?.iframe {
     src = plotlyFilename(filename)
     mergedConfig.width.also { if (it.isNotBlank()) this.width = it }
     mergedConfig.height.also { if (it.isNotBlank()) this.height = it }

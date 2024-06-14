@@ -40,7 +40,7 @@ fun DslSlide.diagram(
 
   val filename = newFilename(mergedConfig.outputType.suffix)
 
-  recordKrokiContent(_useHttp, presentation.kslides, mergedConfig.outputType, krokiPath, filename) {
+  recordKrokiContent(private_useHttp, presentation.kslides, mergedConfig.outputType, krokiPath, filename) {
     val configMap: MutableMap<String, Any> =
       mutableMapOf(
         "diagram_source" to diagram.source,
@@ -56,7 +56,7 @@ fun DslSlide.diagram(
     fetchKrokiContent(filename, configMap)
   }
 
-  _section?.div(classes.nullIfBlank()) {
+  private_section?.div(classes.nullIfBlank()) {
     img {
       src = krokiFilename(filename)
       mergedConfig.width.also { if (it.isNotBlank()) width = it }

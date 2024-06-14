@@ -16,7 +16,7 @@ typealias SlideArgs = (div: DIV, slide: Slide, useHttp: Boolean) -> Unit
 
 abstract class Slide(private val presentation: Presentation, internal val content: SlideArgs) {
   private val slideConfig = SlideConfig() // Do not call init on this because it is merged with the presentation config
-  val _slideId = presentation.kslides.slideCount++
+  val private_slideId = presentation.kslides.slideCount++
 
   internal val mergedSlideConfig by lazy {
     SlideConfig().also { config ->

@@ -93,10 +93,12 @@ subprojects {
     }
 
     tasks.withType(KotlinCompile).configureEach {
-        kotlinOptions.freeCompilerArgs += ['-Xbackend-threads=8',
-                                           //'-Xcontext-receivers',
-                                           //'-Xskip-prerelease-check',
-        ]
+        kotlinOptions {
+            freeCompilerArgs += ['-Xbackend-threads=8',
+                                 //'-Xcontext-receivers',
+                                 //'-Xskip-prerelease-check',
+            ]
+        }
     }
 
     test {

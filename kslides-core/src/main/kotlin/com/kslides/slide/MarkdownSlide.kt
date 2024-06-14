@@ -4,7 +4,7 @@ import com.kslides.KSlidesDslMarker
 import com.kslides.Presentation
 
 interface MarkdownSlide {
-  var _markdownBlock: () -> String
+  var private_markdownBlock: () -> String
 
   var classes: String
   var id: String
@@ -18,14 +18,14 @@ class HorizontalMarkdownSlide(
 ) : HorizontalSlide(presentation, content),
   MarkdownSlide {
   internal var markdownAssigned = false
-  override var _markdownBlock: () -> String = { "" }
+  override var private_markdownBlock: () -> String = { "" }
 
   // User variables
   override var filename = ""
 
   @KSlidesDslMarker
   fun content(block: () -> String) {
-    _markdownBlock = block
+    private_markdownBlock = block
     markdownAssigned = true
   }
 }
@@ -35,14 +35,14 @@ class VerticalMarkdownSlide(
   content: SlideArgs,
 ) : VerticalSlide(presentation, content), MarkdownSlide {
   internal var markdownAssigned = false
-  override var _markdownBlock: () -> String = { "" }
+  override var private_markdownBlock: () -> String = { "" }
 
   // User variables
   override var filename = ""
 
   @KSlidesDslMarker
   fun content(markdownBlock: () -> String) {
-    _markdownBlock = markdownBlock
+    private_markdownBlock = markdownBlock
     markdownAssigned = true
   }
 }
