@@ -88,10 +88,6 @@ subprojects {
         archiveClassifier = 'sources'
     }
 
-    kotlin {
-        jvmToolchain(17)
-    }
-
     tasks.withType(KotlinCompile).configureEach {
         kotlinOptions {
             freeCompilerArgs += ['-Xbackend-threads=8',
@@ -99,6 +95,10 @@ subprojects {
                                  //'-Xskip-prerelease-check',
             ]
         }
+    }
+
+    kotlin {
+        jvmToolchain(17)
     }
 
     test {
