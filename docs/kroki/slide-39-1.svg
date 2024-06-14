@@ -12,7 +12,7 @@
                   blockdiag {
                     blockdiag -&gt; generates -&gt; "block-diagrams";
                     blockdiag -&gt; is -&gt; "very easy!";
-                  
+
                     blockdiag [color = "greenyellow"];
                     "block-diagrams" [color = "pink"];
                     "very easy!" [color = "orange"];
