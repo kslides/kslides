@@ -18,7 +18,7 @@ import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.server.http.content.*
-import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.response.*
@@ -219,36 +219,26 @@ class KSlides {
 
           if (config.defaultHttpRoot.isNotBlank())
             staticResources("/", config.defaultHttpRoot)
-//        static("/") {
-//            staticBasePackage = config.defaultHttpRoot
-//            resources(".")
-//          }
 
           // This is hardcoded for http since it is shipped with the jar
-          val rootDir = "revealjs"
-          val baseDirs =
+          val revealRootDir = "revealjs"
+          val baseDirNames =
             kslides.kslidesConfig.httpStaticRoots
               .filter { it.dirname.isNotBlank() }
               .map { it.dirname }
 
-          if (baseDirs.isNotEmpty())
-            static("/") {
-              staticBasePackage = rootDir
-              static(rootDir) {
-                baseDirs.forEach {
-                  static(it) {
-                    logger.debug { "Registering http dir $it" }
-                    resources(it)
-                  }
-                }
-              }
+          if (baseDirNames.isNotEmpty()) {
+            baseDirNames.forEach {
+              logger.debug { "Registering http dir $revealRootDir/$it" }
+              staticResources("/$revealRootDir/$it", "$revealRootDir/$it")
             }
+          }
 
           kslides.presentationMap
             .forEach { (key, p) ->
               get(key) {
                 respondWith {
-                  generatePage(p, true, "/$rootDir")
+                  generatePage(p, true, "/$revealRootDir")
                 }
               }
             }
