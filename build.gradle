@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'java'
+    id 'java-library'
     id 'application'
     id 'maven-publish'
     id 'org.jetbrains.kotlin.jvm' version '2.1.0'
@@ -14,7 +14,7 @@ plugins {
 allprojects {
     description = 'kslides'
     group 'com.github.kslides'
-    version '0.23.0'
+    version '0.24.0'
 
     apply plugin: 'application'
     apply plugin: 'java-library'
@@ -56,12 +56,12 @@ subprojects {
 
         implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version"
 
-        implementation "org.jetbrains.kotlin-wrappers:kotlin-css:$css_version"
+        api "org.jetbrains.kotlin-wrappers:kotlin-css:$css_version"
 
         implementation "io.ktor:ktor-server:$ktor_version"
         implementation "io.ktor:ktor-server-cio:$ktor_version"
         implementation "io.ktor:ktor-server-sessions:$ktor_version"
-        implementation "io.ktor:ktor-server-html-builder:$ktor_version"
+        api "io.ktor:ktor-server-html-builder:$ktor_version"
         implementation "io.ktor:ktor-server-call-logging:$ktor_version"
         implementation "io.ktor:ktor-server-compression:$ktor_version"
 
@@ -71,7 +71,7 @@ subprojects {
         implementation "com.github.pambrose.common-utils:core-utils:$utils_version"
         implementation "com.github.pambrose.common-utils:ktor-server-utils:$utils_version"
 
-        implementation "com.github.pambrose:srcref:$srcref_version"
+        api "com.github.pambrose:srcref:$srcref_version"
 
         implementation "org.apache.commons:commons-text:$text_version"
 
