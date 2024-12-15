@@ -1,4 +1,14 @@
-gradlew binary
-gradlew.bat binary
 * linguist-vendored
 *.kt linguist-vendored=false
+
+#
+# https://help.github.com/articles/dealing-with-line-endings/
+#
+# Linux start script should use lf
+/gradlew        text eol=lf binary
+
+# These are Windows script files and should use crlf
+*.bat           text eol=crlf binary
+
+# Binary files should be left untouched
+*.jar           binary
