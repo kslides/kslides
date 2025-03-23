@@ -4,7 +4,9 @@ import com.github.pambrose.common.util.toPath
 import com.kslides.KSlides
 import org.slf4j.event.Level
 
-class OutputConfig(val kslides: KSlides) {
+class OutputConfig(
+  val kslides: KSlides,
+) {
   var enableFileSystem = true
   var outputDir = "docs"              // write slide content to html files in the /docs directory
   var staticRootDir = "revealjs"      // directory containing revealjs content

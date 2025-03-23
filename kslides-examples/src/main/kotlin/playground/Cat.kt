@@ -1,1 +1,3 @@
-class Cat(val name: String)
+class Cat(
+  val name: String,
+)

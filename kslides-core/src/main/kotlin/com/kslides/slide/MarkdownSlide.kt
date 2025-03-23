@@ -33,7 +33,8 @@ class HorizontalMarkdownSlide(
 class VerticalMarkdownSlide(
   presentation: Presentation,
   content: SlideArgs,
-) : VerticalSlide(presentation, content), MarkdownSlide {
+) : VerticalSlide(presentation, content),
+  MarkdownSlide {
   internal var markdownAssigned = false
   override var private_markdownBlock: () -> String = { "" }
 

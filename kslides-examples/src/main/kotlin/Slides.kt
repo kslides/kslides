@@ -275,7 +275,7 @@ fun main() {
         // animated1 begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
+        for (linePattern in "[5,6,9|5-9|]".toLinePatterns()) {
           dslSlide {
             autoAnimate = true
             content {
@@ -291,6 +291,7 @@ fun main() {
               }
             }
           }
+        }
         // animated1 end
 
         slideDefinition(source = slides, token = "animated1")
@@ -300,7 +301,7 @@ fun main() {
         // animated2 begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
+        for (linePattern in "[5,6,9|5-9|]".toLinePatterns()) {
           htmlSlide {
             autoAnimate = true
             content {
@@ -318,7 +319,7 @@ fun main() {
               """
             }
           }
-        // animated2 end
+        }        // animated2 end
 
         slideDefinition(source = slides, token = "animated2")
       }
@@ -765,8 +766,7 @@ fun main() {
             listOf(1, 2, 0, 3),
             listOf(1, 2, 3, 0),
             listOf(0, 3, 2, 1),
-          )
-          .forEach { items ->
+          ).forEach { items ->
             dslSlide {
               autoAnimate = true
               content {

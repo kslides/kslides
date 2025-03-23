@@ -10,7 +10,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.css.CssBuilder
 import kotlinx.html.*
 
-class Presentation(val kslides: KSlides) {
+class Presentation(
+  val kslides: KSlides,
+) {
   internal val plugins = mutableListOf<String>()
   internal val dependencies = mutableListOf<String>()
   internal val presentationConfig = PresentationConfig()
@@ -35,7 +37,8 @@ class Presentation(val kslides: KSlides) {
   fun verticalSlides(block: VerticalSlidesContext.() -> Unit) =
     VerticalSlide(this) { div, slide, useHttp ->
       div.apply {
-        (slide as VerticalSlide).verticalContext
+        (slide as VerticalSlide)
+          .verticalContext
           .also { vcontext ->
             // Calling resetContext() is a bit of a hack. It is required because the vertical slide lambdas are executed
             // for both http and the filesystem. Without resetting the slide context, you will end up with double the slides
@@ -162,7 +165,8 @@ class Presentation(val kslides: KSlides) {
     section(s.classes.nullIfBlank()) {
       s.processSlide(this)
       require(s.private_htmlAssigned) { "htmlSlide missing content{} block" }
-      s.private_htmlBlock()
+      s
+        .private_htmlBlock()
         .indentInclude(config.indentToken)
         .let { if (!config.disableTrimIndent) it.trimIndent() else it }
         .also { rawHtml("\n$it") }
@@ -355,7 +359,8 @@ class Presentation(val kslides: KSlides) {
     config: SlideConfig,
   ) {
     if (s.filename.isBlank()) {
-      s.private_markdownBlock()
+      s
+        .private_markdownBlock()
         .also { markdown ->
           if (markdown.isNotBlank())
             script("text/template") {
@@ -540,8 +545,15 @@ class Presentation(val kslides: KSlides) {
   }
 }
 
-data class StaticRoot(val dirname: String)
+data class StaticRoot(
+  val dirname: String,
+)
 
-data class JsFile(val filename: String)
+data class JsFile(
+  val filename: String,
+)
 
-data class CssFile(val filename: String, val id: String = "")
+data class CssFile(
+  val filename: String,
+  val id: String = "",
+)

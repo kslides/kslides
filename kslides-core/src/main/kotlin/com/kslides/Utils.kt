@@ -114,6 +114,9 @@ fun DslSlide.include(
   trimIndent: Boolean = true,
 ) = include(src, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
-class Dimensions(val width: Int, val height: Int)
+class Dimensions(
+  val width: Int,
+  val height: Int,
+)
 
 infix fun Int.by(that: Int): Dimensions = Dimensions(this, that)

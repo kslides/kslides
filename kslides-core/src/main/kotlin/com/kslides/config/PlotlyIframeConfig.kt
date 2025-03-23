@@ -16,7 +16,8 @@ class PlotlyIframeConfig : AbstractConfig() {
   }
 
   companion object {
-    inline operator fun invoke(action: PlotlyIframeConfig.() -> Unit): PlotlyIframeConfig =
-      PlotlyIframeConfig().apply(action)
+    inline operator fun invoke(
+      action: PlotlyIframeConfig.() -> Unit,
+    ): PlotlyIframeConfig = PlotlyIframeConfig().apply(action)
   }
 }

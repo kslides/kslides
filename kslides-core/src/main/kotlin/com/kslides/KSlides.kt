@@ -99,8 +99,9 @@ class KSlides {
 
   internal val presentations get() = presentationMap.values
 
-  internal fun presentation(name: String) =
-    presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
+  internal fun presentation(
+    name: String,
+  ) = presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
   internal val client by lazy {
     HttpClient(io.ktor.client.engine.cio.CIO) {

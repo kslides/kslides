@@ -14,7 +14,10 @@ import kotlinx.html.style
 
 typealias SlideArgs = (div: DIV, slide: Slide, useHttp: Boolean) -> Unit
 
-abstract class Slide(private val presentation: Presentation, internal val content: SlideArgs) {
+abstract class Slide(
+  private val presentation: Presentation,
+  internal val content: SlideArgs,
+) {
   private val slideConfig = SlideConfig() // Do not call init on this because it is merged with the presentation config
   val private_slideId = presentation.kslides.slideCount++
 
@@ -69,8 +72,14 @@ abstract class Slide(private val presentation: Presentation, internal val conten
   }
 }
 
-abstract class HorizontalSlide(presentation: Presentation, content: SlideArgs) : Slide(presentation, content)
+abstract class HorizontalSlide(
+  presentation: Presentation,
+  content: SlideArgs,
+) : Slide(presentation, content)
 
-open class VerticalSlide(presentation: Presentation, content: SlideArgs) : Slide(presentation, content) {
+open class VerticalSlide(
+  presentation: Presentation,
+  content: SlideArgs,
+) : Slide(presentation, content) {
   internal val verticalContext = VerticalSlidesContext()
 }

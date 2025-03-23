@@ -1,1 +1,3 @@
-class Dog(val name: String)
+class Dog(
+  val name: String,
+)

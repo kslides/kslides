@@ -94,8 +94,7 @@ object InternalUtils {
           }
           trimmed
         }
-      }
-      .joinToString("\n")
+      }.joinToString("\n")
   }
 
   internal fun String.toIntList() =
@@ -106,12 +105,14 @@ object InternalUtils {
         .split(",", ";")
         .filter { it.isNotBlank() }
         .forEach { splitElem ->
-          splitElem.split('-', '–', ':')
+          splitElem
+            .split('-', '–', ':')
             .also { elem ->
               when (elem.size) {
                 1 -> add(splitElem.toInt())
                 2 -> {
-                  elem.let { it[0].toInt() to it[1].toInt() }
+                  elem
+                    .let { it[0].toInt() to it[1].toInt() }
                     .also { (beg, end) ->
                       when {
                         beg == end -> add(beg)
@@ -140,7 +141,8 @@ object InternalUtils {
         (
           asSequence()
             .mapIndexed { i, s -> i to s }
-            .firstOrNull { it.second.contains(unquotedBegin) && !it.second.contains(quotedBegin) }?.first
+            .firstOrNull { it.second.contains(unquotedBegin) && !it.second.contains(quotedBegin) }
+            ?.first
             ?: throw IllegalArgumentException("Begin token not found: $beginToken")
           ) + (if (exclusive) 1 else 0)
       } else {
@@ -156,7 +158,8 @@ object InternalUtils {
           reversed()
             .asSequence()
             .mapIndexed { i, s -> (this.size - i - (if (exclusive) 1 else 0)) to s }
-            .firstOrNull { it.second.contains(unquotedEnd) && !it.second.contains(quotedEnd) }?.first
+            .firstOrNull { it.second.contains(unquotedEnd) && !it.second.contains(quotedEnd) }
+            ?.first
             ?: throw IllegalArgumentException("End token not found: $endToken")
           )
       } else {
@@ -180,8 +183,7 @@ object InternalUtils {
     escapeHtml: Boolean,
   ) = (
     if (trimIndent) joinToString("\n").trimIndent().lines() else this
-    )
-    .map { "$indentToken$it" }
+    ).map { "$indentToken$it" }
     .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeHtml4(it) else it }
 
   internal fun writeString(

@@ -82,7 +82,9 @@ enum class NavigationMode {
   GRID,
 }
 
-enum class TargetPlatform(s: String = "") {
+enum class TargetPlatform(
+  s: String = "",
+) {
   JUNIT,
   CANVAS,
   JS,
@@ -90,11 +92,7 @@ enum class TargetPlatform(s: String = "") {
   JAVA,
   ;
 
-  val queryVal: String
-
-  init {
-    this.queryVal = s.ifEmpty { this.name.lowercase() }
-  }
+  val queryVal: String = s.ifEmpty { this.name.lowercase() }
 }
 
 enum class PlaygroundTheme {
@@ -103,7 +101,9 @@ enum class PlaygroundTheme {
   DARCULA,
 }
 
-enum class PlaygroundMode(s: String = "") {
+enum class PlaygroundMode(
+  s: String = "",
+) {
   KOTLIN,
   JS,
   JAVA,
@@ -115,11 +115,7 @@ enum class PlaygroundMode(s: String = "") {
   OBJC("obj-c"),
   ;
 
-  val queryVal: String
-
-  init {
-    this.queryVal = s.ifEmpty { this.name.lowercase() }
-  }
+  val queryVal: String = s.ifEmpty { this.name.lowercase() }
 }
 
 enum class Crosslink {

@@ -7,7 +7,8 @@ import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
-class PresentationTest : StringSpec(
+class PresentationTest :
+  StringSpec(
   {
     "Simple presentation tests" {
 
@@ -159,7 +160,11 @@ class PresentationTest : StringSpec(
         }
 
       kslides.css.toString() shouldBe ""
-      kslides.presentation("/").css.toString().trim() shouldBe "aaa"
+      kslides
+        .presentation("/")
+        .css
+        .toString()
+        .trim() shouldBe "aaa"
     }
 
     "Default Css Test 3" {
@@ -176,7 +181,11 @@ class PresentationTest : StringSpec(
         }
 
       kslides.css.toString().trim() shouldBe "aaa"
-      kslides.presentation("/").css.toString().trim() shouldBe "aaa"
+      kslides
+        .presentation("/")
+        .css
+        .toString()
+        .trim() shouldBe "aaa"
     }
 
     "Default Css Test 4" {
@@ -194,7 +203,11 @@ class PresentationTest : StringSpec(
         }
 
       kslides.css.toString().trim() shouldBe "aaa"
-      kslides.presentation("/").css.toString().trim() shouldBe "aaa\n\nbbb"
+      kslides
+        .presentation("/")
+        .css
+        .toString()
+        .trim() shouldBe "aaa\n\nbbb"
     }
 
     "Css Test 1" {

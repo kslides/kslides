@@ -157,7 +157,8 @@ internal object Page {
       media = "screen"
       rawHtml("\n")
       rawHtml(
-        Page::class.java.classLoader.getResource("slides.css")
+        Page::class.java.classLoader
+          .getResource("slides.css")
           ?.readText()
           ?.lines()
           ?.joinToString("\n") { "\t\t$it" }

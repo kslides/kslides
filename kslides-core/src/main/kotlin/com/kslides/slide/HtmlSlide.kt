@@ -15,8 +15,11 @@ interface HtmlSlide {
   fun processSlide(section: SECTION)
 }
 
-class HorizontalHtmlSlide(presentation: Presentation, content: SlideArgs) :
-  HorizontalSlide(presentation, content), HtmlSlide {
+class HorizontalHtmlSlide(
+  presentation: Presentation,
+  content: SlideArgs,
+) : HorizontalSlide(presentation, content),
+  HtmlSlide {
   override var private_htmlBlock: () -> String = { "" }
   override var private_htmlAssigned = false
 
@@ -27,8 +30,11 @@ class HorizontalHtmlSlide(presentation: Presentation, content: SlideArgs) :
   }
 }
 
-class VerticalHtmlSlide(presentation: Presentation, content: SlideArgs) :
-  VerticalSlide(presentation, content), HtmlSlide {
+class VerticalHtmlSlide(
+  presentation: Presentation,
+  content: SlideArgs,
+) : VerticalSlide(presentation, content),
+  HtmlSlide {
   override var private_htmlBlock: () -> String = { "" }
   override var private_htmlAssigned = false
 

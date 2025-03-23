@@ -35,18 +35,24 @@ interface DslSlide {
 
   fun newFilename(suffix: String = "html") = "slide-$private_slideId-${private_iframeCount++}.$suffix"
 
-  fun playgroundFilename(filename: String) =
-    listOf(presentation.kslides.outputConfig.playgroundDir, filename).toPath(addPrefix = false, addTrailing = false)
+  fun playgroundFilename(
+    filename: String,
+  ) = listOf(presentation.kslides.outputConfig.playgroundDir, filename).toPath(addPrefix = false, addTrailing = false)
 
-  fun plotlyFilename(filename: String) =
-    listOf(presentation.kslides.outputConfig.plotlyDir, filename).toPath(addPrefix = false, addTrailing = false)
+  fun plotlyFilename(
+    filename: String,
+  ) = listOf(presentation.kslides.outputConfig.plotlyDir, filename).toPath(addPrefix = false, addTrailing = false)
 
-  fun krokiFilename(filename: String) =
-    listOf(presentation.kslides.outputConfig.krokiDir, filename).toPath(addPrefix = false, addTrailing = false)
+  fun krokiFilename(
+    filename: String,
+  ) = listOf(presentation.kslides.outputConfig.krokiDir, filename).toPath(addPrefix = false, addTrailing = false)
 }
 
-class HorizontalDslSlide(override val presentation: Presentation, content: SlideArgs) :
-  HorizontalSlide(presentation, content), DslSlide {
+class HorizontalDslSlide(
+  override val presentation: Presentation,
+  content: SlideArgs,
+) : HorizontalSlide(presentation, content),
+  DslSlide {
   override var private_section: SECTION? = null
   override var private_dslBlock: SECTION.() -> Unit = { }
   override var private_iframeCount = 1
@@ -60,12 +66,16 @@ class HorizontalDslSlide(override val presentation: Presentation, content: Slide
   }
 
   @KSlidesDslMarker
-  inline fun SectioningOrFlowContent.notes(crossinline block: ASIDE.() -> Unit = {}) =
-    ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
+  inline fun SectioningOrFlowContent.notes(
+    crossinline block: ASIDE.() -> Unit = {},
+  ) = ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }
 
-class VerticalDslSlide(override val presentation: Presentation, content: SlideArgs) :
-  VerticalSlide(presentation, content), DslSlide {
+class VerticalDslSlide(
+  override val presentation: Presentation,
+  content: SlideArgs,
+) : VerticalSlide(presentation, content),
+  DslSlide {
   override var private_section: SECTION? = null
   override var private_dslBlock: SECTION.() -> Unit = { }
   override var private_iframeCount = 1
@@ -79,6 +89,7 @@ class VerticalDslSlide(override val presentation: Presentation, content: SlideAr
   }
 
   @KSlidesDslMarker
-  inline fun SectioningOrFlowContent.notes(crossinline block: ASIDE.() -> Unit = {}) =
-    ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
+  inline fun SectioningOrFlowContent.notes(
+    crossinline block: ASIDE.() -> Unit = {},
+  ) = ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
 }

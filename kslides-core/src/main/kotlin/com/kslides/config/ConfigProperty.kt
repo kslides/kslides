@@ -2,7 +2,9 @@ package com.kslides.config
 
 import kotlin.reflect.KProperty
 
-class ConfigProperty<T>(private val configMap: MutableMap<String, Any>) {
+class ConfigProperty<T>(
+  private val configMap: MutableMap<String, Any>,
+) {
   var configName = ""
 
   @Suppress("UNCHECKED_CAST")

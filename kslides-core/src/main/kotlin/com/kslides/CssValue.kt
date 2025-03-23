@@ -4,7 +4,10 @@ import kotlinx.css.CssBuilder
 import kotlinx.html.HEAD
 import kotlinx.html.style
 
-class CssValue(private var text: String = "", val valid: Boolean = true) {
+class CssValue(
+  private var text: String = "",
+  val valid: Boolean = true,
+) {
   constructor(other: CssValue) : this(if (other.isNotBlank()) "$other\n" else "")
 
   constructor(vararg elems: CssValue) : this(elems.toList().joinToString("\n") { it.text.trimIndent() })
@@ -30,8 +33,7 @@ class CssValue(private var text: String = "", val valid: Boolean = true) {
   override fun toString() = text
 
   companion object {
-    internal fun cssError(): Nothing =
-      throw IllegalArgumentException("css calls must be made in a kslides{} or presentation{} block")
+    internal fun cssError(): Nothing = throw IllegalArgumentException("css calls must be made in a kslides{} or presentation{} block")
 
     internal fun HEAD.writeCssToHead(css: CssValue) {
       if (css.isNotBlank()) {
