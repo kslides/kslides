@@ -1,13 +1,11 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id 'java-library'
     id 'application'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm' version '2.1.20'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '2.1.20'
+    id 'org.jetbrains.kotlin.jvm' version '2.2.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.2.0'
     id "com.github.ben-manes.versions" version '0.52.0'
-    id 'org.jmailen.kotlinter' version "5.0.1" apply false
+    id 'org.jmailen.kotlinter' version "5.1.1" apply false
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
 }
 
@@ -85,15 +83,6 @@ subprojects {
         archiveClassifier = 'sources'
     }
 
-    tasks.withType(KotlinCompile).configureEach {
-        kotlinOptions {
-            freeCompilerArgs += ['-Xbackend-threads=8',
-                                 //'-Xcontext-receivers',
-                                 //'-Xskip-prerelease-check',
-            ]
-        }
-    }
-
     kotlin {
         jvmToolchain(17)
     }
@@ -109,6 +98,8 @@ subprojects {
     }
 
     kotlinter {
+        ignoreFormatFailures = false
+        ignoreLintFailures = false
         reporters = ['checkstyle', 'plain']
     }
 }
