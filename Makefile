@@ -30,7 +30,7 @@ cleandocs:
 	rm -rf docs/playground docs/plotly docs/kroki
 
 versioncheck:
-	./gradlew dependencyUpdates
+	./gradlew dependencyUpdates --no-configuration-cache
 
 upgrade-wrapper:
-	./gradlew wrapper --gradle-version=8.14.2 --distribution-type=bin
+	./gradlew wrapper --gradle-version=9.2.0 --distribution-type=bin
