@@ -2,9 +2,11 @@ package com.kslides.config
 
 import com.kslides.CssFile
 import com.kslides.JsFile
+import com.kslides.KSlidesDslMarker
 import com.kslides.StaticRoot
 import kotlin.time.Duration.Companion.seconds
 
+@KSlidesDslMarker
 class KSlidesConfig {
   val httpStaticRoots =
     mutableListOf(
@@ -27,7 +29,10 @@ class KSlidesConfig {
   var playgroundSelector = "playground-code"
   var playgroundUrl = "https://unpkg.com/kotlin-playground@1"
 
-  //var plotlyUrl = "https://cdn.plot.ly/plotly-1.54.6.min.js"
+  // Lets-Plot JS runtime version — must be compatible with the lets-plot-kotlin-jvm
+  // artifact on the classpath. Bumping this here avoids a library release.
+  // lets-plot-kotlin-jvm:4.13.0 → lets-plot core 4.9.0.
+  var letsPlotJsVersion = "4.9.0"
 
   var krokiUrl = "https://kroki.io"
 

@@ -1,10 +1,13 @@
 package com.kslides.config
 
-import com.kslides.*
+import com.kslides.KSlidesDslMarker
+import com.kslides.Speed
+import com.kslides.Transition
 import com.kslides.Transition.SLIDE
 import com.kslides.Utils.INDENT_TOKEN
-import kotlinx.html.*
+import kotlinx.html.SECTION
 
+@KSlidesDslMarker
 class SlideConfig : AbstractConfig() {
   var transition by ConfigProperty<Transition>(revealjsManagedValues)
   var transitionIn by ConfigProperty<Transition>(revealjsManagedValues)
@@ -70,12 +73,17 @@ class SlideConfig : AbstractConfig() {
       section.attributes["data-transition"] = transition.asInOut()
     else
       when {
-        transitionIn != Transition.UNASSIGNED && transitionOut != Transition.UNASSIGNED ->
+        transitionIn != Transition.UNASSIGNED && transitionOut != Transition.UNASSIGNED -> {
           section.attributes["data-transition"] = "${transitionIn.asIn()} ${transitionOut.asOut()}"
-        transitionIn != Transition.UNASSIGNED ->
+        }
+
+        transitionIn != Transition.UNASSIGNED -> {
           section.attributes["data-transition"] = "${transitionIn.asIn()} ${SLIDE.asOut()}"
-        transitionOut != Transition.UNASSIGNED ->
+        }
+
+        transitionOut != Transition.UNASSIGNED -> {
           section.attributes["data-transition"] = "${SLIDE.asIn()} ${transitionOut.asOut()}"
+        }
       }
 
     if (transitionSpeed != Speed.UNASSIGNED)

@@ -35,7 +35,7 @@ Three Gradle modules defined in `settings.gradle`:
 
 - **kslides-core** — Core DSL library: slide types, configuration, page rendering, Ktor server, filesystem output. This is what consumers depend on.
 - **kslides-examples** — Example presentations with `main()` entry point in `Slides.kt`. Uses ShadowJar to build `kslides.jar`. Main class: `SlidesKt`.
-- **kslides-plotly** — Plotly visualization integration (plotly-kt). Depends on kslides-core.
+- **kslides-letsplot** — Lets-Plot visualization integration (JetBrains Lets-Plot). Depends on kslides-core.
 
 ## Architecture
 
@@ -56,19 +56,19 @@ Configuration merges hierarchically: **global** (`kslides.presentationConfig{}`)
 - `Slide` (abstract) → `MarkdownSlide`, `HtmlSlide`, `DslSlide` — Three slide types with unified interface.
 - `Page` — HTML page generation and rendering for both filesystem and HTTP.
 - `VerticalSlidesContext` — Context for vertically-grouped slides.
-- Config classes in `com.kslides.config.*`: `KSlidesConfig`, `PresentationConfig`, `SlideConfig`, `OutputConfig`, `PlaygroundConfig`, `MenuConfig`, `CopyCodeConfig`, `PlotlyIframeConfig`, `DiagramConfig`.
+- Config classes in `com.kslides.config.*`: `KSlidesConfig`, `PresentationConfig`, `SlideConfig`, `OutputConfig`, `PlaygroundConfig`, `MenuConfig`, `CopyCodeConfig`, `LetsPlotIframeConfig`, `DiagramConfig`.
 
 ### Dual Output System
 
 `KSlides` supports two output modes (configured in `output{}`):
-1. **Filesystem** — Writes static HTML to `/docs` directory. Playground/plotly/kroki content generates separate HTML files in `docs/playground/`, `docs/plotly/`, `docs/kroki/`.
+1. **Filesystem** — Writes static HTML to `/docs` directory. Playground/letsPlot/kroki content generates separate HTML files in `docs/playground/`, `docs/letsPlot/`, `docs/kroki/`.
 2. **HTTP** — Ktor server with session-based iframe caching for dynamic content.
 
 ### DSL Extension Points
 
 - `playground{}` — Embeds Kotlin Playground iframes (kslides-core, `PlaygroundDsl.kt`)
 - `diagram{}` — Embeds Kroki diagrams (kslides-core, `DiagramDsl.kt`)
-- `plotly{}` — Embeds plotly-kt charts (kslides-plotly, `PlotlyDsl.kt`)
+- `letsPlot{}` — Embeds Lets-Plot figures (kslides-letsplot, `LetsPlotDsl.kt`)
 - `codeSnippet{}` — Syntax-highlighted code blocks
 - `include()` — Loads content from files or URLs (preferred over inline code)
 - Utility functions in `Utils.kt` and `KSlidesDsl.kt`

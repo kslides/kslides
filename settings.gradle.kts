@@ -2,4 +2,4 @@ rootProject.name = "kslides"
 
 include(":kslides-core")
 include(":kslides-examples")
-include(":kslides-plotly")
+include(":kslides-letsplot")

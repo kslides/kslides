@@ -18,12 +18,10 @@ class VerticalSlidesContext {
   var id = ""
   var style = ""
 
-  @KSlidesDslMarker
   fun css(
     @Suppress("UNUSED_PARAMETER") block: CssBuilder.() -> Unit,
   ): Unit = cssError()
 
-  @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = slideConfig.block()
 
   internal fun resetContext() {

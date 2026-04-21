@@ -8,7 +8,6 @@ import kotlinx.html.*
 import kotlinx.html.dom.append
 import kotlinx.html.dom.document
 import kotlinx.html.dom.serialize
-import kotlin.collections.set
 
 object Playground {
   private val logger = KotlinLogging.logger {}

@@ -14,6 +14,7 @@ import kotlinx.html.style
 
 typealias SlideArgs = (div: DIV, slide: Slide, useHttp: Boolean) -> Unit
 
+@KSlidesDslMarker
 abstract class Slide(
   private val presentation: Presentation,
   internal val content: SlideArgs,
@@ -41,12 +42,10 @@ abstract class Slide(
   var autoAnimate = false
   var autoAnimateRestart = false
 
-  @KSlidesDslMarker
   fun css(
     @Suppress("UNUSED_PARAMETER") block: CssBuilder.() -> Unit,
   ): Unit = cssError()
 
-  @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = slideConfig.block()
 
   fun processSlide(section: SECTION) {

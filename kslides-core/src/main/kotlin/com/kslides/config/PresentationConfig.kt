@@ -2,6 +2,7 @@ package com.kslides.config
 
 import com.kslides.*
 
+@KSlidesDslMarker
 class PresentationConfig : AbstractConfig() {
   // The "normal" size of the presentation, aspect ratio will
   // be preserved when the presentation is scaled to fit different
@@ -319,7 +320,7 @@ class PresentationConfig : AbstractConfig() {
   internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
   internal val playgroundConfig = PlaygroundConfig()
-  internal val plotlyIframeConfig = PlotlyIframeConfig()
+  internal val letsPlotIframeConfig = LetsPlotIframeConfig()
   internal val diagramConfig = DiagramConfig()
 
   // Only the global default config is initialized with default values
@@ -377,7 +378,7 @@ class PresentationConfig : AbstractConfig() {
 
     slideConfig.assignDefaults()
     playgroundConfig.assignDefaults()
-    plotlyIframeConfig.assignDefaults()
+    letsPlotIframeConfig.assignDefaults()
     diagramConfig.assignDefaults()
   }
 
@@ -387,25 +388,19 @@ class PresentationConfig : AbstractConfig() {
     this.copyCodeConfig.merge(other.copyCodeConfig)
     this.slideConfig.merge(other.slideConfig)
     this.playgroundConfig.merge(other.playgroundConfig)
-    this.plotlyIframeConfig.merge(other.plotlyIframeConfig)
+    this.letsPlotIframeConfig.merge(other.letsPlotIframeConfig)
     this.diagramConfig.merge(other.diagramConfig)
   }
 
-  @KSlidesDslMarker
   fun menuConfig(block: MenuConfig.() -> Unit) = menuConfig.block()
 
-  @KSlidesDslMarker
   fun copyCodeConfig(block: CopyCodeConfig.() -> Unit) = copyCodeConfig.block()
 
-  @KSlidesDslMarker
   fun slideConfig(block: SlideConfig.() -> Unit) = slideConfig.block()
 
-  @KSlidesDslMarker
   fun playgroundConfig(block: PlaygroundConfig.() -> Unit) = playgroundConfig.block()
 
-  @KSlidesDslMarker
-  fun plotlyIframeConfig(block: PlotlyIframeConfig.() -> Unit) = plotlyIframeConfig.block()
+  fun letsPlotIframeConfig(block: LetsPlotIframeConfig.() -> Unit) = letsPlotIframeConfig.block()
 
-  @KSlidesDslMarker
   fun diagramConfig(block: DiagramConfig.() -> Unit) = diagramConfig.block()
 }

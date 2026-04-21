@@ -2,8 +2,10 @@ package examples
 
 import com.kslides.Transition
 import com.kslides.kslides
-import kotlinx.css.*
-import kotlinx.html.*
+import kotlinx.css.Color
+import kotlinx.css.color
+import kotlinx.html.h1
+import kotlinx.html.h2
 
 fun main() {
   kslides {

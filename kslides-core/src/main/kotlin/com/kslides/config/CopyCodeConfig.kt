@@ -1,5 +1,8 @@
 package com.kslides.config
 
+import com.kslides.KSlidesDslMarker
+
+@KSlidesDslMarker
 class CopyCodeConfig : AbstractConfig() {
   var copy by ConfigProperty<String>(revealjsManagedValues) // 'Copy'
   var copied by ConfigProperty<String>(revealjsManagedValues) // 'Copied'

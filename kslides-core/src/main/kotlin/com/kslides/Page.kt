@@ -1,9 +1,9 @@
 package com.kslides
 
-import com.github.pambrose.common.util.ensureSuffix
-import com.github.pambrose.common.util.isNotNull
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.config.PresentationConfig
+import com.pambrose.common.util.ensureSuffix
+import com.pambrose.common.util.isNotNull
 import kotlinx.html.*
 import kotlinx.html.dom.append
 import kotlinx.html.dom.document

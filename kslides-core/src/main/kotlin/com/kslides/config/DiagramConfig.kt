@@ -1,7 +1,9 @@
 package com.kslides.config
 
 import com.kslides.DiagramOutputType
+import com.kslides.KSlidesDslMarker
 
+@KSlidesDslMarker
 open class DiagramConfig : AbstractConfig() {
   var outputType by ConfigProperty<DiagramOutputType>(kslidesManagedValues)
   var width by ConfigProperty<String>(kslidesManagedValues)  // img style

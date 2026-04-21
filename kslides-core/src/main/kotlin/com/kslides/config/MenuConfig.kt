@@ -1,5 +1,8 @@
 package com.kslides.config
 
+import com.kslides.KSlidesDslMarker
+
+@KSlidesDslMarker
 class MenuConfig : AbstractConfig() {
   // Specifies which side of the presentation the menu will
   // be shown. Use 'left' or 'right'.

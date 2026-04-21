@@ -1,15 +1,16 @@
 package com.kslides
 
-import com.github.pambrose.common.util.nullIfBlank
 import com.kslides.InternalUtils.indentInclude
 import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
 import com.kslides.slide.*
+import com.pambrose.common.util.nullIfBlank
 import com.pambrose.srcref.Api.srcrefUrl
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.css.CssBuilder
 import kotlinx.html.*
 
+@KSlidesDslMarker
 class Presentation(
   val kslides: KSlides,
 ) {
@@ -25,15 +26,12 @@ class Presentation(
   val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
   val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
 
-  @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
     css += block
   }
 
-  @KSlidesDslMarker
   fun presentationConfig(block: PresentationConfig.() -> Unit) = presentationConfig.block()
 
-  @KSlidesDslMarker
   fun verticalSlides(block: VerticalSlidesContext.() -> Unit) =
     VerticalSlide(this) { div, slide, useHttp ->
       div.apply {
@@ -65,7 +63,6 @@ class Presentation(
       }
     }.also { slides += it }
 
-  @KSlidesDslMarker
   fun markdownSlide(slideContent: HorizontalMarkdownSlide.() -> Unit = {}) =
     HorizontalMarkdownSlide(this) { div, slide, _ ->
       div.apply {
@@ -91,7 +88,6 @@ class Presentation(
       }
     }.also { slides += it }
 
-  @KSlidesDslMarker
   fun VerticalSlidesContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
     VerticalMarkdownSlide(this@Presentation) { div, slide, _ ->
       div.apply {
@@ -121,16 +117,6 @@ class Presentation(
       }
     }.also { verticalSlides += it }
 
-  private fun DIV.processDsl(s: DslSlide) {
-    section(s.classes.nullIfBlank()) {
-      s.processSlide(this)
-      s.private_section = this // TODO This is a hack that will go away when context receivers work
-      s.private_dslBlock(this)
-      require(s.private_dslAssigned) { "dslSlide missing content{} block" }
-    }.also { rawHtml("\n") }
-  }
-
-  @KSlidesDslMarker
   fun dslSlide(slideContent: HorizontalDslSlide.() -> Unit) =
     HorizontalDslSlide(this) { div, slide, useHttp ->
       div.apply {
@@ -144,7 +130,6 @@ class Presentation(
       }
     }.also { slides += it }
 
-  @KSlidesDslMarker
   fun VerticalSlidesContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
     VerticalDslSlide(this@Presentation) { div, slide, useHttp ->
       div.apply {
@@ -158,22 +143,6 @@ class Presentation(
       }
     }.also { verticalSlides += it }
 
-  private fun DIV.processHtml(
-    s: HtmlSlide,
-    config: SlideConfig,
-  ) {
-    section(s.classes.nullIfBlank()) {
-      s.processSlide(this)
-      require(s.private_htmlAssigned) { "htmlSlide missing content{} block" }
-      s
-        .private_htmlBlock()
-        .indentInclude(config.indentToken)
-        .let { if (!config.disableTrimIndent) it.trimIndent() else it }
-        .also { rawHtml("\n$it") }
-    }.also { rawHtml("\n") }
-  }
-
-  @KSlidesDslMarker
   fun htmlSlide(slideContent: HorizontalHtmlSlide.() -> Unit) =
     HorizontalHtmlSlide(this) { div, slide, _ ->
       div.apply {
@@ -185,7 +154,6 @@ class Presentation(
       }
     }.also { slides += it }
 
-  @KSlidesDslMarker
   fun VerticalSlidesContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
     VerticalHtmlSlide(this@Presentation) { div, slide, _ ->
       div.apply {
@@ -211,7 +179,6 @@ class Presentation(
 
   private fun githubLink(href: String) = """<a id="ghsrc" href="$href" target="_blank">GitHub Source</a>"""
 
-  @KSlidesDslMarker
   // slideDefinition begin
   fun slideDefinition(
     source: String,
@@ -229,14 +196,13 @@ class Presentation(
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        ${githubLink(srcref(token))}
+        ${this@Presentation.githubLink(this@Presentation.srcref(token))}
         """
       }
     }
   }
   // slideDefinition end
 
-  @KSlidesDslMarker
   fun VerticalSlidesContext.slideDefinition(
     source: String,
     token: String,
@@ -257,7 +223,7 @@ class Presentation(
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        ${githubLink(srcref(token))}
+        ${this@Presentation.githubLink(this@Presentation.srcref(token))}
         """
       }
     }
@@ -354,25 +320,6 @@ class Presentation(
     //   dependencies += "plugin/toolbar/toolbar.js"
   }
 
-  private fun SECTION.processMarkdown(
-    s: MarkdownSlide,
-    config: SlideConfig,
-  ) {
-    if (s.filename.isBlank()) {
-      s
-        .private_markdownBlock()
-        .also { markdown ->
-          if (markdown.isNotBlank())
-            script("text/template") {
-              markdown
-                .indentInclude(config.indentToken)
-                .let { if (!config.disableTrimIndent) it.trimIndent() else it }
-                .also { rawHtml("\n$it\n") }
-            }
-        }
-    }
-  }
-
   private fun toJsValue(
     key: String,
     value: Any,
@@ -404,20 +351,22 @@ class Presentation(
 
     config.autoSlide
       .also { autoSlide ->
-        when {
-          autoSlide is Boolean && !autoSlide -> {
+        when (autoSlide) {
+          is Boolean if !autoSlide -> {
             append("$INDENT${toJsValue("autoSlide", autoSlide)},\n")
             appendLine()
           }
 
-          autoSlide is Int -> {
+          is Int -> {
             if (autoSlide > 0) {
               append("$INDENT${toJsValue("autoSlide", autoSlide)},\n")
               appendLine()
             }
           }
 
-          else -> error("Invalid value for autoSlide: $autoSlide")
+          else -> {
+            error("Invalid value for autoSlide: $autoSlide")
+          }
         }
       }
 
@@ -436,7 +385,9 @@ class Presentation(
             appendLine()
           }
 
-          else -> error("Invalid value for slideNumber: $slideNumber")
+          else -> {
+            error("Invalid value for slideNumber: $slideNumber")
+          }
         }
       }
 
@@ -472,7 +423,9 @@ class Presentation(
             appendLine()
           }
 
-          else -> error("Invalid value for scrollProgress: $scrollProgress")
+          else -> {
+            error("Invalid value for scrollProgress: $scrollProgress")
+          }
         }
       }
 
@@ -494,7 +447,9 @@ class Presentation(
             appendLine()
           }
 
-          else -> error("Invalid value for scrollSnap: $scrollSnap")
+          else -> {
+            error("Invalid value for scrollSnap: $scrollSnap")
+          }
         }
       }
 
@@ -557,3 +512,46 @@ data class CssFile(
   val filename: String,
   val id: String = "",
 )
+
+private fun SECTION.processMarkdown(
+  s: MarkdownSlide,
+  config: SlideConfig,
+) {
+  if (s.filename.isBlank()) {
+    s
+      .private_markdownBlock()
+      .also { markdown ->
+        if (markdown.isNotBlank())
+          script("text/template") {
+            markdown
+              .indentInclude(config.indentToken)
+              .let { if (!config.disableTrimIndent) it.trimIndent() else it }
+              .also { rawHtml("\n$it\n") }
+          }
+      }
+  }
+}
+
+private fun DIV.processDsl(s: DslSlide) {
+  section(s.classes.nullIfBlank()) {
+    s.processSlide(this)
+    s.private_section = this // TODO This is a hack that will go away when context receivers work
+    s.private_dslBlock(this)
+    require(s.private_dslAssigned) { "dslSlide missing content{} block" }
+  }.also { rawHtml("\n") }
+}
+
+private fun DIV.processHtml(
+  s: HtmlSlide,
+  config: SlideConfig,
+) {
+  section(s.classes.nullIfBlank()) {
+    s.processSlide(this)
+    require(s.private_htmlAssigned) { "htmlSlide missing content{} block" }
+    s
+      .private_htmlBlock()
+      .indentInclude(config.indentToken)
+      .let { if (!config.disableTrimIndent) it.trimIndent() else it }
+      .also { rawHtml("\n$it") }
+  }.also { rawHtml("\n") }
+}

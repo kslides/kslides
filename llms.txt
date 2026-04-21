@@ -39,18 +39,18 @@ kslides {
 
 - **markdownSlide** — Content is a Markdown string
 - **htmlSlide** — Content is a raw HTML string
-- **dslSlide** — Content uses kotlinx.html DSL (supports `playground{}`, `diagram{}`, `codeSnippet{}`, `plotly{}`)
+- **dslSlide** — Content uses kotlinx.html DSL (supports `playground{}`, `diagram{}`, `codeSnippet{}`, `letsPlot{}`)
 
 ### Configuration Cascade
 
 Configuration merges hierarchically: global `presentationConfig{}` → per-presentation `presentationConfig{}` → per-slide `slideConfig{}`. Each level overrides its parent.
 
-Sub-configs within `presentationConfig{}`: `menuConfig{}`, `copyCodeConfig{}`, `playgroundConfig{}`, `plotlyIframeConfig{}`, `slideConfig{}`, `diagramConfig{}`.
+Sub-configs within `presentationConfig{}`: `menuConfig{}`, `copyCodeConfig{}`, `playgroundConfig{}`, `letsPlotIframeConfig{}`, `slideConfig{}`, `diagramConfig{}`.
 
 ### Output Modes
 
 Configured in the `output{}` block:
-- **Filesystem** (`enableFileSystem = true`): Writes static HTML to the `docs/` directory. Playground, plotly, and kroki content generates separate files in `docs/playground/`, `docs/plotly/`, `docs/kroki/`.
+- **Filesystem** (`enableFileSystem = true`): Writes static HTML to the `docs/` directory. Playground, Lets-Plot, and kroki content generates separate files in `docs/playground/`, `docs/letsPlot/`, `docs/kroki/`.
 - **HTTP** (`enableHttp = true`): Starts a Ktor CIO server (default port 8080). Static resources served from `src/main/resources/public/`.
 
 ### DslSlide-Specific Features
@@ -58,7 +58,7 @@ Configured in the `output{}` block:
 - `playground {}` — Embeds an interactive [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframe
 - `diagram {}` — Generates diagrams via [Kroki](https://kroki.io/) (PlantUML, Mermaid, Graphviz, etc.)
 - `codeSnippet {}` — Syntax-highlighted code block with reveal.js highlight plugin
-- `plotly {}` — Embeds [plotly-kt](https://github.com/mipt-npm/plotly.kt) visualization iframes
+- `letsPlot {}` — Embeds [Lets-Plot](https://lets-plot.org/kotlin/) visualization iframes
 
 ### Utility Functions
 
@@ -96,9 +96,9 @@ Common slide properties: `id`, `classes`, `style`, `hidden`, `uncounted`, `autoA
 
 ## Project Structure
 
-- `kslides-core/` — Core DSL library (what users depend on via JitPack)
+- `kslides-core/` — Core DSL library
 - `kslides-examples/` — Example presentations with main entry point
-- `kslides-plotly/` — Plotly chart integration module
+- `kslides-letsplot/` — Lets-Plot chart integration module
 
 ## Dependencies
 
@@ -106,11 +106,11 @@ Published via [JitPack](https://jitpack.io/#kslides/kslides). Add to your projec
 
 ```kotlin
 repositories {
-    maven { url = uri("https://jitpack.io") }
+    mavenCentral()
 }
 dependencies {
     implementation("com.github.kslides:kslides-core:VERSION")
-    // Optional: implementation("com.github.kslides:kslides-plotly:VERSION")
+    // Optional: implementation("com.github.kslides:kslides-letsplot:VERSION")
 }
 ```
 

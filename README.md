@@ -1,12 +1,12 @@
 # kslides
 
-[![Release](https://jitpack.io/v/kslides/kslides.svg)](https://jitpack.io/#kslides/kslides)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/kslides/kslides)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/pambrose/kslides)
+[![Maven Central](https://img.shields.io/maven-central/v/com.pambrose/kslides)](https://central.sonatype.com/artifact/com.pambrose.kslides)
+[![Kotlin version](https://img.shields.io/badge/kotlin-2.3.20-red?logo=kotlin)](http://kotlinlang.org)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/kslides/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=kslides/kslides&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://app.travis-ci.com/kslides/kslides.svg?branch=master)](https://app.travis-ci.com/kslides/kslides)
-[![Kotlin version](https://img.shields.io/badge/kotlin-2.2.0-red?logo=kotlin)](http://kotlinlang.org)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/6d0c3c20-6eb5-4c74-8451-5fa06acf242f/deploy-status)](https://app.netlify.com/sites/kslides/deploys)
 [![ktlint](https://img.shields.io/badge/ktlint%20code--style-%E2%9D%A4-FF4081)](https://pinterest.github.io/ktlint/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 **kslides** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com)
 presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint.
@@ -186,7 +186,7 @@ presentationConfig {      // Optional
   playgroundConfig {      // Optional
     css{}                 // Optional
   }
-  plotlyIframeConfig {}   // Optional
+  letsPlotIframeConfig {} // Optional
   slideConfig {}          // Optional
 }
 ```
@@ -211,9 +211,9 @@ presentationConfig {      // Optional
   displayed in the iframe. It is usually used to control the _font-size_ of the code. The css values can be specified
   via multi-line strings or using the CSS DSL.
 
-* A `plotlyIframeConfig{}` block specifies the default attributes for
-  [plotly-kt](https://github.com/mipt-npm/plotly.kt) iframes and has these
-  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/PlotlyIframeConfig.kt).
+* A `letsPlotIframeConfig{}` block specifies the default attributes for
+  [Lets-Plot](https://lets-plot.org/kotlin/) iframes and has these
+  [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/LetsPlotIframeConfig.kt).
 
 * A `slideConfig{}` block specifies the default slide configuration values for all slides and has these
   [options](https://github.com/kslides/kslides/blob/master/kslides-core/src/main/kotlin/com/kslides/config/SlideConfig.kt).
@@ -371,7 +371,7 @@ found [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src
 |-------------------------------|------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `DslSlide.codeSnippet{}`      | Embeds a code snippet        | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=codeSnippet+%5C%7B&boccur=1&boffset=0&btopd=true&eregex=codeSnippet+%5C%7B&eoccur=1&eoffset=4&etopd=true) |
 | `DslSlide.playground{}`       | Embeds a Kotlin Playground   | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=playground%5C%28&boccur=1&boffset=0&btopd=true&eregex=playground%5C%28&eoccur=1&eoffset=2&etopd=true)     |
-| `DslSlide.plotly{}`           | Embeds a plotly-kt figure    | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=plotly%5C%28&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+plotly1+end&eoccur=1&eoffset=-3&etopd=true)      |
+| `DslSlide.letsPlot{}`         | Embeds a Lets-Plot figure    | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=letsPlot%5C%28&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+letsplot1+end&eoccur=1&eoffset=-3&etopd=true)  |
 | `DslSlide.diagram{}`          | Embeds a diagram             | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=diagram%5C%28&boccur=1&boffset=0&btopd=true&eregex=%2F%2F+graphviz1+end&eoccur=1&eoffset=-3&etopd=true)   |
 | `FlowContent.unorderedList{}` | Generates an unordered list  | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=unorderedList%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                  |
 | `FlowContent.orderedList{}`   | Generates an ordered list    | [example](https://www.srcref.com/github?account=kslides&repo=kslides&branch=master&path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&bregex=+orderedList%5C%28&boccur=1&boffset=0&btopd=true&eregex=&eoccur=1&eoffset=0&etopd=true)                   |
@@ -435,16 +435,17 @@ an html file in `docs/playground`.
 
 Playground code using `dataTargetPlatform = JUNIT` should not have a `package` decl.
 
-### plotly-kt
+### Lets-Plot
 
-A DslSlide embeds plotly-kt content with an [iframe](https://www.w3schools.com/tags/tag_iframe.asp).
+A DslSlide embeds [Lets-Plot](https://lets-plot.org/kotlin/) content with an
+[iframe](https://www.w3schools.com/tags/tag_iframe.asp).
 
-If `output.enableFileSystem` is true, each `plotly()` call generates an html file in `docs/plotly`.
+If `output.enableFileSystem` is true, each `letsPlot()` call generates an html file in `docs/letsPlot`.
 
-The `plotly()` _iframeConfig_ args are the attributes for the iframe referencing the plotly-kt content.
+The `letsPlot()` _iframeConfig_ args are the attributes for the iframe referencing the Lets-Plot content.
 
-The `plotly()` _dimensions_ are automatically added as the _width_ and _height_ values
-in a `Plot.layout{}` block, thus controlling the dimensions of the plotly-kt content.
+The `letsPlot()` _dimensions_ are passed through to Lets-Plot's HTML export as the plot size,
+thus controlling the rendered width and height of the figure.
 
 The _dimensions_ and the _iframeConfig_ args must be synchronized.
 Specifically, the _dimensions.width_ value must work with the
@@ -454,9 +455,13 @@ must work with the _iframeConfig.height_ value.
 Adding `border: 1px solid black;` to _iframeConfig.style_ makes it easier to synchronize the dimension values.
 Once the iframe and content width and height values are correct, you can remove the border.
 
-If additional space is required for plotly output, you can adjust the slide
+If additional space is required for the plot, you can adjust the slide
 presentation space with the _PresentationConfig.width_ and _PresentationConfig.height_ values.
 More details can be found [here](https://revealjs.com/presentation-size/).
+
+The Lets-Plot JS runtime version loaded by each generated HTML page is controlled by
+`kslidesConfig.letsPlotJsVersion` and defaults to the version that ships with the
+bundled `lets-plot-kotlin-jvm` artifact.
 
 ### Kroki Diagrams
 
@@ -501,5 +506,5 @@ are [here](https://github.com/kslides/kslides/blob/master/kslides-examples/src/m
 * [reveal.js Menu Plugin](https://github.com/denehyg/reveal.js-menu)
 * [reveal.js CopyCode Plugin](https://github.com/Martinomagnifico/reveal.js-copycode)
 * [Kotlin Playground](https://github.com/JetBrains/kotlin-playground)
-* [plotly-kt](https://github.com/mipt-npm/plotly.kt)
-* [plotly-kt Examples](https://github.com/mipt-npm/plotly.kt/tree/master/examples/src/main/kotlin)
+* [Lets-Plot Kotlin](https://lets-plot.org/kotlin/)
+* [Lets-Plot Kotlin on GitHub](https://github.com/JetBrains/lets-plot-kotlin)

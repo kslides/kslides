@@ -83,7 +83,9 @@ object InternalUtils {
               trimmed
             }
 
-            else -> str
+            else -> {
+              str
+            }
           }
         } else {
           val fenceLength = trimmed.length - trimmed.trimStart('`', '~').length
@@ -109,7 +111,10 @@ object InternalUtils {
             .split('-', '–', ':')
             .also { elem ->
               when (elem.size) {
-                1 -> add(splitElem.toInt())
+                1 -> {
+                  add(splitElem.toInt())
+                }
+
                 2 -> {
                   elem
                     .let { it[0].toInt() to it[1].toInt() }
@@ -122,7 +127,9 @@ object InternalUtils {
                     }
                 }
 
-                else -> throw IllegalArgumentException("Invalid argument: $elem")
+                else -> {
+                  throw IllegalArgumentException("Invalid argument: $elem")
+                }
               }
             }
         }
@@ -171,10 +178,13 @@ object InternalUtils {
 
   internal fun List<String>.toLineRanges(linePattern: String): List<String> =
     when {
-      linePattern.isNotBlank() ->
+      linePattern.isNotBlank() -> {
         linePattern.toIntList().let { lineNums -> filterIndexed { i, _ -> i + 1 in lineNums } }
+      }
 
-      else -> this
+      else -> {
+        this
+      }
     }
 
   internal fun List<String>.fixIndents(

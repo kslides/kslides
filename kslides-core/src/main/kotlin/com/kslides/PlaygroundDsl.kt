@@ -8,7 +8,6 @@ import kotlinx.html.style
 import kotlinx.html.title
 
 //context(Presentation, DslSlide, SECTION)
-@KSlidesDslMarker
 fun DslSlide.playground(
   srcName: String,
   vararg otherSrcs: String = emptyArray(),

@@ -4,6 +4,7 @@ import com.kslides.*
 import kotlinx.css.CssBuilder
 import kotlin.reflect.full.isSubclassOf
 
+@KSlidesDslMarker
 class PlaygroundConfig : AbstractConfig() {
   var args by ConfigProperty<String>(revealjsManagedValues)
   var dataTargetPlatform by ConfigProperty<TargetPlatform>(revealjsManagedValues)
@@ -43,7 +44,6 @@ class PlaygroundConfig : AbstractConfig() {
     staticContent = false
   }
 
-  @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
     css += block
   }

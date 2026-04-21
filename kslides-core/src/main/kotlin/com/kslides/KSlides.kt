@@ -1,7 +1,5 @@
 package com.kslides
 
-import com.github.pambrose.common.response.respondWith
-import com.github.pambrose.common.util.ensureSuffix
 import com.kslides.DiagramOutputType.Companion.outputTypeFromSuffix
 import com.kslides.DiagramOutputType.SVG
 import com.kslides.KSlides.Companion.logger
@@ -11,6 +9,8 @@ import com.kslides.Page.generatePage
 import com.kslides.config.KSlidesConfig
 import com.kslides.config.OutputConfig
 import com.kslides.config.PresentationConfig
+import com.pambrose.common.response.respondWith
+import com.pambrose.common.util.ensureSuffix
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.plugins.*
@@ -29,7 +29,6 @@ import java.io.File
 @DslMarker
 annotation class KSlidesDslMarker
 
-@KSlidesDslMarker
 fun kslides(block: KSlides.() -> Unit) =
   KSlides()
     .apply {
@@ -73,8 +72,7 @@ fun kslides(block: KSlides.() -> Unit) =
         runHttpServer(outputConfig, true)
     }
 
-@KSlidesDslMarker
-internal fun kslidesTest(block: KSlides.() -> Unit) =
+fun kslidesTest(block: KSlides.() -> Unit) =
   kslides {
     block()
     output {
@@ -83,6 +81,7 @@ internal fun kslidesTest(block: KSlides.() -> Unit) =
     }
   }
 
+@KSlidesDslMarker
 class KSlides {
   internal val kslidesConfig = KSlidesConfig()
   internal val globalPresentationConfig = PresentationConfig().apply { assignDefaults() }
@@ -112,27 +111,22 @@ class KSlides {
   // User variables
   val css = CssValue()
 
-  @KSlidesDslMarker
   fun kslidesConfig(block: KSlidesConfig.() -> Unit) {
     kslidesConfigBlock = block
   }
 
-  @KSlidesDslMarker
   fun output(block: OutputConfig.() -> Unit) {
     outputConfigBlock = block
   }
 
-  @KSlidesDslMarker
   fun presentationConfig(block: PresentationConfig.() -> Unit) {
     globalPresentationConfigBlock = block
   }
 
-  @KSlidesDslMarker
   fun css(block: CssBuilder.() -> Unit) {
     css += block
   }
 
-  @KSlidesDslMarker
   fun presentation(block: Presentation.() -> Unit) {
     presentationBlocks += block
   }
@@ -153,8 +147,14 @@ class KSlides {
         .forEach { (key, p) ->
           val (file, srcPrefix) =
             when {
-              key == "/" -> File("$outputDir/index.html") to rootPrefix
-              key.endsWith(".html") -> File("$outputDir/$key") to rootPrefix
+              key == "/" -> {
+                File("$outputDir/index.html") to rootPrefix
+              }
+
+              key.endsWith(".html") -> {
+                File("$outputDir/$key") to rootPrefix
+              }
+
               else -> {
                 val pathElems = "$outputDir/$key".split("/").filter { it.isNotBlank() }
                 val path = pathElems.joinToString("/")
@@ -191,8 +191,8 @@ class KSlides {
           }
 
         routing {
-          // playground, and plotly iframe endpoints
-          listOf(config.playgroundDir, config.plotlyDir)
+          // playground and letsPlot iframe endpoints
+          listOf(config.playgroundDir, config.letsPlotDir)
             .forEach {
               get("$it/{fname}") {
                 respondWith {

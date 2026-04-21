@@ -1,10 +1,11 @@
 package com.kslides.slide
 
-import com.github.pambrose.common.util.toPath
 import com.kslides.KSlidesDslMarker
 import com.kslides.Presentation
+import com.pambrose.common.util.toPath
 import kotlinx.html.*
 
+@KSlidesDslMarker
 interface DslSlide {
   val presentation: Presentation
   var private_section: SECTION? // TODO This is a hack that will go away when context receivers work
@@ -23,9 +24,10 @@ interface DslSlide {
   val presentationPlaygroundConfig get() = presentation.presentationConfig.playgroundConfig
   val playgroundPath get() = presentation.kslides.outputConfig.playgroundPath
 
-  val globalPlotlyConfig get() = presentation.kslides.globalPresentationConfig.plotlyIframeConfig
-  val presentationPlotlyConfig get() = presentation.presentationConfig.plotlyIframeConfig
-  val plotlyPath get() = presentation.kslides.outputConfig.plotlyPath
+  val globalLetsPlotConfig get() = presentation.kslides.globalPresentationConfig.letsPlotIframeConfig
+  val presentationLetsPlotConfig get() = presentation.presentationConfig.letsPlotIframeConfig
+  val letsPlotPath get() = presentation.kslides.outputConfig.letsPlotPath
+  val letsPlotJsVersion get() = presentation.kslides.kslidesConfig.letsPlotJsVersion
 
   val globalDiagramConfig get() = presentation.kslides.globalPresentationConfig.diagramConfig
   val presentationDiagramConfig get() = presentation.presentationConfig.diagramConfig
@@ -39,9 +41,9 @@ interface DslSlide {
     filename: String,
   ) = listOf(presentation.kslides.outputConfig.playgroundDir, filename).toPath(addPrefix = false, addTrailing = false)
 
-  fun plotlyFilename(
+  fun letsPlotFilename(
     filename: String,
-  ) = listOf(presentation.kslides.outputConfig.plotlyDir, filename).toPath(addPrefix = false, addTrailing = false)
+  ) = listOf(presentation.kslides.outputConfig.letsPlotDir, filename).toPath(addPrefix = false, addTrailing = false)
 
   fun krokiFilename(
     filename: String,
@@ -59,13 +61,11 @@ class HorizontalDslSlide(
   override var private_useHttp: Boolean = false
   override var private_dslAssigned = false
 
-  @KSlidesDslMarker
   fun content(dslBlock: SECTION.() -> Unit) {
     private_dslBlock = dslBlock
     private_dslAssigned = true
   }
 
-  @KSlidesDslMarker
   inline fun SectioningOrFlowContent.notes(
     crossinline block: ASIDE.() -> Unit = {},
   ) = ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)
@@ -82,13 +82,11 @@ class VerticalDslSlide(
   override var private_useHttp: Boolean = false
   override var private_dslAssigned = false
 
-  @KSlidesDslMarker
   fun content(dslBlock: SECTION.() -> Unit) {
     private_dslBlock = dslBlock
     private_dslAssigned = true
   }
 
-  @KSlidesDslMarker
   inline fun SectioningOrFlowContent.notes(
     crossinline block: ASIDE.() -> Unit = {},
   ) = ASIDE(attributesMapOf("class", "notes"), consumer).visit(block)

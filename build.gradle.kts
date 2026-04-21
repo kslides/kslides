@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
   application
@@ -24,10 +25,9 @@ allprojects {
   apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
   repositories {
-    google()
+    // google()
     mavenCentral()
     maven { url = uri("https://repo.kotlin.link") }
-    maven { url = uri("https://jitpack.io") }
   }
 
   configure<PublishingExtension> {
@@ -51,34 +51,38 @@ subprojects {
   val libs = rootProject.the<org.gradle.accessors.dm.LibrariesForLibs>()
 
   dependencies {
-    "implementation"(libs.kotlin.stdlib.common)
+    implementation(libs.kotlinx.html)
 
-    "implementation"(libs.kotlinx.serialization.json)
+    implementation(libs.kotlin.stdlib.common)
 
-    "api"(libs.kotlin.css)
+    implementation(libs.kotlinx.serialization.json)
 
-    "implementation"(libs.ktor.server)
-    "implementation"(libs.ktor.server.cio)
-    "implementation"(libs.ktor.server.sessions)
-    "api"(libs.ktor.server.html.builder)
-    "implementation"(libs.ktor.server.call.logging)
-    "implementation"(libs.ktor.server.compression)
+    api(libs.kotlin.css)
 
-    "implementation"(libs.ktor.client.core)
-    "implementation"(libs.ktor.client.cio)
+    implementation(libs.letsplot)
 
-    "implementation"(libs.common.utils.core)
-    "implementation"(libs.common.utils.ktor.server)
+    implementation(libs.ktor.server)
+    implementation(libs.ktor.server.cio)
+    implementation(libs.ktor.server.sessions)
+    api(libs.ktor.server.html.builder)
+    implementation(libs.ktor.server.call.logging)
+    implementation(libs.ktor.server.compression)
 
-    "api"(libs.srcref)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
 
-    "implementation"(libs.commons.text)
+    implementation(libs.common.utils.core)
+    implementation(libs.common.utils.ktor.server)
 
-    "implementation"(libs.kotlin.logging)
-    "implementation"(libs.logback)
-    "implementation"(libs.junit) // for junit playgrounds, which are in main
+    api(libs.srcref)
 
-    "testImplementation"(libs.kotest.runner.junit5)
+    implementation(libs.commons.text)
+
+    implementation(libs.kotlin.logging)
+    implementation(libs.logback)
+    implementation(libs.junit) // for junit playgrounds, which are in main
+
+    testImplementation(libs.kotest.runner.junit5)
   }
 
 //    tasks.register<Jar>("sourcesJar") {
@@ -99,6 +103,12 @@ subprojects {
     from(tasks.javadoc.get().destinationDir)
   }
 
+  configurations.all {
+    resolutionStrategy {
+      force(libs.kotlinx.html.get().toString())
+    }
+  }
+
   configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
     jvmToolchain(17)
   }
@@ -107,9 +117,9 @@ subprojects {
     useJUnitPlatform()
 
     testLogging {
-      events("passed", "skipped", "failed", "standardOut", "standardError")
+      events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
       exceptionFormat = TestExceptionFormat.FULL
-      showStandardStreams = true
+      showStandardStreams = false
     }
   }
 

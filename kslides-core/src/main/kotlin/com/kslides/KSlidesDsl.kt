@@ -1,11 +1,11 @@
 package com.kslides
 
-import com.github.pambrose.common.util.nullIfBlank
 import com.kslides.DiagramOutputType.SVG
 import com.kslides.InternalUtils.stripBraces
 import com.kslides.InternalUtils.writeByteArray
 import com.kslides.InternalUtils.writeString
 import com.kslides.config.CodeSnippetConfig
+import com.pambrose.common.util.nullIfBlank
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.html.*
 
@@ -13,7 +13,6 @@ object KSlidesDsl {
   internal val logger = KotlinLogging.logger {}
 }
 
-@HtmlTagMarker
 fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
   val config = CodeSnippetConfig().apply { block() }
   pre {
@@ -92,13 +91,11 @@ internal fun recordKrokiContent(
   }
 }
 
-@HtmlTagMarker
 inline fun FlowContent.unorderedList(
   items: List<String>,
   crossinline block: UL.() -> Unit = {},
 ) = unorderedList(*items.toTypedArray(), block = block)
 
-@HtmlTagMarker
 inline fun FlowContent.unorderedList(
   vararg items: String,
   crossinline block: UL.() -> Unit = {},
@@ -107,7 +104,6 @@ inline fun FlowContent.unorderedList(
   unorderedList(*funcs.toTypedArray(), block = block)
 }
 
-@HtmlTagMarker
 inline fun FlowContent.unorderedList(
   vararg items: LI.() -> Unit,
   crossinline block: UL.() -> Unit = {},
@@ -118,13 +114,11 @@ inline fun FlowContent.unorderedList(
   }
 }
 
-@HtmlTagMarker
 inline fun FlowContent.orderedList(
   items: List<String>,
   crossinline block: OL.() -> Unit = {},
 ) = orderedList(*items.toTypedArray(), block = block)
 
-@HtmlTagMarker
 inline fun FlowContent.orderedList(
   vararg items: String,
   crossinline block: OL.() -> Unit = {},
@@ -133,7 +127,6 @@ inline fun FlowContent.orderedList(
   orderedList(*funcs.toTypedArray(), block = block)
 }
 
-@HtmlTagMarker
 inline fun FlowContent.orderedList(
   vararg items: LI.() -> Unit,
   crossinline block: OL.() -> Unit = {},
@@ -144,7 +137,6 @@ inline fun FlowContent.orderedList(
   }
 }
 
-@HtmlTagMarker
 inline fun LI.listHref(
   url: String,
   text: String = "",
@@ -160,13 +152,11 @@ inline fun LI.listHref(
   }
 }
 
-@HtmlTagMarker
 fun THEAD.headRow(vararg items: String) {
   val funcs: List<TH.() -> Unit> = items.map { { +it } }
   headRow(*funcs.toTypedArray())
 }
 
-@HtmlTagMarker
 fun THEAD.headRow(vararg items: TH.() -> Unit) =
   tr {
     items.forEach {
@@ -174,13 +164,11 @@ fun THEAD.headRow(vararg items: TH.() -> Unit) =
     }
   }
 
-@HtmlTagMarker
 fun TBODY.bodyRow(vararg items: String) {
   val funcs: List<TD.() -> Unit> = items.map { { +it } }
   bodyRow(*funcs.toTypedArray())
 }
 
-@HtmlTagMarker
 fun TBODY.bodyRow(vararg items: TD.() -> Unit) =
   tr {
     items.forEach {
@@ -188,7 +176,6 @@ fun TBODY.bodyRow(vararg items: TD.() -> Unit) =
     }
   }
 
-@HtmlTagMarker
 fun FlowOrInteractiveOrPhrasingContent.atag(
   text: String,
   href: String,

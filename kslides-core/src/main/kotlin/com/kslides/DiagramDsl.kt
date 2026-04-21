@@ -1,8 +1,8 @@
 package com.kslides
 
-import com.github.pambrose.common.util.nullIfBlank
 import com.kslides.config.DiagramConfig
 import com.kslides.slide.DslSlide
+import com.pambrose.common.util.nullIfBlank
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -25,17 +25,16 @@ class DiagramDescription : DiagramConfig() {
   }
 }
 
-@KSlidesDslMarker
 fun DslSlide.diagram(
   diagramType: String,
   diagramBlock: DiagramDescription.() -> Unit,
 ) {
   val diagram = DiagramDescription().apply(diagramBlock)
   val mergedConfig =
-    DiagramConfig().apply {
-      merge(globalDiagramConfig)
-      merge(presentationDiagramConfig)
-      merge(diagram)
+    DiagramConfig().also { config ->
+      config.merge(globalDiagramConfig)
+      config.merge(presentationDiagramConfig)
+      config.merge(diagram)
     }
 
   val filename = newFilename(mergedConfig.outputType.suffix)
@@ -92,10 +91,13 @@ private fun buildJsonObjectFromMap(desc: Map<String, Any>) =
   buildJsonObject {
     desc.forEach { (k, v) ->
       when (v) {
-        is String -> put(k, JsonPrimitive(v))
+        is String -> {
+          put(k, JsonPrimitive(v))
+        }
+
         is Map<*, *> -> {
           putJsonObject(k) {
-            v.forEach { k, v ->
+            v.forEach { (k, v) ->
               when {
                 k !is String -> error("Invalid key type: $k")
                 v is Boolean -> put(k, JsonPrimitive(v))
@@ -107,7 +109,9 @@ private fun buildJsonObjectFromMap(desc: Map<String, Any>) =
           }
         }
 
-        else -> error("Unexpected value type: ${v::class}")
+        else -> {
+          error("Unexpected value type: ${v::class}")
+        }
       }
     }
   }

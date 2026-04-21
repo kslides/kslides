@@ -11,6 +11,12 @@ clean:
 build: clean
 	./gradlew build -xtest
 
+refresh:
+	./gradlew --refresh-dependencies
+
+tests:
+	./gradlew --rerun-tasks check
+
 uberjar:
 	./gradlew uberjar
 
@@ -26,11 +32,14 @@ stage:
 dokka:
 	./gradlew dokkaHtml
 
-cleandocs:
-	rm -rf docs/playground docs/plotly docs/kroki
+clean-docs:
+	rm -rf docs/playground docs/letplot docs/kroki
+
+tree:
+	./gradlew -q dependencies
 
 versioncheck:
 	./gradlew dependencyUpdates --no-configuration-cache
 
 upgrade-wrapper:
-	./gradlew wrapper --gradle-version=9.2.0 --distribution-type=bin
+	./gradlew wrapper --gradle-version=9.4.1 --distribution-type=bin

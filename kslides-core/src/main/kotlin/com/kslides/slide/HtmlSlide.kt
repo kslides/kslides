@@ -4,6 +4,7 @@ import com.kslides.KSlidesDslMarker
 import com.kslides.Presentation
 import kotlinx.html.SECTION
 
+@KSlidesDslMarker
 interface HtmlSlide {
   var private_htmlBlock: () -> String
   var private_htmlAssigned: Boolean
@@ -23,7 +24,6 @@ class HorizontalHtmlSlide(
   override var private_htmlBlock: () -> String = { "" }
   override var private_htmlAssigned = false
 
-  @KSlidesDslMarker
   fun content(htmlBlock: () -> String) {
     private_htmlBlock = htmlBlock
     private_htmlAssigned = true
@@ -38,7 +38,6 @@ class VerticalHtmlSlide(
   override var private_htmlBlock: () -> String = { "" }
   override var private_htmlAssigned = false
 
-  @KSlidesDslMarker
   fun content(htmlBlock: () -> String) {
     private_htmlBlock = htmlBlock
     private_htmlAssigned = true

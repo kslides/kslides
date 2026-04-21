@@ -3,6 +3,7 @@ package com.kslides.slide
 import com.kslides.KSlidesDslMarker
 import com.kslides.Presentation
 
+@KSlidesDslMarker
 interface MarkdownSlide {
   var private_markdownBlock: () -> String
 
@@ -23,7 +24,6 @@ class HorizontalMarkdownSlide(
   // User variables
   override var filename = ""
 
-  @KSlidesDslMarker
   fun content(block: () -> String) {
     private_markdownBlock = block
     markdownAssigned = true
@@ -41,7 +41,6 @@ class VerticalMarkdownSlide(
   // User variables
   override var filename = ""
 
-  @KSlidesDslMarker
   fun content(markdownBlock: () -> String) {
     private_markdownBlock = markdownBlock
     markdownAssigned = true
