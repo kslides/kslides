@@ -1,6 +1,5 @@
-package com.github.readingbat
+package com.kslides
 
-import com.kslides.DiagramOutputType
 import com.kslides.config.CopyCodeConfig
 import com.kslides.config.DiagramConfig
 import com.kslides.config.KSlidesConfig

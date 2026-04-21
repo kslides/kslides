@@ -7,27 +7,26 @@ plugins {
   `maven-publish`
   alias(libs.plugins.kotlin.jvm)
   alias(libs.plugins.kotlin.serialization)
-  alias(libs.plugins.versions)
-  alias(libs.plugins.kotlinter) apply false
+  alias(libs.plugins.pambrose.stable.versions)
+  alias(libs.plugins.pambrose.kotlinter)
+  alias(libs.plugins.pambrose.testing) apply false
   alias(libs.plugins.shadow) apply false
 }
 
 allprojects {
-  description = "kslides"
-  group = "com.github.kslides"
-  version = "0.25.0"
-
   apply(plugin = "application")
   apply(plugin = "java-library")
   apply(plugin = "maven-publish")
   apply(plugin = "org.jetbrains.kotlin.jvm")
-  apply(plugin = "org.jmailen.kotlinter")
+  apply(plugin = "com.pambrose.kotlinter")
   apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
+  version = findProperty("overrideVersion")?.toString() ?: "0.25.0"
+  group = "com.kslides"
+  description = "kslides"
+
   repositories {
-    // google()
     mavenCentral()
-    maven { url = uri("https://repo.kotlin.link") }
   }
 
   configure<PublishingExtension> {
@@ -48,6 +47,8 @@ allprojects {
 }
 
 subprojects {
+  apply(plugin = "com.pambrose.testing")
+
   val libs = rootProject.the<org.gradle.accessors.dm.LibrariesForLibs>()
 
   dependencies {
@@ -113,15 +114,15 @@ subprojects {
     jvmToolchain(17)
   }
 
-  tasks.withType<Test> {
-    useJUnitPlatform()
-
-    testLogging {
-      events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
-      exceptionFormat = TestExceptionFormat.FULL
-      showStandardStreams = false
-    }
-  }
+//  tasks.withType<Test> {
+//    useJUnitPlatform()
+//
+//    testLogging {
+//      events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+//      exceptionFormat = TestExceptionFormat.FULL
+//      showStandardStreams = false
+//    }
+//  }
 
   configure<org.jmailen.gradle.kotlinter.KotlinterExtension> {
     ignoreFormatFailures = false
@@ -130,7 +131,7 @@ subprojects {
   }
 
   fun isNonStable(version: String): Boolean {
-    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA", "Beta1").any { version.uppercase().contains(it) }
     val regex = "^[0-9,.v-]+(-r)?$".toRegex()
     val isStable = stableKeyword || regex.matches(version)
     return !isStable

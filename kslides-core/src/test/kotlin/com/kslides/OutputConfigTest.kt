@@ -1,6 +1,5 @@
-package com.github.readingbat
+package com.kslides
 
-import com.kslides.KSlides
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 

@@ -109,8 +109,8 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("com.github.kslides:kslides-core:VERSION")
-    // Optional: implementation("com.github.kslides:kslides-letsplot:VERSION")
+    implementation("com.kslides:kslides-core:VERSION")
+    // Optional: implementation("com.kslides:kslides-letsplot:VERSION")
 }
 ```
 

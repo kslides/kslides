@@ -1,7 +1,8 @@
 [versions]
 commons-text = "1.15.0"
 common-utils = "2.7.1"
-css = "2026.3.2"
+css = "2026.4.10"
+gradle-plugins = "1.0.12"
 junit = "4.13.2"
 kotest = "6.1.11"
 kotlin = "2.3.20"
@@ -42,6 +43,7 @@ srcref = { module = "com.pambrose:srcref", version.ref = "srcref" }
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
-versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugin" }
+pambrose-stable-versions = { id = "com.pambrose.stable-versions", version.ref = "gradle-plugins" }
+pambrose-kotlinter = { id = "com.pambrose.kotlinter", version.ref = "gradle-plugins" }
+pambrose-testing = { id = "com.pambrose.testing", version.ref = "gradle-plugins" }
