@@ -67,7 +67,7 @@ class UtilsTest : StringSpec() {
     }
 
     "Code fence test with include" {
-      val s =
+      val str =
         """
       # Presentation // NO TAB
 
@@ -77,7 +77,7 @@ val y = 1              // NO TAB
       ````           // NO TAB
       """
 
-      s
+      str
         .trimIndentWithInclude()
         .lines()
         .forEach {

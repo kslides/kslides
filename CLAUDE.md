@@ -31,7 +31,7 @@ java -jar build/libs/kslides.jar
 
 ## Module Structure
 
-Three Gradle modules defined in `settings.gradle`:
+Three Gradle modules defined in `settings.gradle.kts`:
 
 - **kslides-core** — Core DSL library: slide types, configuration, page rendering, Ktor server, filesystem output. This is what consumers depend on.
 - **kslides-examples** — Example presentations with `main()` entry point in `Slides.kt`. Uses ShadowJar to build `kslides.jar`. Main class: `SlidesKt`.
@@ -43,7 +43,7 @@ Three Gradle modules defined in `settings.gradle`:
 
 The core DSL nests as: `kslides{}` → `presentation{}` → slide blocks. Slide blocks are `markdownSlide{}`, `htmlSlide{}`, or `dslSlide{}`, optionally grouped in `verticalSlides{}`.
 
-The `@KSlidesDslMarker` annotation restricts DSL scope to prevent incorrect nesting.
+The `@KSlidesDslMarker` annotation is applied to the DSL receiver types (not to functions — that's a no-op per [KT-81567](https://youtrack.jetbrains.com/issue/KT-81567)) to restrict scope and prevent incorrect nesting. `VerticalSlidesContext` is intentionally left unmarked so that `verticalSlides { markdownSlide { ... } }` / `dslSlide { ... }` / `slideDefinition(...)` resolve without needing `this@Presentation` qualifiers.
 
 ### Configuration Cascade
 
@@ -75,17 +75,21 @@ Configuration merges hierarchically: **global** (`kslides.presentationConfig{}`)
 
 ### Testing
 
-For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses output. Tests are in `kslides-core/src/test/kotlin/` using Kotest 6 with JUnit 5 runner.
+For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesystem and HTTP output. Test classes use Kotest 6 (`StringSpec()` + `init {}` block) with the JUnit 5 runner. Tests live under:
+
+- `kslides-core/src/test/kotlin/com/kslides/` — `UtilsTest`, `PresentationTest`, `ConfigsTest`, `OutputConfigTest`.
+- `kslides-letsplot/src/test/kotlin/com/kslides/` — `LetsPlotTest` (renderer unit tests) and `LetsPlotDslTest` (full DSL → filesystem integration, writing to a temp `outputDir`). The letsplot test source set ships its own empty `src/test/resources/slides.css` so `Page.generateHead`'s classpath lookup succeeds without depending on kslides-core test resources.
 
 ## Tech Stack
 
-- Kotlin 2.2.0, JVM 17 toolchain
-- Gradle (Groovy DSL, not Kotlin DSL)
-- Ktor 3.2.0 (server + client)
+- Kotlin 2.3.20, JVM 17 toolchain
+- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.2.0
+- Ktor 3.4.2 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
+- Lets-Plot Kotlin 4.13.0 for the `letsPlot{}` DSL (matched JS runtime v4.9.0, configurable via `KSlidesConfig.letsPlotJsVersion`)
 - Kotlinter for linting (ktlint-based)
 - reveal.js embedded in `kslides-core/src/main/resources/revealjs/`
-- Dependency versions centralized in `gradle.properties`
+- Dependency versions centralized in `gradle/libs.versions.toml`
 
 ## Important Notes
 

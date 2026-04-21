@@ -6,6 +6,7 @@ plugins {
   `java-library`
   `maven-publish`
   alias(libs.plugins.kotlin.jvm)
+  //alias(libs.plugins.ktor)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.pambrose.stable.versions)
   alias(libs.plugins.pambrose.kotlinter)
