@@ -29,6 +29,27 @@ Run the example presentation locally:
 java -jar build/libs/kslides.jar
 ```
 
+### Makefile Shortcuts
+
+Common wrappers in `Makefile`:
+
+```bash
+make build                 # clean + gradle build -xtest
+make lint                  # lintKotlinMain + lintKotlinTest
+make tests                 # --rerun-tasks check
+make uber                  # fatjar + run the example jar
+make versioncheck          # dependencyUpdates (default target)
+make publish-local         # publishToMavenLocal
+make publish-snapshot      # publish -SNAPSHOT to Maven Central (signed)
+make publish-maven-central # release to Maven Central (signed)
+```
+
+The `publish-snapshot` and `publish-maven-central` targets sign via `GPG_ENV`: they export the secret key with `gpg --armor --export-secret-keys $GPG_SIGNING_KEY_ID` and read the password from the macOS Keychain (`security find-generic-password -a gpg-signing -s gradle-signing-password`). These publish targets only work on macOS with those credentials configured.
+
+### CI
+
+`.github/workflows/ci.yml` runs on PRs to `master` and on pushes to `master`. Expect green CI before merging.
+
 ## Module Structure
 
 Three Gradle modules defined in `settings.gradle.kts`:

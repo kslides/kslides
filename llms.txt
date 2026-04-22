@@ -41,6 +41,8 @@ kslides {
 - **htmlSlide** — Content is a raw HTML string
 - **dslSlide** — Content uses kotlinx.html DSL (supports `playground{}`, `diagram{}`, `codeSnippet{}`, `letsPlot{}`)
 
+`letsPlot{}` lives in the optional `kslides-letsplot` module; the others are in `kslides-core`.
+
 ### Configuration Cascade
 
 Configuration merges hierarchically: global `presentationConfig{}` → per-presentation `presentationConfig{}` → per-slide `slideConfig{}`. Each level overrides its parent.
@@ -58,7 +60,7 @@ Configured in the `output{}` block:
 - `playground {}` — Embeds an interactive [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframe
 - `diagram {}` — Generates diagrams via [Kroki](https://kroki.io/) (PlantUML, Mermaid, Graphviz, etc.)
 - `codeSnippet {}` — Syntax-highlighted code block with reveal.js highlight plugin
-- `letsPlot {}` — Embeds [Lets-Plot](https://lets-plot.org/kotlin/) visualization iframes
+- `letsPlot {}` — Embeds [Lets-Plot](https://lets-plot.org/kotlin/) visualization iframes (requires the `kslides-letsplot` module). The JS runtime version is configurable via `kslidesConfig.letsPlotJsVersion`.
 
 ### Utility Functions
 
@@ -102,15 +104,15 @@ Common slide properties: `id`, `classes`, `style`, `hidden`, `uncounted`, `autoA
 
 ## Dependencies
 
-Published via [JitPack](https://jitpack.io/#kslides/kslides). Add to your project:
+Published to [Maven Central](https://central.sonatype.com/namespace/com.kslides.kslides) under the `com.kslides.kslides` group. Add to your project:
 
 ```kotlin
 repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("com.kslides:kslides-core:VERSION")
-    // Optional: implementation("com.kslides:kslides-letsplot:VERSION")
+    implementation("com.kslides.kslides:kslides-core:VERSION")
+    // Optional: implementation("com.kslides.kslides:kslides-letsplot:VERSION")
 }
 ```
 
@@ -122,3 +124,4 @@ dependencies {
 - [Live demo (GitHub Pages)](https://kslides.github.io/kslides/): Example presentation output
 - [Example source](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt): Full example presentation code
 - [reveal.js docs](https://revealjs.com): Underlying presentation framework
+- [CHANGELOG](https://github.com/kslides/kslides/blob/master/CHANGELOG.md): Version history
