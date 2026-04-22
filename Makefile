@@ -1,3 +1,5 @@
+VERSION=$(shell grep '^version =' build.gradle.kts | head -1 | sed 's/.*"\(.*\)"/\1/')
+
 default: versioncheck
 
 build-all: clean stage
@@ -11,17 +13,20 @@ clean:
 build: clean
 	./gradlew build -xtest
 
+lint:
+	./gradlew lintKotlinMain lintKotlinTest
+
 refresh:
 	./gradlew --refresh-dependencies
 
 tests:
 	./gradlew --rerun-tasks check
 
-uberjar:
-	./gradlew uberjar
+fatjar: build
+	./gradlew buildFatJar
 
-uber: uberjar
-	java -jar build/libs/kslides.jar
+uber: fatjar
+	java -jar kslides-examples/build/libs/kslides.jar
 
 dist:
 	./gradlew installDist
@@ -40,6 +45,25 @@ tree:
 
 versioncheck:
 	./gradlew dependencyUpdates --no-configuration-cache
+
+kdocs:
+	./gradlew :dokkaGenerate
+
+publish-local:
+	./gradlew publishToMavenLocal
+
+publish-local-snapshot:
+	./gradlew -PoverrideVersion=$(VERSION)-SNAPSHOT publishToMavenLocal
+
+GPG_ENV = \
+	ORG_GRADLE_PROJECT_signingInMemoryKey="$$(gpg --armor --export-secret-keys $$GPG_SIGNING_KEY_ID)" \
+	ORG_GRADLE_PROJECT_signingInMemoryKeyPassword=$$(security find-generic-password -a "gpg-signing" -s "gradle-signing-password" -w)
+
+publish-snapshot:
+	$(GPG_ENV) ./gradlew -PoverrideVersion=$(VERSION)-SNAPSHOT publishToMavenCentral
+
+publish-maven-central:
+	$(GPG_ENV) ./gradlew publishAndReleaseToMavenCentral
 
 upgrade-wrapper:
 	./gradlew wrapper --gradle-version=9.4.1 --distribution-type=bin

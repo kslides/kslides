@@ -12,7 +12,8 @@ letsplot = "4.13.0"
 logback = "1.5.32"
 logging = "8.0.01"
 serialization = "1.11.0"
-shadow = "8.3.7"
+dokka = "2.2.0"
+maven-publish = "0.36.0"
 srcref = "2.0.8"
 
 [libraries]
@@ -42,7 +43,8 @@ srcref = { module = "com.pambrose:srcref", version.ref = "srcref" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
-shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
 pambrose-stable-versions = { id = "com.pambrose.stable-versions", version.ref = "gradle-plugins" }
 pambrose-kotlinter = { id = "com.pambrose.kotlinter", version.ref = "gradle-plugins" }
 pambrose-testing = { id = "com.pambrose.testing", version.ref = "gradle-plugins" }
