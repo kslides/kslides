@@ -2,12 +2,10 @@ import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SourcesJar
 import org.gradle.accessors.dm.LibrariesForLibs
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
-  `java-library`
   alias(libs.plugins.kotlin.jvm)
   alias(libs.plugins.kotlin.serialization) apply false
   alias(libs.plugins.pambrose.stable.versions) apply false
@@ -21,10 +19,6 @@ allprojects {
   version = findProperty("overrideVersion")?.toString() ?: "0.25.0"
   group = "com.kslides"
   description = "kslides"
-
-  repositories {
-    mavenCentral()
-  }
 }
 
 val kotlinLib = libs.plugins.kotlin.jvm.get().pluginId
@@ -36,10 +30,8 @@ val dokkaLib = libs.plugins.dokka.get().pluginId
 val publishLib = libs.plugins.maven.publish.get().pluginId
 
 subprojects {
-//  apply(plugin = "application")
-//  apply(plugin = "java-library")
   apply {
-    plugin(kotlinLib)
+    plugin("java-library")
     plugin(serializationLib)
     plugin(ktlinterLib)
     plugin(testingLib)
@@ -56,7 +48,6 @@ subprojects {
     implementation(libs.kotlin.stdlib.common)
     implementation(libs.kotlinx.serialization.json)
     api(libs.kotlin.css)
-    implementation(libs.letsplot)
     implementation(libs.ktor.server)
     implementation(libs.ktor.server.cio)
     implementation(libs.ktor.server.sessions)
@@ -71,19 +62,14 @@ subprojects {
     implementation(libs.commons.text)
     implementation(libs.kotlin.logging)
     implementation(libs.logback)
-    implementation(libs.junit) // for junit playgrounds, which are in main
 
-    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest)
   }
 
   configurations.all {
     resolutionStrategy {
       force(libs.kotlinx.html.get().toString())
     }
-  }
-
-  configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
-    jvmToolchain(17)
   }
 }
 
@@ -124,7 +110,7 @@ fun Project.configurePublishing() {
         sourcesJar = SourcesJar.Sources(),
       ),
     )
-    coordinates("com.kslides.kslides", project.name, version.toString())
+    coordinates("com.kslides", project.name, version.toString())
 
     pom {
       name.set(project.name)

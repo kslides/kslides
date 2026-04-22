@@ -104,15 +104,15 @@ Common slide properties: `id`, `classes`, `style`, `hidden`, `uncounted`, `autoA
 
 ## Dependencies
 
-Published to [Maven Central](https://central.sonatype.com/namespace/com.kslides.kslides) under the `com.kslides.kslides` group. Add to your project:
+Published to [Maven Central](https://central.sonatype.com/namespace/com.kslides) under the `com.kslides` group. Add to your project:
 
 ```kotlin
 repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("com.kslides.kslides:kslides-core:VERSION")
-    // Optional: implementation("com.kslides.kslides:kslides-letsplot:VERSION")
+    implementation("com.kslides:kslides-core:VERSION")
+    // Optional: implementation("com.kslides:kslides-letsplot:VERSION")
 }
 ```
 

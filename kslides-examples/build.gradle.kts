@@ -25,6 +25,8 @@ ktor {
 dependencies {
   implementation(project(":kslides-core"))
   implementation(project(":kslides-letsplot"))
+
+  implementation(libs.junit) // for junit playgrounds, which are in main
 }
 
 // Include build uberjars in heroku deploy

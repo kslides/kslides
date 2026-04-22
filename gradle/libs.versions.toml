@@ -1,7 +1,8 @@
 [versions]
-commons-text = "1.15.0"
 common-utils = "2.7.1"
+commons-text = "1.15.0"
 css = "2026.4.10"
+dokka = "2.2.0"
 gradle-plugins = "1.0.12"
 junit = "4.13.2"
 kotest = "6.1.11"
@@ -11,9 +12,8 @@ ktor = "3.4.2"
 letsplot = "4.13.0"
 logback = "1.5.32"
 logging = "8.0.01"
-serialization = "1.11.0"
-dokka = "2.2.0"
 maven-publish = "0.36.0"
+serialization = "1.11.0"
 srcref = "2.0.8"
 
 [libraries]
@@ -21,7 +21,7 @@ common-utils-core = { module = "com.pambrose.common-utils:core-utils", version.r
 common-utils-ktor-server = { module = "com.pambrose.common-utils:ktor-server-utils", version.ref = "common-utils" }
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons-text" }
 junit = { module = "junit:junit", version.ref = "junit" }
-kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
+kotest = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotlin-css = { module = "org.jetbrains.kotlin-wrappers:kotlin-css", version.ref = "css" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "logging" }
 kotlin-stdlib-common = { module = "org.jetbrains.kotlin:kotlin-stdlib-common", version.ref = "kotlin" }
@@ -40,11 +40,11 @@ logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 srcref = { module = "com.pambrose:srcref", version.ref = "srcref" }
 
 [plugins]
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
-pambrose-stable-versions = { id = "com.pambrose.stable-versions", version.ref = "gradle-plugins" }
 pambrose-kotlinter = { id = "com.pambrose.kotlinter", version.ref = "gradle-plugins" }
+pambrose-stable-versions = { id = "com.pambrose.stable-versions", version.ref = "gradle-plugins" }
 pambrose-testing = { id = "com.pambrose.testing", version.ref = "gradle-plugins" }
