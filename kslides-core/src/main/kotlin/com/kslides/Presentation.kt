@@ -10,6 +10,16 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.css.CssBuilder
 import kotlinx.html.*
 
+/**
+ * A single presentation — the unit that reveal.js renders as one HTML page. Created via
+ * [KSlides.presentation] and populated with slide definitions, per-presentation configuration,
+ * and scoped CSS.
+ *
+ * Not intended to be constructed directly by user code.
+ *
+ * @property kslides the owning [KSlides] instance; provides access to global config and
+ *   shared caches (iframe content, Kroki content).
+ */
 @KSlidesDslMarker
 class Presentation(
   val kslides: KSlides,
@@ -20,18 +30,57 @@ class Presentation(
   internal val slides = mutableListOf<Slide>()
   internal lateinit var finalConfig: PresentationConfig
 
-  // User variables
+  /**
+   * The URL path (HTTP mode) or output filename/directory (filesystem mode) for this
+   * presentation. Defaults to `"/"`, which writes to `docs/index.html` or serves at the server
+   * root. Must be unique across presentations and must not collide with a registered static
+   * asset directory ([com.kslides.config.KSlidesConfig.httpStaticRoots]).
+   */
   var path = "/"
+
+  /**
+   * CSS scoped to this presentation, seeded from [KSlides.css]. Appended via the [css] DSL block
+   * or `css += "..."` / `css += { ... }`.
+   */
   val css by lazy { CssValue(kslides.css) }
+
+  /**
+   * Per-presentation list of CSS `<link>` files injected into the generated `<head>`. Seeded
+   * from [com.kslides.config.KSlidesConfig.cssFiles]; theme and highlight stylesheets are appended automatically
+   * during page rendering.
+   */
   val cssFiles by lazy { mutableListOf<CssFile>().apply { addAll(kslides.kslidesConfig.cssFiles) } }
+
+  /**
+   * Per-presentation list of JavaScript `<script>` files injected into the generated page.
+   * Seeded from [com.kslides.config.KSlidesConfig.jsFiles]; reveal.js plugins are appended automatically when the
+   * corresponding [PresentationConfig] flags are enabled.
+   */
   val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
 
+  /**
+   * Append CSS (declared via Kotlin's CSS DSL) to this presentation's stylesheet. Can be placed
+   * anywhere inside the `presentation{}` block — unlike raw HTML, CSS does not have to appear
+   * at the top.
+   */
   fun css(block: CssBuilder.() -> Unit) {
     css += block
   }
 
+  /**
+   * Configure reveal.js / kslides options scoped to this presentation. Values set here override
+   * the global [KSlides.presentationConfig] for this presentation only.
+   */
   fun presentationConfig(block: PresentationConfig.() -> Unit) = presentationConfig.block()
 
+  /**
+   * Group one or more slides vertically (reveal.js "vertical stacks"). Inside the block, use
+   * [markdownSlide], [htmlSlide], or [dslSlide] to add slides; they are stacked top-to-bottom
+   * in the order declared and share a single `<section>` wrapper so the whole stack can share a
+   * background, CSS class, or [VerticalSlidesContext.slideConfig].
+   *
+   * @throws IllegalArgumentException if the block adds zero slides.
+   */
   fun verticalSlides(block: VerticalSlidesContext.() -> Unit) =
     VerticalSlide(this) { div, slide, useHttp ->
       div.apply {
@@ -63,6 +112,14 @@ class Presentation(
       }
     }.also { slides += it }
 
+  /**
+   * Add a horizontal Markdown slide. Content comes from either a `content {}` block (inline
+   * Markdown) or a `filename` pointing at an external `.md` file.
+   *
+   * @param slideContent DSL block to configure the slide (content, id, classes,
+   *   [HorizontalMarkdownSlide.filename], etc.).
+   * @throws IllegalArgumentException at render time if neither `content {}` nor `filename` is set.
+   */
   fun markdownSlide(slideContent: HorizontalMarkdownSlide.() -> Unit = {}) =
     HorizontalMarkdownSlide(this) { div, slide, _ ->
       div.apply {
@@ -88,6 +145,10 @@ class Presentation(
       }
     }.also { slides += it }
 
+  /**
+   * Add a Markdown slide inside a [verticalSlides] block. Same semantics as the top-level
+   * [markdownSlide] but registered with the enclosing [VerticalSlidesContext].
+   */
   fun VerticalSlidesContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
     VerticalMarkdownSlide(this@Presentation) { div, slide, _ ->
       div.apply {
@@ -117,6 +178,13 @@ class Presentation(
       }
     }.also { verticalSlides += it }
 
+  /**
+   * Add a horizontal slide whose content is authored with the kotlinx.html DSL. This is the only
+   * slide type that supports the extension DSLs [com.kslides.playground], [com.kslides.diagram],
+   * [com.kslides.codeSnippet], and (from the `kslides-letsplot` module) `letsPlot{}`.
+   *
+   * @throws IllegalArgumentException at render time if the slide has no `content{}` block.
+   */
   fun dslSlide(slideContent: HorizontalDslSlide.() -> Unit) =
     HorizontalDslSlide(this) { div, slide, useHttp ->
       div.apply {
@@ -130,6 +198,10 @@ class Presentation(
       }
     }.also { slides += it }
 
+  /**
+   * Add a kotlinx.html DSL slide inside a [verticalSlides] block. Same semantics as the
+   * top-level [dslSlide] but registered with the enclosing [VerticalSlidesContext].
+   */
   fun VerticalSlidesContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
     VerticalDslSlide(this@Presentation) { div, slide, useHttp ->
       div.apply {
@@ -143,6 +215,11 @@ class Presentation(
       }
     }.also { verticalSlides += it }
 
+  /**
+   * Add a horizontal slide whose content is a raw HTML string supplied via `content {}`.
+   *
+   * @throws IllegalArgumentException at render time if the slide has no `content{}` block.
+   */
   fun htmlSlide(slideContent: HorizontalHtmlSlide.() -> Unit) =
     HorizontalHtmlSlide(this) { div, slide, _ ->
       div.apply {
@@ -154,6 +231,10 @@ class Presentation(
       }
     }.also { slides += it }
 
+  /**
+   * Add a raw-HTML slide inside a [verticalSlides] block. Same semantics as the top-level
+   * [htmlSlide] but registered with the enclosing [VerticalSlidesContext].
+   */
   fun VerticalSlidesContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
     VerticalHtmlSlide(this@Presentation) { div, slide, _ ->
       div.apply {
@@ -179,6 +260,19 @@ class Presentation(
 
   private fun githubLink(href: String) = """<a id="ghsrc" href="$href" target="_blank">GitHub Source</a>"""
 
+  /**
+   * Generate a Markdown "meta" slide that embeds a highlighted code excerpt from [source]
+   * between `// <token> begin` and `// <token> end` markers, and appends a "GitHub Source"
+   * link pointing at the same region on `master`. Primarily used by the kslides example deck
+   * to explain its own DSL.
+   *
+   * @param source path (relative to the repo root) of the source file to excerpt.
+   * @param token the begin/end token bracketing the excerpt.
+   * @param title heading shown above the code block.
+   * @param highlightPattern reveal.js `data-line-numbers` pattern (e.g. `"1-3|5"`).
+   * @param id optional slide id.
+   * @param language syntax-highlighting language for the code fence.
+   */
   // slideDefinition begin
   fun slideDefinition(
     source: String,
@@ -203,6 +297,10 @@ class Presentation(
   }
   // slideDefinition end
 
+  /**
+   * Vertical-stack variant of [slideDefinition]. Identical semantics but registers the generated
+   * Markdown slide inside the enclosing [VerticalSlidesContext].
+   */
   fun VerticalSlidesContext.slideDefinition(
     source: String,
     token: String,
@@ -500,14 +598,30 @@ class Presentation(
   }
 }
 
+/**
+ * A directory under reveal.js's static asset root that kslides should expose when serving over
+ * HTTP. Registered on [com.kslides.config.KSlidesConfig.httpStaticRoots].
+ *
+ * @property dirname directory name relative to `src/main/resources/revealjs/`.
+ */
 data class StaticRoot(
   val dirname: String,
 )
 
+/**
+ * A JavaScript file referenced from the generated `<body>`. The [filename] may be a relative
+ * path (resolved against the reveal.js static root) or an absolute `http(s)://` URL.
+ */
 data class JsFile(
   val filename: String,
 )
 
+/**
+ * A CSS file referenced from the generated `<head>`. The [filename] may be a relative path
+ * (resolved against the reveal.js static root) or an absolute `http(s)://` URL. The optional
+ * [id] is emitted as the `<link>`'s `id` attribute — used internally to tag theme / highlight
+ * stylesheets.
+ */
 data class CssFile(
   val filename: String,
   val id: String = "",

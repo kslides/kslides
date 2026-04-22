@@ -2,130 +2,100 @@ package com.kslides.config
 
 import com.kslides.KSlidesDslMarker
 
+/**
+ * Configuration for the [reveal.js menu plugin](https://github.com/denehyg/reveal.js-menu).
+ * Only takes effect when [PresentationConfig.enableMenu] is `true`.
+ */
 @KSlidesDslMarker
 class MenuConfig : AbstractConfig() {
-  // Specifies which side of the presentation the menu will
-  // be shown. Use 'left' or 'right'.
-  var side by ConfigProperty<String>(revealjsManagedValues) // 'left'
+  /** Side of the viewport the menu opens from. `"left"` or `"right"`. */
+  var side by ConfigProperty<String>(revealjsManagedValues)
 
-  // Specifies the width of the menu.
-  // Can be one of the following:
-  // 'normal', 'wide', 'third', 'half', 'full', or
-  // any valid css length value
-  var width by ConfigProperty<String>(revealjsManagedValues) // 'normal',
+  /**
+   * Menu width. Accepts a named size (`"normal"`, `"wide"`, `"third"`, `"half"`, `"full"`) or
+   * any valid CSS length.
+   */
+  var width by ConfigProperty<String>(revealjsManagedValues)
 
-  // Add slide numbers to the titles in the slide list.
-  // Use 'true' or format string (same as reveal.js slide numbers)
-  var numbers by ConfigProperty<Boolean>(revealjsManagedValues) // false,
+  /** When `true`, add slide numbers to the titles in the menu list. */
+  var numbers by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Specifies which slide elements will be used for generating
-  // the slide titles in the menu. The default selects the first
-  // heading element found in the slide, but you can specify any
-  // valid css selector and the text from the first matching
-  // element will be used.
-  // Note: that a section data-menu-title attribute or an element
-  // with a menu-title class will take precedence over this option
-  var titleSelector by ConfigProperty<String>(revealjsManagedValues) // 'h1, h2, h3, h4, h5, h6',
+  /**
+   * CSS selector used to extract a slide's title. Defaults to the first heading
+   * (`h1, h2, h3, h4, h5, h6`). A `data-menu-title` attribute or an element with
+   * `class="menu-title"` on a slide takes precedence.
+   */
+  var titleSelector by ConfigProperty<String>(revealjsManagedValues)
 
-  // If slides do not have a matching title, attempt to use the
-  // start of the text content as the title instead
-  var useTextContentForMissingTitles by ConfigProperty<Boolean>(revealjsManagedValues) // false,
+  /**
+   * When `true`, slides without a matching title selector fall back to using the first bit of
+   * text content as the menu label.
+   */
+  var useTextContentForMissingTitles by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Hide slides from the menu that do not have a title.
-  // Set to 'true' to only list slides with titles.
-  var hideMissingTitles by ConfigProperty<Boolean>(revealjsManagedValues) // false,
+  /** When `true`, slides without any resolvable title are omitted from the menu entirely. */
+  var hideMissingTitles by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Adds markers to the slide titles to indicate the
-  // progress through the presentation. Set to 'false'
-  // to hide the markers.
-  var markers by ConfigProperty<Boolean>(revealjsManagedValues) // true,
+  /** When `true`, show visited / current-slide progress markers next to menu items. */
+  var markers by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Specify custom panels to be included in the menu, by
-  // providing an array of objects with 'title', 'icon'
-  // properties, and either a 'src' or 'content' property.
-  var custom by ConfigProperty<Boolean>(revealjsManagedValues) // false,
+  /** Enable support for custom menu panels. See the menu plugin's docs for the panel shape. */
+  var custom by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Specifies the themes that will be available in the themes
-  // menu panel. Set to 'true' to show the themes menu panel
-  // with the default themes list. Alternatively, provide an
-  // array to specify the themes to make available in the
-  // themes menu panel, for example...
-  //
-  // [
-  //     { name: 'Black', theme: 'dist/theme/black.css' },
-  //     { name: 'White', theme: 'dist/theme/white.css' },
-  //     { name: 'League', theme: 'dist/theme/league.css' },
-  //     {
-  //       name: 'Dark',
-  //       theme: 'lib/reveal.js/dist/theme/black.css',
-  //       highlightTheme: 'lib/reveal.js/plugin/highlight/monokai.css'
-  //     },
-  //     {
-  //       name: 'Code: Zenburn',
-  //       highlightTheme: 'lib/reveal.js/plugin/highlight/zenburn.css'
-  //     }
-  // ]
-  //
-  // Note: specifying highlightTheme without a theme will
-  // change the code highlight theme while leaving the
-  // presentation theme unchanged.
-  var themes by ConfigProperty<Boolean>(revealjsManagedValues) // true,
+  /**
+   * Enable the themes menu panel. `true` uses the default theme list; pass a custom theme list
+   * via `revealjsManagedValues` directly for non-trivial setups.
+   */
+  var themes by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Specifies the path to the default theme files. If your
-  // presentation uses a different path to the standard reveal
-  // layout then you need to provide this option, but only
-  // when 'themes' is set to 'true'. If you provide your own
-  // list of themes or 'themes' is set to 'false' the
-  // 'themesPath' option is ignored.
-  var themesPath by ConfigProperty<String>(revealjsManagedValues) // 'dist/theme/',
+  /**
+   * Base directory for the default theme CSS files. Only used when [themes] is `true` and no
+   * custom list is provided.
+   */
+  var themesPath by ConfigProperty<String>(revealjsManagedValues)
 
-  // Specifies if the transitions menu panel will be shown.
-  // Set to 'true' to show the transitions menu panel with
-  // the default transitions list. Alternatively, provide an
-  // array to specify the transitions to make available in
-  // the transitions panel, for example...
-  // ['None', 'Fade', 'Slide']
-  var transitions by ConfigProperty<Boolean>(revealjsManagedValues) // false,
+  /** Enable the transitions menu panel. */
+  var transitions by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Adds a menu button to the slides to open the menu panel.
-// Set to 'false' to hide the button.
-  var openButton by ConfigProperty<Boolean>(revealjsManagedValues) // true,
+  /** When `true`, render a hamburger button on the slides to open the menu. */
+  var openButton by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // If 'true' allows the slide number in the presentation to
-  // open the menu panel. The reveal.js slideNumber option must
-  // be displayed for this to take effect
-  var openSlideNumber by ConfigProperty<Boolean>(revealjsManagedValues) // false,
+  /**
+   * When `true`, clicking the slide number opens the menu. Requires
+   * [PresentationConfig.slideNumber] to be enabled.
+   */
+  var openSlideNumber by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // If true allows the user to open and navigate the menu using
-  // the keyboard. Standard keyboard interaction with reveal
-  // will be disabled while the menu is open.
-  var keyboard by ConfigProperty<Boolean>(revealjsManagedValues) // true,
+  /**
+   * When `true`, the user can open and navigate the menu with the keyboard. Reveal.js keyboard
+   * shortcuts are suspended while the menu is open.
+   */
+  var keyboard by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Normally the menu will close on user actions such as
-  // selecting a menu item, or clicking the presentation area.
-  // If 'true', the sticky option will leave the menu open
-  // until it is explicitly closed, that is, using the close
-  // button or pressing the ESC or m key (when the keyboard
-  // interaction option is enabled).
-  var sticky by ConfigProperty<Boolean>(revealjsManagedValues) // false,
+  /**
+   * When `true`, the menu stays open until explicitly closed (Esc or the `m` key when
+   * [keyboard] is on). Otherwise normal user actions dismiss it.
+   */
+  var sticky by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // If 'true' standard menu items will be automatically opened
-  // when navigating using the keyboard. Note: this only takes
-  // effect when both the 'keyboard' and 'sticky' options are enabled.
-  var autoOpen by ConfigProperty<Boolean>(revealjsManagedValues) // true,
+  /**
+   * When `true`, menu panels auto-open during keyboard navigation. Only applies when both
+   * [keyboard] and [sticky] are enabled.
+   */
+  var autoOpen by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // If 'true' the menu will not be created until it is explicitly
-  // requested by calling RevealMenu.init(). Note this will delay
-  // the creation of all menu panels, including custom panels, and
-  // the menu button.
-  var delayInit by ConfigProperty<Boolean>(revealjsManagedValues) // false,
+  /**
+   * When `true`, the menu is not created until `RevealMenu.init()` is called manually. Defers
+   * creation of all panels and the open button.
+   */
+  var delayInit by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // If 'true' the menu will be shown when the menu is initialised.
-  var openOnInit by ConfigProperty<Boolean>(revealjsManagedValues) // false,
+  /** When `true`, the menu is visible immediately after initialization. */
+  var openOnInit by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // By default the menu will load it's own font-awesome library
-  // icons. If your presentation needs to load a different
-  // font-awesome library the 'loadIcons' option can be set to false
-  // and the menu will not attempt to load the font-awesome library.
-  var loadIcons by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /**
+   * When `true` (the default), the menu plugin auto-loads Font Awesome. Set to `false` if your
+   * presentation already loads Font Awesome to avoid a duplicate fetch.
+   */
+  var loadIcons by ConfigProperty<Boolean>(revealjsManagedValues)
 }

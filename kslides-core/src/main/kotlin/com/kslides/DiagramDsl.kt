@@ -17,6 +17,13 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonObject
 
+/**
+ * Receiver for [diagram] blocks. Extends [DiagramConfig] so you can override size, style, and
+ * output format in the same block that sets [source].
+ *
+ * @property source diagram source text in the language matching the `diagramType` passed to
+ *   [diagram] (e.g. PlantUML, Mermaid, Graphviz DOT).
+ */
 class DiagramDescription : DiagramConfig() {
   var source = ""
 
@@ -25,6 +32,17 @@ class DiagramDescription : DiagramConfig() {
   }
 }
 
+/**
+ * Embed a [Kroki](https://kroki.io/)-rendered diagram inside a [DslSlide] `content{}` block.
+ * The diagram source is POSTed to Kroki; the resulting image is cached by filename so repeated
+ * renders of the same presentation do not re-hit Kroki.
+ *
+ * @param diagramType Kroki diagram type (case-insensitive) — e.g. `"plantuml"`, `"mermaid"`,
+ *   `"graphviz"`, `"erd"`. See [Kroki's supported types](https://kroki.io/#support).
+ * @param diagramBlock populates a [DiagramDescription] with the diagram source and optional
+ *   [DiagramConfig] overrides (size, style, output format, Kroki options).
+ * @throws IllegalStateException if called outside a [DslSlide] `content{}` block.
+ */
 fun DslSlide.diagram(
   diagramType: String,
   diagramBlock: DiagramDescription.() -> Unit,

@@ -2,16 +2,30 @@ package com.kslides.config
 
 import com.kslides.KSlidesDslMarker
 
+/**
+ * Configuration for the [CopyCode reveal.js plugin](https://github.com/Martinomagnifico/reveal.js-copycode).
+ * Only takes effect when [PresentationConfig.enableCodeCopy] is `true`.
+ */
 @KSlidesDslMarker
 class CopyCodeConfig : AbstractConfig() {
-  var copy by ConfigProperty<String>(revealjsManagedValues) // 'Copy'
-  var copied by ConfigProperty<String>(revealjsManagedValues) // 'Copied'
+  /** Default button label (e.g. `"Copy"`). */
+  var copy by ConfigProperty<String>(revealjsManagedValues)
 
-  // The timeout is the time in milliseconds for the "Copied!"-state to revert back to "Copy"
-  var timeout by ConfigProperty<Int>(revealjsManagedValues) // 1000
+  /** Label shown immediately after a successful copy (e.g. `"Copied"`). */
+  var copied by ConfigProperty<String>(revealjsManagedValues)
 
-  var copybg by ConfigProperty<String>(revealjsManagedValues) // 'orange'
-  var copiedbg by ConfigProperty<String>(revealjsManagedValues) // 'green'
-  var copycolor by ConfigProperty<String>(revealjsManagedValues) // 'black'
-  var copiedcolor by ConfigProperty<String>(revealjsManagedValues) // 'white'
+  /** Milliseconds the "Copied!" label is displayed before reverting to [copy]. Default 1000. */
+  var timeout by ConfigProperty<Int>(revealjsManagedValues)
+
+  /** Background color of the button in its default state. */
+  var copybg by ConfigProperty<String>(revealjsManagedValues)
+
+  /** Background color of the button after a successful copy. */
+  var copiedbg by ConfigProperty<String>(revealjsManagedValues)
+
+  /** Text color of the button in its default state. */
+  var copycolor by ConfigProperty<String>(revealjsManagedValues)
+
+  /** Text color of the button after a successful copy. */
+  var copiedcolor by ConfigProperty<String>(revealjsManagedValues)
 }

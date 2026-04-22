@@ -15,6 +15,25 @@ plugins {
   alias(libs.plugins.pambrose.testing) apply false
 }
 
+// Disable publishing for the root project — only subprojects should be published
+tasks.withType<PublishToMavenRepository>().configureEach { enabled = false }
+tasks.withType<PublishToMavenLocal>().configureEach { enabled = false }
+
+// Consolidate dokka docs into the root build/ (kslides-examples has no dokka plugin applied)
+dependencies {
+  subprojects
+    .filter { it.name != "kslides-examples" }
+    .forEach { dokka(project(it.path)) }
+}
+
+dokka {
+  moduleName.set("kslides")
+  pluginsConfiguration.html {
+    homepageLink.set("https://github.com/kslides/kslides")
+    footerMessage.set("kslides")
+  }
+}
+
 allprojects {
   version = findProperty("overrideVersion")?.toString() ?: "0.25.0"
   group = "com.kslides"
