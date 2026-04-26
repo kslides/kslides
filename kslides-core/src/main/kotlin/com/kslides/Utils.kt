@@ -127,7 +127,6 @@ fun githubRawUrl(
  * @return the resolved content, or an empty string if reading fails (a warning is logged).
  * @throws IllegalArgumentException if [src] is a local path containing `"../"`.
  */
-// Used within htmlSlide{} and markdownSlide{} blocks
 fun include(
   src: String,
   linePattern: String = "",
@@ -164,7 +163,6 @@ fun include(
  * behavior (the `<code>` tag already controls both) and pads the result for reveal.js's
  * line-number display.
  */
-// When called from a code block, turn off indentToken and escaping
 fun CODE.include(
   src: String,
   linePattern: String = "",
@@ -178,7 +176,6 @@ fun CODE.include(
  * [include] variant for use inside a [com.kslides.slide.DslSlide] `content{}` block. Same
  * semantics as [CODE.include] — HTML escaping and the indent token are turned off.
  */
-// When called from a DslSlide, turn off indentToken and escaping
 fun DslSlide.include(
   src: String,
   linePattern: String = "",

@@ -11,7 +11,7 @@ kslides is a Kotlin DSL for the [reveal.js](https://revealjs.com) presentation f
 ```bash
 ./gradlew build -xtest     # Build without tests
 ./gradlew test              # Run tests (Kotest + JUnit 5)
-./gradlew uberjar           # Build executable uber JAR (kslides-examples)
+./gradlew buildFatJar       # Build executable fat JAR (kslides-examples)
 ./gradlew clean             # Clean build artifacts
 ./gradlew stage             # Heroku deployment build
 ./gradlew lintKotlin        # Lint with Kotlinter

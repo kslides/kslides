@@ -65,7 +65,6 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
  * @param filename file / cache key for the iframe content.
  * @param contentBlock produces the HTML payload for the iframe.
  */
-// Changed from internal
 fun recordIframeContent(
   useHttp: Boolean,
   staticContent: Boolean,

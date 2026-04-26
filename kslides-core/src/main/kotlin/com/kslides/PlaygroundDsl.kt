@@ -23,7 +23,6 @@ import kotlinx.html.title
  *   platform, auto-complete, etc.). Merged with global and presentation-level defaults.
  * @throws IllegalStateException if called outside a [DslSlide] `content{}` block.
  */
-//context(Presentation, DslSlide, SECTION)
 fun DslSlide.playground(
   srcName: String,
   vararg otherSrcs: String = emptyArray(),

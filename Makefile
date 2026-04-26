@@ -1,4 +1,4 @@
-VERSION=$(shell grep '^version =' build.gradle.kts | head -1 | sed 's/.*"\(.*\)"/\1/')
+VERSION := $(shell grep -E '^[[:space:]]*version[[:space:]]*=' build.gradle.kts | head -1 | sed 's/.*"\(.*\)"/\1/')
 
 default: versioncheck
 
@@ -12,6 +12,9 @@ clean:
 
 build: clean
 	./gradlew build -xtest
+
+local-build: clean
+	./gradlew build -PuseMavenLocal=true -xtest
 
 lint:
 	./gradlew lintKotlinMain lintKotlinTest
@@ -35,10 +38,10 @@ stage:
 	./gradlew stage
 
 dokka:
-	./gradlew dokkaHtml
+	./gradlew dokkaGenerate
 
 clean-docs:
-	rm -rf docs/playground docs/letplot docs/kroki
+	rm -rf docs/playground docs/letsPlot docs/kroki
 
 tree:
 	./gradlew -q dependencies

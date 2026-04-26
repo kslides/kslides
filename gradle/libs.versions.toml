@@ -1,30 +1,29 @@
 [versions]
-common-utils = "2.7.1"
+common-utils = "2.8.1"
 commons-text = "1.15.0"
-css = "2026.4.10"
+css = "2026.4.12"
 dokka = "2.2.0"
 gradle-plugins = "1.0.12"
-junit = "4.13.2"
+junit4 = "4.13.2"
 kotest = "6.1.11"
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 kotlinx-html = "0.11.0"
-ktor = "3.4.2"
+ktor = "3.4.3"
 letsplot = "4.13.0"
 logback = "1.5.32"
 logging = "8.0.01"
 maven-publish = "0.36.0"
 serialization = "1.11.0"
-srcref = "2.0.8"
+srcref = "2.0.9"
 
 [libraries]
 common-utils-core = { module = "com.pambrose.common-utils:core-utils", version.ref = "common-utils" }
 common-utils-ktor-server = { module = "com.pambrose.common-utils:ktor-server-utils", version.ref = "common-utils" }
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons-text" }
-junit = { module = "junit:junit", version.ref = "junit" }
+junit4 = { module = "junit:junit", version.ref = "junit4" }
 kotest = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotlin-css = { module = "org.jetbrains.kotlin-wrappers:kotlin-css", version.ref = "css" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "logging" }
-kotlin-stdlib-common = { module = "org.jetbrains.kotlin:kotlin-stdlib-common", version.ref = "kotlin" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinx-html" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }

@@ -1,64 +1,31 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import java.util.*
-
 description = "kslides-examples"
 
 plugins {
-  alias(libs.plugins.ktor)
+    alias(libs.plugins.ktor)
 }
 
-// These are for the uber target
-//val mainName = "SlidesKt"
-//val appName = "kslides"
-
 application {
-  mainClass = "SlidesKt"
+    mainClass = "SlidesKt"
 }
 
 ktor {
-  fatJar {
-    archiveFileName.set("kslides.jar")
-  }
+    fatJar {
+        archiveFileName.set("kslides.jar")
+    }
 }
-
 
 dependencies {
-  implementation(project(":kslides-core"))
-  implementation(project(":kslides-letsplot"))
+    implementation(project(":kslides-core"))
+    implementation(project(":kslides-letsplot"))
 
-  implementation(libs.junit) // for junit playgrounds, which are in main
+    implementation(libs.junit4) // for junit playgrounds, which are in main
 }
 
-// Include build uberjars in heroku deploy
+// Include the fat jar in heroku deploy
 tasks.register("stage") {
-  dependsOn("uberjar", "build", "clean")
+    dependsOn("build", "buildFatJar")
 }
 
-tasks.named("build") {
-  mustRunAfter("clean")
+tasks.named("buildFatJar") {
+    mustRunAfter("build")
 }
-
-//tasks.named<ShadowJar>("shadowJar") {
-//  isZip64 = true
-//  mergeServiceFiles()
-//  exclude("META-INF/*.SF")
-//  exclude("META-INF/*.DSA")
-//  exclude("META-INF/*.RSA")
-//  exclude("LICENSE*")
-//}
-
-//val shadowJarTask = tasks.named<ShadowJar>("shadowJar")
-
-//tasks.register<Jar>("uberjar") {
-//  dependsOn(shadowJarTask)
-//  isZip64 = true
-//  archiveFileName.set("kslides.jar")
-//  manifest {
-//    attributes["Implementation-Title"] = appName
-//    attributes["Implementation-Version"] = version
-//    attributes["Built-Date"] = Date()
-//    attributes["Built-JDK"] = System.getProperty("java.version")
-//    attributes["Main-Class"] = mainName
-//  }
-//  from(shadowJarTask.map { zipTree(it.archiveFile) })
-//}

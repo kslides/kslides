@@ -190,7 +190,7 @@ enum class HrefTarget {
 enum class ViewType { DEFAULT, SCROLL }
 
 /** Options for reveal.js 5.0+ `scrollProgress`. Use the config property's `Boolean` form for on/off. */
-enum class ScrollProgress { AUTO }
+enum class ScrollProgress { AUTO, }
 
 /** reveal.js 5.0+ scroll-layout mode. */
 enum class ScrollLayout { COMPACT, FULL }
