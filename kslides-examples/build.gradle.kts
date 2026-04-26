@@ -25,7 +25,3 @@ dependencies {
 tasks.register("stage") {
     dependsOn("build", "buildFatJar")
 }
-
-tasks.named("buildFatJar") {
-    mustRunAfter("build")
-}

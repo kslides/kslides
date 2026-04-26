@@ -103,9 +103,9 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 
 ## Tech Stack
 
-- Kotlin 2.3.20, JVM 17 toolchain
-- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.2.0
-- Ktor 3.4.2 (server + client)
+- Kotlin 2.3.21, JVM 17 toolchain
+- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.4.1
+- Ktor 3.4.3 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
 - Lets-Plot Kotlin 4.13.0 for the `letsPlot{}` DSL (matched JS runtime v4.9.0, configurable via `KSlidesConfig.letsPlotJsVersion`)
 - Kotlinter for linting (ktlint-based)

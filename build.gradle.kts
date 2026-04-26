@@ -1,24 +1,22 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SourcesJar
-import org.gradle.accessors.dm.LibrariesForLibs
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.dokka.gradle.DokkaExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
-    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.pambrose.stable.versions) apply false
-    alias(libs.plugins.pambrose.kotlinter) apply false
+    alias(libs.plugins.pambrose.stable.versions)
+    alias(libs.plugins.pambrose.kotlinter)
     alias(libs.plugins.dokka)
     alias(libs.plugins.maven.publish) apply false
     alias(libs.plugins.pambrose.testing) apply false
 }
 
-// Disable publishing for the root project — only subprojects should be published
-tasks.withType<PublishToMavenRepository>().configureEach { enabled = false }
-tasks.withType<PublishToMavenLocal>().configureEach { enabled = false }
+val kslidesVersion = findProperty("overrideVersion")?.toString() ?: "0.25.0"
+version = kslidesVersion
+group = "com.kslides"
 
 // Consolidate dokka docs into the root build/ — list publishing modules explicitly
 dependencies {
@@ -28,78 +26,60 @@ dependencies {
 
 dokka {
     moduleName.set("kslides")
-    pluginsConfiguration.html {
-        homepageLink.set("https://github.com/kslides/kslides")
-        footerMessage.set("kslides")
-    }
+    configureDokkaHtml()
 }
 
-
-val kotlinLib = libs.plugins.kotlin.jvm.get().pluginId
-val serializationLib = libs.plugins.kotlin.serialization.get().pluginId
-val ktlinterLib = libs.plugins.pambrose.kotlinter.get().pluginId
-val testingLib = libs.plugins.pambrose.testing.get().pluginId
-val versionsLib = libs.plugins.pambrose.stable.versions.get().pluginId
-val dokkaLib = libs.plugins.dokka.get().pluginId
-val publishLib = libs.plugins.maven.publish.get().pluginId
+val kotlinPluginId = libs.plugins.kotlin.jvm.get().pluginId
+val kotlinterPluginId = libs.plugins.pambrose.kotlinter.get().pluginId
+val testingPluginId = libs.plugins.pambrose.testing.get().pluginId
+val versionsPluginId = libs.plugins.pambrose.stable.versions.get().pluginId
+val dokkaPluginId = libs.plugins.dokka.get().pluginId
+val publishPluginId = libs.plugins.maven.publish.get().pluginId
 
 subprojects {
-    version = findProperty("overrideVersion")?.toString() ?: "0.25.0"
+    version = kslidesVersion
     group = "com.kslides"
 
     apply {
-        plugin("java-library")
-        plugin(serializationLib)
-        plugin(ktlinterLib)
-        plugin(testingLib)
-        plugin(versionsLib)
+        if (name != "kslides-examples") plugin("java-library")
+        plugin(kotlinterPluginId)
+        plugin(testingPluginId)
+        // Apply per-subproject so dependencyUpdates resolves classpath deps
+        // (e.g. dokka-base/dokka-core/templating-plugin) in each subproject's
+        // own resolution context — see commit history for rationale.
+        plugin(versionsPluginId)
     }
 
     configureKotlin()
+    configureDokka()
     configurePublishing()
-
-    val libs = rootProject.the<LibrariesForLibs>()
-
-    dependencies {
-        add("testImplementation", libs.kotest)
-    }
-
-    configurations.all {
-        resolutionStrategy {
-            // Pin kotlinx-html — ktor-server-html-builder pulls an older transitive that breaks the DSL.
-            force(libs.kotlinx.html.get().toString())
-        }
-    }
 }
 
 fun Project.configureKotlin() {
     apply {
-        plugin(kotlinLib)
+        plugin(kotlinPluginId)
     }
 
     extensions.configure<KotlinJvmProjectExtension> {
         jvmToolchain(17)
     }
+}
 
-    tasks.withType<KotlinJvmCompile>().configureEach {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
+fun Project.configureDokka() {
+    if (name == "kslides-examples") return
+    apply {
+        plugin(dokkaPluginId)
+    }
+
+    dokka {
+        configureDokkaHtml()
     }
 }
 
 fun Project.configurePublishing() {
     if (name == "kslides-examples") return
     apply {
-        plugin(dokkaLib)
-        plugin(publishLib)
-    }
-
-    dokka {
-        pluginsConfiguration.html {
-            homepageLink.set("https://github.com/kslides/kslides")
-            footerMessage.set("kslides")
-        }
+        plugin(publishPluginId)
     }
 
     extensions.configure<MavenPublishBaseExtension> {
@@ -139,5 +119,12 @@ fun Project.configurePublishing() {
         if (project.findProperty("signingInMemoryKey") != null) {
             signAllPublications()
         }
+    }
+}
+
+fun DokkaExtension.configureDokkaHtml() {
+    pluginsConfiguration.html {
+        homepageLink.set("https://github.com/kslides/kslides")
+        footerMessage.set("kslides")
     }
 }

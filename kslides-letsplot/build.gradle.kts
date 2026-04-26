@@ -1,7 +1,9 @@
 description = "kslides-letsplot"
 
 dependencies {
-    implementation(project(":kslides-core"))
+    api(project(":kslides-core"))
 
     api(libs.letsplot)
+
+    testImplementation(libs.kotest)
 }
