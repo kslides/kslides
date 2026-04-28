@@ -482,6 +482,29 @@ The `content` value specifies the diagram content.
 
 [Niolesk](https://niolesk.top/) is a great tool for generating Kroki diagrams.
 
+#### Running Kroki Locally
+
+The public `https://kroki.io` server is community-hosted and can be slow or rate-limited, which often
+shows up as request timeouts during slide generation. To avoid this, you can run Kroki locally using
+the `docker-compose.yml` file in the `kroki/` directory (see the
+[Kroki self-hosting guide](https://github.com/yuzutech/kroki#run) for more details):
+
+```bash
+cd kroki
+docker-compose up -d
+```
+
+Then point KSlides at the local instance in your `kslidesConfig{}` block:
+
+```kotlin
+kslides {
+  kslidesConfig {
+    krokiUrl = "http://localhost:8000"
+  }
+  // ...
+}
+```
+
 ### Heroku
 
 Go to your Heroku dashboard, choose your kslides app and click
