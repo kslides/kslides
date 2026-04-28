@@ -11,9 +11,9 @@ kotlin {
 
 providers.gradleProperty("overrideVersion").orNull?.let { project.version = it }
 
-val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+val libs = the<VersionCatalogsExtension>().named("libs")
 
 dependencies {
-    "testImplementation"(libs.findLibrary("kotest").get())
-    "testRuntimeOnly"(libs.findLibrary("logback-classic").get())
+    testImplementation(libs.findLibrary("kotest").get())
+    testRuntimeOnly(libs.findLibrary("logback-classic").get())
 }

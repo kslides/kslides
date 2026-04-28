@@ -19,3 +19,10 @@ dokka {
         footerMessage.set("kslides")
     }
 }
+
+// Heroku deploy entry point: build everything plus the examples fat jar.
+tasks.register("stage") {
+    group = "build"
+    description = "Builds the project and the examples fat jar for Heroku deployment."
+    dependsOn(":kslides-examples:build", ":kslides-examples:buildFatJar")
+}

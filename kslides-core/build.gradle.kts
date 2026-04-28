@@ -1,9 +1,9 @@
-description = "Core kslides DSL: slide types, configuration, page rendering, and Ktor server."
-
 plugins {
     id("kslides.published-module")
     alias(libs.plugins.kotlin.serialization)
 }
+
+description = "Core kslides DSL: slide types, configuration, page rendering, and Ktor server."
 
 dependencies {
     api(libs.kotlinx.html)
