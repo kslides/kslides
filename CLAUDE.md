@@ -44,7 +44,7 @@ make publish-snapshot      # publish -SNAPSHOT to Maven Central (signed)
 make publish-maven-central # release to Maven Central (signed)
 ```
 
-The `publish-snapshot` and `publish-maven-central` targets sign via `GPG_ENV`: they export the secret key with `gpg --armor --export-secret-keys $GPG_SIGNING_KEY_ID` and read the password from the macOS Keychain (`security find-generic-password -a gpg-signing -s gradle-signing-password`). These publish targets only work on macOS with those credentials configured.
+The `publish-snapshot` and `publish-maven-central` targets sign via `GPG_ENV`, which exports three vanniktech-maven-publish env vars: `ORG_GRADLE_PROJECT_signingInMemoryKey` (armored secret key from `gpg --armor --export-secret-keys $GPG_SIGNING_KEY_ID`), `ORG_GRADLE_PROJECT_signingInMemoryKeyId` (the same key id, needed when a subkey is selected), and `ORG_GRADLE_PROJECT_signingInMemoryKeyPassword` (read from the macOS Keychain via `security find-generic-password -a gpg-signing -s gradle-signing-password`). These publish targets only work on macOS with those credentials configured. Publishing uses the [vanniktech `maven-publish`](https://github.com/vanniktech/gradle-maven-publish-plugin) plugin; signing only runs when `signingInMemoryKey` is set, so `make publish-local` and snapshot builds work without the GPG env.
 
 ### CI
 
@@ -57,6 +57,15 @@ Three Gradle modules defined in `settings.gradle.kts`:
 - **kslides-core** — Core DSL library: slide types, configuration, page rendering, Ktor server, filesystem output. This is what consumers depend on.
 - **kslides-examples** — Example presentations with `main()` entry point in `Slides.kt`. Uses ShadowJar to build `kslides.jar`. Main class: `SlidesKt`.
 - **kslides-letsplot** — Lets-Plot visualization integration (JetBrains Lets-Plot). Depends on kslides-core.
+
+### Build conventions
+
+Shared build logic lives in `buildSrc/` as two precompiled-script convention plugins:
+
+- `kslides.kotlin-module` — applies `kotlin("jvm")`, JVM 17 toolchain, Kotlinter, stable-versions, and the kotest/logback test dependencies. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
+- `kslides.published-module` — extends `kslides.kotlin-module` with `java-library`, Dokka, and `com.vanniktech.maven.publish`. Sets up the POM, `KotlinJvm` artifact (sources + Dokka HTML javadoc jar), Maven Central publication, and conditional `signAllPublications()`.
+
+`kslides-core` and `kslides-letsplot` apply `kslides.published-module`; `kslides-examples` applies `kslides.kotlin-module` plus the Ktor plugin (which provides `application{}` and `buildFatJar`). The Heroku `stage` task lives in the root build (`build.gradle.kts`) and depends on `:kslides-examples:build` and `:kslides-examples:buildFatJar`.
 
 ## Architecture
 

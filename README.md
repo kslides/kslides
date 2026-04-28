@@ -1,8 +1,13 @@
 # kslides
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/pambrose/kslides)
-[![Maven Central](https://img.shields.io/maven-central/v/com.pambrose/kslides)](https://central.sonatype.com/artifact/com.pambrose.kslides)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kslides/kslides)](https://github.com/kslides/kslides/releases)
+[![Maven Central](https://img.shields.io/maven-central/v/com.kslides/kslides-core)](https://central.sonatype.com/namespace/com.kslides)
+[![CI](https://github.com/kslides/kslides/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/kslides/kslides/actions/workflows/ci.yml)
+[![Dokka](https://github.com/kslides/kslides/actions/workflows/dokka.yml/badge.svg?branch=master)](https://github.com/kslides/kslides/actions/workflows/dokka.yml)
 [![Kotlin version](https://img.shields.io/badge/kotlin-2.3.21-red?logo=kotlin)](http://kotlinlang.org)
+[![JVM](https://img.shields.io/badge/JVM-17-007396?logo=openjdk&logoColor=white)](https://adoptium.net/)
+[![Gradle](https://img.shields.io/badge/Gradle-9.4.1-02303A?logo=gradle&logoColor=white)](https://gradle.org/)
+[![Kotest](https://img.shields.io/badge/tested%20with-Kotest-4DC4FF)](https://kotest.io/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/kslides/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=kslides/kslides&amp;utm_campaign=Badge_Grade)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/6d0c3c20-6eb5-4c74-8451-5fa06acf242f/deploy-status)](https://app.netlify.com/sites/kslides/deploys)
 [![ktlint](https://img.shields.io/badge/ktlint%20code--style-%E2%9D%A4-FF4081)](https://pinterest.github.io/ktlint/)

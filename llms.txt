@@ -58,7 +58,7 @@ Configured in the `output{}` block:
 ### DslSlide-Specific Features
 
 - `playground {}` — Embeds an interactive [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframe
-- `diagram {}` — Generates diagrams via [Kroki](https://kroki.io/) (PlantUML, Mermaid, Graphviz, etc.)
+- `diagram {}` — Generates diagrams via [Kroki](https://kroki.io/) (PlantUML, Mermaid, Graphviz, etc.). The Kroki endpoint is configurable via `diagramConfig.krokiUrl`; a local Kroki server can be started from the `kroki/` directory with `docker-compose up -d` to avoid public-server rate limits.
 - `codeSnippet {}` — Syntax-highlighted code block with reveal.js highlight plugin
 - `letsPlot {}` — Embeds [Lets-Plot](https://lets-plot.org/kotlin/) visualization iframes (requires the `kslides-letsplot` module). The JS runtime version is configurable via `kslidesConfig.letsPlotJsVersion`.
 
