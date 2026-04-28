@@ -56,6 +56,13 @@ versioncheck:
 kdocs:
 	./gradlew :dokkaGenerate
 
+clean-docs:
+	rm -rf website/kslides/site
+	rm -rf website/kslides/.cache
+
+site: clean-docs
+	cd website/kslides && uv run zensical serve
+
 publish-local:
 	./gradlew publishToMavenLocal
 

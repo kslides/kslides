@@ -9,8 +9,8 @@ dependencies {
     api(libs.kotlinx.html)
     api(libs.kotlin.css)
     api(libs.ktor.server.html.builder)
+    api(libs.srcref)
 
-    implementation(libs.srcref)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.bundles.ktor.server)
     implementation(libs.bundles.ktor.client)

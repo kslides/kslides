@@ -48,3 +48,11 @@ bin/
 ### Node.js ###
 node_modules
 dist
+
+### Python ###
+.venv/
+__pycache__/
+
+### Zensical build output ###
+website/**/site/
+website/**/.cache/

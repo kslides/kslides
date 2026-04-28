@@ -14,7 +14,6 @@ import org.jetbrains.letsPlot.scale.scaleFillGradient
 import kotlin.collections.set
 import kotlin.random.Random
 import kotlin.text.lowercase
-import kotlin.time.Duration.Companion.seconds
 import kotlin.to
 
 fun main() {
