@@ -1,4 +1,8 @@
-VERSION := $(shell grep -E '^val kslidesVersion[[:space:]]*=' build.gradle.kts | head -1 | sed 's/.*"\(.*\)"/\1/')
+VERSION := $(shell sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties | head -1)
+
+ifeq ($(strip $(VERSION)),)
+$(error Could not determine project version from gradle.properties)
+endif
 
 default: versioncheck
 
