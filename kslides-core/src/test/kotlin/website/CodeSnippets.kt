@@ -16,9 +16,9 @@ fun codeSnippetInline() {
             language = "kotlin"
             highlightPattern = "1-3"
             code =
-              """
+              $$"""
               fun greet(name: String) {
-                println("Hello, ${'$'}name")
+                println("Hello, $name")
               }
               """.trimIndent()
           }
