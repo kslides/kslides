@@ -1,0 +1,46 @@
+name: Documentation
+on:
+  push:
+    branches:
+      - master
+      - main
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website/kslides
+    steps:
+      - uses: actions/configure-pages@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Generate Dokka HTML
+        working-directory: ${{ github.workspace }}
+        run: ./gradlew :dokkaGenerate --no-daemon
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          working-directory: website
+      - run: uv sync --project ../ --frozen
+      - run: uv run --project ../ zensical build --clean
+      - name: Copy Dokka HTML into the published site
+        working-directory: ${{ github.workspace }}
+        run: |
+          mkdir -p website/kslides/site/api-docs
+          cp -R build/dokka/html/. website/kslides/site/api-docs/
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: website/kslides/site
+      - uses: actions/deploy-pages@v5
+        id: deployment
