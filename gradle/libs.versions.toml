@@ -34,11 +34,24 @@ ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
 ktor-server-compression = { module = "io.ktor:ktor-server-compression", version.ref = "ktor" }
 ktor-server-html-builder = { module = "io.ktor:ktor-server-html-builder", version.ref = "ktor" }
 ktor-server-sessions = { module = "io.ktor:ktor-server-sessions", version.ref = "ktor" }
-letsplot = { module = "org.jetbrains.lets-plot:lets-plot-kotlin-jvm", version.ref = "letsplot" }
-logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+letsplot-kotlin = { module = "org.jetbrains.lets-plot:lets-plot-kotlin-jvm", version.ref = "letsplot" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 srcref = { module = "com.pambrose:srcref", version.ref = "srcref" }
 
+# Plugin-marker artifacts, consumed by buildSrc to apply plugins from precompiled scripts.
+plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+plugin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+plugin-maven-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }
+plugin-pambrose-kotlinter = { module = "com.pambrose.kotlinter:com.pambrose.kotlinter.gradle.plugin", version.ref = "gradle-plugins" }
+plugin-pambrose-stable-versions = { module = "com.pambrose.stable-versions:com.pambrose.stable-versions.gradle.plugin", version.ref = "gradle-plugins" }
+plugin-pambrose-testing = { module = "com.pambrose.testing:com.pambrose.testing.gradle.plugin", version.ref = "gradle-plugins" }
+
 [bundles]
+ktor-client = [
+    "ktor-client-core",
+    "ktor-client-cio",
+]
+
 ktor-server = [
     "ktor-server",
     "ktor-server-cio",

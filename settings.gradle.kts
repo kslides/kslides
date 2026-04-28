@@ -1,12 +1,8 @@
-import org.gradle.api.initialization.resolve.RepositoriesMode.FAIL_ON_PROJECT_REPOS
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        if (providers.gradleProperty("useMavenLocal").orNull == "true") {
-            mavenLocal()
-        }
+        if (providers.gradleProperty("useMavenLocal").orNull == "true") mavenLocal()
     }
 }
 
@@ -15,14 +11,14 @@ plugins {
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         mavenCentral()
-        if (providers.gradleProperty("useMavenLocal").orNull == "true") {
-            mavenLocal()
-        }
+        if (providers.gradleProperty("useMavenLocal").orNull == "true") mavenLocal()
     }
 }
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "kslides"
 

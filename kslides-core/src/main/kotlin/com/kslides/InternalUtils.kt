@@ -3,7 +3,12 @@ package com.kslides
 import org.apache.commons.text.StringEscapeUtils
 import java.io.File
 
-object InternalUtils {
+/**
+ * Module-private utility helpers used across kslides-core: indentation handling for `include()`,
+ * line-range parsing for code-snippet highlighting, file output, and small string predicates.
+ * Implementation detail — not part of the public API.
+ */
+internal object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
 
   internal fun <K, V> Map<K, V>.merge(other: Map<K, V>) =

@@ -1,9 +1,11 @@
-description = "kslides-letsplot"
+description = "Lets-Plot integration for kslides: embeds Lets-Plot figures via the letsPlot{} DSL."
+
+plugins {
+    id("kslides.published-module")
+}
 
 dependencies {
-    api(project(":kslides-core"))
+    api(projects.kslidesCore)
 
-    api(libs.letsplot)
-
-    testImplementation(libs.kotest)
+    api(libs.letsplot.kotlin)
 }

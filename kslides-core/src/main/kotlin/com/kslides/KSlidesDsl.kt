@@ -9,6 +9,12 @@ import com.pambrose.common.util.nullIfBlank
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.html.*
 
+/**
+ * Internal namespace for the kslides DSL infrastructure. Currently exposes only the shared
+ * logger used by free-standing DSL helpers in this file. Public so that DSL extensions defined
+ * in the same shape (e.g. `letsPlot{}`, custom user DSLs) can route their log output through
+ * the same channel as built-in helpers; not intended as a stable extension point.
+ */
 object KSlidesDsl {
   internal val logger = KotlinLogging.logger {}
 }

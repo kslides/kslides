@@ -1,6 +1,7 @@
-description = "kslides-core"
+description = "Core kslides DSL: slide types, configuration, page rendering, and Ktor server."
 
 plugins {
+    id("kslides.published-module")
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -12,13 +13,9 @@ dependencies {
     implementation(libs.srcref)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.bundles.ktor.server)
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.cio)
+    implementation(libs.bundles.ktor.client)
     implementation(libs.common.utils.core)
     implementation(libs.common.utils.ktor.server)
     implementation(libs.commons.text)
     implementation(libs.kotlin.logging)
-    implementation(libs.logback)
-
-    testImplementation(libs.kotest)
 }

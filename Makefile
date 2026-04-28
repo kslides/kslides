@@ -47,7 +47,7 @@ tree:
 	./gradlew -q dependencies
 
 versioncheck:
-	./gradlew dependencyUpdates --no-configuration-cache
+	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
 
 kdocs:
 	./gradlew :dokkaGenerate
