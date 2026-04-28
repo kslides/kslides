@@ -3,7 +3,12 @@ package com.kslides
 import org.apache.commons.text.StringEscapeUtils
 import java.io.File
 
-object InternalUtils {
+/**
+ * Module-private utility helpers used across kslides-core: indentation handling for `include()`,
+ * line-range parsing for code-snippet highlighting, file output, and small string predicates.
+ * Implementation detail — not part of the public API.
+ */
+internal object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
 
   internal fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
@@ -83,7 +88,9 @@ object InternalUtils {
               trimmed
             }
 
-            else -> str
+            else -> {
+              str
+            }
           }
         } else {
           val fenceLength = trimmed.length - trimmed.trimStart('`', '~').length
@@ -94,8 +101,7 @@ object InternalUtils {
           }
           trimmed
         }
-      }
-      .joinToString("\n")
+      }.joinToString("\n")
   }
 
   internal fun String.toIntList() =
@@ -106,12 +112,17 @@ object InternalUtils {
         .split(",", ";")
         .filter { it.isNotBlank() }
         .forEach { splitElem ->
-          splitElem.split('-', '–', ':')
+          splitElem
+            .split('-', '–', ':')
             .also { elem ->
               when (elem.size) {
-                1 -> add(splitElem.toInt())
+                1 -> {
+                  add(splitElem.toInt())
+                }
+
                 2 -> {
-                  elem.let { it[0].toInt() to it[1].toInt() }
+                  elem
+                    .let { it[0].toInt() to it[1].toInt() }
                     .also { (beg, end) ->
                       when {
                         beg == end -> add(beg)
@@ -121,7 +132,9 @@ object InternalUtils {
                     }
                 }
 
-                else -> throw IllegalArgumentException("Invalid argument: $elem")
+                else -> {
+                  throw IllegalArgumentException("Invalid argument: $elem")
+                }
               }
             }
         }
@@ -140,7 +153,8 @@ object InternalUtils {
         (
           asSequence()
             .mapIndexed { i, s -> i to s }
-            .firstOrNull { it.second.contains(unquotedBegin) && !it.second.contains(quotedBegin) }?.first
+            .firstOrNull { it.second.contains(unquotedBegin) && !it.second.contains(quotedBegin) }
+            ?.first
             ?: throw IllegalArgumentException("Begin token not found: $beginToken")
           ) + (if (exclusive) 1 else 0)
       } else {
@@ -156,7 +170,8 @@ object InternalUtils {
           reversed()
             .asSequence()
             .mapIndexed { i, s -> (this.size - i - (if (exclusive) 1 else 0)) to s }
-            .firstOrNull { it.second.contains(unquotedEnd) && !it.second.contains(quotedEnd) }?.first
+            .firstOrNull { it.second.contains(unquotedEnd) && !it.second.contains(quotedEnd) }
+            ?.first
             ?: throw IllegalArgumentException("End token not found: $endToken")
           )
       } else {
@@ -168,10 +183,13 @@ object InternalUtils {
 
   internal fun List<String>.toLineRanges(linePattern: String): List<String> =
     when {
-      linePattern.isNotBlank() ->
+      linePattern.isNotBlank() -> {
         linePattern.toIntList().let { lineNums -> filterIndexed { i, _ -> i + 1 in lineNums } }
+      }
 
-      else -> this
+      else -> {
+        this
+      }
     }
 
   internal fun List<String>.fixIndents(
@@ -180,8 +198,7 @@ object InternalUtils {
     escapeHtml: Boolean,
   ) = (
     if (trimIndent) joinToString("\n").trimIndent().lines() else this
-    )
-    .map { "$indentToken$it" }
+    ).map { "$indentToken$it" }
     .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeHtml4(it) else it }
 
   internal fun writeString(

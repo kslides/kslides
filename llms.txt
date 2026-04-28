@@ -1,0 +1,127 @@
+# kslides
+
+> kslides is a Kotlin DSL for creating [reveal.js](https://revealjs.com) presentations. Slides are authored in Markdown, HTML, or the Kotlin HTML DSL. Output can be static HTML files (for Netlify/GitHub Pages) or served dynamically via an embedded Ktor HTTP server.
+
+## Quick Start
+
+New presentations should be created from the [kslides-template](https://github.com/kslides/kslides-template) repository. The template includes build configuration, deployment setup, and a starter presentation.
+
+## Core Concepts
+
+### DSL Structure
+
+A presentation is defined using nested Kotlin DSL blocks:
+
+```kotlin
+kslides {
+  output {}                 // Configure filesystem or HTTP output
+  kslidesConfig {}          // Global kslides settings
+  presentationConfig {}     // Default reveal.js config for all presentations
+  css {}                    // Global CSS (Kotlin CSS DSL or raw strings)
+
+  presentation {
+    path = "myslides.html"
+    presentationConfig {}   // Override config for this presentation
+    css {}                  // Presentation-specific CSS
+
+    markdownSlide { content { "# Hello" } }
+    htmlSlide { content { "<h1>Hello</h1>" } }
+    dslSlide { content { h1 { +"Hello" } } }
+    verticalSlides {
+      dslSlide { content { h2 { +"Vertical 1" } } }
+      dslSlide { content { h2 { +"Vertical 2" } } }
+    }
+  }
+}
+```
+
+### Three Slide Types
+
+- **markdownSlide** — Content is a Markdown string
+- **htmlSlide** — Content is a raw HTML string
+- **dslSlide** — Content uses kotlinx.html DSL (supports `playground{}`, `diagram{}`, `codeSnippet{}`, `letsPlot{}`)
+
+`letsPlot{}` lives in the optional `kslides-letsplot` module; the others are in `kslides-core`.
+
+### Configuration Cascade
+
+Configuration merges hierarchically: global `presentationConfig{}` → per-presentation `presentationConfig{}` → per-slide `slideConfig{}`. Each level overrides its parent.
+
+Sub-configs within `presentationConfig{}`: `menuConfig{}`, `copyCodeConfig{}`, `playgroundConfig{}`, `letsPlotIframeConfig{}`, `slideConfig{}`, `diagramConfig{}`.
+
+### Output Modes
+
+Configured in the `output{}` block:
+- **Filesystem** (`enableFileSystem = true`): Writes static HTML to the `docs/` directory. Playground, Lets-Plot, and kroki content generates separate files in `docs/playground/`, `docs/letsPlot/`, `docs/kroki/`.
+- **HTTP** (`enableHttp = true`): Starts a Ktor CIO server (default port 8080). Static resources served from `src/main/resources/public/`.
+
+### DslSlide-Specific Features
+
+- `playground {}` — Embeds an interactive [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframe
+- `diagram {}` — Generates diagrams via [Kroki](https://kroki.io/) (PlantUML, Mermaid, Graphviz, etc.). The Kroki endpoint is configurable via `diagramConfig.krokiUrl`; a local Kroki server can be started from the `kroki/` directory with `docker-compose up -d` to avoid public-server rate limits.
+- `codeSnippet {}` — Syntax-highlighted code block with reveal.js highlight plugin
+- `letsPlot {}` — Embeds [Lets-Plot](https://lets-plot.org/kotlin/) visualization iframes (requires the `kslides-letsplot` module). The JS runtime version is configurable via `kslidesConfig.letsPlotJsVersion`.
+
+### Utility Functions
+
+- `include(src)` — Include code from a file path or URL (preferred over inline code)
+- `githubRawUrl()` — Generate raw GitHub content URLs for `include()` calls
+- `fragment()` — Wrap content in reveal.js fragments for animation
+- `permuteBy()` — Generate animation step permutations
+- `unorderedList()`, `orderedList()` — List helpers for DslSlides
+- `headRow()`, `bodyRow()` — Table helpers for DslSlides
+
+### CSS
+
+CSS can be specified three ways:
+1. Kotlin CSS DSL in `css {}` blocks
+2. Raw CSS strings via `css += "..."`
+3. External file at `src/main/resources/slides.css` (embedded into output)
+
+CSS blocks can appear at global, presentation, or inline level. Unlike HTML, CSS blocks can be placed near the slides that reference them.
+
+## Configuration Options
+
+### PresentationConfig
+
+All [reveal.js configuration options](https://revealjs.com/config/) are exposed as type-safe properties: `transition`, `transitionSpeed`, `controls`, `progress`, `center`, `loop`, `hash`, `autoSlide`, `slideNumber`, `mouseWheel`, `width`, `height`, `margin`, `theme`, `highlight`, etc.
+
+kslides-specific options include: `title`, `theme` (enum: BLACK, WHITE, LEAGUE, BEIGE, SKY, NIGHT, SERIF, SIMPLE, SOLARIZED, BLOOD, MOON, DRACULA), `highlight` (MONOKAI, ZENBURN), `enableSpeakerNotes`, `enableMenu`, `enableCodeCopy`, `topLeftHref`/`topRightHref` (corner links), `gaPropertyId`.
+
+### SlideConfig
+
+Per-slide options: `backgroundColor`, `backgroundImage`, `backgroundSize`, `backgroundPosition`, `backgroundRepeat`, `backgroundOpacity`, `backgroundVideo`, `backgroundVideoLoop`, `backgroundVideoMuted`, `backgroundIframe`.
+
+### Slide Properties
+
+Common slide properties: `id`, `classes`, `style`, `hidden`, `uncounted`, `autoAnimate`, `autoAnimateRestart`. MarkdownSlides also support `filename` for external markdown files.
+
+## Project Structure
+
+- `kslides-core/` — Core DSL library
+- `kslides-examples/` — Example presentations with main entry point
+- `kslides-letsplot/` — Lets-Plot chart integration module
+
+## Dependencies
+
+Published to [Maven Central](https://central.sonatype.com/namespace/com.kslides) under the `com.kslides` group. Add to your project:
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation("com.kslides:kslides-core:VERSION")
+    // Optional: implementation("com.kslides:kslides-letsplot:VERSION")
+}
+```
+
+## Documentation
+
+- [README](https://github.com/kslides/kslides/blob/master/README.md): Full DSL reference and usage guide
+- [Template repo](https://github.com/kslides/kslides-template): Starting point for new presentations
+- [Live demo (Netlify)](https://kslides.netlify.app): Example presentation output
+- [Live demo (GitHub Pages)](https://kslides.github.io/kslides/): Example presentation output
+- [Example source](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt): Full example presentation code
+- [reveal.js docs](https://revealjs.com): Underlying presentation framework
+- [CHANGELOG](https://github.com/kslides/kslides/blob/master/CHANGELOG.md): Version history

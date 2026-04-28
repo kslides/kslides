@@ -1,22 +1,29 @@
 import com.kslides.*
-import com.kslides.config.PlotlyIframeConfig
+import com.kslides.config.LetsPlotIframeConfig
 import kotlinx.css.*
 import kotlinx.css.Float
 import kotlinx.css.properties.LineHeight
 import kotlinx.html.*
-import space.kscience.dataforge.meta.Value
-import space.kscience.dataforge.meta.asValue
-import space.kscience.dataforge.meta.configure
-import space.kscience.plotly.*
-import space.kscience.plotly.palettes.T10
+import org.jetbrains.letsPlot.geom.geomHistogram
+import org.jetbrains.letsPlot.geom.geomPoint
+import org.jetbrains.letsPlot.geom.geomTile
+import org.jetbrains.letsPlot.label.ggtitle
+import org.jetbrains.letsPlot.label.labs
+import org.jetbrains.letsPlot.letsPlot
+import org.jetbrains.letsPlot.scale.scaleFillGradient
 import kotlin.collections.set
 import kotlin.random.Random
+import kotlin.text.lowercase
+import kotlin.time.Duration.Companion.seconds
+import kotlin.to
 
 fun main() {
   kslides {
     // Optional
     kslidesConfig {
       // kslides configuration options
+      // Use the local kroki server running with docker-compose
+      krokiUrl = "http://localhost:8000"
     }
 
     // Optional
@@ -112,7 +119,7 @@ fun main() {
         copyCodeConfig {}
         playgroundConfig {}
         slideConfig {}
-        plotlyIframeConfig {}
+        letsPlotIframeConfig {}
         diagramConfig {}
       }
 
@@ -275,7 +282,7 @@ fun main() {
         // animated1 begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
+        for (linePattern in "[5,6,9|5-9|]".toLinePatterns()) {
           dslSlide {
             autoAnimate = true
             content {
@@ -291,6 +298,7 @@ fun main() {
               }
             }
           }
+        }
         // animated1 end
 
         slideDefinition(source = slides, token = "animated1")
@@ -300,7 +308,7 @@ fun main() {
         // animated2 begin
         // A for loop generates a series of slides, each with a different set of lines
         // Uses the same line number syntax used by revealjs: https://revealjs.com/code/
-        for (linePattern in "[5,6,9|5-9|]".toLinePatterns())
+        for (linePattern in "[5,6,9|5-9|]".toLinePatterns()) {
           htmlSlide {
             autoAnimate = true
             content {
@@ -318,7 +326,7 @@ fun main() {
               """
             }
           }
-        // animated2 end
+        }        // animated2 end
 
         slideDefinition(source = slides, token = "animated2")
       }
@@ -580,178 +588,154 @@ fun main() {
       }
 
       verticalSlides {
-        // plotly1 begin
+        // letsplot1 begin
         dslSlide {
-          id = "plotly"
+          id = "letsplot"
           content {
-            h2 { +"A plotly-kt Plot" }
-            plotly(
+            h2 { +"A Lets-Plot Scatter Plot" }
+            letsPlot(
               dimensions = 801 by 400,
-              iframeConfig = PlotlyIframeConfig {
+              iframeConfig = LetsPlotIframeConfig {
                 style = "width: 85%; border: 2px solid #586E75;"
                 height = "415px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() },
             ) {
-              layout {
-                title = "A Simple Random Plot"
-                xaxis.title = "x Axis Title"
-                yaxis.title = "y Axis Title"
-              }
-              scatter {
-                x.numbers = 0..400
-                y.numbers = x.numbers.map { Random.nextDouble(10.0) }
-              }
+              val xs = (0..400).toList()
+              val data = mapOf("x" to xs, "y" to xs.map { Random.nextDouble(10.0) })
+              letsPlot(data) +
+                geomPoint { x = "x"; y = "y" } +
+                labs(title = "A Simple Random Plot", x = "x Axis Title", y = "y Axis Title")
             }
           }
         }
-        // plotly1 end
+        // letsplot1 end
 
-        slideDefinition(source = slides, token = "plotly1")
+        slideDefinition(source = slides, token = "letsplot1")
 
-        // plotly2 begin
+        // letsplot2 begin
         dslSlide {
           content {
-            h2 { +"A plotly-kt Histogram" }
-            plotly(
+            h2 { +"A Lets-Plot Histogram" }
+            letsPlot(
               dimensions = 608 by 484,
-              iframeConfig = PlotlyIframeConfig {
+              iframeConfig = LetsPlotIframeConfig {
                 style = "width: 65%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() },
             ) {
-              layout {
-                title = "Horizontal Histogram"
-                bargap = 0.1
-                xaxis {
-                  title = "Count"
-                }
-                yaxis {
-                  title = "Value"
-                  ticklen = 3
-                  tickcolor("#FFF")
-                }
-              }
-
-              histogram {
-                y.set(listOf(1, 2, 2, 3, 2, 1, 4, 4))
-                marker {
-                  colors(listOf(T10.RED, T10.GREEN, T10.ORANGE, T10.BLUE))
-                }
-              }
+              val data = mapOf("value" to listOf(1, 2, 2, 3, 2, 1, 4, 4))
+              letsPlot(data) +
+                geomHistogram(bins = 4, fill = "#268BD2", color = "white") { x = "value" } +
+                labs(title = "Histogram", x = "Value", y = "Count")
             }
           }
         }
-        // plotly2 end
+        // letsplot2 end
 
-        slideDefinition(source = slides, token = "plotly2")
+        slideDefinition(source = slides, token = "letsplot2")
 
-        // plotly3 begin
+        // letsplot3 begin
         dslSlide {
           content {
-            h2 { +"A plotly-kt 3D Surface Plot" }
-
-            plotly(
+            h2 { +"A Lets-Plot Heatmap (from matrix)" }
+            letsPlot(
               dimensions = 503 by 484,
-              iframeConfig = PlotlyIframeConfig {
+              iframeConfig = LetsPlotIframeConfig {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() },
             ) {
-              layout {
-                title = "A 3D Surface Plot"
-              }
-
-              fun l(vararg numbers: Number) = numbers.map { it.asValue() }.asValue()
-
-              trace {
-                z.value = listOf(
-                  l(8.83, 8.89, 8.81, 8.87, 8.9, 8.87),
-                  l(8.89, 8.94, 8.85, 8.94, 8.96, 8.92),
-                  l(8.84, 8.9, 8.82, 8.92, 8.93, 8.91),
-                  l(8.79, 8.85, 8.79, 8.9, 8.94, 8.92),
-                  l(8.79, 8.88, 8.81, 8.9, 8.95, 8.92),
-                  l(8.8, 8.82, 8.78, 8.91, 8.94, 8.92),
-                  l(8.75, 8.78, 8.77, 8.91, 8.95, 8.92),
-                  l(8.8, 8.8, 8.77, 8.91, 8.95, 8.94),
-                  l(8.74, 8.81, 8.76, 8.93, 8.98, 8.99),
-                  l(8.89, 8.99, 8.92, 9.1, 9.13, 9.11),
-                  l(8.97, 8.97, 8.91, 9.09, 9.11, 9.11),
-                  l(9.04, 9.08, 9.05, 9.25, 9.28, 9.27),
-                  l(9, 9.01, 9, 9.2, 9.23, 9.2),
-                  l(8.99, 8.99, 8.98, 9.18, 9.2, 9.19),
-                  l(8.93, 8.97, 8.97, 9.18, 9.2, 9.18),
-                ).asValue()
-                configure {
-                  "type" put "surface"
+              val matrix = listOf(
+                listOf(8.83, 8.89, 8.81, 8.87, 8.90, 8.87),
+                listOf(8.89, 8.94, 8.85, 8.94, 8.96, 8.92),
+                listOf(8.84, 8.90, 8.82, 8.92, 8.93, 8.91),
+                listOf(8.79, 8.85, 8.79, 8.90, 8.94, 8.92),
+                listOf(8.79, 8.88, 8.81, 8.90, 8.95, 8.92),
+                listOf(8.80, 8.82, 8.78, 8.91, 8.94, 8.92),
+                listOf(8.75, 8.78, 8.77, 8.91, 8.95, 8.92),
+                listOf(8.80, 8.80, 8.77, 8.91, 8.95, 8.94),
+                listOf(8.74, 8.81, 8.76, 8.93, 8.98, 8.99),
+                listOf(8.89, 8.99, 8.92, 9.10, 9.13, 9.11),
+                listOf(8.97, 8.97, 8.91, 9.09, 9.11, 9.11),
+                listOf(9.04, 9.08, 9.05, 9.25, 9.28, 9.27),
+                listOf(9.00, 9.01, 9.00, 9.20, 9.23, 9.20),
+                listOf(8.99, 8.99, 8.98, 9.18, 9.20, 9.19),
+                listOf(8.93, 8.97, 8.97, 9.18, 9.20, 9.18),
+              )
+              val xs = mutableListOf<Int>()
+              val ys = mutableListOf<Int>()
+              val zs = mutableListOf<Double>()
+              matrix.forEachIndexed { y, row ->
+                row.forEachIndexed { x, v ->
+                  xs += x; ys += y; zs += v
                 }
               }
+              letsPlot(mapOf("x" to xs, "y" to ys, "z" to zs)) +
+                geomTile { x = "x"; y = "y"; fill = "z" } +
+                scaleFillGradient(low = "#EEE8D5", high = "#DC322F") +
+                ggtitle("Surface Values as a Heatmap")
             }
           }
         }
-        // plotly3 end
+        // letsplot3 end
 
-        slideDefinition(source = slides, token = "plotly3")
+        slideDefinition(source = slides, token = "letsplot3")
 
-        // plotly4 begin
+        // letsplot4 begin
         dslSlide {
           content {
-            h2 { +"A plotly-kt 3D Scatter Plot" }
-            plotly(
+            h2 { +"A Lets-Plot Scatter with Color Encoding" }
+            letsPlot(
               dimensions = 503 by 484,
-              iframeConfig = PlotlyIframeConfig {
+              iframeConfig = LetsPlotIframeConfig {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() },
             ) {
-              layout {
-                title = "A 3D Scatter Plot"
-              }
-              trace {
-                configure {
-                  "type" put "scatter3d"
-                }
-                x(1, 2, 3)
-                y(1, 2, 3)
-                z(1, 2, 3)
-              }
+              val data = mapOf(
+                "x" to listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+                "y" to listOf(2, 3, 5, 4, 6, 8, 7, 9, 11, 10),
+                "category" to listOf("A", "A", "A", "B", "B", "B", "C", "C", "C", "C"),
+              )
+              letsPlot(data) +
+                geomPoint(size = 6.0) { x = "x"; y = "y"; color = "category" } +
+                ggtitle("Categorical Scatter")
             }
           }
         }
-        // plotly4 end
+        // letsplot4 end
 
-        slideDefinition(source = slides, token = "plotly4")
+        slideDefinition(source = slides, token = "letsplot4")
 
-        // plotly5 begin
+        // letsplot5 begin
         dslSlide {
           content {
-            h2 { +"A plotly-kt Heatmap" }
-            plotly(
+            h2 { +"A Lets-Plot Red Heatmap" }
+            letsPlot(
               dimensions = 503 by 484,
-              iframeConfig = PlotlyIframeConfig {
+              iframeConfig = LetsPlotIframeConfig {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
-              plotlyConfig = PlotlyConfig { withEditorButton() },
             ) {
-              layout {
-                title = "Red Heatmap"
+              val xs = mutableListOf<Int>()
+              val ys = mutableListOf<Int>()
+              val zs = mutableListOf<Int>()
+              (1..25).chunked(5).forEachIndexed { row, cells ->
+                cells.forEachIndexed { col, z ->
+                  xs += col + 1; ys += row + 6; zs += z
+                }
               }
-              heatmap {
-                x.set(listOf(1, 2, 3, 4, 5))
-                y.set(listOf(6, 7, 8, 9, 10))
-                z.set((1..25).chunked(5))
-                colorscale = Value.of("Reds")
-              }
+              letsPlot(mapOf("x" to xs, "y" to ys, "z" to zs)) +
+                geomTile { x = "x"; y = "y"; fill = "z" } +
+                scaleFillGradient(low = "#FFFFFF", high = "#DC322F") +
+                ggtitle("Red Heatmap")
             }
           }
         }
-        // plotly5 end
+        // letsplot5 end
 
-        slideDefinition(source = slides, token = "plotly5")
+        slideDefinition(source = slides, token = "letsplot5")
       }
 
       verticalSlides {
@@ -765,8 +749,7 @@ fun main() {
             listOf(1, 2, 0, 3),
             listOf(1, 2, 3, 0),
             listOf(0, 3, 2, 1),
-          )
-          .forEach { items ->
+          ).forEach { items ->
             dslSlide {
               autoAnimate = true
               content {

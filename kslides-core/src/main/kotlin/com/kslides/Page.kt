@@ -1,9 +1,9 @@
 package com.kslides
 
-import com.github.pambrose.common.util.ensureSuffix
-import com.github.pambrose.common.util.isNotNull
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.config.PresentationConfig
+import com.pambrose.common.util.ensureSuffix
+import com.pambrose.common.util.isNotNull
 import kotlinx.html.*
 import kotlinx.html.dom.append
 import kotlinx.html.dom.document
@@ -157,7 +157,8 @@ internal object Page {
       media = "screen"
       rawHtml("\n")
       rawHtml(
-        Page::class.java.classLoader.getResource("slides.css")
+        Page::class.java.classLoader
+          .getResource("slides.css")
           ?.readText()
           ?.lines()
           ?.joinToString("\n") { "\t\t$it" }

@@ -2,164 +2,171 @@ package com.kslides.config
 
 import com.kslides.*
 
+/**
+ * Presentation-level configuration — mirrors the [reveal.js config options](https://revealjs.com/config/)
+ * plus kslides-specific settings for theme, corner links, Google Analytics, and nested
+ * sub-configs ([menuConfig], [copyCodeConfig], [slideConfig], [playgroundConfig],
+ * [letsPlotIframeConfig], [diagramConfig]).
+ *
+ * Configured at three levels that merge in order: global → presentation → slide. The global
+ * instance is seeded with kslides defaults via [assignDefaults]; subsequent presentation- and
+ * slide-level instances only carry overrides and are merged on top.
+ */
+@KSlidesDslMarker
 class PresentationConfig : AbstractConfig() {
-  // The "normal" size of the presentation, aspect ratio will
-  // be preserved when the presentation is scaled to fit different
-  // resolutions. Can be specified using percentage units.
-  var width by ConfigProperty<Any>(revealjsManagedValues) // 960
-  var height by ConfigProperty<Any>(revealjsManagedValues) // 700
+  /**
+   * "Normal" presentation width. Aspect ratio is preserved when scaling to the viewport. May be
+   * an integer (pixels) or a percentage string. reveal.js default: 960.
+   */
+  var width by ConfigProperty<Any>(revealjsManagedValues)
 
-  // Factor of the display size that should remain empty around
-  // the content
-  var margin by ConfigProperty<Float>(revealjsManagedValues) // 0.04
+  /**
+   * "Normal" presentation height. Same notes as [width]. reveal.js default: 700.
+   */
+  var height by ConfigProperty<Any>(revealjsManagedValues)
 
-  // Bounds for smallest/largest possible scale to apply to content
-  var minScale by ConfigProperty<Float>(revealjsManagedValues) // 0.04
-  var maxScale by ConfigProperty<Float>(revealjsManagedValues) // 0.04
+  /** Fraction of the display size left empty around the content. reveal.js default: 0.04. */
+  var margin by ConfigProperty<Float>(revealjsManagedValues)
 
-  // Display presentation control arrows
-  var controls by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Lower bound on the scale factor applied to fit content in the viewport. */
+  var minScale by ConfigProperty<Float>(revealjsManagedValues)
 
-  // Help the user learn the controls by providing hints, for example by
-  // bouncing the down arrow when they first encounter a vertical slide
-  var controlsTutorial by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Upper bound on the scale factor applied to fit content in the viewport. */
+  var maxScale by ConfigProperty<Float>(revealjsManagedValues)
 
-  // Determines where controls appear, "edges" or "bottom-right"
-  var controlsLayout by ConfigProperty<String>(revealjsManagedValues) // 'bottom-right'
+  /** Display the arrow controls for navigation. */
+  var controls by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Visibility rule for backwards navigation arrows; "faded", "hidden"
-  // or "visible"
-  var controlsBackArrows by ConfigProperty<String>(revealjsManagedValues) // 'faded'
+  /**
+   * Help the user learn the controls with hints (e.g. bouncing the down arrow the first time a
+   * vertical stack is encountered).
+   */
+  var controlsTutorial by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Display a presentation progress bar
-  var progress by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Position of the navigation arrows. `"edges"` or `"bottom-right"`. */
+  var controlsLayout by ConfigProperty<String>(revealjsManagedValues)
 
-  // Can be used to limit the contexts in which the slide number appears
-  // - "all":      Always show the slide number
-  // - "print":    Only when printing to PDF
-  // - "speaker":  Only in the speaker view
-  var showSlideNumber by ConfigProperty<String>(revealjsManagedValues) // 'all'
+  /** Visibility of the backwards-navigation arrows. `"faded"`, `"hidden"`, or `"visible"`. */
+  var controlsBackArrows by ConfigProperty<String>(revealjsManagedValues)
 
-  // Use 1 based indexing for # links to match slide number (default is zero based)
-  var hashOneBasedIndex by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /** Display the presentation progress bar. */
+  var progress by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Add the current slide number to the URL hash so that reloading the
-  // page/copying the URL will return you to the same slide
-  var hash by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /**
+   * Context in which the slide number is displayed. `"all"`, `"print"` (PDF only), or
+   * `"speaker"` (speaker view only).
+   */
+  var showSlideNumber by ConfigProperty<String>(revealjsManagedValues)
 
-  // Flags if we should monitor the hash and change slides accordingly
-  var respondToHashChanges by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** When `true`, `#` URL links use 1-based indexing to match the slide number. */
+  var hashOneBasedIndex by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Push each slide change to the browser history.  Implies `hash: true`
-  var history by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /**
+   * When `true`, the current slide is appended to the URL hash so reloading the page or
+   * copying the URL returns the viewer to the same slide.
+   */
+  var hash by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Enable keyboard shortcuts for navigation
-  var keyboard by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** When `true`, reveal.js watches the URL hash and navigates on changes. */
+  var respondToHashChanges by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Optional function that blocks keyboard events when retuning false
-  //
-  // If you set this to 'focused', we will only capture keyboard events
-  // for embdedded decks when they are in focus
-  var keyboardCondition by ConfigProperty<String>(revealjsManagedValues) // null
+  /** Push every slide change into browser history. Implies [hash] = `true`. */
+  var history by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Disables the default reveal.js slide layout (scaling and centering)
-  // so that you can use custom CSS layout
-  var disableLayout by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /** Enable keyboard shortcuts for navigation. */
+  var keyboard by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Enable the slide overview mode
-  var overview by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /**
+   * Optional keyboard-event gate. If set to `"focused"`, embedded decks only receive keyboard
+   * events when they have focus.
+   */
+  var keyboardCondition by ConfigProperty<String>(revealjsManagedValues)
 
-  // Vertical centering of slides
-  var center by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /**
+   * Disable reveal.js's default scaling and centering so that a custom CSS layout can take over.
+   */
+  var disableLayout by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Enables touch navigation on devices with touch input
-  var touch by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Enable the slide overview (keyboard: `o` or `esc`). */
+  var overview by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Loop the presentation
-  var loop by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /** Vertically center slide content. */
+  var center by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Change the presentation direction to be RTL
-  var rtl by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /** Enable touch navigation on touch-capable devices. */
+  var touch by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Changes the behavior of our navigation directions.
-  //
-  // "default"
-  // Left/right arrow keys step between horizontal slides, up/down
-  // arrow keys step between vertical slides. Space key steps through
-  // all slides (both horizontal and vertical).
-  //
-  // "linear"
-  // Removes the up/down arrows. Left/right arrows step through all
-  // slides (both horizontal and vertical).
-  //
-  // "grid"
-  // When this is enabled, stepping left/right from a vertical stack
-  // to an adjacent vertical stack will land you at the same vertical
-  // index.
-  //
-  // Consider a deck with six slides ordered in two vertical stacks:
-  // 1.1    2.1
-  // 1.2    2.2
-  // 1.3    2.3
-  //
-  // If you're on slide 1.3 and navigate right, you will normally move
-  // from 1.3 -> 2.1. If "grid" is used, the same navigation takes you
-  // from 1.3 -> 2.3.
-  var navigationMode by ConfigProperty<String>(revealjsManagedValues) // 'default'
+  /** Loop the presentation back to the first slide after the last. */
+  var loop by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Randomizes the order of slides each time the presentation loads
-  var shuffle by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /** Right-to-left presentation direction. */
+  var rtl by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Turns fragments on and off globally
-  var fragments by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /**
+   * Navigation mode. One of:
+   * - `"default"` — left/right steps horizontal, up/down steps vertical, space steps everything.
+   * - `"linear"` — up/down arrows removed; left/right step through every slide.
+   * - `"grid"` — stepping horizontally between vertical stacks preserves the vertical index.
+   */
+  var navigationMode by ConfigProperty<String>(revealjsManagedValues)
 
-  // Flags whether to include the current fragment in the URL,
-  // so that reloading brings you to the same fragment position
-  var fragmentInURL by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Randomize slide order on each page load. */
+  var shuffle by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Flags if the presentation is running in an embedded mode,
-  // i.e. contained within a limited portion of the screen
-  var embedded by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /** Globally enable/disable fragments. */
+  var fragments by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Flags if we should show a help overlay when the question-mark
-  // key is pressed
-  var help by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Include the current fragment index in the URL so reloads land on the same fragment. */
+  var fragmentInURL by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Flags if it should be possible to pause the presentation (blackout)
-  var pause by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Flag the presentation as running in an embedded (non-full-window) context. */
+  var embedded by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Flags if speaker notes should be visible to all viewers
-  var showNotes by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /** Show a help overlay when the question-mark key is pressed. */
+  var help by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Global override for autolaying embedded media (video/audio/iframe)
-  // - null:   Media will only autoplay if data-autoplay is present
-  // - true:   All media will autoplay, regardless of individual setting
-  // - false:  No media will autoplay, regardless of individual setting
-  var autoPlayMedia by ConfigProperty<Boolean>(revealjsManagedValues) // null
+  /** Allow pausing the presentation (blackout) with the `b` / `.` keys. */
+  var pause by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Global override for preloading lazy-loaded iframes
-  // - null:   Iframes with data-src AND data-preload will be loaded when within
-  //           the viewDistance, iframes with only data-src will be loaded when visible
-  // - true:   All iframes with data-src will be loaded when within the viewDistance
-  // - false:  All iframes with data-src will be loaded only when visible
-  var preloadIframes by ConfigProperty<Boolean>(revealjsManagedValues) // null
+  /** When `true`, speaker notes are rendered inline for all viewers instead of in the speaker view. */
+  var showNotes by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Can be used to globally disable auto-animation
-  var autoAnimate by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /**
+   * Global override for autoplay on embedded media.
+   * - default (unset) — autoplay only when `data-autoplay` is present on the element.
+   * - `true` — every media element autoplays.
+   * - `false` — no media autoplays, regardless of `data-autoplay`.
+   */
+  var autoPlayMedia by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Optionally provide a custom element matcher that will be
-  // used to dictate which elements we can animate between.
-  var autoAnimateMatcher by ConfigProperty<String>(revealjsManagedValues) // null
+  /**
+   * Global override for iframe lazy loading.
+   * - default (unset) — iframes with `data-src` and `data-preload` load within [viewDistance];
+   *   others load when visible.
+   * - `true` — every `data-src` iframe loads within [viewDistance].
+   * - `false` — every `data-src` iframe loads only when visible.
+   */
+  var preloadIframes by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Default settings for our auto-animate transitions, can be
-  // overridden per-slide or per-element via data arguments
-  var autoAnimateEasing by ConfigProperty<String>(revealjsManagedValues) // 'ease'
-  var autoAnimateDuration by ConfigProperty<Float>(revealjsManagedValues) // 1.0
-  var autoAnimateUnmatched by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Globally disable auto-animate transitions. Individual slides can still opt in via `data-auto-animate`. */
+  var autoAnimate by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // CSS properties that can be auto-animated. Position & scale
-  // is matched separately so there's no need to include styles
-  // like top/right/bottom/left, width/height or margin.
+  /** Optional custom element matcher used to decide which elements animate between slides. */
+  var autoAnimateMatcher by ConfigProperty<String>(revealjsManagedValues)
+
+  /** Default CSS easing function for auto-animate transitions. */
+  var autoAnimateEasing by ConfigProperty<String>(revealjsManagedValues)
+
+  /** Default duration (seconds) for auto-animate transitions. */
+  var autoAnimateDuration by ConfigProperty<Float>(revealjsManagedValues)
+
+  /** When `true`, elements not matched by auto-animate fade in/out. */
+  var autoAnimateUnmatched by ConfigProperty<Boolean>(revealjsManagedValues)
+
+  /**
+   * CSS properties auto-animate can transition. Position and scale are handled separately, so
+   * `top`/`left`/`width`/`height`/`margin` are not needed here.
+   */
   var autoAnimateStyles by ConfigProperty<List<String>>(revealjsManagedValues)
   //    var autoAnimateStyles: [
   //    'opacity',
@@ -176,150 +183,209 @@ class PresentationConfig : AbstractConfig() {
   //    'outline-offset'
   //    ],
 
-  // Stop auto-sliding after user input
-  var autoSlideStoppable by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** When `true`, user input halts auto-sliding until the next manual navigation. */
+  var autoSlideStoppable by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Use this method for navigation when auto-sliding (defaults to navigateNext)
-  // var autoSlideMethod: null, // TODO
+  /**
+   * Typical time in seconds spent on each slide. Drives the pacing timer in the speaker view;
+   * has no effect on actual navigation.
+   */
+  var defaultTiming by ConfigProperty<Int>(revealjsManagedValues)
 
-  // Specify the average time in seconds that you think you will spend
-  // presenting each slide. This is used to show a pacing timer in the
-  // speaker view
-  var defaultTiming by ConfigProperty<Int>(revealjsManagedValues) // null
+  /** Enable slide navigation via the mouse wheel. */
+  var mouseWheel by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Enable slide navigation via mouse wheel
-  var mouseWheel by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /**
+   * When `true`, links open in an iframe preview overlay. Individual links can opt out with
+   * `data-preview-link="false"`.
+   */
+  var previewLinks by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Opens links in an iframe preview overlay
-  // Add `data-preview-link` and `data-preview-link="false"` to customise each link
-  // individually
-  var previewLinks by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /** Expose the reveal.js API via `window.postMessage`. */
+  var postMessage by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Exposes the reveal.js API through window.postMessage
-  var postMessage by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Dispatch every reveal.js event to the parent window via `postMessage`. */
+  var postMessageEvents by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Dispatches all reveal.js events to the parent window through postMessage
-  var postMessageEvents by ConfigProperty<Boolean>(revealjsManagedValues) // false
+  /** When `true`, focus the document body on visibility changes so keyboard shortcuts work. */
+  var focusBodyOnPageVisibilityChange by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Focuses body when page changes visibility to ensure keyboard shortcuts work
-  var focusBodyOnPageVisibilityChange by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Default slide-transition style (see [Transition]). */
+  var transition by ConfigProperty<Transition>(revealjsManagedValues)
 
-  // Transition style
-  var transition by ConfigProperty<Transition>(revealjsManagedValues) // 'slide'
+  /** Default slide-transition speed (see [Speed]). */
+  var transitionSpeed by ConfigProperty<Speed>(revealjsManagedValues)
 
-  // Transition speed
-  var transitionSpeed by ConfigProperty<Speed>(revealjsManagedValues) // 'default'
+  /** Default transition style for full-page slide backgrounds. */
+  var backgroundTransition by ConfigProperty<Transition>(revealjsManagedValues)
 
-  // Transition style for full page slide backgrounds
-  var backgroundTransition by ConfigProperty<Transition>(revealjsManagedValues) // 'fade'
+  /** Maximum number of pages a single slide can span when printing to PDF (unlimited by default). */
+  var pdfMaxPagesPerSlide by ConfigProperty<Int>(revealjsManagedValues)
 
-  // The maximum number of pages a single slide can expand onto when printing
-  // to PDF, unlimited by default
-  var pdfMaxPagesPerSlide by ConfigProperty<Int>(revealjsManagedValues) // Number.POSITIVE_INFINITY
+  /** When `true`, each fragment is printed on a separate PDF page. */
+  var pdfSeparateFragments by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Prints each fragment on a separate slide
-  var pdfSeparateFragments by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /**
+   * Pixel offset subtracted from each exported PDF page's content height to avoid clipping in
+   * specific PDF renderers (CLI tools like phantomjs and wkpdf tend to render one pixel differently
+   * from in-browser printing).
+   */
+  var pdfPageHeightOffset by ConfigProperty<Int>(revealjsManagedValues)
 
-  // Offset used to reduce the height of content within exported PDF pages.
-  // This exists to account for environment differences based on how you
-  // print to PDF. CLI printing options, like phantomjs and wkpdf, can end
-  // on precisely the total height of the document whereas in-browser
-  // printing has to end one pixel before.
-  var pdfPageHeightOffset by ConfigProperty<Int>(revealjsManagedValues) // -1
+  /** Number of slides in each direction that remain in the DOM for smooth transitions. */
+  var viewDistance by ConfigProperty<Int>(revealjsManagedValues)
 
-  // Number of slides away from the current that are visible
-  var viewDistance by ConfigProperty<Int>(revealjsManagedValues) // 3
+  /** Like [viewDistance] but for mobile devices; typically lower to conserve resources. */
+  var mobileViewDistance by ConfigProperty<Int>(revealjsManagedValues)
 
-  // Number of slides away from the current that are visible on mobile
-  // devices. It is advisable to set this to a lower number than
-  // viewDistance in order to save resources.
-  var mobileViewDistance by ConfigProperty<Int>(revealjsManagedValues) // 2
+  /** CSS `display` value used when showing slides. */
+  var display by ConfigProperty<String>(revealjsManagedValues)
 
-  // The display mode that will be used to show slides
-  var display by ConfigProperty<String>(revealjsManagedValues) // 'block'
+  /** Hide the mouse cursor when it is inactive. */
+  var hideInactiveCursor by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  // Hide cursor if inactive
-  var hideInactiveCursor by ConfigProperty<Boolean>(revealjsManagedValues) // true
+  /** Milliseconds of inactivity before the cursor is hidden (requires [hideInactiveCursor]). */
+  var hideCursorTime by ConfigProperty<Int>(revealjsManagedValues)
 
-  // Time before the cursor is hidden (in ms)
-  var hideCursorTime by ConfigProperty<Int>(revealjsManagedValues) // 5000
-
-  // These options have default values set within kslides
+  /** Browser tab title. Blank omits the `<title>` element. */
   var title by ConfigProperty<String>(kslidesManagedValues)
+
+  /** reveal.js theme. */
   var theme by ConfigProperty<PresentationTheme>(kslidesManagedValues)
+
+  /** Code-highlighting theme (requires [enableHighlight]). */
   var highlight by ConfigProperty<Highlight>(kslidesManagedValues)
+
+  /** Load the reveal.js speaker-notes plugin. */
   var enableSpeakerNotes by ConfigProperty<Boolean>(kslidesManagedValues)
+
+  /** Load the reveal.js zoom plugin (keyboard: alt+click). */
   var enableZoom by ConfigProperty<Boolean>(kslidesManagedValues)
+
+  /** Load the reveal.js search plugin (keyboard: `ctrl+shift+f`). */
   var enableSearch by ConfigProperty<Boolean>(kslidesManagedValues)
+
+  /** Load the reveal.js Markdown plugin (required for [com.kslides.slide.MarkdownSlide]). */
   var enableMarkdown by ConfigProperty<Boolean>(kslidesManagedValues)
+
+  /** Load the reveal.js highlight.js plugin for syntax-highlighted code blocks. */
   var enableHighlight by ConfigProperty<Boolean>(kslidesManagedValues)
+
+  /** Load the math plugin with KaTeX support. */
   var enableMathKatex by ConfigProperty<Boolean>(kslidesManagedValues)
+
+  /** Load the math plugin with MathJax 2 support. */
   var enableMathJax2 by ConfigProperty<Boolean>(kslidesManagedValues)
+
+  /** Load the math plugin with MathJax 3 support. */
   var enableMathJax3 by ConfigProperty<Boolean>(kslidesManagedValues)
+
+  /** Load the CopyCode plugin (adds a copy button to code blocks). See [CopyCodeConfig]. */
   var enableCodeCopy by ConfigProperty<Boolean>(kslidesManagedValues)
+
+  /** Load the reveal.js-menu plugin. See [MenuConfig]. */
   var enableMenu by ConfigProperty<Boolean>(kslidesManagedValues)
 
+  /** URL for the top-left corner link. Blank hides the corner element. */
   var topLeftHref by ConfigProperty<String>(kslidesManagedValues)
+
+  /** `<a target>` value for the top-left corner link. */
   var topLeftTarget by ConfigProperty<HrefTarget>(kslidesManagedValues)
+
+  /** Tooltip / screen-reader title for the top-left corner link. */
   var topLeftTitle by ConfigProperty<String>(kslidesManagedValues)
+
+  /** Inline SVG rendered inside the top-left corner link. Mutually useful with [topLeftSvgSrc]. */
   var topLeftSvg by ConfigProperty<String>(kslidesManagedValues)
+
+  /** URL of an image to display in the top-left corner link (alternative to [topLeftSvg]). */
   var topLeftSvgSrc by ConfigProperty<String>(kslidesManagedValues)
+
+  /** CSS class on the top-left corner `<img>`/SVG. */
   var topLeftSvgClass by ConfigProperty<String>(kslidesManagedValues)
+
+  /** Inline CSS on the top-left corner `<img>`/SVG. */
   var topLeftSvgStyle by ConfigProperty<String>(kslidesManagedValues)
+
+  /** Text rendered inside the top-left corner link (after any SVG). */
   var topLeftText by ConfigProperty<String>(kslidesManagedValues)
+
+  /** URL for the top-right corner link. Blank hides the corner element. */
   var topRightHref by ConfigProperty<String>(kslidesManagedValues)
+
+  /** `<a target>` value for the top-right corner link. */
   var topRightTarget by ConfigProperty<HrefTarget>(kslidesManagedValues)
+
+  /** Tooltip / screen-reader title for the top-right corner link. */
   var topRightTitle by ConfigProperty<String>(kslidesManagedValues)
+
+  /** Inline SVG rendered inside the top-right corner link. */
   var topRightSvg by ConfigProperty<String>(kslidesManagedValues)
+
+  /** URL of an image for the top-right corner link. */
   var topRightSvgSrc by ConfigProperty<String>(kslidesManagedValues)
+
+  /** CSS class on the top-right corner `<img>`/SVG. */
   var topRightSvgClass by ConfigProperty<String>(kslidesManagedValues)
+
+  /** Inline CSS on the top-right corner `<img>`/SVG. */
   var topRightSvgStyle by ConfigProperty<String>(kslidesManagedValues)
+
+  /** Text rendered inside the top-right corner link (after any SVG). */
   var topRightText by ConfigProperty<String>(kslidesManagedValues)
+
+  /** Google Analytics property id. When non-blank, injects the `gtag.js` loader and config. */
   var gaPropertyId by ConfigProperty<String>(kslidesManagedValues)
 
-  // Controls automatic progression to the next slide
-  // - 0:      Auto-sliding only happens if the data-autoslide HTML attribute
-  //           is present on the current slide or fragment
-  // - 1+:     All slides will progress automatically at the given interval
-  // - false:  No auto-sliding, even if data-autoslide is present
-  var autoSlide by ConfigProperty<Any>(kslidesManagedValues)  // 0
+  /**
+   * Auto-slide behavior.
+   * - `0` — auto-slide only on slides/fragments marked with `data-autoslide`.
+   * - `n > 0` — advance every `n` milliseconds.
+   * - `false` — never auto-slide.
+   */
+  var autoSlide by ConfigProperty<Any>(kslidesManagedValues)
 
-  // Display the page number of the current slide
-  // - true:    Show slide number
-  // - false:   Hide slide number
-  //
-  // Can optionally be set as a string that specifies the number formatting:
-  // - "h.v":   Horizontal . vertical slide number (default)
-  // - "h/v":   Horizontal / vertical slide number
-  // - "c":   Flattened slide number
-  // - "c/t":   Flattened slide number / total slides
-  var slideNumber by ConfigProperty<Any>(kslidesManagedValues) // false
+  /**
+   * Slide-number display.
+   * - `true` — show using the default format.
+   * - `false` — hide.
+   * - Format string — `"h.v"`, `"h/v"`, `"c"`, `"c/t"` (see reveal.js docs).
+   */
+  var slideNumber by ConfigProperty<Any>(kslidesManagedValues)
 
-  // Added in 4.5.0
+  /** Jump-to-slide UI (reveal.js 4.5+). Allows typing a slide number to jump directly. */
   var jumpToSlide by ConfigProperty<Boolean>(kslidesManagedValues)
 
-  // Added in 5.0.0
+  /** Presentation view mode (reveal.js 5.0+): classic deck vs scrolling document. */
   var view by ConfigProperty<ViewType>(kslidesManagedValues)
 
+  /** Scroll-view layout (reveal.js 5.0+). */
   var scrollLayout by ConfigProperty<ScrollLayout>(kslidesManagedValues)
 
-  // - auto:     Show the scrollbar while scrolling, hide while idle
-  // - true:     Always show the scrollbar
-  // - false:    Never show the scrollbar
+  /**
+   * Scroll-progress indicator in scroll view.
+   * - `ScrollProgress.AUTO` — show while scrolling, hide when idle.
+   * - `true` — always show.
+   * - `false` — never show.
+   */
   var scrollProgress by ConfigProperty<Any>(kslidesManagedValues)
 
+  /** Minimum viewport width in pixels before switching to scroll view. */
   var scrollActivationWidth by ConfigProperty<Int>(kslidesManagedValues)
 
-  // - false:      No snapping, scrolling is continuous
-  // - proximity:  Snap when close to a slide
-  // - mandatory:  Always snap to the closest slide
+  /**
+   * Scroll-snap behavior (reveal.js 5.0+).
+   * - `false` — continuous scrolling.
+   * - `ScrollSnap.PROXIMITY` — snap when close to a slide boundary.
+   * - `ScrollSnap.MANDATORY` — always snap to the nearest boundary.
+   */
   var scrollSnap by ConfigProperty<Any>(kslidesManagedValues)
 
   internal val menuConfig = MenuConfig()
   internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
   internal val playgroundConfig = PlaygroundConfig()
-  internal val plotlyIframeConfig = PlotlyIframeConfig()
+  internal val letsPlotIframeConfig = LetsPlotIframeConfig()
   internal val diagramConfig = DiagramConfig()
 
   // Only the global default config is initialized with default values
@@ -377,7 +443,7 @@ class PresentationConfig : AbstractConfig() {
 
     slideConfig.assignDefaults()
     playgroundConfig.assignDefaults()
-    plotlyIframeConfig.assignDefaults()
+    letsPlotIframeConfig.assignDefaults()
     diagramConfig.assignDefaults()
   }
 
@@ -387,25 +453,25 @@ class PresentationConfig : AbstractConfig() {
     this.copyCodeConfig.merge(other.copyCodeConfig)
     this.slideConfig.merge(other.slideConfig)
     this.playgroundConfig.merge(other.playgroundConfig)
-    this.plotlyIframeConfig.merge(other.plotlyIframeConfig)
+    this.letsPlotIframeConfig.merge(other.letsPlotIframeConfig)
     this.diagramConfig.merge(other.diagramConfig)
   }
 
-  @KSlidesDslMarker
+  /** Configure the reveal.js-menu plugin. Only takes effect when [enableMenu] is `true`. */
   fun menuConfig(block: MenuConfig.() -> Unit) = menuConfig.block()
 
-  @KSlidesDslMarker
+  /** Configure the CopyCode plugin. Only takes effect when [enableCodeCopy] is `true`. */
   fun copyCodeConfig(block: CopyCodeConfig.() -> Unit) = copyCodeConfig.block()
 
-  @KSlidesDslMarker
+  /** Configure the default [SlideConfig] values applied to every slide in the scope. */
   fun slideConfig(block: SlideConfig.() -> Unit) = slideConfig.block()
 
-  @KSlidesDslMarker
+  /** Configure defaults for [com.kslides.playground] iframes. */
   fun playgroundConfig(block: PlaygroundConfig.() -> Unit) = playgroundConfig.block()
 
-  @KSlidesDslMarker
-  fun plotlyIframeConfig(block: PlotlyIframeConfig.() -> Unit) = plotlyIframeConfig.block()
+  /** Configure defaults for `letsPlot{}` iframes (from the `kslides-letsplot` module). */
+  fun letsPlotIframeConfig(block: LetsPlotIframeConfig.() -> Unit) = letsPlotIframeConfig.block()
 
-  @KSlidesDslMarker
+  /** Configure defaults for [com.kslides.diagram] Kroki images. */
   fun diagramConfig(block: DiagramConfig.() -> Unit) = diagramConfig.block()
 }

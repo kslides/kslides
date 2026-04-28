@@ -1,7 +1,5 @@
 package com.kslides
 
-import com.github.pambrose.common.response.respondWith
-import com.github.pambrose.common.util.ensureSuffix
 import com.kslides.DiagramOutputType.Companion.outputTypeFromSuffix
 import com.kslides.DiagramOutputType.SVG
 import com.kslides.KSlides.Companion.logger
@@ -11,6 +9,8 @@ import com.kslides.Page.generatePage
 import com.kslides.config.KSlidesConfig
 import com.kslides.config.OutputConfig
 import com.kslides.config.PresentationConfig
+import com.pambrose.common.response.respondWith
+import com.pambrose.common.util.ensureSuffix
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.plugins.*
@@ -26,10 +26,41 @@ import io.ktor.server.routing.*
 import kotlinx.css.CssBuilder
 import java.io.File
 
+/**
+ * Marks receiver types that participate in the kslides DSL so that Kotlin's scope-control can
+ * prevent unintended nesting (e.g. calling `markdownSlide{}` directly from inside another slide's
+ * content block).
+ *
+ * Applied to types rather than functions because `@DslMarker` on functions is a no-op
+ * (see [KT-81567](https://youtrack.jetbrains.com/issue/KT-81567)).
+ */
 @DslMarker
 annotation class KSlidesDslMarker
 
-@KSlidesDslMarker
+/**
+ * Top-level entry point for defining presentations.
+ *
+ * A typical script looks like:
+ *
+ * ```kotlin
+ * kslides {
+ *   output { enableFileSystem = true; enableHttp = false }
+ *   presentation {
+ *     path = "helloworld.html"
+ *     markdownSlide { content { "# Hello" } }
+ *   }
+ * }
+ * ```
+ *
+ * On return, the configured output modes are executed: `enableFileSystem` writes static HTML under
+ * the output directory, and `enableHttp` starts a Ktor server on the configured port. If neither is
+ * enabled, a warning is logged and no slides are emitted.
+ *
+ * @param block configuration block applied to a fresh [KSlides] instance.
+ * @return the populated [KSlides] instance (primarily useful for tests).
+ * @throws IllegalArgumentException if no [KSlides.presentation] blocks are declared, or if any
+ *   presentation contains zero slides.
+ */
 fun kslides(block: KSlides.() -> Unit) =
   KSlides()
     .apply {
@@ -73,8 +104,13 @@ fun kslides(block: KSlides.() -> Unit) =
         runHttpServer(outputConfig, true)
     }
 
-@KSlidesDslMarker
-internal fun kslidesTest(block: KSlides.() -> Unit) =
+/**
+ * Convenience wrapper around [kslides] for tests: evaluates the DSL with both [OutputConfig.enableFileSystem]
+ * and [OutputConfig.enableHttp] forced to `false` so no files are written and no server is started.
+ *
+ * @param block the same configuration block accepted by [kslides].
+ */
+fun kslidesTest(block: KSlides.() -> Unit) =
   kslides {
     block()
     output {
@@ -83,6 +119,17 @@ internal fun kslidesTest(block: KSlides.() -> Unit) =
     }
   }
 
+/**
+ * Root orchestrator for a set of presentations. Instances are not meant to be constructed
+ * directly — use the [kslides] top-level function instead, which applies the DSL block and then
+ * triggers the configured output modes.
+ *
+ * Holds global configuration ([kslidesConfig], [presentationConfig], [output]), shared CSS
+ * ([css]), and the collection of [Presentation] definitions produced by each [presentation]
+ * block. Also caches iframe and Kroki content so repeated lookups from the Ktor server do not
+ * re-execute expensive content generators.
+ */
+@KSlidesDslMarker
 class KSlides {
   internal val kslidesConfig = KSlidesConfig()
   internal val globalPresentationConfig = PresentationConfig().apply { assignDefaults() }
@@ -99,8 +146,9 @@ class KSlides {
 
   internal val presentations get() = presentationMap.values
 
-  internal fun presentation(name: String) =
-    presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
+  internal fun presentation(
+    name: String,
+  ) = presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
   internal val client by lazy {
     HttpClient(io.ktor.client.engine.cio.CIO) {
@@ -108,30 +156,51 @@ class KSlides {
     }
   }
 
-  // User variables
+  /**
+   * Global CSS applied to every [Presentation] in this [KSlides]. Appended to via the [css] DSL
+   * block or via `css += "..."` / `css += { ... }`.
+   */
   val css = CssValue()
 
-  @KSlidesDslMarker
+  /**
+   * Configure values that apply to all presentations (e.g. static asset roots, Playground URL,
+   * Kroki URL, Lets-Plot JS version, HTTP client timeout). The block is evaluated after the full
+   * `kslides {}` DSL so that later `kslidesConfig{}` calls override earlier ones.
+   */
   fun kslidesConfig(block: KSlidesConfig.() -> Unit) {
     kslidesConfigBlock = block
   }
 
-  @KSlidesDslMarker
+  /**
+   * Configure how the presentations are emitted: filesystem mode (`enableFileSystem`), HTTP mode
+   * (`enableHttp`), output directory, HTTP port, etc.
+   */
   fun output(block: OutputConfig.() -> Unit) {
     outputConfigBlock = block
   }
 
-  @KSlidesDslMarker
+  /**
+   * Default [PresentationConfig] applied to every [Presentation]. Per-presentation overrides
+   * take precedence; see the configuration-cascade description in the project README.
+   */
   fun presentationConfig(block: PresentationConfig.() -> Unit) {
     globalPresentationConfigBlock = block
   }
 
-  @KSlidesDslMarker
+  /**
+   * Append CSS (declared via Kotlin's CSS DSL) to the global stylesheet that is injected into
+   * every generated presentation page.
+   */
   fun css(block: CssBuilder.() -> Unit) {
     css += block
   }
 
-  @KSlidesDslMarker
+  /**
+   * Register a [Presentation] definition. Each call adds one entry; the `path` assigned inside
+   * the block determines its URL (HTTP mode) or output filename (filesystem mode).
+   *
+   * At least one `presentation {}` call is required for [kslides] to succeed.
+   */
   fun presentation(block: Presentation.() -> Unit) {
     presentationBlocks += block
   }
@@ -152,8 +221,14 @@ class KSlides {
         .forEach { (key, p) ->
           val (file, srcPrefix) =
             when {
-              key == "/" -> File("$outputDir/index.html") to rootPrefix
-              key.endsWith(".html") -> File("$outputDir/$key") to rootPrefix
+              key == "/" -> {
+                File("$outputDir/index.html") to rootPrefix
+              }
+
+              key.endsWith(".html") -> {
+                File("$outputDir/$key") to rootPrefix
+              }
+
               else -> {
                 val pathElems = "$outputDir/$key".split("/").filter { it.isNotBlank() }
                 val path = pathElems.joinToString("/")
@@ -190,8 +265,8 @@ class KSlides {
           }
 
         routing {
-          // playground, and plotly iframe endpoints
-          listOf(config.playgroundDir, config.plotlyDir)
+          // playground and letsPlot iframe endpoints
+          listOf(config.playgroundDir, config.letsPlotDir)
             .forEach {
               get("$it/{fname}") {
                 respondWith {

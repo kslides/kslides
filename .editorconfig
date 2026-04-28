@@ -8,7 +8,7 @@ insert_final_newline = true
 max_line_length = 120
 trim_trailing_whitespace = true
 
-[build.gradle]
+[*.kts]
 indent_size = 4
 
 [{Makefile, makefile}]
@@ -28,6 +28,9 @@ ktlint_standard_filename = disabled
 ktlint_standard_annotation-spacing = disabled
 ktlint_standard_property-naming = disabled
 ktlint_standard_indent = disabled
+
+[Presentation.kt]
+ktlint_standard_no-consecutive-comments = disabled
 
 [Slides.kt]
 ktlint_standard_statement-wrapping = disabled

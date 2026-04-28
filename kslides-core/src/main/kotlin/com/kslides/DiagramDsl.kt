@@ -1,8 +1,8 @@
 package com.kslides
 
-import com.github.pambrose.common.util.nullIfBlank
 import com.kslides.config.DiagramConfig
 import com.kslides.slide.DslSlide
+import com.pambrose.common.util.nullIfBlank
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -17,6 +17,13 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonObject
 
+/**
+ * Receiver for [diagram] blocks. Extends [DiagramConfig] so you can override size, style, and
+ * output format in the same block that sets [source].
+ *
+ * @property source diagram source text in the language matching the `diagramType` passed to
+ *   [diagram] (e.g. PlantUML, Mermaid, Graphviz DOT).
+ */
 class DiagramDescription : DiagramConfig() {
   var source = ""
 
@@ -25,17 +32,27 @@ class DiagramDescription : DiagramConfig() {
   }
 }
 
-@KSlidesDslMarker
+/**
+ * Embed a [Kroki](https://kroki.io/)-rendered diagram inside a [DslSlide] `content{}` block.
+ * The diagram source is POSTed to Kroki; the resulting image is cached by filename so repeated
+ * renders of the same presentation do not re-hit Kroki.
+ *
+ * @param diagramType Kroki diagram type (case-insensitive) — e.g. `"plantuml"`, `"mermaid"`,
+ *   `"graphviz"`, `"erd"`. See [Kroki's supported types](https://kroki.io/#support).
+ * @param diagramBlock populates a [DiagramDescription] with the diagram source and optional
+ *   [DiagramConfig] overrides (size, style, output format, Kroki options).
+ * @throws IllegalStateException if called outside a [DslSlide] `content{}` block.
+ */
 fun DslSlide.diagram(
   diagramType: String,
   diagramBlock: DiagramDescription.() -> Unit,
 ) {
   val diagram = DiagramDescription().apply(diagramBlock)
   val mergedConfig =
-    DiagramConfig().apply {
-      merge(globalDiagramConfig)
-      merge(presentationDiagramConfig)
-      merge(diagram)
+    DiagramConfig().also { config ->
+      config.merge(globalDiagramConfig)
+      config.merge(presentationDiagramConfig)
+      config.merge(diagram)
     }
 
   val filename = newFilename(mergedConfig.outputType.suffix)
@@ -92,10 +109,13 @@ private fun buildJsonObjectFromMap(desc: Map<String, Any>) =
   buildJsonObject {
     desc.forEach { (k, v) ->
       when (v) {
-        is String -> put(k, JsonPrimitive(v))
+        is String -> {
+          put(k, JsonPrimitive(v))
+        }
+
         is Map<*, *> -> {
           putJsonObject(k) {
-            v.forEach { k, v ->
+            v.forEach { (k, v) ->
               when {
                 k !is String -> error("Invalid key type: $k")
                 v is Boolean -> put(k, JsonPrimitive(v))
@@ -107,7 +127,9 @@ private fun buildJsonObjectFromMap(desc: Map<String, Any>) =
           }
         }
 
-        else -> error("Unexpected value type: ${v::class}")
+        else -> {
+          error("Unexpected value type: ${v::class}")
+        }
       }
     }
   }

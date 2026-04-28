@@ -8,8 +8,15 @@ import kotlinx.html.*
 import kotlinx.html.dom.append
 import kotlinx.html.dom.document
 import kotlinx.html.dom.serialize
-import kotlin.collections.set
 
+/**
+ * Renderer for Kotlin Playground iframe documents. Builds a self-contained HTML page that boots
+ * the Kotlin Playground script (per [com.kslides.config.KSlidesConfig.playgroundUrl]) against a
+ * primary source file plus optional dependency files, applying the supplied CSS to the page head.
+ *
+ * The single rendering helper is `internal`; consumers reach this functionality through the
+ * [com.kslides.playground] DSL function rather than calling here directly.
+ */
 object Playground {
   private val logger = KotlinLogging.logger {}
 

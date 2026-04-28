@@ -2,7 +2,7 @@ import com.kslides.Presentation
 import com.kslides.PresentationTheme
 import com.kslides.VerticalSlidesContext
 import com.kslides.kslides
-import kotlinx.html.*
+import kotlinx.html.h1
 
 fun main() {
   kslides {
