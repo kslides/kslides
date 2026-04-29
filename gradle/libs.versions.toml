@@ -1,7 +1,7 @@
 [versions]
 common-utils = "2.8.1"
 commons-text = "1.15.0"
-css = "2026.4.13"
+css = "2026.4.14"
 dokka = "2.2.0"
 gradle-plugins = "1.0.14"
 junit4 = "4.13.2"

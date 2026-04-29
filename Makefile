@@ -75,4 +75,4 @@ publish-maven-central:
 	$(GPG_ENV) ./gradlew publishAndReleaseToMavenCentral
 
 upgrade-wrapper:
-	./gradlew wrapper --gradle-version=9.4.1 --distribution-type=bin
+	./gradlew wrapper --gradle-version=9.5.0 --distribution-type=bin
