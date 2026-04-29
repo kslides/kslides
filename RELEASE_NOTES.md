@@ -6,7 +6,41 @@ structured, category-grouped log.
 
 ---
 
-## 0.25.0 — 2026-04-21 _(branch `0.25.0`, not yet tagged)_
+## Unreleased
+
+### Build / tooling
+
+- Gradle wrapper upgraded from 9.4.1 to 9.5.0.
+- `kotlin-css` bumped to `2026.4.14`.
+- Removed duplicate Makefile targets and unused plugin entries from
+  `gradle/libs.versions.toml` (dokka, kotlin-jvm, maven-publish, and
+  the `pambrose-*` convention plugins are now applied via `buildSrc`
+  precompiled scripts and don't need version-catalog entries).
+
+### Documentation
+
+- New [Zensical](https://zensical.org/) documentation site under
+  `website/kslides/`, with dark mode as the default and a curated
+  navigation (Getting started, Slides, Configuration, Output, Styling,
+  Include, Extensions, Markdown reference, KDocs). Code examples live
+  in `kslides-core/src/test/kotlin/website/` and are pulled into the
+  markdown via `pymdownx.snippets`, so the docs and the compilable
+  sources stay in sync.
+- New `.github/workflows/docs.yml` builds the Dokka HTML output and
+  the Zensical site, then publishes both (site + `api-docs/`) to
+  GitHub Pages.
+- Drive-by: `kslides-core` promotes `srcref` from `implementation` to
+  `api`; `Makefile` gains `clean-docs` / `site` targets; `.gitignore`
+  covers Python + Zensical output.
+
+---
+
+## 1.0.0 — 2026-04-XX
+
+First stable release. The project graduates from `0.x` after a
+ground-up modernization of the build, the chart-embedding
+integration, and the test/CI story. See PR
+[#32](https://github.com/kslides/kslides/pull/32).
 
 ### Highlights
 
@@ -71,12 +105,20 @@ to work unchanged.
 
 - Build scripts fully migrated from Groovy DSL to Kotlin DSL
   (`*.gradle.kts`).
+- Shared build logic centralized in `buildSrc/` precompiled-script
+  convention plugins (`kslides.kotlin-module`,
+  `kslides.published-module`).
 - Gradle wrapper bumped to 9.4.1.
-- Kotlin 2.3.20, Ktor 3.4.2, Kotest 6.1.11.
+- Kotlin 2.3.20+, Ktor 3.4.x, Kotest 6.x.
 - Dependency versions centralized in `gradle/libs.versions.toml`.
 - New GitHub Actions CI (`.github/workflows/ci.yml`) runs
   `./gradlew build` on every PR and every push to `master`; failing
   runs upload a `test-reports` artifact.
+- Publishing migrated to the
+  [vanniktech maven-publish](https://github.com/vanniktech/gradle-maven-publish-plugin)
+  plugin. Group ID is now `com.kslides` (Maven Central), replacing
+  the old JitPack `com.github.kslides`.
+- Dokka 2.x configured for HTML API docs.
 
 #### Test coverage
 
@@ -87,7 +129,8 @@ to work unchanged.
 - New suites in `kslides-letsplot`: `LetsPlotTest` (renderer unit
   tests against `PlotHtmlExport`) and `LetsPlotDslTest` (full DSL →
   filesystem integration, writing to a temp `outputDir`).
-- Existing tests converted to the `StringSpec() + init { ... }` style.
+- Existing tests converted to the `StringSpec() + init { ... }`
+  style.
 
 ### Breaking changes
 
@@ -99,6 +142,8 @@ to work unchanged.
   `docs/plotly/` → `docs/letsPlot/`.
 - `DslSlide.plotlyFilename()`, `globalPlotlyConfig`,
   `presentationPlotlyConfig` → `letsPlot`-prefixed equivalents.
+- Maven coordinates change from `com.github.kslides:*` (JitPack) to
+  `com.kslides:*` (Maven Central).
 - Newly-enforced DSL scope may require `this@Presentation.`
   qualifiers in downstream code — see "Stricter DSL scope" above.
 
@@ -130,11 +175,11 @@ Gradle:
 implementation("com.github.kslides:kslides-plotly:0.24.0")
 
 // After
-implementation("com.kslides:kslides-letsplot:0.25.0")
+implementation("com.kslides:kslides-letsplot:1.0.0")
 ```
 
 Full diff:
-[`0.24.0...0.25.0`](https://github.com/kslides/kslides/compare/0.24.0...0.25.0).
+[`0.24.0...1.0.0`](https://github.com/kslides/kslides/compare/0.24.0...1.0.0).
 
 ---
 
@@ -298,7 +343,7 @@ demo. Fixed a theme-path issue.
 First Plotly integration — `plotly { ... }` DSL for embedding
 plotly-kt charts
 ([#8](https://github.com/kslides/kslides/pull/8)). _(Deprecated
-and removed in 0.25.0 in favor of Lets-Plot.)_
+and removed in 1.0.0 in favor of Lets-Plot.)_
 
 ## 0.9.0 — 2022-05-14
 
@@ -402,7 +447,7 @@ Added support for a global CSS value.
 ## 0.7.1 — 2022-04-07
 
 Changed group ID to `com.github.kslides` (now `com.kslides` as of
-0.25.0). Fixed a test break.
+1.0.0). Fixed a test break.
 
 ## 0.7.0 — 2022-04-05
 

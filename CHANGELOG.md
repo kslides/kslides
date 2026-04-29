@@ -5,9 +5,45 @@ All notable changes to kslides are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Entries for releases prior to 0.25.0 are reconstructed from the git history.
+Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
-## [Unreleased] — 0.25.0
+## [Unreleased]
+
+### Added
+
+- Zensical-based documentation site under `website/kslides/` with
+  dark mode as the default and curated navigation. Code examples
+  live in `kslides-core/src/test/kotlin/website/` and are pulled
+  into the markdown via `pymdownx.snippets` so the docs and the
+  compilable sources stay in sync
+  ([#33](https://github.com/kslides/kslides/pull/33)).
+- `.github/workflows/docs.yml` — GitHub Actions docs workflow that
+  generates Dokka HTML, runs the Zensical build, and publishes both
+  the site and `api-docs/` to GitHub Pages.
+- `Makefile`: `clean-docs`, `kdocs`, `site`, `serve` targets for the
+  documentation site.
+- `.gitignore` entries for Python and Zensical output.
+
+### Changed
+
+- Gradle wrapper upgraded from 9.4.1 to 9.5.0.
+- `kotlin-css` bumped to `2026.4.14`.
+- `kslides-core` promotes the `srcref` dependency from
+  `implementation` to `api`.
+
+### Removed
+
+- Duplicate Makefile targets.
+- Unused plugin entries from `gradle/libs.versions.toml`
+  (`dokka`, `kotlin-jvm`, `maven-publish`, and the `pambrose-*`
+  convention plugins) — these are applied via `buildSrc` precompiled
+  scripts and don't need version-catalog entries.
+
+## [1.0.0] — 2026-04-XX
+
+First stable release. Ground-up modernization of the build, the
+chart-embedding integration, and the test/CI story
+([#32](https://github.com/kslides/kslides/pull/32)).
 
 ### Added
 
@@ -15,13 +51,18 @@ Entries for releases prior to 0.25.0 are reconstructed from the git history.
   [Lets-Plot](https://lets-plot.org/kotlin/) figures via iframe,
   backed by `org.jetbrains.lets-plot:lets-plot-kotlin-jvm:4.13.0`.
 - `KSlidesConfig.letsPlotJsVersion` (default `"4.9.0"`) controls the
-  Lets-Plot JS runtime CDN version without requiring a library release.
+  Lets-Plot JS runtime CDN version without requiring a library
+  release.
 - `LetsPlotIframeConfig` with the same three-level cascade
   (global → presentation → per-call) that `PlotlyIframeConfig` had.
 - GitHub Actions CI workflow (`.github/workflows/ci.yml`) runs
   `./gradlew build` on every pull request and every push to `master`,
   with Gradle build/dependency caching and test-report uploads on
   failure.
+- `buildSrc/` precompiled-script convention plugins
+  (`kslides.kotlin-module`, `kslides.published-module`) centralize
+  Kotlin/Dokka/Kotlinter/publishing config.
+- Dokka 2.x HTML API documentation.
 - `kslides-core` test coverage: `ConfigsTest`, `OutputConfigTest`,
   `CssValueTest`, `DiagramOutputTypeTest`, `EnumsTest`,
   `UtilFunctionsTest`, `ConfigPropertyTest`, `RecordIframeContentTest`.
@@ -46,6 +87,11 @@ Entries for releases prior to 0.25.0 are reconstructed from the git history.
   and `OutputConfig.plotlyPath` renamed to the `letsPlot`-prefixed
   equivalents. `OutputConfig.letsPlotDir` defaults to `letsPlot` and
   the filesystem output directory is now `docs/letsPlot/`.
+- **BREAKING**: Maven coordinates change from `com.github.kslides:*`
+  (JitPack) to `com.kslides:*` (Maven Central). Publishing migrated
+  to the
+  [vanniktech maven-publish](https://github.com/vanniktech/gradle-maven-publish-plugin)
+  plugin.
 - `@KSlidesDslMarker` applied to the DSL receiver *types* rather
   than to function declarations (a no-op per
   [KT-81567](https://youtrack.jetbrains.com/issue/KT-81567)). Scope
@@ -59,7 +105,7 @@ Entries for releases prior to 0.25.0 are reconstructed from the git history.
   `StringSpec() { init { ... } }` style.
 - Build scripts migrated from Groovy DSL to Kotlin DSL
   (`*.gradle.kts`). Gradle wrapper bumped to 9.4.1.
-- Kotlin bumped to 2.3.20; Ktor to 3.4.2; Kotest to 6.1.11.
+- Kotlin bumped to 2.3.x; Ktor to 3.4.x; Kotest to 6.x.
 - README, `llms.txt`, and `CLAUDE.md` rewritten.
 
 ### Removed
@@ -308,6 +354,7 @@ Entries for releases prior to 0.25.0 are reconstructed from the git history.
 
 - Plotly integration (`plotly { ... }` DSL)
   ([#8](https://github.com/kslides/kslides/pull/8)).
+  _(Removed in 1.0.0 in favor of Lets-Plot.)_
 
 ## [0.9.0] — 2022-05-14
 
@@ -470,7 +517,7 @@ Entries for releases prior to 0.25.0 are reconstructed from the git history.
 ### Changed
 
 - Group ID changed to `com.github.kslides` (now `com.kslides` as of
-  0.25.0).
+  1.0.0).
 
 ### Fixed
 
@@ -621,7 +668,8 @@ Entries for releases prior to 0.25.0 are reconstructed from the git history.
   filesystem and Ktor-server output modes, and configurable
   per-slide / per-presentation overrides.
 
-[Unreleased]: https://github.com/kslides/kslides/compare/0.24.0...HEAD
+[Unreleased]: https://github.com/kslides/kslides/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/kslides/kslides/compare/0.24.0...1.0.0
 [0.24.0]: https://github.com/kslides/kslides/releases/tag/0.24.0
 [0.23.0]: https://github.com/kslides/kslides/releases/tag/0.23.0
 [0.22.0]: https://github.com/kslides/kslides/releases/tag/0.22.0
