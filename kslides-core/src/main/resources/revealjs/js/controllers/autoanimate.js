@@ -1,5 +1,4 @@
-import {closest, createStyleSheet, extend, matches, queryAll} from '../utils/util.js'
-import {FRAGMENT_STYLE_REGEX} from '../utils/constants.js'
+import { queryAll, extend, createStyleSheet, matches, closest } from '../utils/util'
 
 // Counter used to generate unique IDs for auto-animated elements
 let autoAnimateCounter = 0;
@@ -38,7 +37,7 @@ export default class AutoAnimate {
 		// 3. data-auto-animate-restart isn't set on the physically latter
 		//    slide (independent of slide direction).
 		if( fromSlide && toSlide && fromSlide.hasAttribute( 'data-auto-animate' ) && toSlide.hasAttribute( 'data-auto-animate' )
-				&& fromSlide.getAttribute( 'data-auto-animate-id' ) === toSlide.getAttribute( 'data-auto-animate-id' )
+				&& fromSlide.getAttribute( 'data-auto-animate-id' ) === toSlide.getAttribute( 'data-auto-animate-id' ) 
 				&& !( toSlideIndex > fromSlideIndex ? toSlide : fromSlide ).hasAttribute( 'data-auto-animate-restart' ) ) {
 
 			// Create a new auto-animate sheet
@@ -178,27 +177,11 @@ export default class AutoAnimate {
 		let fromProps = this.getAutoAnimatableProperties( 'from', from, elementOptions ),
 			toProps = this.getAutoAnimatableProperties( 'to', to, elementOptions );
 
-		// Maintain fragment visibility for matching elements when
-		// we're navigating forwards, this way the viewer won't need
-		// to step through the same fragments twice
 		if( to.classList.contains( 'fragment' ) ) {
 
 			// Don't auto-animate the opacity of fragments to avoid
 			// conflicts with fragment animations
 			delete toProps.styles['opacity'];
-
-			if( from.classList.contains( 'fragment' ) ) {
-
-				let fromFragmentStyle = ( from.className.match( FRAGMENT_STYLE_REGEX ) || [''] )[0];
-				let toFragmentStyle = ( to.className.match( FRAGMENT_STYLE_REGEX ) || [''] )[0];
-
-				// Only skip the fragment if the fragment animation style
-				// remains unchanged
-				if( fromFragmentStyle === toFragmentStyle && animationOptions.slideDirection === 'forward' ) {
-					to.classList.add( 'visible', 'disabled' );
-				}
-
-			}
 
 		}
 
@@ -471,7 +454,7 @@ export default class AutoAnimate {
 
 		// Text
 		this.findAutoAnimateMatches( pairs, fromSlide, toSlide, textNodes, node => {
-			return node.nodeName + ':::' + node.innerText;
+			return node.nodeName + ':::' + node.textContent.trim();
 		} );
 
 		// Media
@@ -481,7 +464,7 @@ export default class AutoAnimate {
 
 		// Code
 		this.findAutoAnimateMatches( pairs, fromSlide, toSlide, codeNodes, node => {
-			return node.nodeName + ':::' + node.innerText;
+			return node.nodeName + ':::' + node.textContent.trim();
 		} );
 
 		pairs.forEach( pair => {

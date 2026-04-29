@@ -44,6 +44,9 @@ stage:
 tree:
 	./gradlew -q dependencies
 
+process-resources:
+	./gradlew :kslides-core:processResources
+
 versioncheck:
 	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
 
