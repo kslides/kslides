@@ -41,12 +41,6 @@ dist:
 stage:
 	./gradlew stage
 
-dokka:
-	./gradlew dokkaGenerate
-
-clean-docs:
-	rm -rf docs/playground docs/letsPlot docs/kroki
-
 tree:
 	./gradlew -q dependencies
 
@@ -57,8 +51,8 @@ kdocs:
 	./gradlew :dokkaGenerate
 
 clean-docs:
-	rm -rf website/kslides/site
-	rm -rf website/kslides/.cache
+	rm -rf docs/playground docs/letsPlot docs/kroki
+	rm -rf website/kslides/site website/kslides/.cache
 
 site: clean-docs
 	cd website/kslides && uv run zensical serve
