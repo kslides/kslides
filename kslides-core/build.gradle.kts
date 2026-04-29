@@ -19,3 +19,11 @@ dependencies {
     implementation(libs.commons.text)
     implementation(libs.kotlin.logging)
 }
+
+// Single source of truth for reveal.js assets: docs/revealjs/ (committed for GitHub Pages).
+// Copy them onto the classpath at revealjs/** so the JAR ships them for the Ktor static handler.
+tasks.processResources {
+    from(rootProject.layout.projectDirectory.dir("docs/revealjs")) {
+        into("revealjs")
+    }
+}

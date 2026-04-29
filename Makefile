@@ -41,14 +41,11 @@ dist:
 stage:
 	./gradlew stage
 
-dokka:
-	./gradlew dokkaGenerate
-
-clean-docs:
-	rm -rf docs/playground docs/letsPlot docs/kroki
-
 tree:
 	./gradlew -q dependencies
+
+process-resources:
+	./gradlew :kslides-core:processResources
 
 versioncheck:
 	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
@@ -57,8 +54,8 @@ kdocs:
 	./gradlew :dokkaGenerate
 
 clean-docs:
-	rm -rf website/kslides/site
-	rm -rf website/kslides/.cache
+	rm -rf docs/playground docs/letsPlot docs/kroki
+	rm -rf website/kslides/site website/kslides/.cache
 
 site: clean-docs
 	cd website/kslides && uv run zensical serve
@@ -81,4 +78,4 @@ publish-maven-central:
 	$(GPG_ENV) ./gradlew publishAndReleaseToMavenCentral
 
 upgrade-wrapper:
-	./gradlew wrapper --gradle-version=9.4.1 --distribution-type=bin
+	./gradlew wrapper --gradle-version=9.5.0 --distribution-type=bin

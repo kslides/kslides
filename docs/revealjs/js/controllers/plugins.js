@@ -1,4 +1,4 @@
-import {loadScript} from '../utils/loader.js'
+import { loadScript } from '../utils/loader'
 
 /**
  * Manages loading and registering of reveal.js plugins.
@@ -206,7 +206,6 @@ export default class Plugins {
 		else {
 			console.warn( 'reveal.js: "'+ id +'" plugin has already been registered' );
 		}
-
 	}
 
 	/**

@@ -1,4 +1,7 @@
-import {SLIDE_NUMBER_FORMAT_CURRENT, SLIDE_NUMBER_FORMAT_CURRENT_SLASH_TOTAL} from "../utils/constants";
+import {
+	SLIDE_NUMBER_FORMAT_CURRENT,
+	SLIDE_NUMBER_FORMAT_CURRENT_SLASH_TOTAL
+} from "../utils/constants";
 
 /**
  * Makes it possible to jump to a slide by entering its
@@ -71,7 +74,7 @@ export default class JumpToSlide {
 		let query = this.jumpInput.value.trim( '' );
 		let indices;
 
-		// When slide numbers are formatted to be a single linear mumber
+		// When slide numbers are formatted to be a single linear number
 		// (instead of showing a separate horizontal/vertical index) we
 		// use the same format for slide jumps
 		if( /^\d+$/.test( query ) ) {
