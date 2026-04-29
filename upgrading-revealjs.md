@@ -2,19 +2,16 @@
 
 ## kslides Repository
 
-The reveal.js sources are located in `docs/revealjs` and `kslides-core/src/main/resources/revealjs`.
-One dir is for static slides and the other is for slides served via HTTP.
+The reveal.js sources are located in `docs/revealjs`.
 
-The upgrade steps for both are:
+The upgrade steps for it are:
 
 * Rename the `docs/revealjs` dir to `docs/revealjs-old`.
-* Download the latest version of Reveal.js from [GitHub](https://github.com/hakimel/reveal.js/releases).
+* Clone and install the latest version of Reveal.js from [GitHub](https://github.com/hakimel/reveal.js/).
 * Create a new docs/revealjs dir.
-* Copy the new `examples/assets`, `css`, `dist`, `js``, and `plugin` dirs to `docs/revealjs`.
+* Copy the new `examples/assets`, `css`, `dist`, `js`, and `plugin` dirs to `docs/revealjs`.
 * Copy the `docs/revealjs-old/plugin/copycode` and `docs/revealjs-old/plugin/menu` dirs to `docs/revealjs/plugin`.
 * Delete the `docs/revealjs-old` dir.
-* Delete the `kslides-core/src/main/resources/revealjs` dir.
-* Copy the `docs/revealjs` dir to `kslides-core/src/main/resources/revealjs`.
 
 ## kslides-template Repository
 
