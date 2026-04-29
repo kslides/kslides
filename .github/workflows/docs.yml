@@ -39,6 +39,11 @@ jobs:
         run: |
           mkdir -p website/kslides/site/api-docs
           cp -R build/dokka/html/. website/kslides/site/api-docs/
+      - name: Copy example slides into the published site
+        working-directory: ${{ github.workspace }}
+        run: |
+          mkdir -p website/kslides/site/docs
+          cp -R docs/. website/kslides/site/docs/
       - uses: actions/upload-pages-artifact@v5
         with:
           path: website/kslides/site
