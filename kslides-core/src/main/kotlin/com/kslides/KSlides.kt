@@ -25,6 +25,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.css.CssBuilder
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Marks receiver types that participate in the kslides DSL so that Kotlin's scope-control can
@@ -113,7 +114,9 @@ fun kslides(block: KSlides.() -> Unit) =
 fun kslidesTest(block: KSlides.() -> Unit) =
   kslides {
     block()
+    val userOutputBlock = outputConfigBlock
     output {
+      userOutputBlock()
       enableFileSystem = false
       enableHttp = false
     }
@@ -139,9 +142,9 @@ class KSlides {
   internal var outputConfigBlock: OutputConfig.() -> Unit = {}
   internal var presentationBlocks = mutableListOf<Presentation.() -> Unit>()
   internal val presentationMap = mutableMapOf<String, Presentation>()
-  internal val staticIframeContent = mutableMapOf<String, String>()
-  internal val dynamicIframeContent = mutableMapOf<String, () -> String>()
-  internal val staticKrokiContent = mutableMapOf<String, ByteArray>()
+  internal val staticIframeContent = ConcurrentHashMap<String, String>()
+  internal val dynamicIframeContent = ConcurrentHashMap<String, () -> String>()
+  internal val staticKrokiContent = ConcurrentHashMap<String, ByteArray>()
   internal var slideCount = 1
 
   internal val presentations get() = presentationMap.values

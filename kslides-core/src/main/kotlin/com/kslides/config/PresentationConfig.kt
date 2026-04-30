@@ -421,7 +421,7 @@ class PresentationConfig : AbstractConfig() {
     // Doesn't appear when href is assigned an empty string
     topRightHref = ""
     topRightTarget = HrefTarget.SELF
-    topLeftTitle = ""
+    topRightTitle = ""
     topRightSvg = ""
     topRightSvgSrc = ""
     topRightSvgClass = "top-right-svg"
