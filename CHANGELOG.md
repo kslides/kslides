@@ -117,6 +117,18 @@ chart-embedding integration, and the test/CI story
   surfaced when an internal DSL qualifier resolved to the wrong
   `markdownSlide` overload and appended to the top-level `slides`
   list while it was being iterated.
+- `PresentationConfig.assignDefaults` now initializes `topRightTitle`
+  (it was overwriting `topLeftTitle`), so reads of `topRightTitle`
+  no longer throw.
+- `kslidesTest { }` now replays the user-supplied `output { }` block
+  before forcing `enableFileSystem` / `enableHttp` to false, so user
+  settings such as `outputDir` are preserved in tests.
+- `include()` validates `"../"` before `runCatching`, so the
+  documented `IllegalArgumentException` actually propagates instead
+  of being silently demoted to an empty string.
+- `KSlides` iframe / Kroki content maps switched to
+  `ConcurrentHashMap` so Ktor handler reads are safe alongside
+  DSL-time writes.
 
 ## [0.24.0] — 2024-12-11
 
