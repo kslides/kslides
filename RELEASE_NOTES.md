@@ -127,6 +127,25 @@ to work unchanged.
 - Existing tests converted to the `StringSpec() + init { ... }`
   style.
 
+### Bug fixes
+
+- `PresentationConfig.assignDefaults` now initializes
+  `topRightTitle` (it was overwriting `topLeftTitle`), so reads of
+  `topRightTitle` no longer throw.
+- `kslidesTest { }` replays the user-supplied `output { }` block
+  before forcing `enableFileSystem` / `enableHttp` to false, so
+  settings like `outputDir` are preserved in tests.
+- `include()` validates `"../"` before `runCatching`, so the
+  documented `IllegalArgumentException` propagates instead of being
+  silently demoted to an empty string.
+- `KSlides` iframe / Kroki content maps switched to
+  `ConcurrentHashMap` so Ktor handler reads are safe alongside
+  DSL-time writes.
+- Fixed a `ConcurrentModificationException` during filesystem
+  rendering that surfaced when an internal DSL qualifier resolved
+  to the wrong `markdownSlide` overload and appended to the
+  top-level `slides` list while it was being iterated.
+
 ### Breaking changes
 
 - `plotly { ... }` → `letsPlot { ... }` (different plot API shape).

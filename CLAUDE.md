@@ -50,6 +50,12 @@ The `publish-snapshot` and `publish-maven-central` targets sign via `GPG_ENV`, w
 
 `.github/workflows/ci.yml` runs on PRs to `master` and on pushes to `master`. Expect green CI before merging.
 
+`.github/workflows/docs.yml` builds the Zensical docs site under `website/kslides/` plus the Dokka HTML and publishes them to GitHub Pages. The published layout is: root → Zensical site, `/api-docs/` → Dokka HTML, `/docs/` → example slides.
+
+### Releasing
+
+The first stable release is `1.0.0` (tag `1.0.0`, GitHub release `v1.0.0`, published to Maven Central as `com.kslides:kslides-core` and `com.kslides:kslides-letsplot`). To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md` and `RELEASE_NOTES.md`, run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
+
 ## Module Structure
 
 Three Gradle modules defined in `settings.gradle.kts`:
@@ -118,7 +124,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
 - Lets-Plot Kotlin 4.13.0 for the `letsPlot{}` DSL (matched JS runtime v4.9.0, configurable via `KSlidesConfig.letsPlotJsVersion`)
 - Kotlinter for linting (ktlint-based)
-- reveal.js embedded in `kslides-core/src/main/resources/revealjs/`
+- reveal.js assets live at the repo root in `docs/revealjs/` (single source of truth, committed for GitHub Pages). `kslides-core/build.gradle.kts` grafts them onto the published JAR's classpath at `revealjs/**` via `processResources` so the Ktor static handler can serve them at runtime — there is no checked-in `kslides-core/src/main/resources/revealjs/` directory.
 - Dependency versions centralized in `gradle/libs.versions.toml`
 
 ## Important Notes
