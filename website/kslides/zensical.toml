@@ -37,6 +37,10 @@ copyright = """
 Copyright &copy; 2026 Paul Ambrose
 """
 
+repo_url = "https://github.com/kslides/kslides"
+repo_name = "kslides/kslides"
+edit_uri = "edit/master/website/kslides/docs/"
+
 # Zensical supports both implicit navigation and explicitly defined navigation.
 # If you decide not to define a navigation here then Zensical will simply
 # derive the navigation structure from the directory structure of your
@@ -46,6 +50,7 @@ Copyright &copy; 2026 Paul Ambrose
 # Read more: https://zensical.org/docs/setup/navigation/
 nav = [
   { "Get started" = "index.md" },
+  { "📽️ Example Slides" = "docs/index.html" },
   { "Installation" = "installation.md" },
   { "Quickstart" = "quickstart.md" },
   { "Slides" = [
@@ -142,13 +147,13 @@ features = [
     # will generate an edit button for the page. This works for common
     # repository hosting services.
     # https://zensical.org/docs/setup/repository/#content-actions
-    #"content.action.edit",
+    "content.action.edit",
 
     # If you have a repository configured and turn on this feature, Zensical
     # will generate a button that allows the user to view the Markdown
     # code for the current page.
     # https://zensical.org/docs/setup/repository/#content-actions
-    #"content.action.view",
+    "content.action.view",
 
     # Code annotations allow you to add an icon with a tooltip to your
     # code blocks to provide explanations at crucial points.
@@ -184,7 +189,7 @@ features = [
     # With this feature enabled, Zensical will automatically hide parts
     # of the header when the user scrolls past a certain point.
     # https://zensical.org/docs/setup/header/#automatic-hiding
-    # "header.autohide",
+    "header.autohide",
 
     # Turn on this feature to expand all collapsible sections in the
     # navigation sidebar by default.
@@ -215,7 +220,7 @@ features = [
     # In order to provide a better user experience on slow connections when
     # using instant navigation, a progress indicator can be enabled.
     # https://zensical.org/docs/setup/navigation/#progress-indicator
-    #"navigation.instant.progress",
+    "navigation.instant.progress",
 
     # When navigation paths are activated, a breadcrumb navigation is rendered
     # above the title of each page
@@ -261,7 +266,7 @@ features = [
     # When anchor following for the table of contents is enabled, the sidebar
     # is automatically scrolled so that the active anchor is always visible.
     # https://zensical.org/docs/setup/navigation/#anchor-following
-    # "toc.follow",
+    "toc.follow",
 
     # When navigation integration for the table of contents is enabled, it is
     # always rendered as part of the navigation sidebar on the left.

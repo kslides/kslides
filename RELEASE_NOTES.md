@@ -172,7 +172,7 @@ Gradle:
 
 ```kotlin
 // Before
-implementation("com.github.kslides:kslides-plotly:0.24.0")
+implementation("com.kslides:kslides-plotly:0.24.0")
 
 // After
 implementation("com.kslides:kslides-letsplot:1.0.0")

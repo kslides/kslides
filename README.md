@@ -6,20 +6,19 @@
 [![Dokka](https://github.com/kslides/kslides/actions/workflows/dokka.yml/badge.svg?branch=master)](https://github.com/kslides/kslides/actions/workflows/dokka.yml)
 [![Kotlin version](https://img.shields.io/badge/kotlin-2.3.21-red?logo=kotlin)](http://kotlinlang.org)
 [![JVM](https://img.shields.io/badge/JVM-17-007396?logo=openjdk&logoColor=white)](https://adoptium.net/)
-[![Gradle](https://img.shields.io/badge/Gradle-9.4.1-02303A?logo=gradle&logoColor=white)](https://gradle.org/)
 [![Kotest](https://img.shields.io/badge/tested%20with-Kotest-4DC4FF)](https://kotest.io/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/kslides/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=kslides/kslides&amp;utm_campaign=Badge_Grade)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/6d0c3c20-6eb5-4c74-8451-5fa06acf242f/deploy-status)](https://app.netlify.com/sites/kslides/deploys)
 [![ktlint](https://img.shields.io/badge/ktlint%20code--style-%E2%9D%A4-FF4081)](https://pinterest.github.io/ktlint/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-**kslides** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com)
+**[kslides](https://www.kslides.com)** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com)
 presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint.
 It works particularly well for presentations with code snippets and HTML animations. Slides are
 authored in [Markdown](https://www.markdownguide.org), [HTML](https://www.w3schools.com/html/),
 or the Kotlin [HTML DSL](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started).
 
-[![kslides screenshot](https://kslides.github.io/kslides/images/kslides-screenshot.png)](https://kslides.github.io/kslides/)
+[![kslides screenshot](https://github.com/kslides/kslides/blob/master/docs/images/kslides-screenshot.png)](https://kslides.github.io/kslides/docs/index.html)
 
 [This presentation](kslides-examples/src/main/kotlin/Slides.kt) is served statically from
 [Netlify](https://kslides.netlify.app)
