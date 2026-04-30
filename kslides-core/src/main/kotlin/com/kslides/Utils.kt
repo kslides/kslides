@@ -136,26 +136,29 @@ fun include(
   trimIndent: Boolean = true,
   indentToken: String = INDENT_TOKEN,
   escapeHtml: Boolean = true,
-) = runCatching {
-  if (src.isUrl()) {
-    URL(src)
-      .readText()
-      .lines()
-      .fromTo(beginToken, endToken, exclusive)
-      .toLineRanges(linePattern)
-      .fixIndents(indentToken, trimIndent, escapeHtml)
-  } else {
-    // Do not let queries wander outside of repo
-    if (src.contains("../")) throw IllegalArgumentException("Illegal filename: $src")
-    File("${System.getProperty("user.dir")}/$src")
-      .readLines()
-      .fromTo(beginToken, endToken, exclusive)
-      .toLineRanges(linePattern)
-      .fixIndents(indentToken, trimIndent, escapeHtml)
+): String {
+  // Do not let queries wander outside of repo — validated up front so the contract documented
+  // in the KDoc (`@throws IllegalArgumentException`) is honored regardless of the read path.
+  if (!src.isUrl() && src.contains("../")) throw IllegalArgumentException("Illegal filename: $src")
+  return runCatching {
+    if (src.isUrl()) {
+      URL(src)
+        .readText()
+        .lines()
+        .fromTo(beginToken, endToken, exclusive)
+        .toLineRanges(linePattern)
+        .fixIndents(indentToken, trimIndent, escapeHtml)
+    } else {
+      File("${System.getProperty("user.dir")}/$src")
+        .readLines()
+        .fromTo(beginToken, endToken, exclusive)
+        .toLineRanges(linePattern)
+        .fixIndents(indentToken, trimIndent, escapeHtml)
+    }
+  }.getOrElse { e ->
+    KSlides.logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
+    ""
   }
-}.getOrElse { e ->
-  KSlides.logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
-  ""
 }
 
 /**

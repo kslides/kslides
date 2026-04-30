@@ -6,36 +6,7 @@ structured, category-grouped log.
 
 ---
 
-## Unreleased
-
-### Build / tooling
-
-- Gradle wrapper upgraded from 9.4.1 to 9.5.0.
-- `kotlin-css` bumped to `2026.4.14`.
-- Removed duplicate Makefile targets and unused plugin entries from
-  `gradle/libs.versions.toml` (dokka, kotlin-jvm, maven-publish, and
-  the `pambrose-*` convention plugins are now applied via `buildSrc`
-  precompiled scripts and don't need version-catalog entries).
-
-### Documentation
-
-- New [Zensical](https://zensical.org/) documentation site under
-  `website/kslides/`, with dark mode as the default and a curated
-  navigation (Getting started, Slides, Configuration, Output, Styling,
-  Include, Extensions, Markdown reference, KDocs). Code examples live
-  in `kslides-core/src/test/kotlin/website/` and are pulled into the
-  markdown via `pymdownx.snippets`, so the docs and the compilable
-  sources stay in sync.
-- New `.github/workflows/docs.yml` builds the Dokka HTML output and
-  the Zensical site, then publishes both (site + `api-docs/`) to
-  GitHub Pages.
-- Drive-by: `kslides-core` promotes `srcref` from `implementation` to
-  `api`; `Makefile` gains `clean-docs` / `site` targets; `.gitignore`
-  covers Python + Zensical output.
-
----
-
-## 1.0.0 — 2026-04-XX
+## 1.0.0 — 2026-04-29
 
 First stable release. The project graduates from `0.x` after a
 ground-up modernization of the build, the chart-embedding
@@ -108,9 +79,14 @@ to work unchanged.
 - Shared build logic centralized in `buildSrc/` precompiled-script
   convention plugins (`kslides.kotlin-module`,
   `kslides.published-module`).
-- Gradle wrapper bumped to 9.4.1.
+- Gradle wrapper bumped to 9.5.0.
 - Kotlin 2.3.20+, Ktor 3.4.x, Kotest 6.x.
+- `kotlin-css` bumped to `2026.4.14`.
 - Dependency versions centralized in `gradle/libs.versions.toml`.
+- Removed duplicate Makefile targets and unused plugin entries from
+  `gradle/libs.versions.toml` (dokka, kotlin-jvm, maven-publish, and
+  the `pambrose-*` convention plugins are now applied via `buildSrc`
+  precompiled scripts and don't need version-catalog entries).
 - New GitHub Actions CI (`.github/workflows/ci.yml`) runs
   `./gradlew build` on every PR and every push to `master`; failing
   runs upload a `test-reports` artifact.
@@ -119,6 +95,25 @@ to work unchanged.
   plugin. Group ID is now `com.kslides` (Maven Central), replacing
   the old JitPack `com.github.kslides`.
 - Dokka 2.x configured for HTML API docs.
+
+#### Documentation
+
+- New [Zensical](https://zensical.org/) documentation site under
+  `website/kslides/`, with dark mode as the default and a curated
+  navigation (Getting started, Slides, Configuration, Output, Styling,
+  Include, Extensions, Markdown reference, KDocs). Code examples live
+  in `kslides-core/src/test/kotlin/website/` and are pulled into the
+  markdown via `pymdownx.snippets`, so the docs and the compilable
+  sources stay in sync
+  ([#33](https://github.com/kslides/kslides/pull/33)).
+- New `.github/workflows/docs.yml` builds the Dokka HTML output and
+  the Zensical site, then publishes both (site + `api-docs/`) to
+  GitHub Pages.
+- Example slides published to GitHub Pages
+  ([#35](https://github.com/kslides/kslides/pull/35)).
+- `kslides-core` promotes `srcref` from `implementation` to `api`;
+  `Makefile` gains `clean-docs` / `site` targets; `.gitignore`
+  covers Python + Zensical output.
 
 #### Test coverage
 

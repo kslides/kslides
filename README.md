@@ -22,8 +22,8 @@ or the Kotlin [HTML DSL](https://github.com/Kotlin/kotlinx.html/wiki/Getting-sta
 
 [This presentation](kslides-examples/src/main/kotlin/Slides.kt) is served statically from
 [Netlify](https://kslides.netlify.app)
-and [GitHub Pages](https://kslides.github.io/kslides/).
-It is also running dynamically on [Heroku](https://kslides-repo.herokuapp.com).
+and [GitHub Pages](https://kslides.github.io/kslides/docs/index.html).
+kslides content can also run dynamically on Heroku.
 
 ## Getting Started
 
