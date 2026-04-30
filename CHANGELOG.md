@@ -9,37 +9,7 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
-### Added
-
-- Zensical-based documentation site under `website/kslides/` with
-  dark mode as the default and curated navigation. Code examples
-  live in `kslides-core/src/test/kotlin/website/` and are pulled
-  into the markdown via `pymdownx.snippets` so the docs and the
-  compilable sources stay in sync
-  ([#33](https://github.com/kslides/kslides/pull/33)).
-- `.github/workflows/docs.yml` — GitHub Actions docs workflow that
-  generates Dokka HTML, runs the Zensical build, and publishes both
-  the site and `api-docs/` to GitHub Pages.
-- `Makefile`: `clean-docs`, `kdocs`, `site`, `serve` targets for the
-  documentation site.
-- `.gitignore` entries for Python and Zensical output.
-
-### Changed
-
-- Gradle wrapper upgraded from 9.4.1 to 9.5.0.
-- `kotlin-css` bumped to `2026.4.14`.
-- `kslides-core` promotes the `srcref` dependency from
-  `implementation` to `api`.
-
-### Removed
-
-- Duplicate Makefile targets.
-- Unused plugin entries from `gradle/libs.versions.toml`
-  (`dokka`, `kotlin-jvm`, `maven-publish`, and the `pambrose-*`
-  convention plugins) — these are applied via `buildSrc` precompiled
-  scripts and don't need version-catalog entries.
-
-## [1.0.0] — 2026-04-XX
+## [1.0.0] — 2026-04-29
 
 First stable release. Ground-up modernization of the build, the
 chart-embedding integration, and the test/CI story
@@ -68,6 +38,20 @@ chart-embedding integration, and the test/CI story
   `UtilFunctionsTest`, `ConfigPropertyTest`, `RecordIframeContentTest`.
 - `kslides-letsplot` test suite: `LetsPlotTest` (renderer unit tests)
   and `LetsPlotDslTest` (full DSL → filesystem integration).
+- Zensical-based documentation site under `website/kslides/` with
+  dark mode as the default and curated navigation. Code examples
+  live in `kslides-core/src/test/kotlin/website/` and are pulled
+  into the markdown via `pymdownx.snippets` so the docs and the
+  compilable sources stay in sync
+  ([#33](https://github.com/kslides/kslides/pull/33)).
+- `.github/workflows/docs.yml` — GitHub Actions docs workflow that
+  generates Dokka HTML, runs the Zensical build, and publishes both
+  the site and `api-docs/` to GitHub Pages.
+- `Makefile`: `clean-docs`, `kdocs`, `site`, `serve` targets for the
+  documentation site.
+- `.gitignore` entries for Python and Zensical output.
+- Example slides published to GitHub Pages
+  ([#35](https://github.com/kslides/kslides/pull/35)).
 
 ### Changed
 
@@ -104,8 +88,11 @@ chart-embedding integration, and the test/CI story
 - `UtilsTest` and `PresentationTest` converted to
   `StringSpec() { init { ... } }` style.
 - Build scripts migrated from Groovy DSL to Kotlin DSL
-  (`*.gradle.kts`). Gradle wrapper bumped to 9.4.1.
+  (`*.gradle.kts`). Gradle wrapper bumped to 9.5.0.
 - Kotlin bumped to 2.3.x; Ktor to 3.4.x; Kotest to 6.x.
+- `kotlin-css` bumped to `2026.4.14`.
+- `kslides-core` promotes the `srcref` dependency from
+  `implementation` to `api`.
 - README, `llms.txt`, and `CLAUDE.md` rewritten.
 
 ### Removed
@@ -118,6 +105,11 @@ chart-embedding integration, and the test/CI story
 - Commented-out `KSlidesConfig.plotlyUrl` field.
 - Legacy CI configs (`.travis.yml`, `jitpack.yml`).
 - Stale `docs/plotly/` generated output; replaced by `docs/letsPlot/`.
+- Duplicate Makefile targets.
+- Unused plugin entries from `gradle/libs.versions.toml`
+  (`dokka`, `kotlin-jvm`, `maven-publish`, and the `pambrose-*`
+  convention plugins) — these are applied via `buildSrc` precompiled
+  scripts and don't need version-catalog entries.
 
 ### Fixed
 
@@ -669,7 +661,7 @@ chart-embedding integration, and the test/CI story
   per-slide / per-presentation overrides.
 
 [Unreleased]: https://github.com/kslides/kslides/compare/1.0.0...HEAD
-[1.0.0]: https://github.com/kslides/kslides/compare/0.24.0...1.0.0
+[1.0.0]: https://github.com/kslides/kslides/releases/tag/1.0.0
 [0.24.0]: https://github.com/kslides/kslides/releases/tag/0.24.0
 [0.23.0]: https://github.com/kslides/kslides/releases/tag/0.23.0
 [0.22.0]: https://github.com/kslides/kslides/releases/tag/0.22.0
