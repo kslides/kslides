@@ -4,9 +4,16 @@ ifeq ($(strip $(VERSION)),)
 $(error Could not determine project version from gradle.properties)
 endif
 
+.PHONY: default build-all stop clean build local-build lint refresh tests \
+        fatjar uber dist stage tree process-resources versioncheck kdocs \
+        clean-docs site publish-local publish-local-snapshot publish-snapshot \
+        publish-maven-central upgrade-wrapper
+
 default: versioncheck
 
-build-all: clean stage
+build-all:
+	$(MAKE) clean
+	$(MAKE) stage
 
 stop:
 	./gradlew --stop
@@ -24,12 +31,12 @@ lint:
 	./gradlew lintKotlinMain lintKotlinTest
 
 refresh:
-	./gradlew --refresh-dependencies
+	./gradlew --refresh-dependencies build -xtest
 
 tests:
-	./gradlew --rerun-tasks check
+	./gradlew cleanTest test
 
-fatjar: build
+fatjar:
 	./gradlew buildFatJar
 
 uber: fatjar

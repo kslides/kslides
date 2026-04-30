@@ -111,8 +111,8 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("com.kslides:kslides-core:1.0.0")
-    // Optional: implementation("com.kslides:kslides-letsplot:1.0.0")
+    implementation("com.kslides:kslides-core:1.0.1")
+    // Optional: implementation("com.kslides:kslides-letsplot:1.0.1")
 }
 ```
 
@@ -127,4 +127,4 @@ dependencies {
 - [Example source](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt): Full example presentation code
 - [reveal.js docs](https://revealjs.com): Underlying presentation framework
 - [CHANGELOG](https://github.com/kslides/kslides/blob/master/CHANGELOG.md): Version history
-- [RELEASE_NOTES](https://github.com/kslides/kslides/blob/master/RELEASE_NOTES.md): Narrative release notes (1.0.0+)
+- [RELEASE_NOTES](https://github.com/kslides/kslides/blob/master/RELEASE_NOTES.md): Narrative release notes (1.0.1+)

@@ -36,7 +36,7 @@ Common wrappers in `Makefile`:
 ```bash
 make build                 # clean + gradle build -xtest
 make lint                  # lintKotlinMain + lintKotlinTest
-make tests                 # --rerun-tasks check
+make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
 make versioncheck          # dependencyUpdates (default target)
 make publish-local         # publishToMavenLocal
@@ -54,7 +54,7 @@ The `publish-snapshot` and `publish-maven-central` targets sign via `GPG_ENV`, w
 
 ### Releasing
 
-The first stable release is `1.0.0` (tag `1.0.0`, GitHub release `v1.0.0`, published to Maven Central as `com.kslides:kslides-core` and `com.kslides:kslides-letsplot`). To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md` and `RELEASE_NOTES.md`, run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
+The first stable release is `1.0.1` (tag `1.0.1`, GitHub release `v1.0.1`, published to Maven Central as `com.kslides:kslides-core` and `com.kslides:kslides-letsplot`). To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md` and `RELEASE_NOTES.md`, run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
 
 ## Module Structure
 
