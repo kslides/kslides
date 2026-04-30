@@ -50,7 +50,7 @@ edit_uri = "edit/master/website/kslides/docs/"
 # Read more: https://zensical.org/docs/setup/navigation/
 nav = [
   { "Get started" = "index.md" },
-  { "Example Slides" = "docs/index.html" },
+  { "📽️ Example Slides" = "docs/index.html" },
   { "Installation" = "installation.md" },
   { "Quickstart" = "quickstart.md" },
   { "Slides" = [
