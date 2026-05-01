@@ -15,12 +15,11 @@ The upgrade steps for it are:
 
 ## kslides-template Repository
 
-The sources also need to be copied to `kslides-template/docs/revealjs`.
+The revealjs sources also need to be copied to `kslides-template/docs/revealjs`. Copy them with:
 
-The upgrade steps are:
-
-* Delete the `/docs/revealjs` dir in the `kslides-template` repo.
-* Copy the `/docs/revealjs` dir in the `kslides` repo to `/docs/revealjs` in the `kslides-template` repo.
+``` bash
+make sync-revealjs
+```
 
 ## Menu plugin
 
