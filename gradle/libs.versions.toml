@@ -1,5 +1,5 @@
 [versions]
-common-utils = "2.8.1"
+common-utils = "2.8.2"
 commons-text = "1.15.0"
 css = "2026.4.15"
 dokka = "2.2.0"
@@ -11,10 +11,10 @@ kotlinx-html = "0.12.0"
 ktor = "3.4.3"
 letsplot = "4.13.0"
 logback = "1.5.32"
-logging = "8.0.01"
+logging = "8.0.02"
 maven-publish = "0.36.0"
 serialization = "1.11.0"
-srcref = "2.0.9"
+srcref = "2.0.10"
 
 [libraries]
 common-utils-core = { module = "com.pambrose.common-utils:core-utils", version.ref = "common-utils" }
