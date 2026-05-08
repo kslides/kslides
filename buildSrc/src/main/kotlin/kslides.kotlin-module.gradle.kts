@@ -5,13 +5,13 @@ plugins {
     id("com.pambrose.stable-versions")
 }
 
+val libs = the<VersionCatalogsExtension>().named("libs")
+
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(libs.findVersion("jvm").get().requiredVersion.toInt())
 }
 
 providers.gradleProperty("overrideVersion").orNull?.let { project.version = it }
-
-val libs = the<VersionCatalogsExtension>().named("libs")
 
 dependencies {
     testImplementation(libs.findLibrary("kotest").get())

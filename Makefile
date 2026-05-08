@@ -4,6 +4,12 @@ ifeq ($(strip $(VERSION)),)
 $(error Could not determine project version from gradle.properties)
 endif
 
+GRADLE_VERSION := $(shell sed -n 's/^gradle[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' gradle/libs.versions.toml | head -1)
+
+ifeq ($(strip $(GRADLE_VERSION)),)
+$(error Could not determine gradle version from gradle/libs.versions.toml)
+endif
+
 .PHONY: default build-all stop clean build local-build lint refresh tests \
         fatjar uber dist stage deps process-resources versioncheck kdocs \
         clean-docs site publish-local publish-local-snapshot check-gpg-env \
@@ -97,4 +103,4 @@ publish-maven-central: check-gpg-env
 	$(GPG_ENV) ./gradlew publishAndReleaseToMavenCentral
 
 upgrade-wrapper:
-	./gradlew wrapper --gradle-version=9.5.0 --distribution-type=bin
+	./gradlew wrapper --gradle-version=$(GRADLE_VERSION) --distribution-type=bin

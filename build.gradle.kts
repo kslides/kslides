@@ -21,7 +21,8 @@ dokka {
 }
 
 tasks.register("stage") {
+    val examples = ":kslides-examples"
     group = "build"
     description = "Builds the project and the examples fat jar for Heroku deployment."
-    dependsOn(":kslides-examples:build", ":kslides-examples:buildFatJar")
+    dependsOn("$examples:build", "$examples:buildFatJar")
 }

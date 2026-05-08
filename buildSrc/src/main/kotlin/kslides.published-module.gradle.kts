@@ -10,6 +10,9 @@ plugins {
     id("com.vanniktech.maven.publish")
 }
 
+val repoSlug = "kslides/kslides"
+val repoUrl = "https://github.com/$repoSlug"
+
 extensions.configure<MavenPublishBaseExtension> {
     configure(
         KotlinJvm(
@@ -21,7 +24,7 @@ extensions.configure<MavenPublishBaseExtension> {
     pom {
         name.set(project.name)
         description.set(provider { project.description ?: project.name })
-        url.set("https://github.com/kslides/kslides")
+        url.set(repoUrl)
         licenses {
             license {
                 name.set("Apache License 2.0")
@@ -36,9 +39,9 @@ extensions.configure<MavenPublishBaseExtension> {
             }
         }
         scm {
-            connection.set("scm:git:https://github.com/kslides/kslides.git")
-            developerConnection.set("scm:git:ssh://github.com/kslides/kslides.git")
-            url.set("https://github.com/kslides/kslides")
+            connection.set("scm:git:https://github.com/$repoSlug.git")
+            developerConnection.set("scm:git:ssh://github.com/$repoSlug.git")
+            url.set(repoUrl)
         }
     }
 
