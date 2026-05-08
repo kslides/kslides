@@ -1,3 +1,8 @@
+.PHONY: default build-all stop clean build local-build lint refresh tests \
+        fatjar uber dist stage deps process-resources versioncheck kdocs \
+        clean-docs site publish-local publish-local-snapshot check-gpg-env \
+        publish-snapshot publish-maven-central upgrade-wrapper
+
 VERSION := $(shell sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties | head -1)
 
 ifeq ($(strip $(VERSION)),)
@@ -9,11 +14,6 @@ GRADLE_VERSION := $(shell sed -n 's/^gradle[[:space:]]*=[[:space:]]*"\([^"]*\)".
 ifeq ($(strip $(GRADLE_VERSION)),)
 $(error Could not determine gradle version from gradle/libs.versions.toml)
 endif
-
-.PHONY: default build-all stop clean build local-build lint refresh tests \
-        fatjar uber dist stage deps process-resources versioncheck kdocs \
-        clean-docs site publish-local publish-local-snapshot check-gpg-env \
-        publish-snapshot publish-maven-central upgrade-wrapper
 
 default: versioncheck
 
