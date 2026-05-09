@@ -6,6 +6,31 @@ structured, category-grouped log.
 
 ---
 
+## 1.0.1 — Unreleased
+
+Build-infrastructure release. No DSL or runtime API changes.
+
+### Build hygiene
+
+- The Gradle wrapper distribution version and the JVM toolchain
+  version are now declared in `gradle/libs.versions.toml` as the
+  `gradle` and `jvm` version keys, alongside the rest of the version
+  catalog. The `kslides.kotlin-module` convention plugin reads `jvm`
+  via `VersionCatalogsExtension` for `jvmToolchain(...)`, and the
+  `Makefile`'s `upgrade-wrapper` target reads `gradle` from the
+  catalog (with a missing-value guard mirroring the existing
+  `VERSION` extraction). To roll the project forward to a new Gradle
+  version, bump `gradle` in `libs.versions.toml` and run
+  `make upgrade-wrapper`.
+- Repeated string literals in the build scripts were collapsed:
+  `kslides.published-module` extracts `repoSlug` / `repoUrl` so the
+  GitHub URL appears once across `pom.url`, `scm.url`,
+  `scm.connection`, and `scm.developerConnection`; the root `stage`
+  task uses a local `examples` constant for the `:kslides-examples`
+  module path.
+
+---
+
 ## 1.0.0 — 2026-04-29
 
 First stable release. The project graduates from `0.x` after a

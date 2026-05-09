@@ -9,6 +9,21 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+### Changed
+
+- Centralized the Gradle wrapper version and JVM toolchain version in
+  `gradle/libs.versions.toml` as the new `gradle` and `jvm` version
+  keys. The `kslides.kotlin-module` convention plugin now reads the
+  toolchain version from the catalog via `VersionCatalogsExtension`,
+  and the `Makefile`'s `upgrade-wrapper` target reads `gradle` from
+  the same file (with a missing-value guard).
+- Consolidated repeated string literals in build scripts: extracted
+  `repoSlug` / `repoUrl` constants in the
+  `kslides.published-module` convention plugin (deduping the GitHub
+  URL across `pom.url`, `scm.url`, `scm.connection`, and
+  `scm.developerConnection`), and a local `examples` constant in the
+  root `build.gradle.kts` for the `stage` task `dependsOn`.
+
 ## [1.0.0] — 2026-04-29
 
 First stable release. Ground-up modernization of the build, the

@@ -68,7 +68,7 @@ Three Gradle modules defined in `settings.gradle.kts`:
 
 Shared build logic lives in `buildSrc/` as two precompiled-script convention plugins:
 
-- `kslides.kotlin-module` — applies `kotlin("jvm")`, JVM 17 toolchain, Kotlinter, stable-versions, and the kotest/logback test dependencies. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
+- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, stable-versions, and the kotest/logback test dependencies. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
 - `kslides.published-module` — extends `kslides.kotlin-module` with `java-library`, Dokka, and `com.vanniktech.maven.publish`. Sets up the POM, `KotlinJvm` artifact (sources + Dokka HTML javadoc jar), Maven Central publication, and conditional `signAllPublications()`.
 
 `kslides-core` and `kslides-letsplot` apply `kslides.published-module`; `kslides-examples` applies `kslides.kotlin-module` plus the Ktor plugin (which provides `application{}` and `buildFatJar`). The Heroku `stage` task lives in the root build (`build.gradle.kts`) and depends on `:kslides-examples:build` and `:kslides-examples:buildFatJar`.
@@ -125,7 +125,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 - Lets-Plot Kotlin 4.13.0 for the `letsPlot{}` DSL (matched JS runtime v4.9.0, configurable via `KSlidesConfig.letsPlotJsVersion`)
 - Kotlinter for linting (ktlint-based)
 - reveal.js assets live at the repo root in `docs/revealjs/` (single source of truth, committed for GitHub Pages). `kslides-core/build.gradle.kts` grafts them onto the published JAR's classpath at `revealjs/**` via `processResources` so the Ktor static handler can serve them at runtime — there is no checked-in `kslides-core/src/main/resources/revealjs/` directory.
-- Dependency versions centralized in `gradle/libs.versions.toml`
+- All versions — including the JVM toolchain (`jvm`) and the Gradle wrapper distribution (`gradle`) — are centralized in `gradle/libs.versions.toml`. The convention plugin reads `jvm` via `VersionCatalogsExtension`, and the `Makefile`'s `upgrade-wrapper` target reads `gradle` from the same file.
 
 ## Important Notes
 
