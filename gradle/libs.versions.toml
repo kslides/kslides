@@ -1,7 +1,8 @@
 [versions]
 common-utils = "2.8.2"
 commons-text = "1.15.0"
-css = "2026.4.15"
+css = "2026.5.2"
+detekt = "2.0.0-alpha.3"
 dokka = "2.2.0"
 gradle = "9.5.0"
 gradle-plugins = "1.0.14"
@@ -41,6 +42,7 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 srcref = { module = "com.pambrose:srcref", version.ref = "srcref" }
 
 # Plugin-marker artifacts, consumed by buildSrc to apply plugins from precompiled scripts.
+plugin-detekt = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 plugin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 plugin-maven-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }

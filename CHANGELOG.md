@@ -9,6 +9,16 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+### Added
+
+- Detekt static analysis wired into the `kslides.kotlin-module`
+  convention plugin (Detekt `2.0.0-alpha.3`, group `dev.detekt`,
+  plugin id `dev.detekt`). All Kotlin modules now expose `detekt*`
+  tasks. Detekt is configured non-fatally (`ignoreFailures = true`,
+  `buildUponDefaultConfig = true`) so reports surface without
+  breaking the build; pass `-Pdetekt.failOnViolation=true` to fail
+  on violations. New `make detekt` shortcut.
+
 ### Changed
 
 - Centralized the Gradle wrapper version and JVM toolchain version in

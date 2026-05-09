@@ -1,4 +1,4 @@
-.PHONY: default build-all stop clean build local-build lint refresh tests \
+.PHONY: default help build-all stop clean build local-build lint detekt refresh tests \
         fatjar uber dist stage deps process-resources versioncheck kdocs \
         clean-docs site publish-local publish-local-snapshot check-gpg-env \
         publish-snapshot publish-maven-central upgrade-wrapper
@@ -15,74 +15,80 @@ ifeq ($(strip $(GRADLE_VERSION)),)
 $(error Could not determine gradle version from gradle/libs.versions.toml)
 endif
 
-default: versioncheck
-
-build-all: clean stage
-
-stop:
-	./gradlew --stop
-
-clean:
-	./gradlew clean
-
-build: clean
-	./gradlew build -xtest
-
-local-build: clean
-	./gradlew build -PuseMavenLocal=true -xtest
-
-lint:
-	./gradlew lintKotlinMain lintKotlinTest
-
-refresh:
-	./gradlew --refresh-dependencies build -xtest
-
-tests:
-	./gradlew cleanTest test
-
-fatjar:
-	./gradlew buildFatJar
-
-uber: fatjar
-	java -jar kslides-examples/build/libs/kslides.jar
-
-dist:
-	./gradlew installDist
-
-stage:
-	./gradlew stage
-
-deps:
-	./gradlew -q dependencies
-
-process-resources:
-	./gradlew :kslides-core:processResources
-
-versioncheck:
-	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
-
-kdocs:
-	./gradlew :dokkaGenerate
-
-clean-docs:
-	rm -rf docs/playground docs/letsPlot docs/kroki
-	rm -rf website/kslides/site website/kslides/.cache
-
-site: clean-docs
-	cd website/kslides && uv run zensical serve
-
-publish-local:
-	./gradlew publishToMavenLocal
-
-publish-local-snapshot:
-	./gradlew -PoverrideVersion=$(VERSION)-SNAPSHOT publishToMavenLocal
-
 GPG_ENV = \
 	ORG_GRADLE_PROJECT_signingInMemoryKey="$$(gpg --armor --export-secret-keys $$GPG_SIGNING_KEY_ID)" \
 	ORG_GRADLE_PROJECT_signingInMemoryKeyId="$$GPG_SIGNING_KEY_ID" \
 	ORG_GRADLE_PROJECT_signingInMemoryKeyPassword=$$(security find-generic-password -a "gpg-signing" -s "gradle-signing-password" -w)
 
-check-gpg-env:
+default: versioncheck
+
+help:  ## Show this help (list targets with descriptions)
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+build-all: clean stage  ## Clean and run a full Heroku stage build
+
+stop:  ## Stop the Gradle daemon
+	./gradlew --stop
+
+clean:  ## Remove Gradle build artifacts
+	./gradlew clean
+
+build: clean  ## Clean and build (skips tests)
+	./gradlew build -xtest
+
+local-build: clean  ## Clean and build using Maven Local artifacts
+	./gradlew build -PuseMavenLocal=true -xtest
+
+lint: detekt  ## Run Detekt and Kotlinter lint on main and test sources
+	./gradlew lintKotlinMain lintKotlinTest
+
+detekt:  ## Run Detekt static analysis
+	./gradlew detekt
+
+refresh:  ## Refresh dependencies and build (skips tests)
+	./gradlew --refresh-dependencies build -xtest
+
+tests:  ## Clean test results and re-run the test suite
+	./gradlew cleanTest test
+
+fatjar:  ## Build the executable fat JAR for kslides-examples
+	./gradlew buildFatJar
+
+uber: fatjar  ## Build the fat JAR and run the example presentation
+	java -jar kslides-examples/build/libs/kslides.jar
+
+dist:  ## Assemble the distribution via installDist
+	./gradlew installDist
+
+stage:  ## Heroku deployment build
+	./gradlew stage
+
+deps:  ## Print the Gradle dependency tree
+	./gradlew -q dependencies
+
+process-resources:  ## Run kslides-core processResources (grafts reveal.js assets)
+	./gradlew :kslides-core:processResources
+
+versioncheck:  ## Check for dependency updates (default target)
+	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
+
+kdocs:  ## Generate Dokka HTML API docs
+	./gradlew :dokkaGenerate
+
+clean-docs:  ## Remove generated docs and Zensical site artifacts
+	rm -rf docs/playground docs/letsPlot docs/kroki
+	rm -rf website/kslides/site website/kslides/.cache
+
+site: clean-docs  ## Serve the Zensical docs site locally
+	cd website/kslides && uv run zensical serve
+
+publish-local:  ## Publish artifacts to Maven Local
+	./gradlew publishToMavenLocal
+
+publish-local-snapshot:  ## Publish a -SNAPSHOT build to Maven Local
+	./gradlew -PoverrideVersion=$(VERSION)-SNAPSHOT publishToMavenLocal
+
+check-gpg-env:  ## Verify GPG signing env vars and keychain entry are present
 	@if [ -z "$$GPG_SIGNING_KEY_ID" ]; then \
 		echo "Error: GPG_SIGNING_KEY_ID is not set" >&2; exit 1; \
 	fi
@@ -96,11 +102,15 @@ check-gpg-env:
 # publish-snapshot stages a -SNAPSHOT build to the Sonatype snapshots repo (vanniktech routes
 # -SNAPSHOT versions there automatically). publish-maven-central uses the *AndRelease* variant
 # to both stage and auto-release the version on the Central Portal — do not "fix" the asymmetry.
-publish-snapshot: check-gpg-env
+publish-snapshot: check-gpg-env  ## Stage a signed -SNAPSHOT to Sonatype snapshots
 	$(GPG_ENV) ./gradlew -PoverrideVersion=$(VERSION)-SNAPSHOT publishToMavenCentral
 
-publish-maven-central: check-gpg-env
+publish-maven-central: check-gpg-env  ## Stage and release a signed build to Maven Central
 	$(GPG_ENV) ./gradlew publishAndReleaseToMavenCentral
 
-upgrade-wrapper:
+upgrade-wrapper:  ## Upgrade the Gradle wrapper to the version pinned in libs.versions.toml
+	# Gradle's documented upgrade procedure: the first run rewrites
+	# gradle-wrapper.properties using the *old* wrapper jar; the second run
+	# regenerates the wrapper itself with the new version.
+	./gradlew wrapper --gradle-version=$(GRADLE_VERSION) --distribution-type=bin
 	./gradlew wrapper --gradle-version=$(GRADLE_VERSION) --distribution-type=bin

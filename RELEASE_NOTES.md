@@ -10,6 +10,22 @@ structured, category-grouped log.
 
 Build-infrastructure release. No DSL or runtime API changes.
 
+### Detekt
+
+[Detekt](https://detekt.dev) `2.0.0-alpha.3` is now wired into the
+`kslides.kotlin-module` convention plugin, so every Kotlin module
+exposes `detekt`, `detektMain`, `detektTest`, and the
+`detektBaseline*` tasks. Note that Detekt 2.x relocates to the
+`dev.detekt` Maven group and uses the matching `dev.detekt` plugin
+id (1.x lived under `io.gitlab.arturbosch.detekt`).
+
+The plugin runs with `ignoreFailures = true` and
+`buildUponDefaultConfig = true`, so analysis findings show up in
+the report without breaking the build. To enforce violations
+(useful in CI once a baseline is in place), invoke Gradle with
+`-Pdetekt.failOnViolation=true`. A `make detekt` shortcut wraps
+`./gradlew detekt`.
+
 ### Build hygiene
 
 - The Gradle wrapper distribution version and the JVM toolchain

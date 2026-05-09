@@ -16,6 +16,7 @@ kslides is a Kotlin DSL for the [reveal.js](https://revealjs.com) presentation f
 ./gradlew stage             # Heroku deployment build
 ./gradlew lintKotlin        # Lint with Kotlinter
 ./gradlew formatKotlin      # Auto-format with Kotlinter
+./gradlew detekt            # Static analysis with Detekt
 ./gradlew dependencyUpdates # Check for dependency updates
 ```
 
@@ -36,6 +37,7 @@ Common wrappers in `Makefile`:
 ```bash
 make build                 # clean + gradle build -xtest
 make lint                  # lintKotlinMain + lintKotlinTest
+make detekt                # Detekt static analysis (non-fatal)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
 make versioncheck          # dependencyUpdates (default target)
@@ -68,7 +70,7 @@ Three Gradle modules defined in `settings.gradle.kts`:
 
 Shared build logic lives in `buildSrc/` as two precompiled-script convention plugins:
 
-- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, stable-versions, and the kotest/logback test dependencies. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
+- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, [Detekt](https://detekt.dev) (group `dev.detekt`, plugin id `dev.detekt`), stable-versions, and the kotest/logback test dependencies. Detekt is wired in non-fatally (`ignoreFailures = true`) so reports surface without breaking the build; pass `-Pdetekt.failOnViolation=true` to enforce. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
 - `kslides.published-module` — extends `kslides.kotlin-module` with `java-library`, Dokka, and `com.vanniktech.maven.publish`. Sets up the POM, `KotlinJvm` artifact (sources + Dokka HTML javadoc jar), Maven Central publication, and conditional `signAllPublications()`.
 
 `kslides-core` and `kslides-letsplot` apply `kslides.published-module`; `kslides-examples` applies `kslides.kotlin-module` plus the Ktor plugin (which provides `application{}` and `buildFatJar`). The Heroku `stage` task lives in the root build (`build.gradle.kts`) and depends on `:kslides-examples:build` and `:kslides-examples:buildFatJar`.
@@ -123,7 +125,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 - Ktor 3.4.3 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
 - Lets-Plot Kotlin 4.13.0 for the `letsPlot{}` DSL (matched JS runtime v4.9.0, configurable via `KSlidesConfig.letsPlotJsVersion`)
-- Kotlinter for linting (ktlint-based)
+- Kotlinter for linting (ktlint-based) and Detekt 2.0.0-alpha.3 for static analysis (`dev.detekt`)
 - reveal.js assets live at the repo root in `docs/revealjs/` (single source of truth, committed for GitHub Pages). `kslides-core/build.gradle.kts` grafts them onto the published JAR's classpath at `revealjs/**` via `processResources` so the Ktor static handler can serve them at runtime — there is no checked-in `kslides-core/src/main/resources/revealjs/` directory.
 - All versions — including the JVM toolchain (`jvm`) and the Gradle wrapper distribution (`gradle`) — are centralized in `gradle/libs.versions.toml`. The convention plugin reads `jvm` via `VersionCatalogsExtension`, and the `Makefile`'s `upgrade-wrapper` target reads `gradle` from the same file.
 
