@@ -18,6 +18,7 @@ detekt {
     ignoreFailures = providers.gradleProperty("detekt.failOnViolation").orNull != "true"
     buildUponDefaultConfig = true
     autoCorrect = false
+    config.from(rootProject.layout.projectDirectory.file("config/detekt/detekt.yml"))
 }
 
 providers.gradleProperty("overrideVersion").orNull?.let { project.version = it }

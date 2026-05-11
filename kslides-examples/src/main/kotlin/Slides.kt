@@ -1,9 +1,74 @@
-import com.kslides.*
+import com.kslides.DiagramOutputType
+import com.kslides.Effect
+import com.kslides.PlaygroundMode
+import com.kslides.PlaygroundTheme
+import com.kslides.PresentationTheme
+import com.kslides.Speed
+import com.kslides.TargetPlatform
+import com.kslides.Transition
+import com.kslides.atag
+import com.kslides.bodyRow
+import com.kslides.by
+import com.kslides.codeSnippet
 import com.kslides.config.LetsPlotIframeConfig
-import kotlinx.css.*
+import com.kslides.diagram
+import com.kslides.fragment
+import com.kslides.headRow
+import com.kslides.include
+import com.kslides.kslides
+import com.kslides.letsPlot
+import com.kslides.listHref
+import com.kslides.orderedList
+import com.kslides.permuteBy
+import com.kslides.playground
+import com.kslides.rawHtml
+import com.kslides.toLinePatterns
+import com.kslides.unorderedList
+import kotlinx.css.Clear
+import kotlinx.css.Color
+import kotlinx.css.Display
 import kotlinx.css.Float
+import kotlinx.css.LinearDimension
+import kotlinx.css.QuotedString
+import kotlinx.css.clear
+import kotlinx.css.color
+import kotlinx.css.content
+import kotlinx.css.display
+import kotlinx.css.float
+import kotlinx.css.fontSize
+import kotlinx.css.lineHeight
+import kotlinx.css.marginBottom
 import kotlinx.css.properties.LineHeight
-import kotlinx.html.*
+import kotlinx.css.width
+import kotlinx.html.Dir
+import kotlinx.html.a
+import kotlinx.html.aside
+import kotlinx.html.blockQuote
+import kotlinx.html.br
+import kotlinx.html.code
+import kotlinx.html.dir
+import kotlinx.html.div
+import kotlinx.html.em
+import kotlinx.html.h1
+import kotlinx.html.h2
+import kotlinx.html.h3
+import kotlinx.html.h4
+import kotlinx.html.iframe
+import kotlinx.html.img
+import kotlinx.html.lang
+import kotlinx.html.onClick
+import kotlinx.html.p
+import kotlinx.html.pre
+import kotlinx.html.script
+import kotlinx.html.small
+import kotlinx.html.span
+import kotlinx.html.style
+import kotlinx.html.table
+import kotlinx.html.tbody
+import kotlinx.html.td
+import kotlinx.html.thead
+import kotlinx.html.title
+import kotlinx.html.tr
 import org.jetbrains.letsPlot.geom.geomHistogram
 import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.geom.geomTile
@@ -11,11 +76,9 @@ import org.jetbrains.letsPlot.label.ggtitle
 import org.jetbrains.letsPlot.label.labs
 import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.scaleFillGradient
-import kotlin.collections.set
 import kotlin.random.Random
-import kotlin.text.lowercase
-import kotlin.to
 
+@Suppress("LongMethod")
 fun main() {
   kslides {
     // Optional
@@ -1057,6 +1120,7 @@ fun main() {
         // themes begin
         dslSlide {
           id = "themes"
+          @Suppress("MaxLineLength")
           content {
             // Hack to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck.
             h2 { +"Themes" }

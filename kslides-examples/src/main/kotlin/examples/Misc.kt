@@ -1,10 +1,28 @@
 package examples
 
-import com.kslides.*
+import com.kslides.PresentationTheme
+import com.kslides.Speed
+import com.kslides.Transition
+import com.kslides.ViewType
+import com.kslides.fragment
+import com.kslides.githubRawUrl
+import com.kslides.include
+import com.kslides.kslides
 import kotlinx.css.Color
 import kotlinx.css.color
-import kotlinx.html.*
+import kotlinx.html.a
+import kotlinx.html.div
+import kotlinx.html.h1
+import kotlinx.html.h2
+import kotlinx.html.h3
+import kotlinx.html.h4
+import kotlinx.html.iframe
+import kotlinx.html.img
+import kotlinx.html.p
+import kotlinx.html.section
+import kotlinx.html.style
 
+@Suppress("LongMethod")
 fun main() {
   kslides {
     presentationConfig {
