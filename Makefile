@@ -1,19 +1,10 @@
 .PHONY: default help build-all stop clean build local-build lint detekt refresh tests \
         fatjar uber dist stage deps process-resources versioncheck kdocs \
-        clean-docs site publish-local publish-local-snapshot check-gpg-env \
-        publish-snapshot publish-maven-central upgrade-wrapper
+        clean-docs site publish-local publish-local-snapshot publish-snapshot publish-maven-central \
+        upgrade-wrapper _check-gpg-env _require-version _require-gradle-version
 
 VERSION := $(shell sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties | head -1)
-
-ifeq ($(strip $(VERSION)),)
-$(error Could not determine project version from gradle.properties)
-endif
-
 GRADLE_VERSION := $(shell sed -n 's/^gradle[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' gradle/libs.versions.toml | head -1)
-
-ifeq ($(strip $(GRADLE_VERSION)),)
-$(error Could not determine gradle version from gradle/libs.versions.toml)
-endif
 
 GPG_ENV = \
 	ORG_GRADLE_PROJECT_signingInMemoryKey="$$(gpg --armor --export-secret-keys $$GPG_SIGNING_KEY_ID)" \
@@ -82,35 +73,41 @@ clean-docs:  ## Remove generated docs and Zensical site artifacts
 site: clean-docs  ## Serve the Zensical docs site locally
 	cd website/kslides && uv run zensical serve
 
-publish-local:  ## Publish artifacts to Maven Local
+publish-local: _require-version ## Publish artifacts to Maven Local
 	./gradlew publishToMavenLocal
 
-publish-local-snapshot:  ## Publish a -SNAPSHOT build to Maven Local
+publish-local-snapshot: _require-version ## Publish a -SNAPSHOT build to Maven Local
 	./gradlew -PoverrideVersion=$(VERSION)-SNAPSHOT publishToMavenLocal
-
-check-gpg-env:  ## Verify GPG signing env vars and keychain entry are present
-	@if [ -z "$$GPG_SIGNING_KEY_ID" ]; then \
-		echo "Error: GPG_SIGNING_KEY_ID is not set" >&2; exit 1; \
-	fi
-	@if ! gpg --list-secret-keys "$$GPG_SIGNING_KEY_ID" >/dev/null 2>&1; then \
-		echo "Error: no GPG secret key found for GPG_SIGNING_KEY_ID=$$GPG_SIGNING_KEY_ID" >&2; exit 1; \
-	fi
-	@if ! security find-generic-password -a "gpg-signing" -s "gradle-signing-password" -w >/dev/null 2>&1; then \
-		echo "Error: keychain entry 'gradle-signing-password' (account 'gpg-signing') not found" >&2; exit 1; \
-	fi
 
 # publish-snapshot stages a -SNAPSHOT build to the Sonatype snapshots repo (vanniktech routes
 # -SNAPSHOT versions there automatically). publish-maven-central uses the *AndRelease* variant
 # to both stage and auto-release the version on the Central Portal — do not "fix" the asymmetry.
-publish-snapshot: check-gpg-env  ## Stage a signed -SNAPSHOT to Sonatype snapshots
+publish-snapshot: _require-version _check-gpg-env ## Stage a signed -SNAPSHOT to Sonatype snapshots
 	$(GPG_ENV) ./gradlew -PoverrideVersion=$(VERSION)-SNAPSHOT publishToMavenCentral
 
-publish-maven-central: check-gpg-env  ## Stage and release a signed build to Maven Central
+publish-maven-central: _require-version _check-gpg-env ## Stage and release a signed build to Maven Central
 	$(GPG_ENV) ./gradlew publishAndReleaseToMavenCentral
 
-upgrade-wrapper:  ## Upgrade the Gradle wrapper to the version pinned in libs.versions.toml
-	# Gradle's documented upgrade procedure: the first run rewrites
-	# gradle-wrapper.properties using the *old* wrapper jar; the second run
-	# regenerates the wrapper itself with the new version.
+# Gradle's documented upgrade procedure: the first run rewrites
+# gradle-wrapper.properties using the *old* wrapper jar; the second run
+# regenerates the wrapper itself with the new version.
+upgrade-wrapper: _require-gradle-version  ## Upgrade the Gradle wrapper to the version pinned in libs.versions.toml
 	./gradlew wrapper --gradle-version=$(GRADLE_VERSION) --distribution-type=bin
 	./gradlew wrapper --gradle-version=$(GRADLE_VERSION) --distribution-type=bin
+
+_check-gpg-env:
+	@if [ -z "$$GPG_SIGNING_KEY_ID" ]; then \
+		echo "ERROR: GPG_SIGNING_KEY_ID is not set" >&2; exit 1; \
+	fi
+	@if ! gpg --list-secret-keys "$$GPG_SIGNING_KEY_ID" >/dev/null 2>&1; then \
+		echo "ERROR: no GPG secret key found for GPG_SIGNING_KEY_ID=$$GPG_SIGNING_KEY_ID" >&2; exit 1; \
+	fi
+	@if ! security find-generic-password -a "gpg-signing" -s "gradle-signing-password" -w >/dev/null 2>&1; then \
+		echo "ERROR: keychain entry 'gradle-signing-password' (account 'gpg-signing') not found" >&2; exit 1; \
+	fi
+
+_require-version:
+	@[ -n "$(VERSION)" ] || { echo "ERROR: Could not determine project version from gradle.properties" >&2; exit 1; }
+
+_require-gradle-version:
+	@[ -n "$(GRADLE_VERSION)" ] || { echo "ERROR: Could not determine gradle version from gradle/libs.versions.toml" >&2; exit 1; }

@@ -7,6 +7,7 @@ import kotlinx.css.color
 import kotlinx.html.h1
 import kotlinx.html.h2
 
+@Suppress("LongMethod")
 fun main() {
   kslides {
     output {
