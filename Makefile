@@ -1,6 +1,6 @@
 .PHONY: default help build-all stop clean build local-build lint detekt refresh tests \
-        fatjar uber dist stage deps process-resources versions kdocs clean-docs site publish-local \
-        publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
+        fatjar uber dist stage deps process-resources versions check-site upgrade-site kdocs clean-docs site \
+        publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _require-version _require-gradle-version
 
 VERSION := $(shell sed -n 's/^version=\(.*\)/\1/p' gradle.properties)
@@ -64,6 +64,12 @@ process-resources:  ## Run kslides-core processResources (grafts reveal.js asset
 
 versions:  ## Check for dependency updates (default target)
 	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
+
+check-site:  ## Check for outdated website dependencies
+	cd website && uv lock --upgrade --dry-run
+
+upgrade-site:  ## Upgrade the website dependencies
+	cd website && uv lock --upgrade
 
 kdocs:  ## Generate Dokka HTML API docs
 	./gradlew :dokkaGenerate
