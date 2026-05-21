@@ -1,5 +1,5 @@
 .PHONY: default help build-all stop clean build local-build lint detekt refresh tests \
-        fatjar uber dist stage deps process-resources versioncheck kdocs clean-docs site publish-local \
+        fatjar uber dist stage deps process-resources versions kdocs clean-docs site publish-local \
         publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _require-version _require-gradle-version
 
@@ -11,7 +11,7 @@ GPG_ENV = \
 	ORG_GRADLE_PROJECT_signingInMemoryKeyId="$$GPG_SIGNING_KEY_ID" \
 	ORG_GRADLE_PROJECT_signingInMemoryKeyPassword=$$(security find-generic-password -a "gpg-signing" -s "gradle-signing-password" -w)
 
-default: versioncheck
+default: help
 
 help:  ## Show this help (list of targets)
 	@awk 'BEGIN {FS = ":.*?## "; printf "Usage: make <target>\n\nTargets:\n"} \
@@ -62,7 +62,7 @@ deps:  ## Print the Gradle dependency tree
 process-resources:  ## Run kslides-core processResources (grafts reveal.js assets)
 	./gradlew :kslides-core:processResources
 
-versioncheck:  ## Check for dependency updates (default target)
+versions:  ## Check for dependency updates (default target)
 	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
 
 kdocs:  ## Generate Dokka HTML API docs
