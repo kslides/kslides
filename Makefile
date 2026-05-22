@@ -1,5 +1,5 @@
 .PHONY: default help build-all stop clean build local-build lint detekt refresh tests \
-        fatjar uber dist stage deps process-resources versions check-site upgrade-site kdocs clean-site site \
+        fatjar uber dist stage deps process-resources versions kdocs check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _require-version _require-gradle-version
 
@@ -15,7 +15,7 @@ default: help
 
 help:  ## Show this help (list of targets)
 	@awk 'BEGIN {FS = ":.*?## "; printf "Usage: make <target>\n\nTargets:\n"} \
-		/^[a-zA-Z0-9_-]+:.*?## / {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}' \
+		/^[a-zA-Z0-9_-]+:.*?## / {printf "  \033[36m%-24s\033[0m %s\n", $$1, $$2}' \
 		$(MAKEFILE_LIST)
 
 build-all: clean stage  ## Clean and run a full Heroku stage build
@@ -62,8 +62,11 @@ deps:  ## Print the Gradle dependency tree
 process-resources:  ## Run kslides-core processResources (grafts reveal.js assets)
 	./gradlew :kslides-core:processResources
 
-versions:  ## Check for dependency updates (default target)
+versions:  ## Check for dependency updates
 	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
+
+kdocs:  ## Generate Dokka HTML API docs
+	./gradlew :dokkaGenerate
 
 check-site:  ## Check for outdated website dependencies
 	cd website && env -u VIRTUAL_ENV uv lock --upgrade --dry-run
@@ -71,15 +74,12 @@ check-site:  ## Check for outdated website dependencies
 upgrade-site:  ## Upgrade the website dependencies
 	cd website && env -u VIRTUAL_ENV uv lock --upgrade
 
-kdocs:  ## Generate Dokka HTML API docs
-	./gradlew :dokkaGenerate
-
 clean-site:  ## Remove generated docs and Zensical site artifacts
 	rm -rf docs/playground docs/letsPlot docs/kroki
 	rm -rf website/kslides/site website/kslides/.cache
 
 site: clean-site  ## Serve the Zensical docs site locally
-	cd website/kslides && uv run zensical serve
+	cd website/kslides && env -u VIRTUAL_ENV uv run zensical serve
 
 publish-local: _require-version ## Publish artifacts to Maven Local
 	./gradlew publishToMavenLocal
