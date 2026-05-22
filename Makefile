@@ -66,10 +66,10 @@ versions:  ## Check for dependency updates (default target)
 	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
 
 check-site:  ## Check for outdated website dependencies
-	cd website && uv lock --upgrade --dry-run
+	cd website && env -u VIRTUAL_ENV uv lock --upgrade --dry-run
 
 upgrade-site:  ## Upgrade the website dependencies
-	cd website && uv lock --upgrade
+	cd website && env -u VIRTUAL_ENV uv lock --upgrade
 
 kdocs:  ## Generate Dokka HTML API docs
 	./gradlew :dokkaGenerate
