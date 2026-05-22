@@ -1,5 +1,5 @@
 .PHONY: default help build-all stop clean build local-build lint detekt refresh tests \
-        fatjar uber dist stage deps process-resources versions check-site upgrade-site kdocs clean-docs site \
+        fatjar uber dist stage deps process-resources versions check-site upgrade-site kdocs clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _require-version _require-gradle-version
 
@@ -74,11 +74,11 @@ upgrade-site:  ## Upgrade the website dependencies
 kdocs:  ## Generate Dokka HTML API docs
 	./gradlew :dokkaGenerate
 
-clean-docs:  ## Remove generated docs and Zensical site artifacts
+clean-site:  ## Remove generated docs and Zensical site artifacts
 	rm -rf docs/playground docs/letsPlot docs/kroki
 	rm -rf website/kslides/site website/kslides/.cache
 
-site: clean-docs  ## Serve the Zensical docs site locally
+site: clean-site  ## Serve the Zensical docs site locally
 	cd website/kslides && uv run zensical serve
 
 publish-local: _require-version ## Publish artifacts to Maven Local
