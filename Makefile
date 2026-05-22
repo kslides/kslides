@@ -4,7 +4,10 @@
         _check-gpg-env _require-version _require-gradle-version
 
 VERSION := $(shell sed -n 's/^version=\(.*\)/\1/p' gradle.properties)
-GRADLE_VERSION := $(shell sed -n 's/^gradle = "\(.*\)"/\1/p' gradle/libs.versions.toml)
+GRADLE_VERSION := $(shell sed -n 's/^gradle-wrapper = "\(.*\)"/\1/p' gradle/libs.versions.toml)
+
+WEBSITE_DIR := website
+SITE_DIR    := $(WEBSITE_DIR)/kslides
 
 GPG_ENV = \
 	ORG_GRADLE_PROJECT_signingInMemoryKey="$$(gpg --armor --export-secret-keys $$GPG_SIGNING_KEY_ID)" \
@@ -69,17 +72,17 @@ kdocs:  ## Generate Dokka HTML API docs
 	./gradlew :dokkaGenerate
 
 check-site:  ## Check for outdated website dependencies
-	cd website && env -u VIRTUAL_ENV uv lock --upgrade --dry-run
+	cd $(WEBSITE_DIR) && env -u VIRTUAL_ENV uv lock --upgrade --dry-run
 
 upgrade-site:  ## Upgrade the website dependencies
-	cd website && env -u VIRTUAL_ENV uv lock --upgrade
+	cd $(WEBSITE_DIR) && env -u VIRTUAL_ENV uv lock --upgrade
 
 clean-site:  ## Remove generated docs and Zensical site artifacts
 	rm -rf docs/playground docs/letsPlot docs/kroki
-	rm -rf website/kslides/site website/kslides/.cache
+	rm -rf $(SITE_DIR)/site $(SITE_DIR)/.cache
 
 site: clean-site  ## Serve the Zensical docs site locally
-	cd website/kslides && env -u VIRTUAL_ENV uv run zensical serve
+	cd $(SITE_DIR) && env -u VIRTUAL_ENV uv run zensical serve
 
 publish-local: _require-version ## Publish artifacts to Maven Local
 	./gradlew publishToMavenLocal

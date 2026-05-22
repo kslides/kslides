@@ -1,6 +1,6 @@
 [versions]
 # Build toolchain
-gradle = "9.5.1"
+gradle-wrapper = "9.5.1"
 jvm = "17"
 kotlin = "2.3.21"
 
