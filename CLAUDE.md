@@ -9,7 +9,7 @@ kslides is a Kotlin DSL for the [reveal.js](https://revealjs.com) presentation f
 ## Build Commands
 
 ```bash
-./gradlew build -xtest     # Build without tests
+./gradlew build -x test     # Build without tests
 ./gradlew test              # Run tests (Kotest + JUnit 5)
 ./gradlew buildFatJar       # Build executable fat JAR (kslides-examples)
 ./gradlew clean             # Clean build artifacts
@@ -35,7 +35,7 @@ java -jar build/libs/kslides.jar
 Common wrappers in `Makefile`:
 
 ```bash
-make build                 # clean + gradle build -xtest
+make build                 # clean + gradle build -x test
 make lint                  # lintKotlinMain + lintKotlinTest
 make detekt                # Detekt static analysis (non-fatal)
 make tests                 # cleanTest test

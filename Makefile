@@ -30,10 +30,10 @@ clean:  ## Remove Gradle build artifacts
 	./gradlew clean
 
 build: clean  ## Clean and build (skips tests)
-	./gradlew build -xtest
+	./gradlew build -x test
 
 local-build: clean  ## Clean and build using Maven Local artifacts
-	./gradlew build -PuseMavenLocal=true -xtest
+	./gradlew build -PuseMavenLocal=true -x test
 
 lint: detekt  ## Run Detekt and Kotlinter lint on main and test sources
 	./gradlew lintKotlinMain lintKotlinTest
@@ -42,7 +42,7 @@ detekt:  ## Run Detekt static analysis
 	./gradlew detekt
 
 refresh:  ## Refresh dependencies and build (skips tests)
-	./gradlew --refresh-dependencies build -xtest
+	./gradlew --refresh-dependencies build -x test
 
 tests:  ## Clean test results and re-run the test suite
 	./gradlew cleanTest test
