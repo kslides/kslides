@@ -35,12 +35,17 @@ java -jar build/libs/kslides.jar
 Common wrappers in `Makefile`:
 
 ```bash
+make help                  # list all targets (default target)
 make build                 # clean + gradle build -x test
 make lint                  # lintKotlinMain + lintKotlinTest
 make detekt                # Detekt static analysis (non-fatal)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
-make versioncheck          # dependencyUpdates (default target)
+make versions              # dependencyUpdates
+make check-site            # uv lock --upgrade --dry-run for the docs site
+make upgrade-site          # uv lock --upgrade for the docs site
+make site                  # clean-site + serve the Zensical docs site
+make upgrade-wrapper       # upgrade the Gradle wrapper to the libs.versions.toml version
 make publish-local         # publishToMavenLocal
 make publish-snapshot      # publish -SNAPSHOT to Maven Central (signed)
 make publish-maven-central # release to Maven Central (signed)
