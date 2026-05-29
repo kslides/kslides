@@ -10,6 +10,11 @@ val libs = the<VersionCatalogsExtension>().named("libs")
 
 kotlin {
     jvmToolchain(libs.findVersion("jvm").get().requiredVersion.toInt())
+    compilerOptions {
+        // Enable context parameters (experimental in Kotlin 2.4) so DSL extension functions can
+        // receive the enclosing kotlinx.html SECTION implicitly instead of via a mutable field.
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }
 
 // Detekt 2.0 is alpha; report findings without failing the build. Override per-project

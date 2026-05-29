@@ -4,6 +4,7 @@ import com.kslides.LetsPlot.letsPlotContent
 import com.kslides.LetsPlot.scriptUrlForVersion
 import com.kslides.config.LetsPlotIframeConfig
 import com.kslides.slide.DslSlide
+import kotlinx.html.SECTION
 import kotlinx.html.iframe
 import kotlinx.html.style
 import kotlinx.html.title
@@ -26,8 +27,11 @@ import org.jetbrains.letsPlot.commons.geometry.DoubleVector
  * @param iframeConfig size/style overrides for the enclosing iframe. Merged with global and
  *   presentation defaults.
  * @param block lambda returning the [Figure] to render.
- * @throws IllegalStateException if called outside a [DslSlide] `content{}` block.
+ *
+ * The enclosing `<section>` is supplied via the [SECTION] context parameter, so calling this
+ * outside a [DslSlide] `content{}` block is a compile-time error.
  */
+context(section: SECTION)
 fun DslSlide.letsPlot(
   dimensions: Dimensions? = null,
   iframeConfig: LetsPlotIframeConfig = LetsPlotIframeConfig(),
@@ -49,11 +53,11 @@ fun DslSlide.letsPlot(
     letsPlotContent(block(), scriptUrl, plotSize)
   }
 
-  private_section?.iframe {
+  section.iframe {
     src = letsPlotFilename(filename)
     mergedConfig.width.also { if (it.isNotBlank()) this.width = it }
     mergedConfig.height.also { if (it.isNotBlank()) this.height = it }
     mergedConfig.style.also { if (it.isNotBlank()) this.style = it }
     mergedConfig.title.also { if (it.isNotBlank()) this.title = it }
-  } ?: error("letsPlot() must be called from within a content{} block")
+  }
 }
