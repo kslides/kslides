@@ -27,9 +27,6 @@ interface DslSlide {
   /** The [Presentation] that owns this slide. */
   val presentation: Presentation
 
-  /** Implementation detail — do not use. */
-  var private_section: SECTION? // TODO This is a hack that will go away when context receivers work
-
   /** Implementation detail — unique slide id used to generate iframe filenames. */
   val private_slideId: Int
 
@@ -121,7 +118,6 @@ class HorizontalDslSlide(
   content: SlideArgs,
 ) : HorizontalSlide(presentation, content),
   DslSlide {
-  override var private_section: SECTION? = null
   override var private_dslBlock: SECTION.() -> Unit = { }
   override var private_iframeCount = 1
   override var private_useHttp: Boolean = false
@@ -152,7 +148,6 @@ class VerticalDslSlide(
   content: SlideArgs,
 ) : VerticalSlide(presentation, content),
   DslSlide {
-  override var private_section: SECTION? = null
   override var private_dslBlock: SECTION.() -> Unit = { }
   override var private_iframeCount = 1
   override var private_useHttp: Boolean = false

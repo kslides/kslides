@@ -12,10 +12,10 @@ import io.ktor.client.plugins.onDownload
 import io.ktor.client.plugins.timeout
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
 import io.ktor.http.ContentType.Application
 import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
+import kotlinx.html.SECTION
 import kotlinx.html.div
 import kotlinx.html.img
 import kotlinx.html.style
@@ -48,8 +48,11 @@ class DiagramDescription : DiagramConfig() {
  *   `"graphviz"`, `"erd"`. See [Kroki's supported types](https://kroki.io/#support).
  * @param diagramBlock populates a [DiagramDescription] with the diagram source and optional
  *   [DiagramConfig] overrides (size, style, output format, Kroki options).
- * @throws IllegalStateException if called outside a [DslSlide] `content{}` block.
+ *
+ * The enclosing `<section>` is supplied via the [SECTION] context parameter, so calling this
+ * outside a [DslSlide] `content{}` block is a compile-time error.
  */
+context(section: SECTION)
 fun DslSlide.diagram(
   diagramType: String,
   diagramBlock: DiagramDescription.() -> Unit,
@@ -80,7 +83,7 @@ fun DslSlide.diagram(
     fetchKrokiContent(filename, configMap)
   }
 
-  private_section?.div(classes.nullIfBlank()) {
+  section.div(classes.nullIfBlank()) {
     img {
       src = krokiFilename(filename)
       mergedConfig.width.also { if (it.isNotBlank()) width = it }
@@ -88,7 +91,7 @@ fun DslSlide.diagram(
       mergedConfig.style.also { if (it.isNotBlank()) style = it }
       mergedConfig.title.also { if (it.isNotBlank()) title = it }
     }
-  } ?: error("diagram() must be called from within a content{} block")
+  }
 }
 
 private fun DslSlide.fetchKrokiContent(

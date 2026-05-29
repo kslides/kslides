@@ -667,7 +667,6 @@ private fun SECTION.processMarkdown(
 private fun DIV.processDsl(s: DslSlide) {
   section(s.classes.nullIfBlank()) {
     s.processSlide(this)
-    s.private_section = this // TODO This is a hack that will go away when context receivers work
     s.private_dslBlock(this)
     require(s.private_dslAssigned) { "dslSlide missing content{} block" }
   }.also { rawHtml("\n") }
