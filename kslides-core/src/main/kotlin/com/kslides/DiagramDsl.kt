@@ -1,13 +1,20 @@
+@file:Suppress("MatchingDeclarationName")
+
 package com.kslides
 
 import com.kslides.config.DiagramConfig
 import com.kslides.slide.DslSlide
 import com.pambrose.common.util.nullIfBlank
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.client.call.*
-import io.ktor.client.plugins.*
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.ktor.client.call.body
+import io.ktor.client.plugins.expectSuccess
+import io.ktor.client.plugins.onDownload
+import io.ktor.client.plugins.timeout
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.ContentType.Application
+import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import kotlinx.html.div
 import kotlinx.html.img
@@ -96,7 +103,7 @@ private fun DslSlide.fetchKrokiContent(
       presentation.kslides.client.post(kslidesConfig.krokiUrl) {
         expectSuccess = true
         timeout { requestTimeoutMillis = kslidesConfig.clientHttpTimeout.inWholeMilliseconds }
-        contentType(ContentType.Application.Json)
+        contentType(Application.Json)
         setBody(json.toString())
         onDownload { bytesSentTotal, contentLength ->
           DiagramDescription.logger.info { "Received $bytesSentTotal bytes of $contentLength for $filename" }

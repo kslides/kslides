@@ -31,6 +31,7 @@ typealias SlideArgs = (div: DIV, slide: Slide, useHttp: Boolean) -> Unit
  * [Presentation.htmlSlide], [Presentation.dslSlide], or [Presentation.verticalSlides].
  */
 @KSlidesDslMarker
+@Suppress("VariableNaming")
 abstract class Slide(
   private val presentation: Presentation,
   internal val content: SlideArgs,

@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package com.kslides
 
 import com.kslides.DiagramOutputType.SVG
@@ -7,7 +9,25 @@ import com.kslides.InternalUtils.writeString
 import com.kslides.config.CodeSnippetConfig
 import com.pambrose.common.util.nullIfBlank
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.html.*
+import kotlinx.html.A
+import kotlinx.html.FlowContent
+import kotlinx.html.FlowOrInteractiveOrPhrasingContent
+import kotlinx.html.LI
+import kotlinx.html.OL
+import kotlinx.html.TBODY
+import kotlinx.html.TD
+import kotlinx.html.TH
+import kotlinx.html.THEAD
+import kotlinx.html.UL
+import kotlinx.html.a
+import kotlinx.html.code
+import kotlinx.html.li
+import kotlinx.html.ol
+import kotlinx.html.pre
+import kotlinx.html.td
+import kotlinx.html.th
+import kotlinx.html.tr
+import kotlinx.html.ul
 
 /**
  * Internal namespace for the kslides DSL infrastructure. Currently exposes only the shared

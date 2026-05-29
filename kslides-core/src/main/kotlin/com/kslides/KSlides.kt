@@ -12,20 +12,44 @@ import com.kslides.config.PresentationConfig
 import com.pambrose.common.response.respondWith
 import com.pambrose.common.util.ensureSuffix
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.client.*
-import io.ktor.client.plugins.*
-import io.ktor.server.application.*
-import io.ktor.server.cio.*
-import io.ktor.server.engine.*
-import io.ktor.server.http.content.*
-import io.ktor.server.plugins.calllogging.*
-import io.ktor.server.plugins.compression.*
-import io.ktor.server.plugins.defaultheaders.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.cio.CIO
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.http.content.staticResources
+import io.ktor.server.plugins.calllogging.CallLogging
+import io.ktor.server.plugins.compression.Compression
+import io.ktor.server.plugins.compression.deflate
+import io.ktor.server.plugins.compression.gzip
+import io.ktor.server.plugins.compression.minimumSize
+import io.ktor.server.plugins.defaultheaders.DefaultHeaders
+import io.ktor.server.response.respondBytes
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import kotlinx.css.CssBuilder
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.List
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.filter
+import kotlin.collections.forEach
+import kotlin.collections.get
+import kotlin.collections.isNotEmpty
+import kotlin.collections.joinToString
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.plusAssign
+import kotlin.text.String
+import kotlin.text.endsWith
+import kotlin.text.get
+import kotlin.text.isNotBlank
+import kotlin.text.split
 
 /**
  * Marks receiver types that participate in the kslides DSL so that Kotlin's scope-control can
@@ -246,6 +270,7 @@ class KSlides {
         }
     }
 
+    @Suppress("CyclomaticComplexMethod", "LongMethod")
     private fun appModule(config: OutputConfig): Application.() -> Unit =
       {
         // By embedding this logic here, rather than in an Application.module() call, we are not able to use auto-reload

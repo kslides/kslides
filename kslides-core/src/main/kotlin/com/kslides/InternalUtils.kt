@@ -8,6 +8,7 @@ import java.io.File
  * line-range parsing for code-snippet highlighting, file output, and small string predicates.
  * Implementation detail — not part of the public API.
  */
+@Suppress("TooManyFunctions")
 internal object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
 

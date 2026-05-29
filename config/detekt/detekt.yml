@@ -97,7 +97,6 @@ complexity:
       - 'also'
       - 'apply'
       - 'forEach'
-      - 'isNotNull'
       - 'ifNull'
       - 'let'
       - 'run'

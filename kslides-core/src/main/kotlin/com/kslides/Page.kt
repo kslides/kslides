@@ -3,11 +3,27 @@ package com.kslides
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.config.PresentationConfig
 import com.pambrose.common.util.ensureSuffix
-import com.pambrose.common.util.isNotNull
-import kotlinx.html.*
+import kotlinx.coroutines.async
+import kotlinx.css.a
+import kotlinx.css.img
+import kotlinx.css.link
+import kotlinx.css.meta
+import kotlinx.html.HTML
+import kotlinx.html.a
+import kotlinx.html.body
+import kotlinx.html.div
 import kotlinx.html.dom.append
 import kotlinx.html.dom.document
 import kotlinx.html.dom.serialize
+import kotlinx.html.head
+import kotlinx.html.html
+import kotlinx.html.id
+import kotlinx.html.img
+import kotlinx.html.link
+import kotlinx.html.meta
+import kotlinx.html.script
+import kotlinx.html.style
+import kotlinx.html.title
 import java.io.FileNotFoundException
 
 internal object Page {
@@ -31,23 +47,20 @@ internal object Page {
 
     // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
     val nodeList = htmldoc.getElementsByTagName("*")
-    (0..nodeList.length)
-      .forEach { i ->
-        val node = nodeList.item(i)
-        if (node.isNotNull()) {
-          if (node.nodeName == "section") {
-            node.attributes.getNamedItem("data-separator")?.apply {
-              nodeValue = nodeValue.replace("\n", "\\n")
-              nodeValue = nodeValue.replace("\r", "\\r")
-            }
+    for (i in 0..<nodeList.length) {
+      val node = nodeList.item(i)
+      if (node.nodeName == "section") {
+        node.attributes.getNamedItem("data-separator")?.apply {
+          nodeValue = nodeValue.replace("\n", "\\n")
+          nodeValue = nodeValue.replace("\r", "\\r")
+        }
 
-            node.attributes.getNamedItem("data-separator-vertical")?.apply {
-              nodeValue = nodeValue.replace("\n", "\\n")
-              nodeValue = nodeValue.replace("\r", "\\r")
-            }
-          }
+        node.attributes.getNamedItem("data-separator-vertical")?.apply {
+          nodeValue = nodeValue.replace("\n", "\\n")
+          nodeValue = nodeValue.replace("\r", "\\r")
         }
       }
+    }
 
     /*
     This is a hack to fix a copycode issue: the <pre> and <code> tags must be on the same line
@@ -86,6 +99,7 @@ internal object Page {
     }
   }
 
+  @Suppress("LongMethod")
   private fun HTML.generateHead(
     p: Presentation,
     config: PresentationConfig,
@@ -171,6 +185,7 @@ internal object Page {
     writeCssToHead(p.css)
   }
 
+  @Suppress("CyclomaticComplexMethod")
   private fun HTML.generateBody(
     p: Presentation,
     config: PresentationConfig,

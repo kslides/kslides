@@ -4,7 +4,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/com.kslides/kslides-core)](https://central.sonatype.com/namespace/com.kslides)
 [![CI](https://github.com/kslides/kslides/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/kslides/kslides/actions/workflows/ci.yml)
 [![Dokka](https://github.com/kslides/kslides/actions/workflows/dokka.yml/badge.svg?branch=master)](https://github.com/kslides/kslides/actions/workflows/dokka.yml)
-[![Kotlin version](https://img.shields.io/badge/kotlin-2.3.21-red?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin version](https://img.shields.io/badge/kotlin-2.4.0--RC2-red?logo=kotlin)](http://kotlinlang.org)
 [![JVM](https://img.shields.io/badge/JVM-17-007396?logo=openjdk&logoColor=white)](https://adoptium.net/)
 [![Kotest](https://img.shields.io/badge/tested%20with-Kotest-4DC4FF)](https://kotest.io/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/701fc37a847042d2ae2cd6e80075ff6f)](https://www.codacy.com/gh/kslides/kslides/dashboard?amp;utm_medium=referral&amp;utm_content=kslides/kslides&amp;utm_campaign=Badge_Grade)

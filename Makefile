@@ -1,20 +1,25 @@
 .PHONY: default help build-all stop clean build local-build lint detekt refresh tests \
-        fatjar uber dist stage deps process-resources versioncheck kdocs \
-        clean-docs site publish-local publish-local-snapshot publish-snapshot publish-maven-central \
-        upgrade-wrapper _check-gpg-env _require-version _require-gradle-version
+        fatjar uber dist stage deps process-resources versions kdocs check-site upgrade-site clean-site site \
+        publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
+        _check-gpg-env _require-version _require-gradle-version
 
-VERSION := $(shell sed -n 's/^version[[:space:]]*=[[:space:]]*//p' gradle.properties | head -1)
-GRADLE_VERSION := $(shell sed -n 's/^gradle[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' gradle/libs.versions.toml | head -1)
+VERSION := $(shell sed -n 's/^version=\(.*\)/\1/p' gradle.properties)
+GRADLE_VERSION := $(shell sed -n 's/^gradle-wrapper = "\(.*\)"/\1/p' gradle/libs.versions.toml)
+
+WEBSITE_DIR := website
+SITE_DIR    := $(WEBSITE_DIR)/kslides
 
 GPG_ENV = \
 	ORG_GRADLE_PROJECT_signingInMemoryKey="$$(gpg --armor --export-secret-keys $$GPG_SIGNING_KEY_ID)" \
 	ORG_GRADLE_PROJECT_signingInMemoryKeyId="$$GPG_SIGNING_KEY_ID" \
 	ORG_GRADLE_PROJECT_signingInMemoryKeyPassword=$$(security find-generic-password -a "gpg-signing" -s "gradle-signing-password" -w)
 
-default: versioncheck
+default: help
 
-help:  ## Show this help (list targets with descriptions)
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+help:  ## Show this help (list of targets)
+	@awk 'BEGIN {FS = ":.*?## "; printf "Usage: make <target>\n\nTargets:\n"} \
+		/^[a-zA-Z0-9_-]+:.*?## / {printf "  \033[36m%-24s\033[0m %s\n", $$1, $$2}' \
+		$(MAKEFILE_LIST)
 
 build-all: clean stage  ## Clean and run a full Heroku stage build
 
@@ -25,10 +30,10 @@ clean:  ## Remove Gradle build artifacts
 	./gradlew clean
 
 build: clean  ## Clean and build (skips tests)
-	./gradlew build -xtest
+	./gradlew build -x test
 
 local-build: clean  ## Clean and build using Maven Local artifacts
-	./gradlew build -PuseMavenLocal=true -xtest
+	./gradlew build -PuseMavenLocal=true -x test
 
 lint: detekt  ## Run Detekt and Kotlinter lint on main and test sources
 	./gradlew lintKotlinMain lintKotlinTest
@@ -37,7 +42,7 @@ detekt:  ## Run Detekt static analysis
 	./gradlew detekt
 
 refresh:  ## Refresh dependencies and build (skips tests)
-	./gradlew --refresh-dependencies build -xtest
+	./gradlew --refresh-dependencies build -x test
 
 tests:  ## Clean test results and re-run the test suite
 	./gradlew cleanTest test
@@ -60,18 +65,24 @@ deps:  ## Print the Gradle dependency tree
 process-resources:  ## Run kslides-core processResources (grafts reveal.js assets)
 	./gradlew :kslides-core:processResources
 
-versioncheck:  ## Check for dependency updates (default target)
+versions:  ## Check for dependency updates
 	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
 
 kdocs:  ## Generate Dokka HTML API docs
 	./gradlew :dokkaGenerate
 
-clean-docs:  ## Remove generated docs and Zensical site artifacts
-	rm -rf docs/playground docs/letsPlot docs/kroki
-	rm -rf website/kslides/site website/kslides/.cache
+check-site:  ## Check for outdated website dependencies
+	cd $(WEBSITE_DIR) && env -u VIRTUAL_ENV uv lock --upgrade --dry-run
 
-site: clean-docs  ## Serve the Zensical docs site locally
-	cd website/kslides && uv run zensical serve
+upgrade-site:  ## Upgrade the website dependencies
+	cd $(WEBSITE_DIR) && env -u VIRTUAL_ENV uv lock --upgrade
+
+clean-site:  ## Remove generated docs and Zensical site artifacts
+	rm -rf docs/playground docs/letsPlot docs/kroki
+	rm -rf $(SITE_DIR)/site $(SITE_DIR)/.cache
+
+site: clean-site  ## Serve the Zensical docs site locally
+	cd $(SITE_DIR) && env -u VIRTUAL_ENV uv run zensical serve
 
 publish-local: _require-version ## Publish artifacts to Maven Local
 	./gradlew publishToMavenLocal

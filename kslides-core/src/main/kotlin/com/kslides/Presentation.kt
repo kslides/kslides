@@ -3,12 +3,27 @@ package com.kslides
 import com.kslides.InternalUtils.indentInclude
 import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
-import com.kslides.slide.*
+import com.kslides.slide.DslSlide
+import com.kslides.slide.HorizontalDslSlide
+import com.kslides.slide.HorizontalHtmlSlide
+import com.kslides.slide.HorizontalMarkdownSlide
+import com.kslides.slide.HtmlSlide
+import com.kslides.slide.MarkdownSlide
+import com.kslides.slide.Slide
+import com.kslides.slide.VerticalDslSlide
+import com.kslides.slide.VerticalHtmlSlide
+import com.kslides.slide.VerticalMarkdownSlide
+import com.kslides.slide.VerticalSlide
 import com.pambrose.common.util.nullIfBlank
 import com.pambrose.srcref.Api.srcrefUrl
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.css.CssBuilder
-import kotlinx.html.*
+import kotlinx.html.DIV
+import kotlinx.html.SECTION
+import kotlinx.html.id
+import kotlinx.html.script
+import kotlinx.html.section
+import kotlinx.html.style
 
 /**
  * A single presentation — the unit that reveal.js renders as one HTML page. Created via
@@ -20,6 +35,7 @@ import kotlinx.html.*
  * @property kslides the owning [KSlides] instance; provides access to global config and
  *   shared caches (iframe content, Kroki content).
  */
+@Suppress("TooManyFunctions")
 @KSlidesDslMarker
 class Presentation(
   val kslides: KSlides,
@@ -87,8 +103,9 @@ class Presentation(
         (slide as VerticalSlide)
           .verticalContext
           .also { vcontext ->
-            // Calling resetContext() is a bit of a hack. It is required because the vertical slide lambdas are executed
-            // for both http and the filesystem. Without resetting the slide context, you will end up with double the slides
+            // Calling resetContext() is a bit of a hack. It is required because the vertical slide lambdas
+            // are executed for both http and the filesystem.
+            // Without resetting the slide context, you will end up with double the slides
             vcontext.resetContext()
             vcontext.block()
 
@@ -434,6 +451,7 @@ class Presentation(
     else -> throw IllegalArgumentException("Invalid value for $key: $value")
   }
 
+  @Suppress("CyclomaticComplexMethod", "LongMethod")
   internal fun toJs(
     config: PresentationConfig,
     srcPrefix: String,

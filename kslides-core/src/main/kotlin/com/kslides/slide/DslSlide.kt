@@ -1,9 +1,15 @@
+@file:Suppress("VariableNaming")
+
 package com.kslides.slide
 
 import com.kslides.KSlidesDslMarker
 import com.kslides.Presentation
 import com.pambrose.common.util.toPath
-import kotlinx.html.*
+import kotlinx.html.ASIDE
+import kotlinx.html.SECTION
+import kotlinx.html.SectioningOrFlowContent
+import kotlinx.html.attributesMapOf
+import kotlinx.html.visit
 
 /**
  * Shared contract for slides whose content is authored with the kotlinx.html DSL. Implemented by

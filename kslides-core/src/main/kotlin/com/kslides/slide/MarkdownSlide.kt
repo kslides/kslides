@@ -15,6 +15,7 @@ import com.kslides.Presentation
  *   mechanism instead of from the `content{}` block.
  */
 @KSlidesDslMarker
+@Suppress("VariableNaming")
 interface MarkdownSlide {
   /** Implementation detail — do not use. */
   var private_markdownBlock: () -> String

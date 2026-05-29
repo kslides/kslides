@@ -9,7 +9,7 @@ kslides is a Kotlin DSL for the [reveal.js](https://revealjs.com) presentation f
 ## Build Commands
 
 ```bash
-./gradlew build -xtest     # Build without tests
+./gradlew build -x test     # Build without tests
 ./gradlew test              # Run tests (Kotest + JUnit 5)
 ./gradlew buildFatJar       # Build executable fat JAR (kslides-examples)
 ./gradlew clean             # Clean build artifacts
@@ -35,12 +35,17 @@ java -jar build/libs/kslides.jar
 Common wrappers in `Makefile`:
 
 ```bash
-make build                 # clean + gradle build -xtest
+make help                  # list all targets (default target)
+make build                 # clean + gradle build -x test
 make lint                  # lintKotlinMain + lintKotlinTest
 make detekt                # Detekt static analysis (non-fatal)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
-make versioncheck          # dependencyUpdates (default target)
+make versions              # dependencyUpdates
+make check-site            # uv lock --upgrade --dry-run for the docs site
+make upgrade-site          # uv lock --upgrade for the docs site
+make site                  # clean-site + serve the Zensical docs site
+make upgrade-wrapper       # upgrade the Gradle wrapper to the libs.versions.toml version
 make publish-local         # publishToMavenLocal
 make publish-snapshot      # publish -SNAPSHOT to Maven Central (signed)
 make publish-maven-central # release to Maven Central (signed)
@@ -120,14 +125,14 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 
 ## Tech Stack
 
-- Kotlin 2.3.21, JVM 17 toolchain
+- Kotlin 2.4.0-RC2, JVM 17 toolchain
 - Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.5.0
-- Ktor 3.4.3 (server + client)
+- Ktor 3.5.0 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
-- Lets-Plot Kotlin 4.13.0 for the `letsPlot{}` DSL (matched JS runtime v4.9.0, configurable via `KSlidesConfig.letsPlotJsVersion`)
+- Lets-Plot Kotlin 4.14.0 for the `letsPlot{}` DSL (matched JS runtime v4.9.0, configurable via `KSlidesConfig.letsPlotJsVersion`)
 - Kotlinter for linting (ktlint-based) and Detekt 2.0.0-alpha.3 for static analysis (`dev.detekt`)
 - reveal.js assets live at the repo root in `docs/revealjs/` (single source of truth, committed for GitHub Pages). `kslides-core/build.gradle.kts` grafts them onto the published JAR's classpath at `revealjs/**` via `processResources` so the Ktor static handler can serve them at runtime — there is no checked-in `kslides-core/src/main/resources/revealjs/` directory.
-- All versions — including the JVM toolchain (`jvm`) and the Gradle wrapper distribution (`gradle`) — are centralized in `gradle/libs.versions.toml`. The convention plugin reads `jvm` via `VersionCatalogsExtension`, and the `Makefile`'s `upgrade-wrapper` target reads `gradle` from the same file.
+- All versions — including the JVM toolchain (`jvm`) and the Gradle wrapper distribution (`gradle-wrapper`) — are centralized in `gradle/libs.versions.toml`. The convention plugin reads `jvm` via `VersionCatalogsExtension`, and the `Makefile`'s `upgrade-wrapper` target reads `gradle-wrapper` from the same file.
 
 ## Important Notes
 

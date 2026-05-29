@@ -1,3 +1,5 @@
+@file:Suppress("VariableNaming")
+
 package com.kslides.slide
 
 import com.kslides.KSlidesDslMarker

@@ -30,13 +30,13 @@ the report without breaking the build. To enforce violations
 
 - The Gradle wrapper distribution version and the JVM toolchain
   version are now declared in `gradle/libs.versions.toml` as the
-  `gradle` and `jvm` version keys, alongside the rest of the version
-  catalog. The `kslides.kotlin-module` convention plugin reads `jvm`
-  via `VersionCatalogsExtension` for `jvmToolchain(...)`, and the
-  `Makefile`'s `upgrade-wrapper` target reads `gradle` from the
-  catalog (with a missing-value guard mirroring the existing
+  `gradle-wrapper` and `jvm` version keys, alongside the rest of the
+  version catalog. The `kslides.kotlin-module` convention plugin
+  reads `jvm` via `VersionCatalogsExtension` for `jvmToolchain(...)`,
+  and the `Makefile`'s `upgrade-wrapper` target reads `gradle-wrapper`
+  from the catalog (with a missing-value guard mirroring the existing
   `VERSION` extraction). To roll the project forward to a new Gradle
-  version, bump `gradle` in `libs.versions.toml` and run
+  version, bump `gradle-wrapper` in `libs.versions.toml` and run
   `make upgrade-wrapper`.
 - Repeated string literals in the build scripts were collapsed:
   `kslides.published-module` extracts `repoSlug` / `repoUrl` so the
@@ -44,6 +44,63 @@ the report without breaking the build. To enforce violations
   `scm.connection`, and `scm.developerConnection`; the root `stage`
   task uses a local `examples` constant for the `:kslides-examples`
   module path.
+
+### Dependency bumps
+
+The version catalog rolled forward to:
+
+- Gradle wrapper `9.5.1`
+- Kotlin `2.4.0-RC2`
+- Ktor `3.5.0`
+- Lets-Plot Kotlin `4.14.0`
+- kotlin-css `2026.5.6`
+- logback `1.5.33`
+- kotlin-logging `8.0.4`
+
+The Kotlin 2.4.0-RC2 bump prompted a sweep of `kslides-core` to
+replace wildcard imports (`io.ktor.*`, `kotlinx.html.*`, stdlib
+collection/text packages) with explicit per-symbol imports. IDEA's
+project code style was updated to keep `io.ktor` out of the
+star-import package list. No public DSL or runtime API changed.
+
+### Bug fix
+
+`Page.kt`'s markdown-section attribute escaping pass iterated the DOM
+`NodeList` as `(0..nodeList.length).forEach`, which is **inclusive**
+of `length` — one past the valid index range. A `node.isNotNull()`
+guard was silently swallowing the final out-of-range iteration. The
+loop is now `for (i in 0..<nodeList.length)` and the redundant null
+guard is gone. The behavior change is invisible to users; it
+eliminates a per-page no-op DOM lookup and also clears Detekt's
+`ForEachOnRange` performance finding.
+
+### Detekt hygiene
+
+A handful of file- and declaration-level `@Suppress` annotations
+were added where Detekt's default thresholds don't fit the shape of
+the DSL surface (overload-heavy aggregator files such as
+`KSlidesDsl.kt`, the `*Dsl.kt` helpers, and the config classes that
+own many small properties). `CssValue.cssError`'s diagnostic
+message was hoisted to a `const val` so the expression body fits
+on one line — resolving a long-standing conflict between Detekt's
+`MaxLineLength` (120 chars) and ktlint's `function-signature` rule.
+
+### Makefile polish
+
+New shortcuts for the docs site's `uv` lockfile:
+
+- `make check-site` — `uv lock --upgrade --dry-run`
+- `make upgrade-site` — `uv lock --upgrade`
+- `make clean-site` — clears generated docs and the Zensical site
+  cache (the old `clean-docs` target was renamed; `make site` now
+  depends on it)
+
+Each `uv` invocation runs under `env -u VIRTUAL_ENV` so a stale
+workspace virtualenv doesn't shadow `website/.venv`. The default
+target is now `make help` (printing a list of every documented
+target); the previous `versioncheck` target was renamed to
+`versions`. The `WEBSITE_DIR` / `SITE_DIR` variables factor the
+docs paths so they appear once at the top of the file.
 
 ---
 

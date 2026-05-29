@@ -229,7 +229,8 @@ val y = 1              // NO TAB
       lines.fromTo("2", "5", false).size shouldBe 4
     }
 
-    // This tests for the case where you are matching for a token in the same file and you want to avoid matching the invocation
+    // This tests for the case where you are matching for a token in the same file
+    // and you want to avoid matching the invocation
     "From/To Test 2" {
       val text = """
       "1"
