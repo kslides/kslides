@@ -1120,9 +1120,9 @@ fun main() {
         // themes begin
         dslSlide {
           id = "themes"
-          @Suppress("MaxLineLength")
           content {
-            // Hack to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck.
+            // Hack to swap themes after the page has loaded.
+            // This is not flexible and only intended for the reveal.js demo deck.
             h2 { +"Themes" }
             p {
               +"reveal.js comes with some built-in themes:"
