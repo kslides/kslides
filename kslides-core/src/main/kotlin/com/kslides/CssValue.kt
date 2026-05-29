@@ -59,7 +59,10 @@ class CssValue(
   override fun toString() = text
 
   companion object {
-    internal fun cssError(): Nothing = throw IllegalArgumentException("css calls must be made in a kslides{} or presentation{} block")
+    private const val CSS_OUTSIDE_DSL_MESSAGE =
+      "css calls must be made in a kslides{} or presentation{} block"
+
+    internal fun cssError(): Nothing = throw IllegalArgumentException(CSS_OUTSIDE_DSL_MESSAGE)
 
     internal fun HEAD.writeCssToHead(css: CssValue) {
       if (css.isNotBlank()) {
