@@ -4,10 +4,18 @@ import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.config.PlaygroundConfig
 import com.kslides.config.PlaygroundConfig.Companion.toPropertyName
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.html.*
+import kotlinx.css.body
+import kotlinx.css.code
+import kotlinx.css.head
+import kotlinx.html.body
+import kotlinx.html.code
 import kotlinx.html.dom.append
 import kotlinx.html.dom.document
 import kotlinx.html.dom.serialize
+import kotlinx.html.head
+import kotlinx.html.html
+import kotlinx.html.script
+import kotlinx.html.textArea
 
 /**
  * Renderer for Kotlin Playground iframe documents. Builds a self-contained HTML page that boots

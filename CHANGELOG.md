@@ -22,17 +22,55 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 ### Changed
 
 - Centralized the Gradle wrapper version and JVM toolchain version in
-  `gradle/libs.versions.toml` as the new `gradle` and `jvm` version
-  keys. The `kslides.kotlin-module` convention plugin now reads the
-  toolchain version from the catalog via `VersionCatalogsExtension`,
-  and the `Makefile`'s `upgrade-wrapper` target reads `gradle` from
-  the same file (with a missing-value guard).
+  `gradle/libs.versions.toml` as the new `gradle-wrapper` and `jvm`
+  version keys. The `kslides.kotlin-module` convention plugin now
+  reads the toolchain version from the catalog via
+  `VersionCatalogsExtension`, and the `Makefile`'s `upgrade-wrapper`
+  target reads `gradle-wrapper` from the same file (with a
+  missing-value guard).
 - Consolidated repeated string literals in build scripts: extracted
   `repoSlug` / `repoUrl` constants in the
   `kslides.published-module` convention plugin (deduping the GitHub
   URL across `pom.url`, `scm.url`, `scm.connection`, and
   `scm.developerConnection`), and a local `examples` constant in the
   root `build.gradle.kts` for the `stage` task `dependsOn`.
+- Bumped the Gradle wrapper to `9.5.1`, Kotlin to `2.4.0-RC2`, Ktor
+  to `3.5.0`, Lets-Plot Kotlin to `4.14.0`, kotlin-css to
+  `2026.5.6`, logback to `1.5.33`, and kotlin-logging to `8.0.4`.
+- Source files tightened for Kotlin 2.4.0-RC2 forward compatibility:
+  wildcard imports across `kslides-core` (Ktor, kotlinx.html, stdlib
+  collections) replaced with explicit per-symbol imports; IntelliJ's
+  `PACKAGES_TO_USE_STAR_IMPORTS` updated to keep `io.ktor` from
+  re-expanding.
+
+### Fixed
+
+- `Page.kt` markdown-section attribute pass iterated `0..nodeList.length`
+  (inclusive) and relied on a null guard to skip the out-of-range
+  iteration; converted to `for (i in 0..<nodeList.length)` to fix the
+  off-by-one and drop the redundant guard. Also silences Detekt's
+  `ForEachOnRange` finding.
+
+### Build / tooling
+
+- New `Makefile` targets for the docs site dependencies:
+  `check-site` (uv lock --upgrade --dry-run), `upgrade-site`
+  (uv lock --upgrade), and a renamed `clean-site` (formerly
+  `clean-docs`) that the `site` target now depends on. All three
+  uv invocations run under `env -u VIRTUAL_ENV` so a stale
+  workspace virtualenv doesn't shadow `website/.venv`.
+- Added file-level Detekt suppressions on overload-heavy DSL files
+  (`@file:Suppress("TooManyFunctions")` on `KSlidesDsl.kt`,
+  `@file:Suppress("MatchingDeclarationName")` on `DiagramDsl.kt`)
+  and per-declaration suppressions on a few config/slide classes
+  where the default rule thresholds don't fit the DSL surface.
+  Extracted `CssValue.cssError`'s message into a `const val` so the
+  expression body fits on one line (resolving the conflict between
+  Detekt's `MaxLineLength` and ktlint's `function-signature`).
+- `Makefile` polish: `default` is now the `help` target (renamed
+  from `versioncheck` to `versions`); help column width widened so
+  `publish-local-snapshot` aligns; site/website paths factored into
+  `WEBSITE_DIR` / `SITE_DIR` variables.
 
 ## [1.0.0] — 2026-04-29
 

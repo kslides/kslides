@@ -131,6 +131,7 @@ class SlideConfig : AbstractConfig() {
     disableTrimIndent = false   // Disable calling of trimIndent() on markdown content
   }
 
+  @Suppress("CyclomaticComplexMethod")
   internal fun applyConfig(section: SECTION) {
     if (transition != Transition.UNASSIGNED)
       section.attributes["data-transition"] = transition.asInOut()

@@ -1,4 +1,4 @@
-@file:Suppress("unused", "PackageDirectoryMismatch")
+@file:Suppress("unused", "PackageDirectoryMismatch", "MaxLineLength")
 
 package website
 

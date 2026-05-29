@@ -1,6 +1,11 @@
 package com.kslides.config
 
-import com.kslides.*
+import com.kslides.Crosslink
+import com.kslides.CssValue
+import com.kslides.KSlidesDslMarker
+import com.kslides.PlaygroundMode
+import com.kslides.PlaygroundTheme
+import com.kslides.TargetPlatform
 import kotlinx.css.CssBuilder
 import kotlin.reflect.full.isSubclassOf
 

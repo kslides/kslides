@@ -1,6 +1,15 @@
 package com.kslides.config
 
-import com.kslides.*
+import com.kslides.Highlight
+import com.kslides.HrefTarget
+import com.kslides.KSlidesDslMarker
+import com.kslides.PresentationTheme
+import com.kslides.ScrollLayout
+import com.kslides.ScrollProgress
+import com.kslides.ScrollSnap
+import com.kslides.Speed
+import com.kslides.Transition
+import com.kslides.ViewType
 
 /**
  * Presentation-level configuration — mirrors the [reveal.js config options](https://revealjs.com/config/)

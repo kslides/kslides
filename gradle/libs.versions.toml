@@ -2,7 +2,7 @@
 # Build toolchain
 gradle-wrapper = "9.5.1"
 jvm = "17"
-kotlin = "2.3.21"
+kotlin = "2.4.0-RC2"
 
 # Gradle plugins / build tooling
 detekt = "2.0.0-alpha.3"
@@ -19,8 +19,8 @@ serialization = "1.11.0"
 ktor = "3.5.0"
 
 # Logging
-logback = "1.5.32"
-logging = "8.0.03"
+logback = "1.5.33"
+logging = "8.0.4"
 
 # Testing
 junit4 = "4.13.2"
@@ -29,7 +29,7 @@ kotest = "6.1.11"
 # Domain libraries
 common-utils = "2.8.2"
 commons-text = "1.15.0"
-letsplot = "4.13.0"
+letsplot = "4.14.0"
 srcref = "2.0.10"
 
 [libraries]

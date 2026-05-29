@@ -1,6 +1,6 @@
 package com.kslides
 
-import io.ktor.http.*
+import io.ktor.http.ContentType
 
 /**
  * Image format produced by a Kroki [com.kslides.diagram] call. Not every Kroki diagram type
