@@ -13,6 +13,7 @@ import kotlinx.html.CODE
 import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
 import java.io.File
+import java.io.IOException
 import java.net.URL
 
 /** Internal utility holder — not part of the public API. */
@@ -124,8 +125,11 @@ fun githubRawUrl(
  *   surrounding Markdown/HTML; set to `""` in code contexts.
  * @param escapeHtml HTML-escape the returned content; disable for [kotlinx.html.CODE] blocks
  *   that already own their escaping.
- * @return the resolved content, or an empty string if reading fails (a warning is logged).
- * @throws IllegalArgumentException if [src] is a local path containing `"../"`.
+ * @return the resolved content, or an empty string if the file/URL cannot be read (an I/O failure,
+ *   missing file, or failed HTTP fetch — a warning is logged). Authoring errors such as an absent
+ *   [beginToken]/[endToken] or a malformed [linePattern] are not swallowed; they propagate.
+ * @throws IllegalArgumentException if [src] is a local path containing `"../"`, or if a
+ *   [beginToken]/[endToken] is not found, or if [linePattern] is malformed.
  */
 fun include(
   src: String,
@@ -140,25 +144,26 @@ fun include(
   // Do not let queries wander outside of repo — validated up front so the contract documented
   // in the KDoc (`@throws IllegalArgumentException`) is honored regardless of the read path.
   if (!src.isUrl() && src.contains("../")) throw IllegalArgumentException("Illegal filename: $src")
-  return runCatching {
-    if (src.isUrl()) {
-      URL(src)
-        .readText()
-        .lines()
-        .fromTo(beginToken, endToken, exclusive)
-        .toLineRanges(linePattern)
-        .fixIndents(indentToken, trimIndent, escapeHtml)
-    } else {
-      File("${System.getProperty("user.dir")}/$src")
-        .readLines()
-        .fromTo(beginToken, endToken, exclusive)
-        .toLineRanges(linePattern)
-        .fixIndents(indentToken, trimIndent, escapeHtml)
+
+  // Only I/O failures (missing file, unreachable URL, 404) are recoverable — they warn and yield an
+  // empty string. Authoring errors (a begin/end token that is absent, a malformed linePattern) are
+  // allowed to propagate so a mistake fails the build loudly rather than silently rendering a blank
+  // slide. See `include()`'s `@return`/`@throws` contract.
+  val lines =
+    try {
+      if (src.isUrl())
+        URL(src).readText().lines()
+      else
+        File("${System.getProperty("user.dir")}/$src").readLines()
+    } catch (e: IOException) {
+      KSlides.logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
+      return ""
     }
-  }.getOrElse { e ->
-    KSlides.logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
-    ""
-  }
+
+  return lines
+    .fromTo(beginToken, endToken, exclusive)
+    .toLineRanges(linePattern)
+    .fixIndents(indentToken, trimIndent, escapeHtml)
 }
 
 /**

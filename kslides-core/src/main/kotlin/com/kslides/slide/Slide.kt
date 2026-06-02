@@ -101,10 +101,11 @@ abstract class Slide(
     if (style.isNotBlank())
       section.style = style
 
+    // hidden and uncounted both map to the single-valued data-visibility attribute; hidden is the
+    // strictly stronger flag, so it wins when both are set rather than being silently overwritten.
     if (hidden)
       section.attributes["data-visibility"] = "hidden"
-
-    if (uncounted)
+    else if (uncounted)
       section.attributes["data-visibility"] = "uncounted"
 
     if (autoAnimate)

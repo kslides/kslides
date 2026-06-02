@@ -8,6 +8,7 @@ import com.kslides.InternalUtils.toIntList
 import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.trimIndentWithInclude
 import com.kslides.config.PresentationConfig
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -329,6 +330,32 @@ val y = 1              // NO TAB
         it[0] shouldContain "1"
         it[1] shouldContain "3"
         it[2] shouldContain "5"
+      }
+    }
+
+    "fromTo treats begin/end tokens as literal substrings, not regex patterns" {
+      // Regression: tokens containing regex metacharacters must match literally and must never
+      // throw PatternSyntaxException (e.g. "items[0]", "foo(x)").
+      listOf("before", "tag items[0]", "kept", "end foo(x)", "after")
+        .fromTo(beginToken = "items[0]", endToken = "foo(x)") shouldBe listOf("kept")
+
+      // A literal token absent from the text reports "not found" rather than matching via regex
+      // semantics — a raw regex `a.c` would have matched "abc".
+      shouldThrowExactly<IllegalArgumentException> {
+        listOf("abc", "body").fromTo(beginToken = "a.c")
+      }
+    }
+
+    "mkdir creates nested directories" {
+      val base = java.nio.file.Files
+        .createTempDirectory("kslides-mkdir")
+        .toFile()
+      try {
+        val nested = java.io.File(base, "a/b/c").path
+        InternalUtils.mkdir(nested) shouldBe true
+        java.io.File(nested).isDirectory shouldBe true
+      } finally {
+        base.deleteRecursively()
       }
     }
 

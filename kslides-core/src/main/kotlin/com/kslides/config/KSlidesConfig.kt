@@ -47,12 +47,14 @@ class KSlidesConfig {
   var playgroundUrl = "https://unpkg.com/kotlin-playground@1"
 
   /**
-   * Lets-Plot JS runtime version loaded by generated `letsPlot{}` iframes. Must be compatible
-   * with the `lets-plot-kotlin-jvm` artifact on the classpath (e.g. `lets-plot-kotlin-jvm:4.13.0`
-   * → Lets-Plot core `4.9.0`). Overriding here avoids a library release when a compatible JS
-   * runtime is published upstream.
+   * Lets-Plot JS runtime version loaded by generated `letsPlot{}` iframes. Must match the
+   * `lets-plot-common` core version pulled in transitively by the `lets-plot-kotlin-jvm` artifact
+   * on the classpath (e.g. `lets-plot-kotlin-jvm:4.14.0` → Lets-Plot core `4.10.1`). Keep this in
+   * sync whenever the `letsplot` version in `gradle/libs.versions.toml` is bumped; the `ConfigsTest`
+   * "KSlidesConfig pins letsPlotJsVersion to the lets-plot core version" case pins the expected value.
+   * Overriding here avoids a library release when a compatible JS runtime is published upstream.
    */
-  var letsPlotJsVersion = "4.9.0"
+  var letsPlotJsVersion = "4.10.1"
 
   /** Kroki server URL used by [com.kslides.diagram] to render diagrams. */
   var krokiUrl = "https://kroki.io"

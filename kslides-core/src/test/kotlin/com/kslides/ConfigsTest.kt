@@ -75,6 +75,13 @@ class ConfigsTest : StringSpec() {
       KSlidesConfig().letsPlotJsVersion.shouldNotBeBlank()
     }
 
+    "KSlidesConfig pins letsPlotJsVersion to the lets-plot core version" {
+      // The generated letsPlot{} iframes load this JS runtime; it must match the lets-plot-common
+      // core version pulled in transitively by lets-plot-kotlin-jvm (see gradle/libs.versions.toml,
+      // `letsplot = "4.14.0"` -> lets-plot-common 4.10.1). Bump both together.
+      KSlidesConfig().letsPlotJsVersion shouldBe "4.10.1"
+    }
+
     "KSlidesConfig default URLs are reasonable" {
       val config = KSlidesConfig()
       config.playgroundUrl shouldBe "https://unpkg.com/kotlin-playground@1"

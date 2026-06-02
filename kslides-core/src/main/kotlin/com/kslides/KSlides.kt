@@ -241,8 +241,8 @@ class KSlides {
       val outputDir = config.outputDir
       val rootPrefix = config.staticRootDir.ensureSuffix("/")
 
-      // Create directory if missing
-      File(outputDir).mkdir()
+      // Create directory (including any missing parents) if absent
+      File(outputDir).also { if (!it.exists() && !it.mkdirs()) logger.warn { "Unable to create output directory: $outputDir" } }
 
       config.kslides.presentationMap
         .forEach { (key, p) ->
@@ -260,8 +260,8 @@ class KSlides {
                 val pathElems = "$outputDir/$key".split("/").filter { it.isNotBlank() }
                 val path = pathElems.joinToString("/")
                 val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
-                // Create directory if missing
-                File(path).mkdir()
+                // Create directory (including any missing parents) if absent
+                File(path).also { if (!it.exists() && !it.mkdirs()) logger.warn { "Unable to create directory: $path" } }
                 File("$path/index.html") to "$dotDot$rootPrefix"
               }
             }

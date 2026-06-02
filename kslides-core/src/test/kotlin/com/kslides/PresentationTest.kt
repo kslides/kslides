@@ -4,6 +4,8 @@ import com.kslides.Page.generatePage
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 
 class PresentationTest : StringSpec() {
   init {
@@ -256,6 +258,84 @@ class PresentationTest : StringSpec() {
           }
         }
       }
+    }
+
+    "Google Analytics loader uses the configured property id, not a hardcoded one" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            presentationConfig { gaPropertyId = "G-TESTID123" }
+            dslSlide { content { } }
+          }
+        }
+
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain "googletagmanager.com/gtag/js?id=G-TESTID123"
+      html shouldContain "gtag('config', 'G-TESTID123')"
+      // The maintainer's id must never leak into a consumer's generated deck.
+      html shouldNotContain "G-Z6YBNZS12K"
+    }
+
+    "data-visibility: hidden wins when both hidden and uncounted are set" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              hidden = true
+              uncounted = true
+              content { }
+            }
+          }
+        }
+
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain """data-visibility="hidden""""
+      html shouldNotContain """data-visibility="uncounted""""
+    }
+
+    "data-visibility: hidden-only emits hidden" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              hidden = true
+              content { }
+            }
+          }
+        }
+      generatePage(kslides.presentation("/")) shouldContain """data-visibility="hidden""""
+    }
+
+    "data-visibility: uncounted-only emits uncounted" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              uncounted = true
+              content { }
+            }
+          }
+        }
+      generatePage(kslides.presentation("/")) shouldContain """data-visibility="uncounted""""
+    }
+
+    "generatePage is idempotent across repeated renders, including vertical stacks" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide { content { } }
+            verticalSlides {
+              dslSlide { content { } }
+              dslSlide { content { } }
+            }
+          }
+        }
+      val p = kslides.presentation("/")
+
+      // Vertical-stack children are reconstructed on each render and draw ids from a shared counter
+      // that generatePage resets; rendering must therefore be a pure function of the built deck.
+      generatePage(p, false) shouldBe generatePage(p, false)
+      generatePage(p, true) shouldBe generatePage(p, true)
     }
   }
 }

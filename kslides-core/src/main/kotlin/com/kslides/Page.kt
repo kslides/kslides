@@ -35,6 +35,11 @@ internal object Page {
     useHttp: Boolean = true,
     srcPrefix: String = "/",
   ): String {
+    // Not dead code: vertical-stack child slides are (re)constructed during render via the
+    // verticalSlides{} block, and each one pulls its id from this shared counter (Slide.private_slideId).
+    // Resetting per render keeps those ids — and therefore the per-slide iframe filenames
+    // (slide-<id>-<n>) — stable across the repeated renders an HTTP server performs. NOTE: this makes
+    // generatePage mutate shared KSlides state, so concurrent renders are not yet thread-safe.
     p.kslides.slideCount = 0
     val htmldoc =
       document {
@@ -128,7 +133,7 @@ internal object Page {
       rawHtml("\n")
       script {
         async = true
-        src = "https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K"
+        src = "https://www.googletagmanager.com/gtag/js?id=${config.gaPropertyId}"
       }
       rawHtml("\n\n\t\t")
       script {

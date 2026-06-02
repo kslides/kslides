@@ -148,9 +148,10 @@ internal object InternalUtils {
   ): List<String> {
     val beginIndex =
       if (beginToken.isNotBlank()) {
-        // Do not match calling token in the same file
-        val unquotedBegin = Regex(beginToken)
-        val quotedBegin = Regex("$beginToken\"")
+        // Do not match calling token in the same file. Tokens are documented as plain substrings,
+        // so escape them — a metacharacter (e.g. "items[0]") must not be compiled as a regex.
+        val unquotedBegin = Regex(Regex.escape(beginToken))
+        val quotedBegin = Regex(Regex.escape(beginToken) + "\"")
         (
           asSequence()
             .mapIndexed { i, s -> i to s }
@@ -164,9 +165,10 @@ internal object InternalUtils {
 
     val endIndex =
       if (endToken.isNotBlank()) {
-        // Do not match calling token in the same file
-        val unquotedEnd = Regex(endToken)
-        val quotedEnd = Regex("$endToken\"")
+        // Do not match calling token in the same file. Tokens are documented as plain substrings,
+        // so escape them — a metacharacter (e.g. "items[0]") must not be compiled as a regex.
+        val unquotedEnd = Regex(Regex.escape(endToken))
+        val quotedEnd = Regex(Regex.escape(endToken) + "\"")
         (
           reversed()
             .asSequence()
@@ -228,7 +230,9 @@ internal object InternalUtils {
       }
   }
 
-  internal fun mkdir(name: String) = File(name).run { if (!exists()) mkdir() else false }
+  // mkdirs() (not mkdir()) so nested output paths — e.g. playground/letsPlot/kroki subdirs under a
+  // multi-segment outputDir — are created in full rather than silently no-oping on a missing parent.
+  internal fun mkdir(name: String) = File(name).run { exists() || mkdirs() }
 
   private val httpRegex = Regex("\\s*http[s]?://.*")
 
