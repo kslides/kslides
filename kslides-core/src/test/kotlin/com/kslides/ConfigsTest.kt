@@ -6,10 +6,16 @@ import com.kslides.config.KSlidesConfig
 import com.kslides.config.LetsPlotIframeConfig
 import com.kslides.config.MenuConfig
 import com.kslides.config.PlaygroundConfig
+import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
+import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotBeBlank
+import kotlin.reflect.full.memberProperties
 
 class ConfigsTest : StringSpec() {
   init {
@@ -132,6 +138,49 @@ class ConfigsTest : StringSpec() {
       }
       merged.copy shouldBe "Copied"
       merged.timeout shouldBe 1000
+    }
+
+    "PresentationConfig routes reveal.js vs kslides options into separate maps" {
+      val config = PresentationConfig()
+      config.controls = true // reveal.js-managed
+      config.enableMenu = true // kslides-managed
+      config.revealjsManagedValues.keys shouldContain "controls"
+      config.revealjsManagedValues.keys shouldNotContain "enableMenu"
+      config.kslidesManagedValues.keys shouldContain "enableMenu"
+      config.kslidesManagedValues.keys shouldNotContain "controls"
+    }
+
+    "reading an unset PresentationConfig property throws rather than returning a default" {
+      shouldThrowExactly<IllegalStateException> { PresentationConfig().controls }
+      shouldThrowExactly<IllegalStateException> { PresentationConfig().enableMenu }
+    }
+
+    "assignDefaults seeds every kslides-managed option so it reads back without throwing" {
+      val config = PresentationConfig().apply { assignDefaults() }
+      // Each key that landed in kslidesManagedValues must read back through its delegate (the getter
+      // throws only on an unset property), catching a default added without a corresponding seed.
+      config.kslidesManagedValues.keys.forEach { key ->
+        PresentationConfig::class
+          .memberProperties
+          .firstOrNull { it.name == key }
+          ?.let { prop -> shouldNotThrowAny { prop.getter.call(config) } }
+      }
+      config.enableMenu shouldBe false
+      config.theme shouldBe PresentationTheme.BLACK
+      config.title shouldBe ""
+    }
+
+    "PresentationConfig cascade: a later merge wins on a reveal.js option" {
+      val global = PresentationConfig().apply {
+        assignDefaults()
+        controls = true
+      }
+      val presentation = PresentationConfig().apply { controls = false }
+      val merged = PresentationConfig().also {
+        it.mergeConfig(global)
+        it.mergeConfig(presentation)
+      }
+      merged.controls shouldBe false
     }
 
     "SlideConfig merge lets the later config win on shared keys" {

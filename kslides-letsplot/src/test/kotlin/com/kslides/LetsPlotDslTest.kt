@@ -1,5 +1,6 @@
 package com.kslides
 
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -85,6 +86,71 @@ class LetsPlotDslTest : StringSpec() {
         indexHtml.shouldContain("letsPlot/")
         indexHtml.shouldContain("border: 2px solid red;")
         indexHtml.shouldContain("Test Chart")
+      } finally {
+        tmpDir.deleteRecursively()
+      }
+    }
+
+    "letsPlot{} iframeConfig width/height overrides appear on the iframe" {
+      val tmpDir = Files.createTempDirectory("kslides-letsplot-wh-test").toFile()
+      try {
+        kslides {
+          output {
+            enableFileSystem = true
+            enableHttp = false
+            outputDir = tmpDir.absolutePath
+          }
+          presentation {
+            dslSlide {
+              content {
+                letsPlot(
+                  iframeConfig = com.kslides.config.LetsPlotIframeConfig {
+                    width = "640px"
+                    height = "480px"
+                  },
+                ) {
+                  letsPlot(mapOf("x" to listOf(1), "y" to listOf(2))) + geomPoint {
+                    x = "x"
+                    y = "y"
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        val indexHtml = File(tmpDir, "index.html").readText()
+        indexHtml.shouldContain("width=\"640px\"")
+        indexHtml.shouldContain("height=\"480px\"")
+      } finally {
+        tmpDir.deleteRecursively()
+      }
+    }
+
+    "letsPlot{} rejects non-positive dimensions before any render" {
+      val tmpDir = Files.createTempDirectory("kslides-letsplot-dim-test").toFile()
+      try {
+        shouldThrowExactly<IllegalArgumentException> {
+          kslides {
+            output {
+              enableFileSystem = true
+              enableHttp = false
+              outputDir = tmpDir.absolutePath
+            }
+            presentation {
+              dslSlide {
+                content {
+                  letsPlot(dimensions = 0 by 100) {
+                    letsPlot(mapOf("x" to listOf(1), "y" to listOf(2))) + geomPoint {
+                      x = "x"
+                      y = "y"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       } finally {
         tmpDir.deleteRecursively()
       }

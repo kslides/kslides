@@ -22,7 +22,11 @@ class OutputConfig(
   /** Root directory for filesystem-mode output. Default `"docs"` (GitHub Pages / Netlify friendly). */
   var outputDir = "docs"
 
-  /** Directory containing the bundled reveal.js static assets (relative to the classpath). */
+  /**
+   * Path prefix prepended to asset links in **filesystem mode only** (it becomes the `srcPrefix`
+   * for generated pages, pointing at the bundled reveal.js assets). HTTP mode ignores this and
+   * serves assets from the classpath via [defaultHttpRoot] instead.
+   */
   var staticRootDir = "revealjs"
 
   /** Subdirectory of [outputDir] where Kotlin Playground iframe HTML files are written. */

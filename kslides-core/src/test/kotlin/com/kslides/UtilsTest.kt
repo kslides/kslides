@@ -1,6 +1,8 @@
 package com.kslides
 
+import com.kslides.InternalUtils.fixIndents
 import com.kslides.InternalUtils.fromTo
+import com.kslides.InternalUtils.indentInclude
 import com.kslides.InternalUtils.isUrl
 import com.kslides.InternalUtils.stripBraces
 import com.kslides.InternalUtils.toIntList
@@ -62,18 +64,21 @@ class UtilsTest : StringSpec() {
       "1:3;5".toIntList() shouldBe listOf(1, 2, 3, 5)
     }
 
-    "Code fence test" {
+    "trimIndentWithInclude preserves indentation inside a ~~~ fence" {
+      // ~~~ fences are handled like ``` fences: the fence markers and the first content line are
+      // left-trimmed, while deeper content lines keep their indentation.
       val s =
         """
       # Presentation // NO TAB
 
-      ````kotlin     // NO TAB
+      ~~~kotlin      // NO TAB
+      val a = 0      // NO TAB
          val x = 1   // WITH TAB
-      ````           // NO TAB
+      ~~~            // NO TAB
       """
 
       s
-        .trimIndent()
+        .trimIndentWithInclude()
         .lines()
         .forEach {
           if (it.contains("NO TAB"))
@@ -339,6 +344,28 @@ val y = 1              // NO TAB
       } finally {
         base.deleteRecursively()
       }
+    }
+
+    "fixIndents prepends the indent token to every line" {
+      listOf("a", "b").fixIndents(indentToken = ">>", trimIndent = false, escapeHtml = false) shouldBe ">>a\n>>b"
+    }
+
+    "fixIndents trims common indentation when trimIndent is true" {
+      listOf("    a", "    b").fixIndents(indentToken = "", trimIndent = true, escapeHtml = false) shouldBe "a\nb"
+    }
+
+    "fixIndents HTML-escapes each line when escapeHtml is true" {
+      listOf("<b>x</b>").fixIndents(indentToken = "", trimIndent = false, escapeHtml = true) shouldBe
+        "&lt;b&gt;x&lt;/b&gt;"
+    }
+
+    "indentInclude replaces the indent token, re-indenting to the marker column" {
+      "@@code".indentInclude("@@") shouldBe "code"
+      "    @@code".indentInclude("@@") shouldBe "    code"
+    }
+
+    "indentInclude carries the first marker's indent to subsequent marked lines" {
+      "  @@first\n@@second\nplain".indentInclude("@@") shouldBe "  first\n  second\nplain"
     }
 
     "URL Prefix Test" {

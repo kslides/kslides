@@ -68,5 +68,11 @@ class LetsPlotTest : StringSpec() {
       url.shouldContain("cdn.jsdelivr.net")
       url.shouldNotContain("127.0.0.1")
     }
+
+    "isLocalScriptUrl flags localhost/dev URLs and clears CDN URLs" {
+      LetsPlot.isLocalScriptUrl("http://127.0.0.1:8080/lets-plot.js") shouldBe true
+      LetsPlot.isLocalScriptUrl("http://localhost/lets-plot.js") shouldBe true
+      LetsPlot.isLocalScriptUrl("https://cdn.jsdelivr.net/gh/x/lets-plot.js") shouldBe false
+    }
   }
 }

@@ -46,11 +46,12 @@ fun DslSlide.letsPlot(
         config.merge(iframeConfig)
       }
 
-  val plotSize = dimensions?.let { DoubleVector(it.width.toDouble(), it.height.toDouble()) }
+  val plotSize = resolvePlotSize(dimensions)
   val scriptUrl = scriptUrlForVersion(letsPlotJsVersion)
+  warnIfLocalScriptUrl(private_useHttp, scriptUrl, letsPlotJsVersion)
 
   recordIframeContent(private_useHttp, mergedConfig.staticContent, presentation.kslides, letsPlotPath, filename) {
-    letsPlotContent(block(), scriptUrl, plotSize)
+    renderLetsPlotContent(block(), scriptUrl, plotSize, filename, letsPlotJsVersion)
   }
 
   section.iframe {
@@ -61,3 +62,41 @@ fun DslSlide.letsPlot(
     mergedConfig.title.also { if (it.isNotBlank()) this.title = it }
   }
 }
+
+/** Validate the optional [dimensions] and convert them to a Lets-Plot [DoubleVector] plot size. */
+private fun resolvePlotSize(dimensions: Dimensions?): DoubleVector? =
+  dimensions?.let {
+    require(it.width > 0 && it.height > 0) {
+      "letsPlot dimensions must be positive (got ${it.width} by ${it.height})"
+    }
+    DoubleVector(it.width.toDouble(), it.height.toDouble())
+  }
+
+/** Warn when a static page would bake in a dev/localhost Lets-Plot script URL that won't load elsewhere. */
+private fun warnIfLocalScriptUrl(
+  useHttp: Boolean,
+  scriptUrl: String,
+  version: String,
+) {
+  if (!useHttp && LetsPlot.isLocalScriptUrl(scriptUrl)) {
+    LetsPlot.logger.warn {
+      "letsPlotJsVersion '$version' resolved to a local script URL ($scriptUrl); the generated " +
+        "static page will not load Lets-Plot off this machine. Set a published version via " +
+        "kslidesConfig { letsPlotJsVersion = \"…\" }."
+    }
+  }
+}
+
+/** Render the figure to iframe HTML, rethrowing any failure with the filename + JS version for context. */
+private fun renderLetsPlotContent(
+  figure: Figure,
+  scriptUrl: String,
+  plotSize: DoubleVector?,
+  filename: String,
+  version: String,
+): String =
+  runCatching { letsPlotContent(figure, scriptUrl, plotSize) }
+    .getOrElse { e ->
+      if (e is Error) throw e // never wrap VM errors (OOM, etc.)
+      throw IllegalStateException("Failed to render letsPlot iframe '$filename' with Lets-Plot JS $version", e)
+    }

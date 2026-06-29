@@ -322,6 +322,32 @@ class PresentationTest : StringSpec() {
       generatePage(kslides.presentation("/")) shouldContain """data-visibility="uncounted""""
     }
 
+    "autoAnimate emits data-auto-animate on the slide section" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              autoAnimate = true
+              content { }
+            }
+          }
+        }
+      generatePage(kslides.presentation("/")) shouldContain "data-auto-animate"
+    }
+
+    "markdownVerticalSeparator emits data-separator-vertical on a markdown slide" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            markdownSlide {
+              slideConfig { markdownVerticalSeparator = "--" }
+              content { "# Title" }
+            }
+          }
+        }
+      generatePage(kslides.presentation("/")) shouldContain """data-separator-vertical="--""""
+    }
+
     "generatePage is idempotent across repeated renders, including vertical stacks" {
       val kslides =
         kslidesTest {
