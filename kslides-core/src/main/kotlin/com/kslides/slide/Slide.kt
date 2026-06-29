@@ -40,6 +40,8 @@ abstract class Slide(
   val private_slideId = presentation.kslides.slideCount++
 
   internal val mergedSlideConfig by lazy {
+    // .also (not .apply): presentation/slideConfig are private members of this Slide, so the
+    // merge() args must resolve against the Slide receiver — an apply{} receiver would shadow them.
     SlideConfig().also { config ->
       config.merge(presentation.kslides.globalPresentationConfig.slideConfig)
       config.merge(presentation.presentationConfig.slideConfig)

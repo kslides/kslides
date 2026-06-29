@@ -2,7 +2,6 @@ package com.kslides
 
 import com.kslides.InternalUtils.fromTo
 import com.kslides.InternalUtils.isUrl
-import com.kslides.InternalUtils.merge
 import com.kslides.InternalUtils.stripBraces
 import com.kslides.InternalUtils.toIntList
 import com.kslides.InternalUtils.toLineRanges
@@ -43,6 +42,10 @@ class UtilsTest : StringSpec() {
       ",5".toIntList() shouldBe listOf(5)
 
       ",".toIntList() shouldBe listOf()
+    }
+
+    "toIntList rejects a range with more than two endpoints" {
+      shouldThrowExactly<IllegalArgumentException> { "1-2-3".toIntList() }
     }
 
     "Code fence test" {
@@ -88,41 +91,6 @@ val y = 1              // NO TAB
             if (it.isNotBlank()) it.trimStart().length shouldNotBe it.length
           }
         }
-    }
-
-    "Map merge test 1" {
-      val m1 = mapOf("a" to 1, "b" to 2)
-      val m2 = mapOf("c" to 3, "d" to 4)
-      val m3 = mapOf("a" to 1, "b" to 2, "c" to 3, "d" to 4)
-      m1.merge(m2) shouldBe m3
-    }
-
-    "Map merge test 2" {
-      val m1 = mapOf("a" to 1, "b" to 2)
-      val m2 = mapOf("b" to 3, "c" to 4)
-      val m3 = mapOf("a" to 1, "b" to 3, "c" to 4)
-      m1.merge(m2) shouldBe m3
-    }
-
-    "Map merge test 3" {
-      val m1: Map<String, Int> = mapOf()
-      val m2 = mapOf("b" to 3, "c" to 4)
-      val m3 = mapOf("b" to 3, "c" to 4)
-      m1.merge(m2) shouldBe m3
-    }
-
-    "Map merge test 4" {
-      val m1 = mapOf("b" to 3, "c" to 4)
-      val m2: Map<String, Int> = mapOf()
-      val m3 = mapOf("b" to 3, "c" to 4)
-      m1.merge(m2) shouldBe m3
-    }
-
-    "Map merge test 5" {
-      val m1 = mapOf("a" to 1, "b" to 2)
-      val m2 = mapOf("a" to 4, "b" to 5)
-      val m3 = mapOf("a" to 4, "b" to 5)
-      m1.merge(m2) shouldBe m3
     }
 
     "PresentationConfig Test 1" {

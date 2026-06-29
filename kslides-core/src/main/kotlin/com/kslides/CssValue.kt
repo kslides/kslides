@@ -21,7 +21,7 @@ class CssValue(
   constructor(other: CssValue) : this(if (other.isNotBlank()) "$other\n" else "")
 
   /** Combine multiple [CssValue] instances (each trimmed) into one. */
-  constructor(vararg elems: CssValue) : this(elems.toList().joinToString("\n") { it.text.trimIndent() })
+  constructor(vararg elems: CssValue) : this(elems.joinToString("\n") { it.text.trimIndent() })
 
   /**
    * Append a raw CSS string. Leading indentation is trimmed so multi-line string literals do

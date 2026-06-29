@@ -12,13 +12,6 @@ import java.io.File
 internal object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
 
-  internal fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
-    mutableMapOf<K, V>()
-      .also { result ->
-        result.putAll(this)
-        other.forEach { (key, value) -> result[key] = value }
-      }
-
   internal fun String.indentInclude(indentToken: String): String {
     var firstLineFound = false
     var firstLineIndent = ""
@@ -39,29 +32,6 @@ internal object InternalUtils {
           } else {
             firstLineFound = false
             firstLineIndent = ""
-            str
-          }
-        }
-      }
-  }
-
-  internal fun String.indentFirstLine(indentToken: String): String {
-    var firstLineFound = false
-    return lines()
-      .joinToString("\n") { str ->
-        if (!firstLineFound) {
-          val trimmed = str.trimStart()
-          if (trimmed.startsWith(indentToken)) {
-            firstLineFound = true
-            trimmed.substring(indentToken.length)
-          } else {
-            str
-          }
-        } else {
-          if (str.startsWith(indentToken)) {
-            str.substring(indentToken.length)
-          } else {
-            firstLineFound = false
             str
           }
         }
@@ -105,7 +75,7 @@ internal object InternalUtils {
       }.joinToString("\n")
   }
 
-  internal fun String.toIntList() =
+  internal fun String.toIntList(): List<Int> =
     buildList {
       replace(whiteSpace, "")
         .trimStart('[', '(')
@@ -113,31 +83,25 @@ internal object InternalUtils {
         .split(",", ";")
         .filter { it.isNotBlank() }
         .forEach { splitElem ->
-          splitElem
-            .split('-', '–', ':')
-            .also { elem ->
-              when (elem.size) {
-                1 -> {
-                  add(splitElem.toInt())
-                }
+          val elem = splitElem.split('-', '–', ':')
+          when (elem.size) {
+            1 -> {
+              add(splitElem.toInt())
+            }
 
-                2 -> {
-                  elem
-                    .let { it[0].toInt() to it[1].toInt() }
-                    .also { (beg, end) ->
-                      when {
-                        beg == end -> add(beg)
-                        beg < end -> addAll(beg..end)
-                        else -> addAll((beg downTo end))
-                      }
-                    }
-                }
-
-                else -> {
-                  throw IllegalArgumentException("Invalid argument: $elem")
-                }
+            2 -> {
+              val (beg, end) = elem[0].toInt() to elem[1].toInt()
+              when {
+                beg == end -> add(beg)
+                beg < end -> addAll(beg..end)
+                else -> addAll(beg downTo end)
               }
             }
+
+            else -> {
+              throw IllegalArgumentException("Invalid argument: $elem")
+            }
+          }
         }
     }
 

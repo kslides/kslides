@@ -8,17 +8,15 @@ import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
-import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.html.CODE
 import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
 import java.io.File
 import java.io.IOException
-import java.net.URL
+import java.net.URI
 
 /** Internal utility holder — not part of the public API. */
 object Utils {
-  private val logger = KotlinLogging.logger {}
   internal const val INDENT_TOKEN = "--indent--"
 }
 
@@ -57,16 +55,7 @@ fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
  *   into the receiver.
  */
 fun <T> List<T>.permuteBy(vararg orders: List<Int>): Sequence<List<T>> =
-  sequence {
-    orders
-      .forEach { order ->
-        yield(
-          buildList {
-            order.forEach { this@buildList += this@permuteBy[it] }
-          },
-        )
-      }
-  }
+  orders.asSequence().map { order -> order.map { index -> this[index] } }
 
 /**
  * Parse a reveal.js line-highlight pattern string (e.g. `"[1-3|5|*]"` or `"(1|2|*)"`) into a
@@ -152,7 +141,7 @@ fun include(
   val lines =
     try {
       if (src.isUrl())
-        URL(src).readText().lines()
+        URI(src).toURL().readText().lines()
       else
         File("${System.getProperty("user.dir")}/$src").readLines()
     } catch (e: IOException) {

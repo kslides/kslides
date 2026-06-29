@@ -50,6 +50,18 @@ class CssValueTest : StringSpec() {
       combined.toString() shouldContain "b { }"
     }
 
+    "the vararg constructor preserves input order" {
+      val a = CssValue().apply { this += "a { }" }
+      val b = CssValue().apply { this += "b { }" }
+      val combined = CssValue(a, b).toString()
+      (combined.indexOf("a { }") < combined.indexOf("b { }")) shouldBe true
+    }
+
+    "the vararg constructor with a single element returns that element's css" {
+      val only = CssValue().apply { this += "solo { }" }
+      CssValue(only).toString() shouldContain "solo { }"
+    }
+
     "prependIndent prefixes every line with the token" {
       val css = CssValue()
       css += """

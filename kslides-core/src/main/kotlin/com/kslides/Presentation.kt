@@ -110,7 +110,7 @@ class Presentation(
             vcontext.block()
 
             require(vcontext.verticalSlides.isNotEmpty()) {
-              throw IllegalArgumentException("A verticalSlides{} block requires one or more slides")
+              "A verticalSlides{} block requires one or more slides"
             }
             section(vcontext.classes.nullIfBlank()) {
               vcontext.id.also { if (it.isNotBlank()) id = it }

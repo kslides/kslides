@@ -32,24 +32,6 @@ import io.ktor.server.routing.routing
 import kotlinx.css.CssBuilder
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.List
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.filter
-import kotlin.collections.forEach
-import kotlin.collections.get
-import kotlin.collections.isNotEmpty
-import kotlin.collections.joinToString
-import kotlin.collections.listOf
-import kotlin.collections.map
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
-import kotlin.collections.plusAssign
-import kotlin.text.String
-import kotlin.text.endsWith
-import kotlin.text.get
-import kotlin.text.isNotBlank
-import kotlin.text.split
 
 /**
  * Marks receiver types that participate in the kslides DSL so that Kotlin's scope-control can

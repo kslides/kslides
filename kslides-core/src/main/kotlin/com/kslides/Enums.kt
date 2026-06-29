@@ -118,10 +118,11 @@ enum class NavigationMode {
  * the [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) `data-target-platform`
  * attribute.
  *
+ * @param queryString explicit Playground value; when blank, the lowercased enum name is used.
  * @property queryVal the corresponding string sent to Playground.
  */
 enum class TargetPlatform(
-  s: String = "",
+  queryString: String = "",
 ) {
   JUNIT,
   CANVAS,
@@ -131,7 +132,7 @@ enum class TargetPlatform(
   ;
 
   /** Value written into Playground's `data-target-platform` attribute. */
-  val queryVal: String = s.ifEmpty { this.name.lowercase() }
+  val queryVal: String = queryString.ifEmpty { this.name.lowercase() }
 }
 
 /** Kotlin Playground editor theme. */
@@ -145,10 +146,11 @@ enum class PlaygroundTheme {
  * Language/syntax mode the Kotlin Playground editor operates in. Not every mode is executable —
  * some (e.g. [GROOVY], [XML]) only enable syntax highlighting.
  *
+ * @param queryString explicit Playground value; when blank, the lowercased enum name is used.
  * @property queryVal the corresponding string sent to Playground.
  */
 enum class PlaygroundMode(
-  s: String = "",
+  queryString: String = "",
 ) {
   KOTLIN,
   JS,
@@ -162,7 +164,7 @@ enum class PlaygroundMode(
   ;
 
   /** Value written into Playground's language-mode attribute. */
-  val queryVal: String = s.ifEmpty { this.name.lowercase() }
+  val queryVal: String = queryString.ifEmpty { this.name.lowercase() }
 }
 
 /** Toggle for Kotlin Playground's "open in IDE" crosslink button. */

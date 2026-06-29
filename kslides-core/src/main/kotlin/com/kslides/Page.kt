@@ -3,11 +3,6 @@ package com.kslides
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.config.PresentationConfig
 import com.pambrose.common.util.ensureSuffix
-import kotlinx.coroutines.async
-import kotlinx.css.a
-import kotlinx.css.img
-import kotlinx.css.link
-import kotlinx.css.meta
 import kotlinx.html.HTML
 import kotlinx.html.a
 import kotlinx.html.body

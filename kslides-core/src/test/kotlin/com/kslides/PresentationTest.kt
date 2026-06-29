@@ -246,18 +246,21 @@ class PresentationTest : StringSpec() {
     }
 
     "Vertical Slides Test" {
-      shouldThrowExactly<IllegalArgumentException> {
-        kslidesTest {
-          presentation {
-            verticalSlides {
+      val ex =
+        shouldThrowExactly<IllegalArgumentException> {
+          kslidesTest {
+            presentation {
+              verticalSlides {
+              }
+            }
+          }.apply {
+            presentations.forEach { p ->
+              generatePage(p)
             }
           }
-        }.apply {
-          presentations.forEach { p ->
-            generatePage(p)
-          }
         }
-      }
+      // require(...) now returns the message string (no manual throw); verify it reaches the caller.
+      ex.message shouldContain "verticalSlides{} block requires one or more slides"
     }
 
     "Google Analytics loader uses the configured property id, not a hardcoded one" {
