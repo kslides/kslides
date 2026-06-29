@@ -75,6 +75,14 @@ internal object InternalUtils {
       }.joinToString("\n")
   }
 
+  /**
+   * Parse a comma/semicolon-separated list of single line numbers and `a-b`/`a:b` ranges into the
+   * expanded list of line numbers (e.g. `"1,3-5"` → `[1, 3, 4, 5]`; descending ranges count down).
+   *
+   * @throws IllegalArgumentException on any malformed element — a non-integer endpoint (`"-5"`,
+   *   `"a"`) or more than two endpoints (`"1-2-3"`) — reporting the offending element uniformly
+   *   rather than leaking a raw [NumberFormatException].
+   */
   internal fun String.toIntList(): List<Int> =
     buildList {
       replace(whiteSpace, "")
@@ -84,23 +92,27 @@ internal object InternalUtils {
         .filter { it.isNotBlank() }
         .forEach { splitElem ->
           val elem = splitElem.split('-', '–', ':')
-          when (elem.size) {
-            1 -> {
-              add(splitElem.toInt())
-            }
+          try {
+            when (elem.size) {
+              1 -> {
+                add(splitElem.toInt())
+              }
 
-            2 -> {
-              val (beg, end) = elem[0].toInt() to elem[1].toInt()
-              when {
-                beg == end -> add(beg)
-                beg < end -> addAll(beg..end)
-                else -> addAll(beg downTo end)
+              2 -> {
+                val (beg, end) = elem[0].toInt() to elem[1].toInt()
+                when {
+                  beg == end -> add(beg)
+                  beg < end -> addAll(beg..end)
+                  else -> addAll(beg downTo end)
+                }
+              }
+
+              else -> {
+                throw IllegalArgumentException("Invalid line range: '$splitElem'")
               }
             }
-
-            else -> {
-              throw IllegalArgumentException("Invalid argument: $elem")
-            }
+          } catch (e: NumberFormatException) {
+            throw IllegalArgumentException("Invalid line range: '$splitElem'", e)
           }
         }
     }

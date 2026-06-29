@@ -17,10 +17,10 @@ kotlin {
     }
 }
 
-// Detekt 2.0 is alpha; report findings without failing the build. Override per-project
-// or via -Pdetekt.failOnViolation=true once a baseline is in place.
+// Detekt 2.0 is alpha, but the config is valid and the tree is violation-free, so findings fail the
+// build by default. Pass -Pdetekt.ignoreFailures=true to downgrade to report-only while iterating.
 detekt {
-    ignoreFailures = providers.gradleProperty("detekt.failOnViolation").orNull != "true"
+    ignoreFailures = providers.gradleProperty("detekt.ignoreFailures").orNull == "true"
     buildUponDefaultConfig = true
     autoCorrect = false
     config.from(rootProject.layout.projectDirectory.file("config/detekt/detekt.yml"))

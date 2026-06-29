@@ -32,6 +32,10 @@ fun DslSlide.playground(
   vararg otherSrcs: String = emptyArray(),
   configBlock: PlaygroundConfig.() -> Unit = {},
 ) {
+  if (srcName.isBlank()) {
+    KSlides.logger.warn { "playground() called with a blank srcName; skipping the iframe" }
+    return
+  }
   val filename = newFilename()
   val localConfig = PlaygroundConfig().apply { configBlock() }
   val mergedConfig =

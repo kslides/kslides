@@ -48,6 +48,20 @@ class UtilsTest : StringSpec() {
       shouldThrowExactly<IllegalArgumentException> { "1-2-3".toIntList() }
     }
 
+    "toIntList reports malformed endpoints as IllegalArgumentException, not NumberFormatException" {
+      // A leading '-' makes the first endpoint blank; a non-numeric token is likewise invalid.
+      // Both must surface uniformly rather than leaking a raw NumberFormatException.
+      shouldThrowExactly<IllegalArgumentException> { "-5".toIntList() }
+      shouldThrowExactly<IllegalArgumentException> { "a".toIntList() }
+      shouldThrowExactly<IllegalArgumentException> { "1-b".toIntList() }
+    }
+
+    "toIntList accepts ':' as a range separator and ';' as an element separator" {
+      "1:3".toIntList() shouldBe listOf(1, 2, 3)
+      "1;3".toIntList() shouldBe listOf(1, 3)
+      "1:3;5".toIntList() shouldBe listOf(1, 2, 3, 5)
+    }
+
     "Code fence test" {
       val s =
         """

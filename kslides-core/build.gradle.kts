@@ -23,7 +23,16 @@ dependencies {
 // Single source of truth for reveal.js assets: docs/revealjs/ (committed for GitHub Pages).
 // Copy them onto the classpath at revealjs/** so the JAR ships them for the Ktor static handler.
 tasks.processResources {
-    from(rootProject.layout.projectDirectory.dir("docs/revealjs")) {
+    val revealjsDir = rootProject.layout.projectDirectory.dir("docs/revealjs")
+    // Guard against a sparse/partial checkout silently publishing a JAR with no revealjs runtime.
+    doFirst {
+        require(revealjsDir.asFile.isDirectory) {
+            "Missing reveal.js assets at ${revealjsDir.asFile} — the published JAR would ship without a revealjs runtime."
+        }
+    }
+    from(revealjsDir) {
         into("revealjs")
+        // ~5MB of reveal.js demo media that no slide references — keep it out of the published JAR.
+        exclude("assets/video.mp4", "assets/beeping.wav", "assets/beeping.txt")
     }
 }

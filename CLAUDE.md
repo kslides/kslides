@@ -38,7 +38,7 @@ Common wrappers in `Makefile`:
 make help                  # list all targets (default target)
 make build                 # clean + gradle build -x test
 make lint                  # lintKotlinMain + lintKotlinTest
-make detekt                # Detekt static analysis (non-fatal)
+make detekt                # Detekt static analysis (fails on findings)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
 make versions              # dependencyUpdates
@@ -75,7 +75,7 @@ Three Gradle modules defined in `settings.gradle.kts`:
 
 Shared build logic lives in `buildSrc/` as two precompiled-script convention plugins:
 
-- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, [Detekt](https://detekt.dev) (group `dev.detekt`, plugin id `dev.detekt`), stable-versions, and the kotest/logback test dependencies. Detekt is wired in non-fatally (`ignoreFailures = true`) so reports surface without breaking the build; pass `-Pdetekt.failOnViolation=true` to enforce. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
+- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, [Detekt](https://detekt.dev) (group `dev.detekt`, plugin id `dev.detekt`), stable-versions, and the kotest/logback test dependencies. Detekt fails the build on findings by default (the config is valid and the tree is violation-free); pass `-Pdetekt.ignoreFailures=true` to downgrade to report-only while iterating. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
 - `kslides.published-module` — extends `kslides.kotlin-module` with `java-library`, Dokka, and `com.vanniktech.maven.publish`. Sets up the POM, `KotlinJvm` artifact (sources + Dokka HTML javadoc jar), Maven Central publication, and conditional `signAllPublications()`.
 
 `kslides-core` and `kslides-letsplot` apply `kslides.published-module`; `kslides-examples` applies `kslides.kotlin-module` plus the Ktor plugin (which provides `application{}` and `buildFatJar`). The Heroku `stage` task lives in the root build (`build.gradle.kts`) and depends on `:kslides-examples:build` and `:kslides-examples:buildFatJar`.

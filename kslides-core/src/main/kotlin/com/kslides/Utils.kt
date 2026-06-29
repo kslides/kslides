@@ -54,8 +54,7 @@ fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
  * @param orders one index list per permutation; each inner list must reference valid indices
  *   into the receiver.
  */
-fun <T> List<T>.permuteBy(vararg orders: List<Int>): Sequence<List<T>> =
-  orders.asSequence().map { order -> order.map { index -> this[index] } }
+fun <T> List<T>.permuteBy(vararg orders: List<Int>): Sequence<List<T>> = orders.asSequence().map { order -> order.map { index -> this[index] } }
 
 /**
  * Parse a reveal.js line-highlight pattern string (e.g. `"[1-3|5|*]"` or `"(1|2|*)"`) into a

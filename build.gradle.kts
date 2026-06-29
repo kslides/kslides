@@ -4,7 +4,9 @@ plugins {
     id("com.pambrose.stable-versions")
 }
 
-providers.gradleProperty("overrideVersion").orNull?.let { version = it }
+// Note: -PoverrideVersion is handled per-module in the kslides.kotlin-module convention plugin,
+// which sets each published project's version. The root project is not published, so it needs no
+// version override of its own.
 
 // Aggregate Dokka HTML across publishing modules into the root build/ output.
 dependencies {
