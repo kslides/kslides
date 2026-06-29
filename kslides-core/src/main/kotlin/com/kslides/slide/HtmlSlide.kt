@@ -16,6 +16,9 @@ import kotlinx.html.SECTION
 @KSlidesDslMarker
 interface HtmlSlide {
   /** Implementation detail — do not use. */
+  val private_slideId: Int
+
+  /** Implementation detail — do not use. */
   var private_htmlBlock: () -> String
 
   /** Implementation detail — do not use. */

@@ -129,6 +129,21 @@ class PresentationTest : StringSpec() {
       }
     }
 
+    "missing content{} validation messages carry the slide id" {
+      val dslEx =
+        shouldThrowExactly<IllegalArgumentException> {
+          kslidesTest { presentation { dslSlide { } } }.presentations.forEach { generatePage(it) }
+        }
+      dslEx.message shouldContain "(id "
+      dslEx.message shouldContain "content{} block"
+
+      val htmlEx =
+        shouldThrowExactly<IllegalArgumentException> {
+          kslidesTest { presentation { htmlSlide { } } }.presentations.forEach { generatePage(it) }
+        }
+      htmlEx.message shouldContain "(id "
+    }
+
     "Default Css Test 1" {
       val kslides =
         kslidesTest {

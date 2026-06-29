@@ -144,7 +144,9 @@ class Presentation(
           s.slideContent()
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} block" }
+            require(s.filename.isNotBlank() || s.markdownAssigned) {
+              "markdownSlide (id ${s.private_slideId}) requires a content{} block or a non-blank filename"
+            }
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
@@ -173,7 +175,9 @@ class Presentation(
           s.slideContent()
           section(s.classes.nullIfBlank()) {
             s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} block" }
+            require(s.filename.isNotBlank() || s.markdownAssigned) {
+              "markdownSlide (id ${s.private_slideId}) requires a content{} block or a non-blank filename"
+            }
 
             // If this value is == "" it means read content inline
             attributes["data-markdown"] = s.filename
@@ -263,11 +267,17 @@ class Presentation(
       }
     }.also { verticalSlides += it }
 
-  private fun srcref(token: String) =
-    srcrefUrl(
-      account = "kslides",
-      repo = "kslides",
-      path = "kslides-examples/src/main/kotlin/Slides.kt",
+  private fun srcref(
+    token: String,
+    account: String = "kslides",
+    repo: String = "kslides",
+    path: String = "kslides-examples/src/main/kotlin/Slides.kt",
+    branch: String = "master",
+  ) = srcrefUrl(
+      account = account,
+      repo = repo,
+      path = path,
+      branch = branch,
       beginRegex = "//\\s*$token\\s+begin",
       beginOffset = 1,
       endRegex = "//\\s*$token\\s+end",
@@ -289,6 +299,10 @@ class Presentation(
    * @param highlightPattern reveal.js `data-line-numbers` pattern (e.g. `"1-3|5"`).
    * @param id optional slide id.
    * @param language syntax-highlighting language for the code fence.
+   * @param githubAccount GitHub account/org for the "GitHub Source" link. Defaults to `"kslides"`.
+   * @param githubRepo GitHub repository for the link. Defaults to `"kslides"`.
+   * @param githubPath repo-relative path the link points at. Defaults to [source].
+   * @param githubBranch branch the link points at. Defaults to `"master"`.
    */
   // slideDefinition begin
   fun slideDefinition(
@@ -298,6 +312,10 @@ class Presentation(
     highlightPattern: String = "[]",
     id: String = "",
     language: String = "kotlin",
+    githubAccount: String = "kslides",
+    githubRepo: String = "kslides",
+    githubPath: String = source,
+    githubBranch: String = "master",
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
@@ -307,7 +325,7 @@ class Presentation(
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        ${this@Presentation.githubLink(this@Presentation.srcref(token))}
+        ${this@Presentation.githubLink(this@Presentation.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
         """
       }
     }
@@ -325,6 +343,10 @@ class Presentation(
     highlightPattern: String = "[]",
     id: String = "",
     language: String = "kotlin",
+    githubAccount: String = "kslides",
+    githubRepo: String = "kslides",
+    githubPath: String = source,
+    githubBranch: String = "master",
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
@@ -338,7 +360,7 @@ class Presentation(
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        ${this@Presentation.githubLink(this@Presentation.srcref(token))}
+        ${this@Presentation.githubLink(this@Presentation.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
         """
       }
     }
@@ -668,7 +690,7 @@ private fun DIV.processDsl(s: DslSlide) {
   section(s.classes.nullIfBlank()) {
     s.processSlide(this)
     s.private_dslBlock(this)
-    require(s.private_dslAssigned) { "dslSlide missing content{} block" }
+    require(s.private_dslAssigned) { "dslSlide (id ${s.private_slideId}) is missing a content{} block" }
   }.also { rawHtml("\n") }
 }
 
@@ -678,7 +700,7 @@ private fun DIV.processHtml(
 ) {
   section(s.classes.nullIfBlank()) {
     s.processSlide(this)
-    require(s.private_htmlAssigned) { "htmlSlide missing content{} block" }
+    require(s.private_htmlAssigned) { "htmlSlide (id ${s.private_slideId}) is missing a content{} block" }
     s
       .private_htmlBlock()
       .indentInclude(config.indentToken)

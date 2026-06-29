@@ -157,6 +157,10 @@ internal object InternalUtils {
         this.size
       }
 
+    require(beginIndex <= endIndex) {
+      "include token range is empty or inverted: begin token '$beginToken' (index $beginIndex) " +
+        "occurs after end token '$endToken' (index $endIndex)"
+    }
     return if (beginIndex == 0 && endIndex == this.size) this else subList(beginIndex, endIndex)
   }
 

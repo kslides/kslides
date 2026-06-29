@@ -320,6 +320,16 @@ val y = 1              // NO TAB
       }
     }
 
+    "fromTo reports a clear error when the begin token occurs after the end token" {
+      val lines = listOf("end-marker", "x", "begin-marker")
+      val ex =
+        shouldThrowExactly<IllegalArgumentException> {
+          lines.fromTo(beginToken = "begin-marker", endToken = "end-marker")
+        }
+      // The require() fires before subList(), so the message is the diagnostic one, not the JDK's.
+      ex.message shouldContain "occurs after end token"
+    }
+
     "fromTo treats begin/end tokens as literal substrings, not regex patterns" {
       // Regression: tokens containing regex metacharacters must match literally and must never
       // throw PatternSyntaxException (e.g. "items[0]", "foo(x)").
