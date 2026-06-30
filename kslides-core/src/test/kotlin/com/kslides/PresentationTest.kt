@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.kslides.Page.generatePage
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -9,6 +10,18 @@ import io.kotest.matchers.string.shouldNotContain
 
 class PresentationTest : StringSpec() {
   init {
+    "KSlides is AutoCloseable: close() is a safe no-op when the http client was never created" {
+      shouldNotThrowAny {
+        KSlides().use { it.kslidesConfig }
+      }
+      // Idempotent — closing twice (and with no client ever built) must not throw.
+      val kslides = KSlides()
+      shouldNotThrowAny {
+        kslides.close()
+        kslides.close()
+      }
+    }
+
     "Simple presentation tests" {
 
       kslidesTest {

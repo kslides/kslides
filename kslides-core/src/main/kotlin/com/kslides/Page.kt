@@ -62,42 +62,46 @@ internal object Page {
       }
     }
 
-    /*
-    This is a hack to fix a copycode issue: the <pre> and <code> tags must be on the same line
-    <pre>
-       <code>
-       </code>
-    </pre>
+    return mergePreAndCode(htmldoc.serialize())
+  }
 
-    has to be transformed into:
-    <pre><code>
-       </code>
-    </pre>
-     */
-    return buildString {
+  /**
+   * Fix a copycode issue: reveal.js needs the `<pre>` and `<code>` tags on the same line. The
+   * serializer emits them split across lines:
+   * ```
+   * <pre>
+   *    <code>
+   *    </code>
+   * </pre>
+   * ```
+   * so when a `<code>` line immediately follows a `<pre>` line, pull it up onto the `<pre>` line.
+   * `preFound` only bridges those two adjacent lines — it is reset on any other line so a later,
+   * unrelated `<code>` is never merged (which would strip its leading whitespace).
+   */
+  internal fun mergePreAndCode(serialized: String): String =
+    buildString {
       var preFound = false
-      htmldoc
-        .serialize()
+      serialized
         .lines()
-        .forEach {
+        .forEach { line ->
           when {
-            it.matches(preRegex) -> {
+            line.matches(preRegex) -> {
               preFound = true
-              append(it)
+              append(line)
             }
 
-            preFound && it.matches(codeRegex) -> {
+            preFound && line.matches(codeRegex) -> {
               preFound = false
-              append("${it.trimStart()}\n")
+              append("${line.trimStart()}\n")
             }
 
             else -> {
-              append("$it\n")
+              preFound = false
+              append("$line\n")
             }
           }
         }
     }
-  }
 
   @Suppress("LongMethod")
   private fun HTML.generateHead(

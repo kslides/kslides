@@ -27,6 +27,7 @@ import io.ktor.server.plugins.compression.minimumSize
 import io.ktor.server.plugins.defaultheaders.DefaultHeaders
 import io.ktor.server.response.respondBytes
 import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import kotlinx.css.CssBuilder
@@ -109,6 +110,8 @@ fun kslides(block: KSlides.() -> Unit) =
 
       if (outputConfig.enableHttp)
         runHttpServer(outputConfig, true)
+      else
+        close() // HTTP mode keeps the client for the server's lifetime; otherwise release it now
     }
 
 /**
@@ -139,7 +142,7 @@ fun kslidesTest(block: KSlides.() -> Unit) =
  * re-execute expensive content generators.
  */
 @KSlidesDslMarker
-class KSlides {
+class KSlides : AutoCloseable {
   internal val kslidesConfig = KSlidesConfig()
   internal val globalPresentationConfig = PresentationConfig().apply { assignDefaults() }
   internal val outputConfig = OutputConfig(this)
@@ -159,9 +162,25 @@ class KSlides {
     name: String,
   ) = presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
-  internal val client by lazy {
-    HttpClient(io.ktor.client.engine.cio.CIO) {
-      install(HttpTimeout)
+  private val clientLazy =
+    lazy {
+      HttpClient(io.ktor.client.engine.cio.CIO) {
+        install(HttpTimeout)
+      }
+    }
+
+  internal val client by clientLazy
+
+  /**
+   * Release the lazily-created Ktor [HttpClient] if it was ever initialized (it is created only when
+   * a `diagram{}` block POSTs to Kroki). filesystem-only runs close it automatically once slides are
+   * written; HTTP mode keeps it alive for the server's lifetime. Idempotent and safe to call when the
+   * client was never created. Lets consumers use `kslides { … }` results with `.use { }`.
+   */
+  override fun close() {
+    if (clientLazy.isInitialized()) {
+      logger.debug { "Closing kslides HttpClient" }
+      clientLazy.value.close()
     }
   }
 
@@ -256,22 +275,15 @@ class KSlides {
         }
     }
 
-    @Suppress("CyclomaticComplexMethod", "LongMethod")
+    // Hardcoded for HTTP since the reveal.js assets are shipped on the classpath in the jar.
+    private const val REVEAL_ROOT_DIR = "revealjs"
+
     private fun appModule(config: OutputConfig): Application.() -> Unit =
       {
-        // By embedding this logic here, rather than in an Application.module() call, we are not able to use auto-reload
-        install(CallLogging) { level = config.callLoggingLogLevel }
-        install(DefaultHeaders) { header("X-Engine", "Ktor") }
-        install(Compression) {
-          gzip { priority = 1.0 }
-          deflate {
-            priority = 10.0
-            minimumSize(1024) // condition
-          }
-        }
+        // Embedding this logic here, rather than in an Application.module() call, forgoes auto-reload.
+        installPlugins(config)
 
         val kslides = config.kslides
-
         kslides.presentationMap
           .apply {
             if (!containsKey("/") && !containsKey("/index.html"))
@@ -279,60 +291,90 @@ class KSlides {
           }
 
         routing {
-          // playground and letsPlot iframe endpoints
-          listOf(config.playgroundDir, config.letsPlotDir)
-            .forEach {
-              get("$it/{fname}") {
-                respondWith {
-                  val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing $it arg")
-                  kslides.dynamicIframeContent[path]?.invoke()
-                    ?: kslides.staticIframeContent[path]
-                    ?: throw IllegalArgumentException("Invalid $it path: $path")
-                }
-              }
-            }
-
-          // kroki endpoint
-          get("${config.krokiDir}/{fname}") {
-            val filename =
-              call.parameters["fname"] ?: throw IllegalArgumentException("Missing ${config.krokiDir} filename")
-            val bytes =
-              kslides.staticKrokiContent[filename]
-                ?: throw IllegalArgumentException("Invalid ${config.krokiDir} path: $filename")
-            val suffix = filename.substringAfterLast(".")
-            when (val outputType = outputTypeFromSuffix(suffix)) {
-              SVG -> call.respondText(String(bytes), outputType.contentType)
-              else -> call.respondBytes(bytes, outputType.contentType)
-            }
-          }
-
-          if (config.defaultHttpRoot.isNotBlank())
-            staticResources("/", config.defaultHttpRoot)
-
-          // This is hardcoded for http since it is shipped with the jar
-          val revealRootDir = "revealjs"
-          val baseDirNames =
-            kslides.kslidesConfig.httpStaticRoots
-              .filter { it.dirname.isNotBlank() }
-              .map { it.dirname }
-
-          if (baseDirNames.isNotEmpty()) {
-            baseDirNames.forEach {
-              logger.debug { "Registering http dir $revealRootDir/$it" }
-              staticResources("/$revealRootDir/$it", "$revealRootDir/$it")
-            }
-          }
-
-          kslides.presentationMap
-            .forEach { (key, p) ->
-              get(key) {
-                respondWith {
-                  generatePage(p, true, "/$revealRootDir")
-                }
-              }
-            }
+          iframeRoutes(config, kslides)
+          krokiRoute(config, kslides)
+          staticRoutes(config, kslides)
+          presentationRoutes(kslides)
         }
       }
+
+    private fun Application.installPlugins(config: OutputConfig) {
+      install(CallLogging) { level = config.callLoggingLogLevel }
+      install(DefaultHeaders) { header("X-Engine", "Ktor") }
+      install(Compression) {
+        gzip { priority = 1.0 }
+        deflate {
+          priority = 10.0
+          minimumSize(1024) // condition
+        }
+      }
+    }
+
+    /** playground and letsPlot iframe endpoints. */
+    private fun Route.iframeRoutes(
+      config: OutputConfig,
+      kslides: KSlides,
+    ) {
+      listOf(config.playgroundDir, config.letsPlotDir)
+        .forEach {
+          get("$it/{fname}") {
+            respondWith {
+              val path = call.parameters["fname"] ?: throw IllegalArgumentException("Missing $it arg")
+              kslides.dynamicIframeContent[path]?.invoke()
+                ?: kslides.staticIframeContent[path]
+                ?: throw IllegalArgumentException("Invalid $it path: $path")
+            }
+          }
+        }
+    }
+
+    /** Kroki diagram image endpoint. */
+    private fun Route.krokiRoute(
+      config: OutputConfig,
+      kslides: KSlides,
+    ) {
+      get("${config.krokiDir}/{fname}") {
+        val filename =
+          call.parameters["fname"] ?: throw IllegalArgumentException("Missing ${config.krokiDir} filename")
+        val bytes =
+          kslides.staticKrokiContent[filename]
+            ?: throw IllegalArgumentException("Invalid ${config.krokiDir} path: $filename")
+        val suffix = filename.substringAfterLast(".")
+        when (val outputType = outputTypeFromSuffix(suffix)) {
+          SVG -> call.respondText(String(bytes), outputType.contentType)
+          else -> call.respondBytes(bytes, outputType.contentType)
+        }
+      }
+    }
+
+    /** Bundled static asset roots: the default HTTP root plus the reveal.js dirs. */
+    private fun Route.staticRoutes(
+      config: OutputConfig,
+      kslides: KSlides,
+    ) {
+      if (config.defaultHttpRoot.isNotBlank())
+        staticResources("/", config.defaultHttpRoot)
+
+      kslides.kslidesConfig.httpStaticRoots
+        .filter { it.dirname.isNotBlank() }
+        .map { it.dirname }
+        .forEach {
+          logger.debug { "Registering http dir $REVEAL_ROOT_DIR/$it" }
+          staticResources("/$REVEAL_ROOT_DIR/$it", "$REVEAL_ROOT_DIR/$it")
+        }
+    }
+
+    /** One route per presentation, rendering the page on each request. */
+    private fun Route.presentationRoutes(kslides: KSlides) {
+      kslides.presentationMap
+        .forEach { (key, p) ->
+          get(key) {
+            respondWith {
+              generatePage(p, true, "/$REVEAL_ROOT_DIR")
+            }
+          }
+        }
+    }
 
     internal fun runHttpServer(
       config: OutputConfig,

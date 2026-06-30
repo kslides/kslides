@@ -16,7 +16,16 @@ abstract class AbstractConfig {
   /** Values consumed by kslides itself (theme, highlight plugin, corner links, iframe sizing, etc.). */
   val kslidesManagedValues = mutableMapOf<String, Any>()
 
-  /** Copy all entries from [other]'s maps into this config's maps. Later puts overwrite earlier ones. */
+  /**
+   * Merge [other] into this config **in place**: every entry from [other]'s two maps is copied into
+   * this config's maps, with later puts overwriting earlier keys. This is how the global →
+   * presentation → slide cascade resolves (parent merged first, then child).
+   *
+   * Values are copied by reference — a collection-valued option (e.g. a `Map`/`List`) is shared with
+   * [other], not deep-copied. That is safe because config collection values are only ever replaced,
+   * never mutated in place. Note this is distinct from (and name-collides with) the `Map.merge`
+   * extension elsewhere; this one mutates the receiver rather than returning a new map.
+   */
   fun merge(other: AbstractConfig) {
     revealjsManagedValues.putAll(other.revealjsManagedValues)
     kslidesManagedValues.putAll(other.kslidesManagedValues)
