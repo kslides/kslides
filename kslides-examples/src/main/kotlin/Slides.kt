@@ -10,7 +10,6 @@ import com.kslides.atag
 import com.kslides.bodyRow
 import com.kslides.by
 import com.kslides.codeSnippet
-import com.kslides.config.LetsPlotIframeConfig
 import com.kslides.diagram
 import com.kslides.fragment
 import com.kslides.headRow
@@ -657,7 +656,7 @@ fun main() {
             h2 { +"A Lets-Plot Scatter Plot" }
             letsPlot(
               dimensions = 801 by 400,
-              iframeConfig = LetsPlotIframeConfig {
+              configBlock = {
                 style = "width: 85%; border: 2px solid #586E75;"
                 height = "415px"
               },
@@ -680,7 +679,7 @@ fun main() {
             h2 { +"A Lets-Plot Histogram" }
             letsPlot(
               dimensions = 608 by 484,
-              iframeConfig = LetsPlotIframeConfig {
+              configBlock = {
                 style = "width: 65%; border: 2px solid #586E75;"
                 height = "500px"
               },
@@ -702,7 +701,7 @@ fun main() {
             h2 { +"A Lets-Plot Heatmap (from matrix)" }
             letsPlot(
               dimensions = 503 by 484,
-              iframeConfig = LetsPlotIframeConfig {
+              configBlock = {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
@@ -749,7 +748,7 @@ fun main() {
             h2 { +"A Lets-Plot Scatter with Color Encoding" }
             letsPlot(
               dimensions = 503 by 484,
-              iframeConfig = LetsPlotIframeConfig {
+              configBlock = {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
@@ -775,7 +774,7 @@ fun main() {
             h2 { +"A Lets-Plot Red Heatmap" }
             letsPlot(
               dimensions = 503 by 484,
-              iframeConfig = LetsPlotIframeConfig {
+              configBlock = {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },

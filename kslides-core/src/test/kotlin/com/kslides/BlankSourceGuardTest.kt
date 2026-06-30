@@ -26,6 +26,21 @@ class BlankSourceGuardTest : StringSpec() {
       generatePage(kslides.presentation("/")) shouldNotContain "<img"
     }
 
+    "diagram(DiagramType) overload routes to the string overload — blank source still skipped" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              content {
+                diagram(DiagramType.PLANTUML) { source = "" }
+              }
+            }
+          }
+        }
+
+      generatePage(kslides.presentation("/")) shouldNotContain "<img"
+    }
+
     "playground with a blank srcName is skipped — no iframe, no exception" {
       val kslides =
         kslidesTest {

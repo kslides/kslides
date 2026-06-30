@@ -56,5 +56,12 @@ class EnumsTest : StringSpec() {
       PlaygroundMode.SWIFT.queryVal shouldBe "swift"
       PlaygroundMode.OBJC.queryVal shouldBe "obj-c"
     }
+
+    "DiagramType.krokiName is the lowercased enum name Kroki expects" {
+      DiagramType.PLANTUML.krokiName shouldBe "plantuml"
+      DiagramType.GRAPHVIZ.krokiName shouldBe "graphviz"
+      DiagramType.C4PLANTUML.krokiName shouldBe "c4plantuml"
+      DiagramType.VEGALITE.krokiName shouldBe "vegalite"
+    }
   }
 }

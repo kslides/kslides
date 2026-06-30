@@ -100,6 +100,16 @@ fun DslSlide.diagram(
   }
 }
 
+/**
+ * Type-safe overload of [diagram] taking a [DiagramType] enum instead of a raw Kroki type string,
+ * so a mistyped diagram type is a compile error. Delegates to the [String] overload.
+ */
+context(section: SECTION)
+fun DslSlide.diagram(
+  diagramType: DiagramType,
+  diagramBlock: DiagramDescription.() -> Unit,
+) = diagram(diagramType.krokiName, diagramBlock)
+
 private fun DslSlide.fetchKrokiContent(
   filename: String,
   desc: Map<String, Any>,

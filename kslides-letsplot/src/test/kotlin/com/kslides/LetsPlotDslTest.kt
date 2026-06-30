@@ -52,7 +52,7 @@ class LetsPlotDslTest : StringSpec() {
       }
     }
 
-    "letsPlot{} iframeConfig attributes appear in the parent page" {
+    "letsPlot{} configBlock attributes appear in the parent page" {
       val tmpDir = Files.createTempDirectory("kslides-letsplot-iframe-test").toFile()
       try {
         kslides {
@@ -66,7 +66,7 @@ class LetsPlotDslTest : StringSpec() {
               content {
                 letsPlot(
                   dimensions = 640 by 320,
-                  iframeConfig = com.kslides.config.LetsPlotIframeConfig {
+                  configBlock = {
                     style = "border: 2px solid red;"
                     title = "Test Chart"
                   },
@@ -104,7 +104,7 @@ class LetsPlotDslTest : StringSpec() {
             dslSlide {
               content {
                 letsPlot(
-                  iframeConfig = com.kslides.config.LetsPlotIframeConfig {
+                  configBlock = {
                     width = "640px"
                     height = "480px"
                   },
