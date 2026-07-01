@@ -1,7 +1,7 @@
 plugins {
     // Versions come from buildSrc — apply by id without a version to avoid classpath conflicts.
     id("org.jetbrains.dokka")
-    id("com.pambrose.stable-versions")
+    id("kslides.stable-versions")
 }
 
 // Note: -PoverrideVersion is handled per-module in the kslides.kotlin-module convention plugin,

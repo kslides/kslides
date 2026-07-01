@@ -1,25 +1,26 @@
 [versions]
 # Build toolchain
-gradle-wrapper = "9.5.1"
+gradle-wrapper = "9.6.1"
 jvm = "17"
-kotlin = "2.4.0-RC2"
+kotlin = "2.4.0"
 
 # Gradle plugins / build tooling
-detekt = "2.0.0-alpha.3"
+detekt = "2.0.0-alpha.5"
 dokka = "2.2.0"
 gradle-plugins = "1.0.14"
-maven-publish = "0.36.0"
+maven-publish = "0.37.0"
+versions = "0.54.0"
 
 # Kotlin / kotlinx libraries
-css = "2026.5.6"
+css = "2026.6.11"
 kotlinx-html = "0.12.0"
 serialization = "1.11.0"
 
 # Ktor
-ktor = "3.5.0"
+ktor = "3.5.1"
 
 # Logging
-logback = "1.5.33"
+logback = "1.5.37"
 logging = "8.0.4"
 
 # Testing
@@ -27,10 +28,10 @@ junit4 = "4.13.2"
 kotest = "6.1.11"
 
 # Domain libraries
-common-utils = "2.8.2"
+common-utils = "2.9.2"
 commons-text = "1.15.0"
-letsplot = "4.14.0"
-srcref = "2.0.10"
+letsplot = "4.15.0"
+srcref = "2.1.0"
 
 [libraries]
 # Kotlin / kotlinx libraries
@@ -66,12 +67,12 @@ letsplot-kotlin = { module = "org.jetbrains.lets-plot:lets-plot-kotlin-jvm", ver
 srcref = { module = "com.pambrose:srcref", version.ref = "srcref" }
 
 # Plugin-marker artifacts, consumed by buildSrc to apply plugins from precompiled scripts.
+plugin-ben-manes-versions = { module = "com.github.ben-manes.versions:com.github.ben-manes.versions.gradle.plugin", version.ref = "versions" }
 plugin-detekt = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 plugin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 plugin-maven-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }
 plugin-pambrose-kotlinter = { module = "com.pambrose.kotlinter:com.pambrose.kotlinter.gradle.plugin", version.ref = "gradle-plugins" }
-plugin-pambrose-stable-versions = { module = "com.pambrose.stable-versions:com.pambrose.stable-versions.gradle.plugin", version.ref = "gradle-plugins" }
 plugin-pambrose-testing = { module = "com.pambrose.testing:com.pambrose.testing.gradle.plugin", version.ref = "gradle-plugins" }
 
 [bundles]
