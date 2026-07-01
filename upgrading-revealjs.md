@@ -11,7 +11,7 @@ The upgrade steps for it are:
 * Create a new docs/revealjs dir.
 * Copy the new `examples/assets`, `css`, `dist`, `js`, and `plugin` dirs to `docs/revealjs`.
 * Copy the `docs/revealjs-old/plugin/copycode` and `docs/revealjs-old/plugin/menu` dirs to `docs/revealjs/plugin`.
-* When updating copycode, append the bottom of the old docs/revealjs/plugin/copycode/copycode.css to the new version
+* When updating copycode, include docs/revealjs/plugin/copycode/copycode-button-fix.css in the new version
 * Delete the `docs/revealjs-old` dir.
 
 ## kslides-template Repository

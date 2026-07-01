@@ -315,8 +315,11 @@ class Presentation(
     cssFiles += CssFile(finalConfig.theme.cssSrc, "theme")
     cssFiles += CssFile(finalConfig.highlight.cssSrc, "highlight-theme")
 
-    if (finalConfig.enableCodeCopy)
+    if (finalConfig.enableCodeCopy) {
       cssFiles += CssFile("plugin/copycode/copycode.css")
+      // kslides override loaded after copycode.css: keeps the Copy button inside the code window
+      cssFiles += CssFile("plugin/copycode/copycode-button-fix.css")
+    }
   }
 
   internal fun assignJsFiles() {
