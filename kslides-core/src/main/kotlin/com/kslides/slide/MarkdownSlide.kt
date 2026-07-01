@@ -25,7 +25,7 @@ interface MarkdownSlide {
   var private_markdownBlock: () -> String
 
   /** Implementation detail — `true` once a `content{}` block has been supplied. */
-  var markdownAssigned: Boolean
+  var private_markdownAssigned: Boolean
 
   /** CSS class list applied to the `<section>`. */
   var classes: String
@@ -52,7 +52,7 @@ class HorizontalMarkdownSlide(
   content: SlideArgs,
 ) : HorizontalSlide(presentation, content),
   MarkdownSlide {
-  override var markdownAssigned = false
+  override var private_markdownAssigned = false
   override var private_markdownBlock: () -> String = { "" }
 
   override var filename = ""
@@ -63,7 +63,7 @@ class HorizontalMarkdownSlide(
    */
   fun content(block: () -> String) {
     private_markdownBlock = block
-    markdownAssigned = true
+    private_markdownAssigned = true
   }
 }
 
@@ -76,7 +76,7 @@ class VerticalMarkdownSlide(
   content: SlideArgs,
 ) : VerticalSlide(presentation, content),
   MarkdownSlide {
-  override var markdownAssigned = false
+  override var private_markdownAssigned = false
   override var private_markdownBlock: () -> String = { "" }
 
   override var filename = ""
@@ -87,6 +87,6 @@ class VerticalMarkdownSlide(
    */
   fun content(markdownBlock: () -> String) {
     private_markdownBlock = markdownBlock
-    markdownAssigned = true
+    private_markdownAssigned = true
   }
 }

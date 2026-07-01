@@ -2,6 +2,7 @@ package com.kslides
 
 import com.kslides.DiagramOutputType.Companion.outputTypeFromSuffix
 import com.kslides.DiagramOutputType.SVG
+import com.kslides.InternalUtils.mkdir
 import com.kslides.KSlides.Companion.logger
 import com.kslides.KSlides.Companion.runHttpServer
 import com.kslides.KSlides.Companion.writeSlidesToFileSystem
@@ -243,9 +244,7 @@ class KSlides : AutoCloseable {
       val rootPrefix = config.staticRootDir.ensureSuffix("/")
 
       // Create directory (including any missing parents) if absent
-      File(outputDir).also {
-        if (!it.exists() && !it.mkdirs()) logger.warn { "Unable to create output directory: $outputDir" }
-      }
+      if (!mkdir(outputDir)) logger.warn { "Unable to create output directory: $outputDir" }
 
       config.kslides.presentationMap
         .forEach { (key, p) ->
@@ -264,9 +263,7 @@ class KSlides : AutoCloseable {
                 val path = pathElems.joinToString("/")
                 val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
                 // Create directory (including any missing parents) if absent
-                File(path).also {
-                  if (!it.exists() && !it.mkdirs()) logger.warn { "Unable to create directory: $path" }
-                }
+                if (!mkdir(path)) logger.warn { "Unable to create directory: $path" }
                 File("$path/index.html") to "$dotDot$rootPrefix"
               }
             }

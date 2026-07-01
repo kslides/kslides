@@ -29,6 +29,8 @@ class UtilsTest : StringSpec() {
 
       "5-3".toIntList() shouldBe listOf(5, 4, 3)
 
+      "4-4".toIntList() shouldBe listOf(4)
+
       "2, 4 - 6, 8".toIntList() shouldBe listOf(2, 4, 5, 6, 8)
 
       "2, 6 - 4, 8".toIntList() shouldBe listOf(2, 6, 5, 4, 8)

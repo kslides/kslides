@@ -186,7 +186,8 @@ class Presentation(
   fun htmlSlide(slideContent: HorizontalHtmlSlide.() -> Unit) =
     HorizontalHtmlSlide(this) { div, slide, _ ->
       val s = slide as HorizontalHtmlSlide
-      div.renderHtmlSlide(s, s.mergedSlideConfig) { s.slideContent() }
+      s.slideContent()
+      div.processHtml(s, s.mergedSlideConfig)
     }.also { slides += it }
 
   /**
@@ -196,15 +197,18 @@ class Presentation(
   fun VerticalSlidesContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
     VerticalHtmlSlide(this@Presentation) { div, slide, _ ->
       val s = slide as VerticalHtmlSlide
-      div.renderHtmlSlide(s, s.mergedSlideConfig) { s.slideContent() }
+      s.slideContent()
+      div.processHtml(s, s.mergedSlideConfig)
     }.also { verticalSlides += it }
 
+  // account/repo/path/branch are always supplied by the slideDefinition overloads (which own the
+  // public defaults), so they are required here — no second, drift-prone set of default literals.
   private fun srcref(
     token: String,
-    account: String = "kslides",
-    repo: String = "kslides",
-    path: String = "kslides-examples/src/main/kotlin/Slides.kt",
-    branch: String = "master",
+    account: String,
+    repo: String,
+    path: String,
+    branch: String,
   ) = srcrefUrl(
       account = account,
       repo = repo,
@@ -612,7 +616,7 @@ private fun DIV.renderMarkdownSlide(
 ) {
   section(slide.classes.nullIfBlank()) {
     slide.processSlide(this)
-    require(slide.filename.isNotBlank() || slide.markdownAssigned) {
+    require(slide.filename.isNotBlank() || slide.private_markdownAssigned) {
       "markdownSlide (id ${slide.private_slideId}) requires a content{} block or a non-blank filename"
     }
 
@@ -645,16 +649,6 @@ private fun DIV.renderDslSlide(
   slide.private_useHttp = useHttp
   runSlideContent()
   processDsl(slide)
-}
-
-// Shared renderer for both HorizontalHtmlSlide and VerticalHtmlSlide.
-private fun DIV.renderHtmlSlide(
-  slide: HtmlSlide,
-  config: SlideConfig,
-  runSlideContent: () -> Unit,
-) {
-  runSlideContent()
-  processHtml(slide, config)
 }
 
 private fun SECTION.processMarkdown(

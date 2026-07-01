@@ -100,11 +100,8 @@ internal object InternalUtils {
 
               2 -> {
                 val (beg, end) = elem[0].toInt() to elem[1].toInt()
-                when {
-                  beg == end -> add(beg)
-                  beg < end -> addAll(beg..end)
-                  else -> addAll(beg downTo end)
-                }
+                // beg..end already yields the single element [beg] when beg == end
+                addAll(if (beg <= end) beg..end else beg downTo end)
               }
 
               else -> {

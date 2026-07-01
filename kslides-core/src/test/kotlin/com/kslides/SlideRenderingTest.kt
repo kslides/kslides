@@ -43,9 +43,9 @@ class SlideRenderingTest : StringSpec() {
   }
 
   init {
-    // The horizontal/vertical slide functions share renderMarkdownSlide/renderDslSlide/
-    // renderHtmlSlide; this pins the section markup each emits (the refactor was verified
-    // byte-identical against a pre-refactor render).
+    // The horizontal/vertical slide functions share renderMarkdownSlide/renderDslSlide (html
+    // slides render via processHtml directly); this pins the section markup each emits (the
+    // refactor was verified byte-identical against a pre-refactor render).
     "all six slide functions emit the expected <section> markup" {
       val html = renderDeck()
 
