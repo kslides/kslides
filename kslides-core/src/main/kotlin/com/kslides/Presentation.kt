@@ -139,29 +139,9 @@ class Presentation(
    */
   fun markdownSlide(slideContent: HorizontalMarkdownSlide.() -> Unit = {}) =
     HorizontalMarkdownSlide(this) { div, slide, _ ->
-      div.apply {
-        (slide as HorizontalMarkdownSlide).also { s ->
-          s.slideContent()
-          section(s.classes.nullIfBlank()) {
-            s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) {
-              "markdownSlide (id ${s.private_slideId}) requires a content{} block or a non-blank filename"
-            }
-
-            // If this value is == "" it means read content inline
-            attributes["data-markdown"] = s.filename
-
-            val config = s.mergedSlideConfig
-            config.markdownCharset.also { charset ->
-              if (charset.isNotBlank()) attributes["data-charset"] = charset
-            }
-
-            config.applyMarkdownItems(this)
-
-            processMarkdown(s, config)
-          }.also { rawHtml("\n") }
-        }
-      }
+      val s = slide as HorizontalMarkdownSlide
+      s.slideContent()
+      div.renderMarkdownSlide(s, s.mergedSlideConfig, vertical = false)
     }.also { slides += it }
 
   /**
@@ -170,33 +150,9 @@ class Presentation(
    */
   fun VerticalSlidesContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
     VerticalMarkdownSlide(this@Presentation) { div, slide, _ ->
-      div.apply {
-        (slide as VerticalMarkdownSlide).also { s ->
-          s.slideContent()
-          section(s.classes.nullIfBlank()) {
-            s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) {
-              "markdownSlide (id ${s.private_slideId}) requires a content{} block or a non-blank filename"
-            }
-
-            // If this value is == "" it means read content inline
-            attributes["data-markdown"] = s.filename
-
-            val config = s.mergedSlideConfig
-            config.markdownCharset.also { charset ->
-              if (charset.isNotBlank()) attributes["data-charset"] = charset
-            }
-
-            attributes["data-separator-notes"] = config.markdownNotesSeparator
-
-            // These are not applicable for vertical markdown slides
-            attributes["data-separator"] = ""
-            attributes["data-separator-vertical"] = ""
-
-            processMarkdown(s, config)
-          }.also { rawHtml("\n") }
-        }
-      }
+      val s = slide as VerticalMarkdownSlide
+      s.slideContent()
+      div.renderMarkdownSlide(s, s.mergedSlideConfig, vertical = true)
     }.also { verticalSlides += it }
 
   /**
@@ -208,15 +164,8 @@ class Presentation(
    */
   fun dslSlide(slideContent: HorizontalDslSlide.() -> Unit) =
     HorizontalDslSlide(this) { div, slide, useHttp ->
-      div.apply {
-        (slide as HorizontalDslSlide)
-          .also { s ->
-            s.private_iframeCount = 1
-            s.private_useHttp = useHttp
-            s.slideContent()
-            processDsl(s)
-          }
-      }
+      val s = slide as HorizontalDslSlide
+      div.renderDslSlide(s, useHttp) { s.slideContent() }
     }.also { slides += it }
 
   /**
@@ -225,15 +174,8 @@ class Presentation(
    */
   fun VerticalSlidesContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
     VerticalDslSlide(this@Presentation) { div, slide, useHttp ->
-      div.apply {
-        (slide as VerticalDslSlide)
-          .also { s ->
-            s.private_iframeCount = 1
-            s.private_useHttp = useHttp
-            s.slideContent()
-            processDsl(s)
-          }
-      }
+      val s = slide as VerticalDslSlide
+      div.renderDslSlide(s, useHttp) { s.slideContent() }
     }.also { verticalSlides += it }
 
   /**
@@ -243,13 +185,8 @@ class Presentation(
    */
   fun htmlSlide(slideContent: HorizontalHtmlSlide.() -> Unit) =
     HorizontalHtmlSlide(this) { div, slide, _ ->
-      div.apply {
-        (slide as HorizontalHtmlSlide)
-          .also { s ->
-            s.slideContent()
-            processHtml(s, s.mergedSlideConfig)
-          }
-      }
+      val s = slide as HorizontalHtmlSlide
+      div.renderHtmlSlide(s, s.mergedSlideConfig) { s.slideContent() }
     }.also { slides += it }
 
   /**
@@ -258,13 +195,8 @@ class Presentation(
    */
   fun VerticalSlidesContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
     VerticalHtmlSlide(this@Presentation) { div, slide, _ ->
-      div.apply {
-        (slide as VerticalHtmlSlide)
-          .also { s ->
-            s.slideContent()
-            processHtml(s, s.mergedSlideConfig)
-          }
-      }
+      val s = slide as VerticalHtmlSlide
+      div.renderHtmlSlide(s, s.mergedSlideConfig) { s.slideContent() }
     }.also { verticalSlides += it }
 
   private fun srcref(
@@ -666,6 +598,61 @@ data class CssFile(
   val filename: String,
   val id: String = "",
 )
+
+// Shared <section> renderer for both HorizontalMarkdownSlide and VerticalMarkdownSlide. The only
+// horizontal/vertical difference is separator handling: horizontal applies the markdown separators
+// from config; vertical zeroes data-separator* out (they do not apply inside a vertical stack).
+private fun DIV.renderMarkdownSlide(
+  slide: MarkdownSlide,
+  config: SlideConfig,
+  vertical: Boolean,
+) {
+  section(slide.classes.nullIfBlank()) {
+    slide.processSlide(this)
+    require(slide.filename.isNotBlank() || slide.markdownAssigned) {
+      "markdownSlide (id ${slide.private_slideId}) requires a content{} block or a non-blank filename"
+    }
+
+    // If this value is == "" it means read content inline
+    attributes["data-markdown"] = slide.filename
+
+    config.markdownCharset.also { charset ->
+      if (charset.isNotBlank()) attributes["data-charset"] = charset
+    }
+
+    if (vertical) {
+      attributes["data-separator-notes"] = config.markdownNotesSeparator
+      attributes["data-separator"] = ""
+      attributes["data-separator-vertical"] = ""
+    } else {
+      config.applyMarkdownItems(this)
+    }
+
+    processMarkdown(slide, config)
+  }.also { rawHtml("\n") }
+}
+
+// Shared renderer for both HorizontalDslSlide and VerticalDslSlide.
+private fun DIV.renderDslSlide(
+  slide: DslSlide,
+  useHttp: Boolean,
+  runSlideContent: () -> Unit,
+) {
+  slide.private_iframeCount = 1
+  slide.private_useHttp = useHttp
+  runSlideContent()
+  processDsl(slide)
+}
+
+// Shared renderer for both HorizontalHtmlSlide and VerticalHtmlSlide.
+private fun DIV.renderHtmlSlide(
+  slide: HtmlSlide,
+  config: SlideConfig,
+  runSlideContent: () -> Unit,
+) {
+  runSlideContent()
+  processHtml(slide, config)
+}
 
 private fun SECTION.processMarkdown(
   s: MarkdownSlide,

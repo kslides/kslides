@@ -2,6 +2,7 @@ package com.kslides.slide
 
 import com.kslides.KSlidesDslMarker
 import com.kslides.Presentation
+import kotlinx.html.SECTION
 
 /**
  * Shared contract for slides whose content is authored in Markdown. Implemented by
@@ -17,8 +18,14 @@ import com.kslides.Presentation
 @KSlidesDslMarker
 @Suppress("VariableNaming")
 interface MarkdownSlide {
+  /** Implementation detail — unique slide id, used in renderer diagnostics. */
+  val private_slideId: Int
+
   /** Implementation detail — do not use. */
   var private_markdownBlock: () -> String
+
+  /** Implementation detail — `true` once a `content{}` block has been supplied. */
+  var markdownAssigned: Boolean
 
   /** CSS class list applied to the `<section>`. */
   var classes: String
@@ -31,6 +38,9 @@ interface MarkdownSlide {
 
   /** See [MarkdownSlide] documentation. */
   var filename: String
+
+  /** Apply the slide's attributes to the enclosing `<section>`. Invoked by the renderer. */
+  fun processSlide(section: SECTION)
 }
 
 /**
@@ -42,7 +52,7 @@ class HorizontalMarkdownSlide(
   content: SlideArgs,
 ) : HorizontalSlide(presentation, content),
   MarkdownSlide {
-  internal var markdownAssigned = false
+  override var markdownAssigned = false
   override var private_markdownBlock: () -> String = { "" }
 
   override var filename = ""
@@ -66,7 +76,7 @@ class VerticalMarkdownSlide(
   content: SlideArgs,
 ) : VerticalSlide(presentation, content),
   MarkdownSlide {
-  internal var markdownAssigned = false
+  override var markdownAssigned = false
   override var private_markdownBlock: () -> String = { "" }
 
   override var filename = ""
