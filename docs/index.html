@@ -71,6 +71,9 @@
 			.reveal.h5 {
 			  color: blue;
 			}
+			.reveal pre { font-size: 0.60em; }
+			.reveal pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal .smallcode pre { font-size: 0.40em; }
 			
 			#ghsrc {
 			  font-size: 30px;
@@ -123,7 +126,7 @@ Notes: This is a note for the opening slide 📝
 </script>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -166,7 +169,7 @@ Notes: This is a note for the Markdown slide 📝
 </script>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -214,7 +217,7 @@ markdownSlide {
 </aside>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -252,7 +255,7 @@ htmlSlide {
             <aside class="notes">This is a note for the DSL slide &#128221;</aside>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -291,7 +294,7 @@ Note: This slide shows code highlights. You can specify the lines you want to hi
 </script>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -331,7 +334,7 @@ fun main() {
             <aside class="notes">This slide shows highlighted code. You can specify the lines you want to highlight.</aside>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -403,7 +406,7 @@ let c = planets.reduce(circumferenceReducer, 0);
             <aside class="notes">This slide shows animated code highlights.</aside>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -501,7 +504,7 @@ This slide shows animated code highlights.
 </aside>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -524,6 +527,7 @@ for (linePattern in "[5,6,9|5-9|]".toLinePatterns()) {
       """
     }
   }
+}
 ```
 <a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*animated2%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*animated2%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
 </script>
@@ -537,7 +541,7 @@ for (linePattern in "[5,6,9|5-9|]".toLinePatterns()) {
             <iframe height="350px" src="playground/slide-20-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -561,7 +565,7 @@ dslSlide {
             <iframe height="350px" src="playground/slide-22-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -584,7 +588,7 @@ dslSlide {
             <iframe height="450px" src="playground/slide-24-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -612,7 +616,7 @@ dslSlide {
             <iframe height="350px" src="playground/slide-26-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -637,7 +641,7 @@ dslSlide {
             Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -691,7 +695,7 @@ dslSlide {
             </div>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -727,7 +731,7 @@ dslSlide {
             </div>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -767,7 +771,7 @@ dslSlide {
             </div>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -803,7 +807,7 @@ dslSlide {
             </div>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -862,7 +866,7 @@ dslSlide {
             </div>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -903,7 +907,7 @@ dslSlide {
             <iframe height="415px" src="letsPlot/slide-41-1.html" style="width: 85%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -936,7 +940,7 @@ dslSlide {
             <iframe height="500px" src="letsPlot/slide-43-1.html" style="width: 65%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -967,7 +971,7 @@ dslSlide {
             <iframe height="500px" src="letsPlot/slide-45-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1023,7 +1027,7 @@ dslSlide {
             <iframe height="500px" src="letsPlot/slide-47-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1058,7 +1062,7 @@ dslSlide {
             <iframe height="500px" src="letsPlot/slide-49-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1163,7 +1167,7 @@ dslSlide {
             </ul>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1237,7 +1241,7 @@ listOf("One", "Two", "Three", "Four", "👇")
             <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope" allowfullscreen="true" frameborder="0" height="315" src="https://www.youtube.com/embed/X8Az9X0mwUE?start=163" title="YouTube video player" width="560"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1273,7 +1277,7 @@ dslSlide {
             <script async="async" charset="utf-8" src="https://platform.twitter.com/widgets.js"></script>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1335,7 +1339,7 @@ dslSlide {
             </table>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1384,7 +1388,7 @@ dslSlide {
             </div>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1414,7 +1418,7 @@ dslSlide {
         }
         // iframe end
 
-        slideDefinition(source = slides, token = "iframe")
+        smallSlideDefinition(source = slides, token = "iframe")
       }
 
       verticalSlides {
@@ -1439,7 +1443,7 @@ dslSlide {
         }
         // transition end
 
-        slideDefinition(source = slides, token = "transition")
+        smallSlideDefinition(source = slides, token = "transition")
       }
 
       verticalSlides {
@@ -1471,7 +1475,7 @@ dslSlide {
         }
         // themes end
 
-        slideDefinition(source = slides, token = "themes")
+        smallSlideDefinition(source = slides, token = "themes")
       }
 
       verticalSlides {
@@ -1487,7 +1491,7 @@ dslSlide {
         }
         // video1 end
 
-        slideDefinition(source = slides, token = "video1")
+        smallSlideDefinition(source = slides, token = "video1")
       }
 
       verticalSlides {
@@ -1505,7 +1509,7 @@ dslSlide {
         }
         // webcontent end
 
-        slideDefinition(source = slides, token = "webcontent")
+        smallSlideDefinition(source = slides, token = "webcontent")
       }
 
       verticalSlides {
@@ -1533,7 +1537,7 @@ dslSlide {
         }
         // other end
 
-        slideDefinition(source = slides, token = "other")
+        smallSlideDefinition(source = slides, token = "other")
       }
 
       verticalSlides {
@@ -1553,7 +1557,7 @@ dslSlide {
         }
         // navigation end
 
-        slideDefinition(source = slides, token = "navigation")
+        smallSlideDefinition(source = slides, token = "navigation")
       }
 
       verticalSlides {
@@ -1566,7 +1570,7 @@ dslSlide {
         )
         // slidedef end
 
-        slideDefinition(source = slides, token = "slidedef")
+        smallSlideDefinition(source = slides, token = "slidedef")
       }
     }
 // presentation end
@@ -1597,7 +1601,7 @@ dslSlide {
         }
         // layouts end
 
-        slideDefinition(source = slides, token = "layouts")
+        smallSlideDefinition(source = slides, token = "layouts")
       }
 
       verticalSlides {
@@ -1631,7 +1635,7 @@ dslSlide {
         }
         // ft1 end
 
-        slideDefinition(source = slides, token = "ft1")
+        smallSlideDefinition(source = slides, token = "ft1")
 
         // fit-text2 begin
         dslSlide {
@@ -1642,7 +1646,7 @@ dslSlide {
         }
         // fit-text2 end
 
-        slideDefinition(source = slides, token = "fit-text2")
+        smallSlideDefinition(source = slides, token = "fit-text2")
       }
 
       verticalSlides {
@@ -1686,7 +1690,7 @@ dslSlide {
         }
         // stretch end
 
-        slideDefinition(source = slides, token = "stretch")
+        smallSlideDefinition(source = slides, token = "stretch")
       }
 
       verticalSlides {
@@ -1730,7 +1734,7 @@ dslSlide {
         }
         // stack1 end
 
-        slideDefinition(source = slides, token = "stack1")
+        smallSlideDefinition(source = slides, token = "stack1")
       }
 
       verticalSlides {
@@ -1761,7 +1765,7 @@ dslSlide {
         }
         // hstack end
 
-        slideDefinition(source = slides, token = "hstack")
+        smallSlideDefinition(source = slides, token = "hstack")
       }
 
       verticalSlides {
@@ -1792,7 +1796,7 @@ dslSlide {
         }
         // vstack end
 
-        slideDefinition(source = slides, token = "vstack")
+        smallSlideDefinition(source = slides, token = "vstack")
       }
     }
 
@@ -1835,7 +1839,7 @@ dslSlide {
         }
         // fragment-styles end
 
-        slideDefinition(source = slides, token = "fragment-styles")
+        smallSlideDefinition(source = slides, token = "fragment-styles")
       }
 
       verticalSlides {
@@ -1860,7 +1864,7 @@ dslSlide {
         }
         // fragment-md end
 
-        slideDefinition(source = slides, token = "fragment-md")
+        smallSlideDefinition(source = slides, token = "fragment-md")
       }
     }
 
@@ -1887,7 +1891,7 @@ dslSlide {
         }
         // background1 end
 
-        slideDefinition(source = slides, token = "background1")
+        smallSlideDefinition(source = slides, token = "background1")
       }
 
       verticalSlides {
@@ -1902,7 +1906,7 @@ dslSlide {
         }
         // background2 end
 
-        slideDefinition(source = slides, token = "background2")
+        smallSlideDefinition(source = slides, token = "background2")
       }
 
       verticalSlides {
@@ -1917,7 +1921,7 @@ dslSlide {
         }
         // background3 end
 
-        slideDefinition(source = slides, token = "background3")
+        smallSlideDefinition(source = slides, token = "background3")
       }
 
       verticalSlides {
@@ -1950,7 +1954,7 @@ dslSlide {
         }
         // background4 end
 
-        slideDefinition(source = slides, token = "background4")
+        smallSlideDefinition(source = slides, token = "background4")
       }
 
       // vertical-config begin
@@ -1980,7 +1984,7 @@ dslSlide {
           }
         }
 
-        slideDefinition(source = slides, token = "vertical-config")
+        smallSlideDefinition(source = slides, token = "vertical-config")
       }
       // vertical-config end
 
@@ -1997,7 +2001,7 @@ dslSlide {
         }
         // background-image end
 
-        slideDefinition(source = slides, token = "background-image")
+        smallSlideDefinition(source = slides, token = "background-image")
       }
 
       verticalSlides {
@@ -2015,7 +2019,7 @@ dslSlide {
         }
         // repeat end
 
-        slideDefinition(source = slides, token = "repeat")
+        smallSlideDefinition(source = slides, token = "repeat")
       }
 
       verticalSlides {
@@ -2031,7 +2035,7 @@ dslSlide {
         }
         // background-video end
 
-        slideDefinition(source = slides, token = "background-video")
+        smallSlideDefinition(source = slides, token = "background-video")
       }
 
       verticalSlides {
@@ -2069,7 +2073,7 @@ dslSlide {
             </p>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2122,7 +2126,7 @@ dslSlide {
             </p>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2163,7 +2167,7 @@ dslSlide {
             <h1 style="color: red;">Video Backgrounds</h1>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2189,7 +2193,7 @@ dslSlide {
             <iframe height="540" src="https://slides.com/news/auto-animate/embed" style="border:none;" width="700"></iframe>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2232,7 +2236,7 @@ dslSlide {
 </script>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2280,7 +2284,7 @@ markdownSlide {
 </script>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2315,6 +2319,7 @@ fun slideDefinition(
   title: String = "Slide Definition",
   highlightPattern: String = "[]",
   id: String = "",
+  classes: String = "",
   language: String = "kotlin",
   githubAccount: String = "kslides",
   githubRepo: String = "kslides",
@@ -2323,6 +2328,7 @@ fun slideDefinition(
 ) {
   markdownSlide {
     if (id.isNotBlank()) this.id = id
+    if (classes.isNotBlank()) this.classes = classes
     content {
       """
       ## $title
@@ -2339,7 +2345,7 @@ fun slideDefinition(
 </script>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []

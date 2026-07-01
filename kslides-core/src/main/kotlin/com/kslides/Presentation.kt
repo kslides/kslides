@@ -233,7 +233,11 @@ class Presentation(
    * @param token the begin/end token bracketing the excerpt.
    * @param title heading shown above the code block.
    * @param highlightPattern reveal.js `data-line-numbers` pattern (e.g. `"1-3|5"`).
-   * @param id optional slide id.
+   * @param id optional slide id; must be unique across the deck (it becomes the `<section>`
+   *   `id`). To style several definition slides together, use [classes] instead.
+   * @param classes optional CSS class(es) applied to the slide's `<section>`. Unlike [id], a
+   *   class may be reused across slides, so a single rule (e.g. `.big pre { … }`) can target them
+   *   all. Space-separated for multiple classes.
    * @param language syntax-highlighting language for the code fence.
    * @param githubAccount GitHub account/org for the "GitHub Source" link. Defaults to `"kslides"`.
    * @param githubRepo GitHub repository for the link. Defaults to `"kslides"`.
@@ -247,6 +251,7 @@ class Presentation(
     title: String = "Slide Definition",
     highlightPattern: String = "[]",
     id: String = "",
+    classes: String = "",
     language: String = "kotlin",
     githubAccount: String = "kslides",
     githubRepo: String = "kslides",
@@ -255,6 +260,7 @@ class Presentation(
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
+      if (classes.isNotBlank()) this.classes = classes
       content {
         """
         ## $title
@@ -278,6 +284,7 @@ class Presentation(
     title: String = "Slide Definition",
     highlightPattern: String = "[]",
     id: String = "",
+    classes: String = "",
     language: String = "kotlin",
     githubAccount: String = "kslides",
     githubRepo: String = "kslides",
@@ -286,6 +293,7 @@ class Presentation(
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
+      if (classes.isNotBlank()) this.classes = classes
       slideConfig {
         markdownNotesSeparator = "^^"
       }
