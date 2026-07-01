@@ -7,7 +7,7 @@
     <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
     
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-TRY2Q243XC"></script>
 
 		<script>
 			window.dataLayer = window.dataLayer || [];
@@ -912,7 +912,7 @@ dslSlide {
     h2 { +"A Lets-Plot Scatter Plot" }
     letsPlot(
       dimensions = 801 by 400,
-      iframeConfig = LetsPlotIframeConfig {
+      configBlock = {
         style = "width: 85%; border: 2px solid #586E75;"
         height = "415px"
       },
@@ -944,7 +944,7 @@ dslSlide {
     h2 { +"A Lets-Plot Histogram" }
     letsPlot(
       dimensions = 608 by 484,
-      iframeConfig = LetsPlotIframeConfig {
+      configBlock = {
         style = "width: 65%; border: 2px solid #586E75;"
         height = "500px"
       },
@@ -975,7 +975,7 @@ dslSlide {
     h2 { +"A Lets-Plot Heatmap (from matrix)" }
     letsPlot(
       dimensions = 503 by 484,
-      iframeConfig = LetsPlotIframeConfig {
+      configBlock = {
         style = "width: 54%; border: 2px solid #586E75;"
         height = "500px"
       },
@@ -1031,7 +1031,7 @@ dslSlide {
     h2 { +"A Lets-Plot Scatter with Color Encoding" }
     letsPlot(
       dimensions = 503 by 484,
-      iframeConfig = LetsPlotIframeConfig {
+      configBlock = {
         style = "width: 54%; border: 2px solid #586E75;"
         height = "500px"
       },
@@ -1066,7 +1066,7 @@ dslSlide {
     h2 { +"A Lets-Plot Red Heatmap" }
     letsPlot(
       dimensions = 503 by 484,
-      iframeConfig = LetsPlotIframeConfig {
+      configBlock = {
         style = "width: 54%; border: 2px solid #586E75;"
         height = "500px"
       },
@@ -2315,6 +2315,10 @@ fun slideDefinition(
   highlightPattern: String = "[]",
   id: String = "",
   language: String = "kotlin",
+  githubAccount: String = "kslides",
+  githubRepo: String = "kslides",
+  githubPath: String = source,
+  githubBranch: String = "master",
 ) {
   markdownSlide {
     if (id.isNotBlank()) this.id = id
@@ -2324,13 +2328,13 @@ fun slideDefinition(
       ```$language $highlightPattern
       ${include(source, beginToken = "$token begin", endToken = "$token end")}
       ```
-      ${this@Presentation.githubLink(this@Presentation.srcref(token))}
+      ${this@Presentation.githubLink(this@Presentation.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
       """
     }
   }
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*slideDefinition%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*slideDefinition%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-core%2Fsrc%2Fmain%2Fkotlin%2Fcom%2Fkslides%2FPresentation.kt&amp;bregex=%2F%2F%5Cs*slideDefinition%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*slideDefinition%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
 </script>
           </section>
           
