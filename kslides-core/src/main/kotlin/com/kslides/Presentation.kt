@@ -110,7 +110,7 @@ class Presentation(
             vcontext.block()
 
             require(vcontext.verticalSlides.isNotEmpty()) {
-              throw IllegalArgumentException("A verticalSlides{} block requires one or more slides")
+              "A verticalSlides{} block requires one or more slides"
             }
             section(vcontext.classes.nullIfBlank()) {
               vcontext.id.also { if (it.isNotBlank()) id = it }
@@ -139,27 +139,9 @@ class Presentation(
    */
   fun markdownSlide(slideContent: HorizontalMarkdownSlide.() -> Unit = {}) =
     HorizontalMarkdownSlide(this) { div, slide, _ ->
-      div.apply {
-        (slide as HorizontalMarkdownSlide).also { s ->
-          s.slideContent()
-          section(s.classes.nullIfBlank()) {
-            s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} block" }
-
-            // If this value is == "" it means read content inline
-            attributes["data-markdown"] = s.filename
-
-            val config = s.mergedSlideConfig
-            config.markdownCharset.also { charset ->
-              if (charset.isNotBlank()) attributes["data-charset"] = charset
-            }
-
-            config.applyMarkdownItems(this)
-
-            processMarkdown(s, config)
-          }.also { rawHtml("\n") }
-        }
-      }
+      val s = slide as HorizontalMarkdownSlide
+      s.slideContent()
+      div.renderMarkdownSlide(s, s.mergedSlideConfig, vertical = false)
     }.also { slides += it }
 
   /**
@@ -168,31 +150,9 @@ class Presentation(
    */
   fun VerticalSlidesContext.markdownSlide(slideContent: VerticalMarkdownSlide.() -> Unit = { }) =
     VerticalMarkdownSlide(this@Presentation) { div, slide, _ ->
-      div.apply {
-        (slide as VerticalMarkdownSlide).also { s ->
-          s.slideContent()
-          section(s.classes.nullIfBlank()) {
-            s.processSlide(this)
-            require(s.filename.isNotBlank() || s.markdownAssigned) { "markdownSlide missing content{} block" }
-
-            // If this value is == "" it means read content inline
-            attributes["data-markdown"] = s.filename
-
-            val config = s.mergedSlideConfig
-            config.markdownCharset.also { charset ->
-              if (charset.isNotBlank()) attributes["data-charset"] = charset
-            }
-
-            attributes["data-separator-notes"] = config.markdownNotesSeparator
-
-            // These are not applicable for vertical markdown slides
-            attributes["data-separator"] = ""
-            attributes["data-separator-vertical"] = ""
-
-            processMarkdown(s, config)
-          }.also { rawHtml("\n") }
-        }
-      }
+      val s = slide as VerticalMarkdownSlide
+      s.slideContent()
+      div.renderMarkdownSlide(s, s.mergedSlideConfig, vertical = true)
     }.also { verticalSlides += it }
 
   /**
@@ -204,15 +164,8 @@ class Presentation(
    */
   fun dslSlide(slideContent: HorizontalDslSlide.() -> Unit) =
     HorizontalDslSlide(this) { div, slide, useHttp ->
-      div.apply {
-        (slide as HorizontalDslSlide)
-          .also { s ->
-            s.private_iframeCount = 1
-            s.private_useHttp = useHttp
-            s.slideContent()
-            processDsl(s)
-          }
-      }
+      val s = slide as HorizontalDslSlide
+      div.renderDslSlide(s, useHttp) { s.slideContent() }
     }.also { slides += it }
 
   /**
@@ -221,15 +174,8 @@ class Presentation(
    */
   fun VerticalSlidesContext.dslSlide(slideContent: VerticalDslSlide.() -> Unit) =
     VerticalDslSlide(this@Presentation) { div, slide, useHttp ->
-      div.apply {
-        (slide as VerticalDslSlide)
-          .also { s ->
-            s.private_iframeCount = 1
-            s.private_useHttp = useHttp
-            s.slideContent()
-            processDsl(s)
-          }
-      }
+      val s = slide as VerticalDslSlide
+      div.renderDslSlide(s, useHttp) { s.slideContent() }
     }.also { verticalSlides += it }
 
   /**
@@ -239,13 +185,9 @@ class Presentation(
    */
   fun htmlSlide(slideContent: HorizontalHtmlSlide.() -> Unit) =
     HorizontalHtmlSlide(this) { div, slide, _ ->
-      div.apply {
-        (slide as HorizontalHtmlSlide)
-          .also { s ->
-            s.slideContent()
-            processHtml(s, s.mergedSlideConfig)
-          }
-      }
+      val s = slide as HorizontalHtmlSlide
+      s.slideContent()
+      div.processHtml(s, s.mergedSlideConfig)
     }.also { slides += it }
 
   /**
@@ -254,20 +196,24 @@ class Presentation(
    */
   fun VerticalSlidesContext.htmlSlide(slideContent: VerticalHtmlSlide.() -> Unit) =
     VerticalHtmlSlide(this@Presentation) { div, slide, _ ->
-      div.apply {
-        (slide as VerticalHtmlSlide)
-          .also { s ->
-            s.slideContent()
-            processHtml(s, s.mergedSlideConfig)
-          }
-      }
+      val s = slide as VerticalHtmlSlide
+      s.slideContent()
+      div.processHtml(s, s.mergedSlideConfig)
     }.also { verticalSlides += it }
 
-  private fun srcref(token: String) =
-    srcrefUrl(
-      account = "kslides",
-      repo = "kslides",
-      path = "kslides-examples/src/main/kotlin/Slides.kt",
+  // account/repo/path/branch are always supplied by the slideDefinition overloads (which own the
+  // public defaults), so they are required here — no second, drift-prone set of default literals.
+  private fun srcref(
+    token: String,
+    account: String,
+    repo: String,
+    path: String,
+    branch: String,
+  ) = srcrefUrl(
+      account = account,
+      repo = repo,
+      path = path,
+      branch = branch,
       beginRegex = "//\\s*$token\\s+begin",
       beginOffset = 1,
       endRegex = "//\\s*$token\\s+end",
@@ -287,8 +233,16 @@ class Presentation(
    * @param token the begin/end token bracketing the excerpt.
    * @param title heading shown above the code block.
    * @param highlightPattern reveal.js `data-line-numbers` pattern (e.g. `"1-3|5"`).
-   * @param id optional slide id.
+   * @param id optional slide id; must be unique across the deck (it becomes the `<section>`
+   *   `id`). To style several definition slides together, use [classes] instead.
+   * @param classes optional CSS class(es) applied to the slide's `<section>`. Unlike [id], a
+   *   class may be reused across slides, so a single rule (e.g. `.big pre { … }`) can target them
+   *   all. Space-separated for multiple classes.
    * @param language syntax-highlighting language for the code fence.
+   * @param githubAccount GitHub account/org for the "GitHub Source" link. Defaults to `"kslides"`.
+   * @param githubRepo GitHub repository for the link. Defaults to `"kslides"`.
+   * @param githubPath repo-relative path the link points at. Defaults to [source].
+   * @param githubBranch branch the link points at. Defaults to `"master"`.
    */
   // slideDefinition begin
   fun slideDefinition(
@@ -297,17 +251,23 @@ class Presentation(
     title: String = "Slide Definition",
     highlightPattern: String = "[]",
     id: String = "",
+    classes: String = "",
     language: String = "kotlin",
+    githubAccount: String = "kslides",
+    githubRepo: String = "kslides",
+    githubPath: String = source,
+    githubBranch: String = "master",
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
+      if (classes.isNotBlank()) this.classes = classes
       content {
         """
         ## $title
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        ${this@Presentation.githubLink(this@Presentation.srcref(token))}
+        ${this@Presentation.githubLink(this@Presentation.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
         """
       }
     }
@@ -324,10 +284,16 @@ class Presentation(
     title: String = "Slide Definition",
     highlightPattern: String = "[]",
     id: String = "",
+    classes: String = "",
     language: String = "kotlin",
+    githubAccount: String = "kslides",
+    githubRepo: String = "kslides",
+    githubPath: String = source,
+    githubBranch: String = "master",
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
+      if (classes.isNotBlank()) this.classes = classes
       slideConfig {
         markdownNotesSeparator = "^^"
       }
@@ -338,7 +304,7 @@ class Presentation(
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        ${this@Presentation.githubLink(this@Presentation.srcref(token))}
+        ${this@Presentation.githubLink(this@Presentation.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
         """
       }
     }
@@ -361,8 +327,11 @@ class Presentation(
     cssFiles += CssFile(finalConfig.theme.cssSrc, "theme")
     cssFiles += CssFile(finalConfig.highlight.cssSrc, "highlight-theme")
 
-    if (finalConfig.enableCodeCopy)
+    if (finalConfig.enableCodeCopy) {
       cssFiles += CssFile("plugin/copycode/copycode.css")
+      // kslides override loaded after copycode.css: keeps the Copy button inside the code window
+      cssFiles += CssFile("plugin/copycode/copycode-button-fix.css")
+    }
   }
 
   internal fun assignJsFiles() {
@@ -645,6 +614,51 @@ data class CssFile(
   val id: String = "",
 )
 
+// Shared <section> renderer for both HorizontalMarkdownSlide and VerticalMarkdownSlide. The only
+// horizontal/vertical difference is separator handling: horizontal applies the markdown separators
+// from config; vertical zeroes data-separator* out (they do not apply inside a vertical stack).
+private fun DIV.renderMarkdownSlide(
+  slide: MarkdownSlide,
+  config: SlideConfig,
+  vertical: Boolean,
+) {
+  section(slide.classes.nullIfBlank()) {
+    slide.processSlide(this)
+    require(slide.filename.isNotBlank() || slide.private_markdownAssigned) {
+      "markdownSlide (id ${slide.private_slideId}) requires a content{} block or a non-blank filename"
+    }
+
+    // If this value is == "" it means read content inline
+    attributes["data-markdown"] = slide.filename
+
+    config.markdownCharset.also { charset ->
+      if (charset.isNotBlank()) attributes["data-charset"] = charset
+    }
+
+    if (vertical) {
+      attributes["data-separator-notes"] = config.markdownNotesSeparator
+      attributes["data-separator"] = ""
+      attributes["data-separator-vertical"] = ""
+    } else {
+      config.applyMarkdownItems(this)
+    }
+
+    processMarkdown(slide, config)
+  }.also { rawHtml("\n") }
+}
+
+// Shared renderer for both HorizontalDslSlide and VerticalDslSlide.
+private fun DIV.renderDslSlide(
+  slide: DslSlide,
+  useHttp: Boolean,
+  runSlideContent: () -> Unit,
+) {
+  slide.private_iframeCount = 1
+  slide.private_useHttp = useHttp
+  runSlideContent()
+  processDsl(slide)
+}
+
 private fun SECTION.processMarkdown(
   s: MarkdownSlide,
   config: SlideConfig,
@@ -668,7 +682,7 @@ private fun DIV.processDsl(s: DslSlide) {
   section(s.classes.nullIfBlank()) {
     s.processSlide(this)
     s.private_dslBlock(this)
-    require(s.private_dslAssigned) { "dslSlide missing content{} block" }
+    require(s.private_dslAssigned) { "dslSlide (id ${s.private_slideId}) is missing a content{} block" }
   }.also { rawHtml("\n") }
 }
 
@@ -678,7 +692,7 @@ private fun DIV.processHtml(
 ) {
   section(s.classes.nullIfBlank()) {
     s.processSlide(this)
-    require(s.private_htmlAssigned) { "htmlSlide missing content{} block" }
+    require(s.private_htmlAssigned) { "htmlSlide (id ${s.private_slideId}) is missing a content{} block" }
     s
       .private_htmlBlock()
       .indentInclude(config.indentToken)

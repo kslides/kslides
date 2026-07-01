@@ -3,6 +3,7 @@ package com.kslides
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.geom.geomPoint
 import org.jetbrains.letsPlot.letsPlot
@@ -56,6 +57,22 @@ class LetsPlotTest : StringSpec() {
       val url = LetsPlot.scriptUrlForVersion("4.9.0")
       url.shouldContain("4.9.0")
       url.shouldContain("lets-plot")
+    }
+
+    "the default letsPlotJsVersion resolves to a real CDN URL (not a dev/localhost build)" {
+      val version = com.kslides.config
+        .KSlidesConfig()
+        .letsPlotJsVersion
+      val url = LetsPlot.scriptUrlForVersion(version)
+      url.shouldContain(version)
+      url.shouldContain("cdn.jsdelivr.net")
+      url.shouldNotContain("127.0.0.1")
+    }
+
+    "isLocalScriptUrl flags localhost/dev URLs and clears CDN URLs" {
+      LetsPlot.isLocalScriptUrl("http://127.0.0.1:8080/lets-plot.js") shouldBe true
+      LetsPlot.isLocalScriptUrl("http://localhost/lets-plot.js") shouldBe true
+      LetsPlot.isLocalScriptUrl("https://cdn.jsdelivr.net/gh/x/lets-plot.js") shouldBe false
     }
   }
 }

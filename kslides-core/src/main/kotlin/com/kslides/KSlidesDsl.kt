@@ -61,8 +61,8 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
     code(config.language.nullIfBlank()) {
       if (!config.highlightPattern.lowercase().contains("none"))
         attributes["data-line-numbers"] = config.highlightPattern.stripBraces()
-      if (config.lineOffSet != -1)
-        attributes["data-ln-start-from"] = config.lineOffSet.toString()
+      if (config.lineOffset != -1)
+        attributes["data-ln-start-from"] = config.lineOffset.toString()
       if (config.trim)
         attributes["data-trim"] = ""
       if (!config.escapeHtml)
@@ -77,15 +77,17 @@ fun FlowContent.codeSnippet(block: CodeSnippetConfig.() -> Unit) {
 
 /**
  * Record iframe content for later retrieval. In HTTP mode, the content is cached (by [filename])
- * either as a materialized string (when [staticContent] is true) or as a lambda that re-renders on
- * each request. In filesystem mode, the content is written to `<path>/<filename>` immediately.
+ * either as a materialized string (when [staticContent] is true) or as a lambda that is re-invoked
+ * per request. In filesystem mode, the content is written to `<path>/<filename>` immediately.
  *
  * Used internally by [com.kslides.playground] and the `letsPlot{}` DSL; exposed publicly so
  * custom extension DSLs in the same shape can reuse the caching pipeline.
  *
  * @param useHttp `true` when serving via Ktor, `false` when writing static files.
- * @param staticContent when `useHttp` is `true`, `true` caches the rendered string once;
- *   `false` caches the lambda so content is regenerated on every request.
+ * @param staticContent when `useHttp` is `true`, `true` caches the rendered string once; `false`
+ *   caches the lambda and re-invokes it per request. Note the lambda's captured inputs (config, CSS,
+ *   figure/source) are frozen at build time, so re-invocation reproduces identical output unless the
+ *   lambda itself reads mutable external state (e.g. a file re-read via [com.kslides.include]).
  * @param kslides owning [KSlides] instance (provides the shared iframe caches).
  * @param path output directory for filesystem mode.
  * @param filename file / cache key for the iframe content.

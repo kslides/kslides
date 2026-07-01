@@ -1,12 +1,27 @@
 package com.kslides
 
 import com.kslides.Page.generatePage
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 
 class PresentationTest : StringSpec() {
   init {
+    "KSlides is AutoCloseable: close() is a safe no-op when the http client was never created" {
+      shouldNotThrowAny {
+        KSlides().use { it.kslidesConfig }
+      }
+      // Idempotent — closing twice (and with no client ever built) must not throw.
+      val kslides = KSlides()
+      shouldNotThrowAny {
+        kslides.close()
+        kslides.close()
+      }
+    }
+
     "Simple presentation tests" {
 
       kslidesTest {
@@ -127,6 +142,21 @@ class PresentationTest : StringSpec() {
       }
     }
 
+    "missing content{} validation messages carry the slide id" {
+      val dslEx =
+        shouldThrowExactly<IllegalArgumentException> {
+          kslidesTest { presentation { dslSlide { } } }.presentations.forEach { generatePage(it) }
+        }
+      dslEx.message shouldContain "(id "
+      dslEx.message shouldContain "content{} block"
+
+      val htmlEx =
+        shouldThrowExactly<IllegalArgumentException> {
+          kslidesTest { presentation { htmlSlide { } } }.presentations.forEach { generatePage(it) }
+        }
+      htmlEx.message shouldContain "(id "
+    }
+
     "Default Css Test 1" {
       val kslides =
         kslidesTest {
@@ -244,18 +274,125 @@ class PresentationTest : StringSpec() {
     }
 
     "Vertical Slides Test" {
-      shouldThrowExactly<IllegalArgumentException> {
-        kslidesTest {
-          presentation {
-            verticalSlides {
+      val ex =
+        shouldThrowExactly<IllegalArgumentException> {
+          kslidesTest {
+            presentation {
+              verticalSlides {
+              }
+            }
+          }.apply {
+            presentations.forEach { p ->
+              generatePage(p)
             }
           }
-        }.apply {
-          presentations.forEach { p ->
-            generatePage(p)
+        }
+      // require(...) now returns the message string (no manual throw); verify it reaches the caller.
+      ex.message shouldContain "verticalSlides{} block requires one or more slides"
+    }
+
+    "Google Analytics loader uses the configured property id, not a hardcoded one" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            presentationConfig { gaPropertyId = "G-TESTID123" }
+            dslSlide { content { } }
           }
         }
-      }
+
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain "googletagmanager.com/gtag/js?id=G-TESTID123"
+      html shouldContain "gtag('config', 'G-TESTID123')"
+      // The maintainer's id must never leak into a consumer's generated deck.
+      html shouldNotContain "G-Z6YBNZS12K"
+    }
+
+    "data-visibility: hidden wins when both hidden and uncounted are set" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              hidden = true
+              uncounted = true
+              content { }
+            }
+          }
+        }
+
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain """data-visibility="hidden""""
+      html shouldNotContain """data-visibility="uncounted""""
+    }
+
+    "data-visibility: hidden-only emits hidden" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              hidden = true
+              content { }
+            }
+          }
+        }
+      generatePage(kslides.presentation("/")) shouldContain """data-visibility="hidden""""
+    }
+
+    "data-visibility: uncounted-only emits uncounted" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              uncounted = true
+              content { }
+            }
+          }
+        }
+      generatePage(kslides.presentation("/")) shouldContain """data-visibility="uncounted""""
+    }
+
+    "autoAnimate emits data-auto-animate on the slide section" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              autoAnimate = true
+              content { }
+            }
+          }
+        }
+      generatePage(kslides.presentation("/")) shouldContain "data-auto-animate"
+    }
+
+    "markdownVerticalSeparator emits data-separator-vertical on a markdown slide" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            markdownSlide {
+              slideConfig { markdownVerticalSeparator = "--" }
+              content { "# Title" }
+            }
+          }
+        }
+      generatePage(kslides.presentation("/")) shouldContain """data-separator-vertical="--""""
+    }
+
+    "generatePage is idempotent across repeated renders, including vertical stacks" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide { content { } }
+            verticalSlides {
+              dslSlide { content { } }
+              dslSlide { content { } }
+            }
+          }
+        }
+      val p = kslides.presentation("/")
+
+      // Vertical-stack children are reconstructed on each render and draw ids from a shared counter
+      // that generatePage resets; rendering must therefore be a pure function of the built deck.
+      generatePage(p, false) shouldBe generatePage(p, false)
+      generatePage(p, true) shouldBe generatePage(p, true)
     }
   }
 }

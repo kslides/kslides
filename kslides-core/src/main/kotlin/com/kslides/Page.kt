@@ -3,11 +3,6 @@ package com.kslides
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.config.PresentationConfig
 import com.pambrose.common.util.ensureSuffix
-import kotlinx.coroutines.async
-import kotlinx.css.a
-import kotlinx.css.img
-import kotlinx.css.link
-import kotlinx.css.meta
 import kotlinx.html.HTML
 import kotlinx.html.a
 import kotlinx.html.body
@@ -35,6 +30,11 @@ internal object Page {
     useHttp: Boolean = true,
     srcPrefix: String = "/",
   ): String {
+    // Not dead code: vertical-stack child slides are (re)constructed during render via the
+    // verticalSlides{} block, and each one pulls its id from this shared counter (Slide.private_slideId).
+    // Resetting per render keeps those ids — and therefore the per-slide iframe filenames
+    // (slide-<id>-<n>) — stable across the repeated renders an HTTP server performs. NOTE: this makes
+    // generatePage mutate shared KSlides state, so concurrent renders are not yet thread-safe.
     p.kslides.slideCount = 0
     val htmldoc =
       document {
@@ -62,42 +62,46 @@ internal object Page {
       }
     }
 
-    /*
-    This is a hack to fix a copycode issue: the <pre> and <code> tags must be on the same line
-    <pre>
-       <code>
-       </code>
-    </pre>
+    return mergePreAndCode(htmldoc.serialize())
+  }
 
-    has to be transformed into:
-    <pre><code>
-       </code>
-    </pre>
-     */
-    return buildString {
+  /**
+   * Fix a copycode issue: reveal.js needs the `<pre>` and `<code>` tags on the same line. The
+   * serializer emits them split across lines:
+   * ```
+   * <pre>
+   *    <code>
+   *    </code>
+   * </pre>
+   * ```
+   * so when a `<code>` line immediately follows a `<pre>` line, pull it up onto the `<pre>` line.
+   * `preFound` only bridges those two adjacent lines — it is reset on any other line so a later,
+   * unrelated `<code>` is never merged (which would strip its leading whitespace).
+   */
+  internal fun mergePreAndCode(serialized: String): String =
+    buildString {
       var preFound = false
-      htmldoc
-        .serialize()
+      serialized
         .lines()
-        .forEach {
+        .forEach { line ->
           when {
-            it.matches(preRegex) -> {
+            line.matches(preRegex) -> {
               preFound = true
-              append(it)
+              append(line)
             }
 
-            preFound && it.matches(codeRegex) -> {
+            preFound && line.matches(codeRegex) -> {
               preFound = false
-              append("${it.trimStart()}\n")
+              append("${line.trimStart()}\n")
             }
 
             else -> {
-              append("$it\n")
+              preFound = false
+              append("$line\n")
             }
           }
         }
     }
-  }
 
   @Suppress("LongMethod")
   private fun HTML.generateHead(
@@ -128,7 +132,7 @@ internal object Page {
       rawHtml("\n")
       script {
         async = true
-        src = "https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K"
+        src = "https://www.googletagmanager.com/gtag/js?id=${config.gaPropertyId}"
       }
       rawHtml("\n\n\t\t")
       script {

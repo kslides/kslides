@@ -19,9 +19,6 @@ import kotlin.reflect.KProperty
 class ConfigProperty<T>(
   private val configMap: MutableMap<String, Any>,
 ) {
-  /** Name of the last property written through this delegate. Used by [toString] for debugging. */
-  var configName = ""
-
   /**
    * @throws IllegalStateException if the property has not been assigned.
    */
@@ -29,19 +26,19 @@ class ConfigProperty<T>(
   operator fun getValue(
     thisRef: Any?,
     property: KProperty<*>,
-  ) = if (configMap.containsKey(property.name))
-    configMap[property.name] as T
-  else
-    throw IllegalStateException("Config property ${property.name} has not been set")
+  ): T =
+    // The backing map only ever holds non-null values, so a single lookup with `?:` distinguishes
+    // "unset" from "set" without a second containsKey() probe.
+    (
+      configMap[property.name]
+      ?: throw IllegalStateException("Config property ${property.name} has not been set")
+    ) as T
 
   operator fun setValue(
     thisRef: Any?,
     property: KProperty<*>,
     value: T,
   ) {
-    configName = property.name
-    configMap[configName] = value as Any
+    configMap[property.name] = value as Any
   }
-
-  override fun toString() = "$configName: ${configMap[configName]}"
 }

@@ -43,3 +43,39 @@ css += """
 ```
 
 `htmlSlide` exposes `classes` for the same purpose — see [HTML slides](slides/html.md).
+
+## Code font size
+
+reveal.js renders code blocks — Markdown fences, [code snippets](extensions/code-snippets.md), and `htmlSlide` `<pre>` blocks — at `0.55em` relative to the slide. Because the slide canvas is a fixed size, long lines overflow with a scrollbar instead of shrinking to fit. Override `.reveal pre` to change the size.
+
+### Every code block
+
+Attach the rule to the `kslides {}` block (or a single `presentation {}`) so it applies everywhere:
+
+```kotlin
+--8<-- "Styling.kt:code-global"
+```
+
+Lower the value until the widest line fits; raise it to enlarge all code. To keep the rare over-long line inside the window instead of scrolling it, add `.reveal pre code { white-space: pre-wrap; }`.
+
+### One slide only
+
+Give the slide an `id` and scope the rule to it. An `id` selector (`#bigcode pre`) outranks the global `.reveal pre`, so it wins with no `!important` and independent of order:
+
+```kotlin
+--8<-- "Styling.kt:code-slide"
+```
+
+### Several slides
+
+An `id` must be unique per page — reveal.js uses it for deep links (`#/bigcode`) and the slide menu, so the same `id` can't be reused on two slides. Use a **class** instead; a class is made to be shared, so one rule styles every slide tagged with it:
+
+```kotlin
+--8<-- "Styling.kt:code-shared"
+```
+
+`markdownSlide`, `htmlSlide`, and `dslSlide` expose `classes` directly, and `slideDefinition` accepts a `classes` argument for the same purpose.
+
+!!! tip "Qualify with `.reveal` to beat the global rule"
+
+    A bare `.big pre` has the *same* specificity as the global `.reveal pre`, so the tie is broken by whichever is declared last — reorder the blocks and the override silently stops working. Writing `.reveal .big pre` (two classes) always outranks `.reveal pre`, so it wins regardless of order. A single-slide `id` selector (`#bigcode pre`) already outranks both and needs no qualifier.

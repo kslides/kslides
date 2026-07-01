@@ -7,7 +7,7 @@
     <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
     
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-TRY2Q243XC"></script>
 
 		<script>
 			window.dataLayer = window.dataLayer || [];
@@ -21,6 +21,7 @@
     <link href="revealjs/dist/theme/solarized.css" id="theme" rel="stylesheet">
     <link href="revealjs/plugin/highlight/monokai.css" id="highlight-theme" rel="stylesheet">
     <link href="revealjs/plugin/copycode/copycode.css" rel="stylesheet">
+    <link href="revealjs/plugin/copycode/copycode-button-fix.css" rel="stylesheet">
     
     <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
     <link href="/favicon.ico" rel="icon" type="image/x-icon">
@@ -70,6 +71,9 @@
 			.reveal.h5 {
 			  color: blue;
 			}
+			.reveal pre { font-size: 0.60em; }
+			.reveal pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal .smallcode pre { font-size: 0.40em; }
 			
 			
 		</style>
@@ -108,7 +112,7 @@ This is page 3 of 3
 </script>
         </section>
         
-        <section data-markdown="">
+        <section class="smallcode" data-markdown="">
           <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -164,7 +168,7 @@ This is page 3 of 3
           
         </section>
         
-        <section data-markdown="">
+        <section class="smallcode" data-markdown="">
           <script type="text/template">
 ## Slide Definition
 ```kotlin []

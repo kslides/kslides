@@ -12,13 +12,6 @@ import java.io.File
 internal object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
 
-  internal fun <K, V> Map<K, V>.merge(other: Map<K, V>) =
-    mutableMapOf<K, V>()
-      .also { result ->
-        result.putAll(this)
-        other.forEach { (key, value) -> result[key] = value }
-      }
-
   internal fun String.indentInclude(indentToken: String): String {
     var firstLineFound = false
     var firstLineIndent = ""
@@ -39,29 +32,6 @@ internal object InternalUtils {
           } else {
             firstLineFound = false
             firstLineIndent = ""
-            str
-          }
-        }
-      }
-  }
-
-  internal fun String.indentFirstLine(indentToken: String): String {
-    var firstLineFound = false
-    return lines()
-      .joinToString("\n") { str ->
-        if (!firstLineFound) {
-          val trimmed = str.trimStart()
-          if (trimmed.startsWith(indentToken)) {
-            firstLineFound = true
-            trimmed.substring(indentToken.length)
-          } else {
-            str
-          }
-        } else {
-          if (str.startsWith(indentToken)) {
-            str.substring(indentToken.length)
-          } else {
-            firstLineFound = false
             str
           }
         }
@@ -105,7 +75,15 @@ internal object InternalUtils {
       }.joinToString("\n")
   }
 
-  internal fun String.toIntList() =
+  /**
+   * Parse a comma/semicolon-separated list of single line numbers and `a-b`/`a:b` ranges into the
+   * expanded list of line numbers (e.g. `"1,3-5"` → `[1, 3, 4, 5]`; descending ranges count down).
+   *
+   * @throws IllegalArgumentException on any malformed element — a non-integer endpoint (`"-5"`,
+   *   `"a"`) or more than two endpoints (`"1-2-3"`) — reporting the offending element uniformly
+   *   rather than leaking a raw [NumberFormatException].
+   */
+  internal fun String.toIntList(): List<Int> =
     buildList {
       replace(whiteSpace, "")
         .trimStart('[', '(')
@@ -113,31 +91,26 @@ internal object InternalUtils {
         .split(",", ";")
         .filter { it.isNotBlank() }
         .forEach { splitElem ->
-          splitElem
-            .split('-', '–', ':')
-            .also { elem ->
-              when (elem.size) {
-                1 -> {
-                  add(splitElem.toInt())
-                }
+          val elem = splitElem.split('-', '–', ':')
+          try {
+            when (elem.size) {
+              1 -> {
+                add(splitElem.toInt())
+              }
 
-                2 -> {
-                  elem
-                    .let { it[0].toInt() to it[1].toInt() }
-                    .also { (beg, end) ->
-                      when {
-                        beg == end -> add(beg)
-                        beg < end -> addAll(beg..end)
-                        else -> addAll((beg downTo end))
-                      }
-                    }
-                }
+              2 -> {
+                val (beg, end) = elem[0].toInt() to elem[1].toInt()
+                // beg..end already yields the single element [beg] when beg == end
+                addAll(if (beg <= end) beg..end else beg downTo end)
+              }
 
-                else -> {
-                  throw IllegalArgumentException("Invalid argument: $elem")
-                }
+              else -> {
+                throw IllegalArgumentException("Invalid line range: '$splitElem'")
               }
             }
+          } catch (e: NumberFormatException) {
+            throw IllegalArgumentException("Invalid line range: '$splitElem'", e)
+          }
         }
     }
 
@@ -148,9 +121,10 @@ internal object InternalUtils {
   ): List<String> {
     val beginIndex =
       if (beginToken.isNotBlank()) {
-        // Do not match calling token in the same file
-        val unquotedBegin = Regex(beginToken)
-        val quotedBegin = Regex("$beginToken\"")
+        // Do not match calling token in the same file. Tokens are documented as plain substrings,
+        // so escape them — a metacharacter (e.g. "items[0]") must not be compiled as a regex.
+        val unquotedBegin = Regex(Regex.escape(beginToken))
+        val quotedBegin = Regex(Regex.escape(beginToken) + "\"")
         (
           asSequence()
             .mapIndexed { i, s -> i to s }
@@ -164,9 +138,10 @@ internal object InternalUtils {
 
     val endIndex =
       if (endToken.isNotBlank()) {
-        // Do not match calling token in the same file
-        val unquotedEnd = Regex(endToken)
-        val quotedEnd = Regex("$endToken\"")
+        // Do not match calling token in the same file. Tokens are documented as plain substrings,
+        // so escape them — a metacharacter (e.g. "items[0]") must not be compiled as a regex.
+        val unquotedEnd = Regex(Regex.escape(endToken))
+        val quotedEnd = Regex(Regex.escape(endToken) + "\"")
         (
           reversed()
             .asSequence()
@@ -179,6 +154,10 @@ internal object InternalUtils {
         this.size
       }
 
+    require(beginIndex <= endIndex) {
+      "include token range is empty or inverted: begin token '$beginToken' (index $beginIndex) " +
+        "occurs after end token '$endToken' (index $endIndex)"
+    }
     return if (beginIndex == 0 && endIndex == this.size) this else subList(beginIndex, endIndex)
   }
 
@@ -228,7 +207,9 @@ internal object InternalUtils {
       }
   }
 
-  internal fun mkdir(name: String) = File(name).run { if (!exists()) mkdir() else false }
+  // mkdirs() (not mkdir()) so nested output paths — e.g. playground/letsPlot/kroki subdirs under a
+  // multi-segment outputDir — are created in full rather than silently no-oping on a missing parent.
+  internal fun mkdir(name: String) = File(name).run { exists() || mkdirs() }
 
   private val httpRegex = Regex("\\s*http[s]?://.*")
 

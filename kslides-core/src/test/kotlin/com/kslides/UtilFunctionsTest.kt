@@ -36,6 +36,15 @@ class UtilFunctionsTest : StringSpec() {
       perms shouldBe listOf(listOf("a", "b", "c"), listOf("c", "a", "b"))
     }
 
+    "permuteBy with no orders yields an empty sequence" {
+      listOf("a", "b").permuteBy().toList() shouldBe emptyList()
+    }
+
+    "permuteBy can repeat and reorder indices within a single order" {
+      listOf("a", "b", "c").permuteBy(listOf(2, 2, 0)).toList() shouldBe
+        listOf(listOf("c", "c", "a"))
+    }
+
     "githubSourceUrl builds the blob URL" {
       githubSourceUrl("acct", "repo", "a/b.kt") shouldBe
         "https://github.com/acct/repo/blob/master/a/b.kt"

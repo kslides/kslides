@@ -58,6 +58,12 @@ fun DslSlide.diagram(
   diagramBlock: DiagramDescription.() -> Unit,
 ) {
   val diagram = DiagramDescription().apply(diagramBlock)
+  if (diagram.source.isBlank()) {
+    DiagramDescription.logger.warn {
+      "diagram(\"$diagramType\") called with blank source; skipping the Kroki request and embed"
+    }
+    return
+  }
   val mergedConfig =
     DiagramConfig().also { config ->
       config.merge(globalDiagramConfig)
@@ -94,13 +100,23 @@ fun DslSlide.diagram(
   }
 }
 
+/**
+ * Type-safe overload of [diagram] taking a [DiagramType] enum instead of a raw Kroki type string,
+ * so a mistyped diagram type is a compile error. Delegates to the [String] overload.
+ */
+context(section: SECTION)
+fun DslSlide.diagram(
+  diagramType: DiagramType,
+  diagramBlock: DiagramDescription.() -> Unit,
+) = diagram(diagramType.krokiName, diagramBlock)
+
 private fun DslSlide.fetchKrokiContent(
   filename: String,
   desc: Map<String, Any>,
 ): ByteArray =
   runBlocking {
     DiagramDescription.logger.info { "Fetching kroki content for $filename" }
-    val json = buildJsonObjectFromMap(desc)
+    val json = buildJsonObjectFromMap(filename, desc)
     val kslidesConfig = presentation.kslides.kslidesConfig
     val response =
       presentation.kslides.client.post(kslidesConfig.krokiUrl) {
@@ -115,31 +131,47 @@ private fun DslSlide.fetchKrokiContent(
     response.body()
   }
 
-private fun buildJsonObjectFromMap(desc: Map<String, Any>) =
-  buildJsonObject {
-    desc.forEach { (k, v) ->
-      when (v) {
-        is String -> {
-          put(k, JsonPrimitive(v))
-        }
+private fun buildJsonObjectFromMap(
+  filename: String,
+  desc: Map<String, Any>,
+) = buildJsonObject {
+  desc.forEach { (field, value) ->
+    when (value) {
+      is String -> {
+        put(field, JsonPrimitive(value))
+      }
 
-        is Map<*, *> -> {
-          putJsonObject(k) {
-            v.forEach { (k, v) ->
-              when {
-                k !is String -> error("Invalid key type: $k")
-                v is Boolean -> put(k, JsonPrimitive(v))
-                v is String -> put(k, JsonPrimitive(v))
-                v is Number -> put(k, JsonPrimitive(v))
-                else -> error("Invalid value type: $v")
+      is Map<*, *> -> {
+        putJsonObject(field) {
+          value.forEach { (optionKey, optionValue) ->
+            when {
+              optionKey !is String -> {
+                error("Invalid Kroki option key for '$filename' field '$field': expected String, got $optionKey")
+              }
+
+              optionValue is Boolean -> {
+                put(optionKey, JsonPrimitive(optionValue))
+              }
+
+              optionValue is String -> {
+                put(optionKey, JsonPrimitive(optionValue))
+              }
+
+              optionValue is Number -> {
+                put(optionKey, JsonPrimitive(optionValue))
+              }
+
+              else -> {
+                error("Invalid Kroki option value for '$filename' option '$optionKey': $optionValue")
               }
             }
           }
         }
+      }
 
-        else -> {
-          error("Unexpected value type: ${v::class}")
-        }
+      else -> {
+        error("Unexpected Kroki field type for '$filename' field '$field': ${value::class.simpleName}")
       }
     }
   }
+}

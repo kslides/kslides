@@ -1,10 +1,12 @@
 plugins {
     // Versions come from buildSrc — apply by id without a version to avoid classpath conflicts.
     id("org.jetbrains.dokka")
-    id("com.pambrose.stable-versions")
+    id("kslides.stable-versions")
 }
 
-providers.gradleProperty("overrideVersion").orNull?.let { version = it }
+// Note: -PoverrideVersion is handled per-module in the kslides.kotlin-module convention plugin,
+// which sets each published project's version. The root project is not published, so it needs no
+// version override of its own.
 
 // Aggregate Dokka HTML across publishing modules into the root build/ output.
 dependencies {

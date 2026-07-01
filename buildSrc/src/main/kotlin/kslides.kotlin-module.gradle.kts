@@ -1,26 +1,34 @@
+import org.gradle.kotlin.dsl.named
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm")
     id("dev.detekt")
     id("com.pambrose.kotlinter")
     id("com.pambrose.testing")
-    id("com.pambrose.stable-versions")
+    id("kslides.stable-versions")
 }
 
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 kotlin {
     jvmToolchain(libs.findVersion("jvm").get().requiredVersion.toInt())
-    compilerOptions {
-        // Enable context parameters (experimental in Kotlin 2.4) so DSL extension functions can
-        // receive the enclosing kotlinx.html SECTION implicitly instead of via a mutable field.
-        freeCompilerArgs.add("-Xcontext-parameters")
+
+    // Run the unused-return-value checker over production code only. Kotest's
+    // assertion DSL (e.g. shouldBe) returns its receiver, and tests intentionally
+    // discard that result, so applying the checker to the test source set would
+    // emit only false-positive warnings.
+    tasks.named<KotlinCompile>("compileKotlin") {
+        compilerOptions {
+            freeCompilerArgs.add("-Xreturn-value-checker=check")
+        }
     }
 }
 
-// Detekt 2.0 is alpha; report findings without failing the build. Override per-project
-// or via -Pdetekt.failOnViolation=true once a baseline is in place.
+// Detekt 2.0 is alpha, but the config is valid and the tree is violation-free, so findings fail the
+// build by default. Pass -Pdetekt.ignoreFailures=true to downgrade to report-only while iterating.
 detekt {
-    ignoreFailures = providers.gradleProperty("detekt.failOnViolation").orNull != "true"
+    ignoreFailures = providers.gradleProperty("detekt.ignoreFailures").orNull == "true"
     buildUponDefaultConfig = true
     autoCorrect = false
     config.from(rootProject.layout.projectDirectory.file("config/detekt/detekt.yml"))

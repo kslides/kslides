@@ -8,4 +8,5 @@ dependencies {
     api(projects.kslidesCore)
 
     api(libs.letsplot.kotlin)
+    implementation(libs.kotlin.logging)
 }

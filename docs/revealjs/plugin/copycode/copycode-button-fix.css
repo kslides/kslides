@@ -1,0 +1,24 @@
+/*
+ * kslides override for the reveal.js-copycode plugin — keeps the Copy button
+ * inside the code window.
+ *
+ * reveal.js themes render <pre> at width:90% centered, but copycode wraps the
+ * <pre> in a full-width .codeblock and anchors the button to that wrapper's
+ * right edge, so the button juts ~5% past the code block. Constrain .codeblock
+ * to the pre's width and let the pre fill it, so the button's right:0 lands on
+ * the code edge.
+ *
+ * This lives in a separate file (rather than being appended to copycode.css) so
+ * the vendored plugin CSS can be replaced wholesale on upgrade. It is wired into
+ * the <head> by kslides-core (Presentation.assignCssFiles), loaded after
+ * copycode.css so it wins on equal specificity.
+ */
+.reveal .codeblock {
+  width: 90%;
+  margin: var(--r-block-margin) auto;
+}
+
+.reveal .codeblock pre {
+  width: 100%;
+  margin: 0;
+}

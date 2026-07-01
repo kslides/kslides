@@ -1,5 +1,6 @@
 package com.kslides
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.jetbrains.letsPlot.Figure
 import org.jetbrains.letsPlot.commons.geometry.DoubleVector
 import org.jetbrains.letsPlot.core.util.PlotHtmlExport
@@ -15,6 +16,8 @@ import org.jetbrains.letsPlot.intern.toSpec
  * [com.kslides.config.KSlidesConfig.letsPlotJsVersion].
  */
 object LetsPlot {
+  internal val logger = KotlinLogging.logger {}
+
   internal fun letsPlotContent(
     figure: Figure,
     scriptUrl: String,
@@ -28,4 +31,11 @@ object LetsPlot {
     )
 
   internal fun scriptUrlForVersion(version: String): String = PlotHtmlHelper.scriptUrl(version)
+
+  /**
+   * A dev/SNAPSHOT Lets-Plot version resolves (via [scriptUrlForVersion]) to a `127.0.0.1`/localhost
+   * script URL that only loads on the build machine. Detect it so the DSL can warn before baking
+   * such a URL into a static page.
+   */
+  internal fun isLocalScriptUrl(url: String): Boolean = url.contains("127.0.0.1") || url.contains("localhost")
 }

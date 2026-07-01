@@ -50,3 +50,10 @@ extensions.configure<MavenPublishBaseExtension> {
         signAllPublications()
     }
 }
+
+// Reproducible artifacts: stable entry order and zeroed timestamps so the published jars,
+// sources, and javadoc archives are byte-for-byte identical across builds of the same input.
+tasks.withType<AbstractArchiveTask>().configureEach {
+    isPreserveFileTimestamps = false
+    isReproducibleFileOrder = true
+}

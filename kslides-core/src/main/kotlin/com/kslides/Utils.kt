@@ -8,16 +8,15 @@ import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
-import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.html.CODE
 import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
 import java.io.File
-import java.net.URL
+import java.io.IOException
+import java.net.URI
 
 /** Internal utility holder — not part of the public API. */
 object Utils {
-  private val logger = KotlinLogging.logger {}
   internal const val INDENT_TOKEN = "--indent--"
 }
 
@@ -55,17 +54,7 @@ fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
  * @param orders one index list per permutation; each inner list must reference valid indices
  *   into the receiver.
  */
-fun <T> List<T>.permuteBy(vararg orders: List<Int>): Sequence<List<T>> =
-  sequence {
-    orders
-      .forEach { order ->
-        yield(
-          buildList {
-            order.forEach { this@buildList += this@permuteBy[it] }
-          },
-        )
-      }
-  }
+fun <T> List<T>.permuteBy(vararg orders: List<Int>): Sequence<List<T>> = orders.asSequence().map { order -> order.map { index -> this[index] } }
 
 /**
  * Parse a reveal.js line-highlight pattern string (e.g. `"[1-3|5|*]"` or `"(1|2|*)"`) into a
@@ -124,8 +113,11 @@ fun githubRawUrl(
  *   surrounding Markdown/HTML; set to `""` in code contexts.
  * @param escapeHtml HTML-escape the returned content; disable for [kotlinx.html.CODE] blocks
  *   that already own their escaping.
- * @return the resolved content, or an empty string if reading fails (a warning is logged).
- * @throws IllegalArgumentException if [src] is a local path containing `"../"`.
+ * @return the resolved content, or an empty string if the file/URL cannot be read (an I/O failure,
+ *   missing file, or failed HTTP fetch — a warning is logged). Authoring errors such as an absent
+ *   [beginToken]/[endToken] or a malformed [linePattern] are not swallowed; they propagate.
+ * @throws IllegalArgumentException if [src] is a local path containing `"../"`, or if a
+ *   [beginToken]/[endToken] is not found, or if [linePattern] is malformed.
  */
 fun include(
   src: String,
@@ -140,25 +132,26 @@ fun include(
   // Do not let queries wander outside of repo — validated up front so the contract documented
   // in the KDoc (`@throws IllegalArgumentException`) is honored regardless of the read path.
   if (!src.isUrl() && src.contains("../")) throw IllegalArgumentException("Illegal filename: $src")
-  return runCatching {
-    if (src.isUrl()) {
-      URL(src)
-        .readText()
-        .lines()
-        .fromTo(beginToken, endToken, exclusive)
-        .toLineRanges(linePattern)
-        .fixIndents(indentToken, trimIndent, escapeHtml)
-    } else {
-      File("${System.getProperty("user.dir")}/$src")
-        .readLines()
-        .fromTo(beginToken, endToken, exclusive)
-        .toLineRanges(linePattern)
-        .fixIndents(indentToken, trimIndent, escapeHtml)
+
+  // Only I/O failures (missing file, unreachable URL, 404) are recoverable — they warn and yield an
+  // empty string. Authoring errors (a begin/end token that is absent, a malformed linePattern) are
+  // allowed to propagate so a mistake fails the build loudly rather than silently rendering a blank
+  // slide. See `include()`'s `@return`/`@throws` contract.
+  val lines =
+    try {
+      if (src.isUrl())
+        URI(src).toURL().readText().lines()
+      else
+        File("${System.getProperty("user.dir")}/$src").readLines()
+    } catch (e: IOException) {
+      KSlides.logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
+      return ""
     }
-  }.getOrElse { e ->
-    KSlides.logger.warn(e) { "Unable to read ${if (src.isUrl()) "url" else "file"} $src" }
-    ""
-  }
+
+  return lines
+    .fromTo(beginToken, endToken, exclusive)
+    .toLineRanges(linePattern)
+    .fixIndents(indentToken, trimIndent, escapeHtml)
 }
 
 /**

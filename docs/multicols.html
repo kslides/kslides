@@ -7,7 +7,7 @@
     <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
     
-    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-Z6YBNZS12K"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-TRY2Q243XC"></script>
 
 		<script>
 			window.dataLayer = window.dataLayer || [];
@@ -21,6 +21,7 @@
     <link href="revealjs/dist/theme/solarized.css" id="theme" rel="stylesheet">
     <link href="revealjs/plugin/highlight/monokai.css" id="highlight-theme" rel="stylesheet">
     <link href="revealjs/plugin/copycode/copycode.css" rel="stylesheet">
+    <link href="revealjs/plugin/copycode/copycode-button-fix.css" rel="stylesheet">
     
     <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
     <link href="/favicon.ico" rel="icon" type="image/x-icon">
@@ -70,6 +71,9 @@
 			.reveal.h5 {
 			  color: blue;
 			}
+			.reveal pre { font-size: 0.60em; }
+			.reveal pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal .smallcode pre { font-size: 0.40em; }
 			
 			
 			.multiColumn2:after {
@@ -146,7 +150,7 @@
             </div>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -210,7 +214,7 @@ dslSlide {
             </div>
           </section>
           
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []

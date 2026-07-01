@@ -20,7 +20,15 @@ class CodeSnippetConfig {
   var highlightPattern: String = ""
 
   /** Starting line number (`data-ln-start-from`). `-1` omits the attribute. */
-  var lineOffSet: Int = -1
+  var lineOffset: Int = -1
+
+  /** Misspelled legacy alias for [lineOffset]; kept for source compatibility. */
+  @Deprecated("Renamed to lineOffset", ReplaceWith("lineOffset"))
+  var lineOffSet: Int
+    get() = lineOffset
+    set(value) {
+      lineOffset = value
+    }
 
   /** reveal.js `data-id` used to auto-animate transitions between code snippets. */
   var dataId: String = ""

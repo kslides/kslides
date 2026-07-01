@@ -38,7 +38,7 @@ Common wrappers in `Makefile`:
 make help                  # list all targets (default target)
 make build                 # clean + gradle build -x test
 make lint                  # lintKotlinMain + lintKotlinTest
-make detekt                # Detekt static analysis (non-fatal)
+make detekt                # Detekt static analysis (fails on findings)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
 make versions              # dependencyUpdates
@@ -75,7 +75,7 @@ Three Gradle modules defined in `settings.gradle.kts`:
 
 Shared build logic lives in `buildSrc/` as two precompiled-script convention plugins:
 
-- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, [Detekt](https://detekt.dev) (group `dev.detekt`, plugin id `dev.detekt`), stable-versions, and the kotest/logback test dependencies. Detekt is wired in non-fatally (`ignoreFailures = true`) so reports surface without breaking the build; pass `-Pdetekt.failOnViolation=true` to enforce. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
+- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, [Detekt](https://detekt.dev) (group `dev.detekt`, plugin id `dev.detekt`), the `kslides.stable-versions` convention plugin (which applies [Ben-Manes versions](https://github.com/ben-manes/gradle-versions-plugin) and rejects non-stable `dependencyUpdates` candidates), and the kotest/logback test dependencies. Detekt fails the build on findings by default (the config is valid and the tree is violation-free); pass `-Pdetekt.ignoreFailures=true` to downgrade to report-only while iterating. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
 - `kslides.published-module` — extends `kslides.kotlin-module` with `java-library`, Dokka, and `com.vanniktech.maven.publish`. Sets up the POM, `KotlinJvm` artifact (sources + Dokka HTML javadoc jar), Maven Central publication, and conditional `signAllPublications()`.
 
 `kslides-core` and `kslides-letsplot` apply `kslides.published-module`; `kslides-examples` applies `kslides.kotlin-module` plus the Ktor plugin (which provides `application{}` and `buildFatJar`). The Heroku `stage` task lives in the root build (`build.gradle.kts`) and depends on `:kslides-examples:build` and `:kslides-examples:buildFatJar`.
@@ -129,7 +129,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 - Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.5.0
 - Ktor 3.5.0 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
-- Lets-Plot Kotlin 4.14.0 for the `letsPlot{}` DSL (matched JS runtime v4.9.0, configurable via `KSlidesConfig.letsPlotJsVersion`)
+- Lets-Plot Kotlin 4.14.0 for the `letsPlot{}` DSL (matched JS runtime v4.10.1 — the `lets-plot-common` core version it resolves to — configurable via `KSlidesConfig.letsPlotJsVersion`)
 - Kotlinter for linting (ktlint-based) and Detekt 2.0.0-alpha.3 for static analysis (`dev.detekt`)
 - reveal.js assets live at the repo root in `docs/revealjs/` (single source of truth, committed for GitHub Pages). `kslides-core/build.gradle.kts` grafts them onto the published JAR's classpath at `revealjs/**` via `processResources` so the Ktor static handler can serve them at runtime — there is no checked-in `kslides-core/src/main/resources/revealjs/` directory.
 - All versions — including the JVM toolchain (`jvm`) and the Gradle wrapper distribution (`gradle-wrapper`) — are centralized in `gradle/libs.versions.toml`. The convention plugin reads `jvm` via `VersionCatalogsExtension`, and the `Makefile`'s `upgrade-wrapper` target reads `gradle-wrapper` from the same file.

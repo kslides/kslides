@@ -2,15 +2,16 @@ import com.kslides.DiagramOutputType
 import com.kslides.Effect
 import com.kslides.PlaygroundMode
 import com.kslides.PlaygroundTheme
+import com.kslides.Presentation
 import com.kslides.PresentationTheme
 import com.kslides.Speed
 import com.kslides.TargetPlatform
 import com.kslides.Transition
+import com.kslides.VerticalSlidesContext
 import com.kslides.atag
 import com.kslides.bodyRow
 import com.kslides.by
 import com.kslides.codeSnippet
-import com.kslides.config.LetsPlotIframeConfig
 import com.kslides.diagram
 import com.kslides.fragment
 import com.kslides.headRow
@@ -105,6 +106,21 @@ fun main() {
       .reveal.h5 {
         color: blue;
       }
+    """
+
+    // Shrink code blocks so long lines fit the slide window (reveal's default is 0.55em). This
+    // fits the ~85-92 char lines of the slideDefinition slides; the rare extra-long line (e.g. a
+    // full URL) wraps instead of overflowing horizontally rather than forcing an unreadable size.
+    css += """
+      .reveal pre { font-size: 0.60em; }
+      .reveal pre code { white-space: pre-wrap; word-break: break-word; }
+    """
+
+    // Per-slide override: the "highlighted code" slideDefinitions (classes = "smallcode") render their
+    // code smaller than the global 0.60em. ".reveal .smallcode pre" (two classes) outranks ".reveal pre"
+    // on specificity, so it wins regardless of order; long lines still wrap via the global pre-wrap rule.
+    css += """
+      .reveal .smallcode pre { font-size: 0.40em; }
     """
 
     // Optional
@@ -219,7 +235,7 @@ fun main() {
         }
         // intro end
 
-        slideDefinition(source = slides, token = "intro")
+        smallSlideDefinition(source = slides, token = "intro")
       }
 
       css +=
@@ -250,7 +266,7 @@ fun main() {
         }
         // mdslide end
 
-        slideDefinition(source = slides, token = "mdslide")
+        smallSlideDefinition(source = slides, token = "mdslide")
       }
 
       css {
@@ -280,7 +296,7 @@ fun main() {
         }
         // htmlslide end
 
-        slideDefinition(source = slides, token = "htmlslide")
+        smallSlideDefinition(source = slides, token = "htmlslide")
       }
 
       verticalSlides {
@@ -297,7 +313,7 @@ fun main() {
         }
         // dslslide end
 
-        slideDefinition(source = slides, token = "dslslide")
+        smallSlideDefinition(source = slides, token = "dslslide")
       }
 
       verticalSlides {
@@ -316,7 +332,7 @@ fun main() {
         }
         // highlights1 end
 
-        slideDefinition(source = slides, token = "highlights1")
+        smallSlideDefinition(source = slides, token = "highlights1")
       }
 
       verticalSlides {
@@ -337,7 +353,7 @@ fun main() {
         }
         // highlights2 end
 
-        slideDefinition(source = slides, token = "highlights2")
+        smallSlideDefinition(source = slides, token = "highlights2")
       }
 
       verticalSlides {
@@ -363,7 +379,7 @@ fun main() {
         }
         // animated1 end
 
-        slideDefinition(source = slides, token = "animated1")
+        smallSlideDefinition(source = slides, token = "animated1")
       }
 
       verticalSlides {
@@ -388,9 +404,10 @@ fun main() {
               """
             }
           }
-        }        // animated2 end
+        }
+        // animated2 end
 
-        slideDefinition(source = slides, token = "animated2")
+        smallSlideDefinition(source = slides, token = "animated2")
       }
 
       verticalSlides {
@@ -407,7 +424,7 @@ fun main() {
         }
         // pg1 end
 
-        slideDefinition(source = slides, token = "pg1")
+        smallSlideDefinition(source = slides, token = "pg1")
 
         // pg2 begin
         dslSlide {
@@ -420,7 +437,7 @@ fun main() {
         }
         // pg2 end
 
-        slideDefinition(source = slides, token = "pg2")
+        smallSlideDefinition(source = slides, token = "pg2")
 
         // pg3 begin
         dslSlide {
@@ -439,7 +456,7 @@ fun main() {
         }
         // pg3 end
 
-        slideDefinition(source = slides, token = "pg3")
+        smallSlideDefinition(source = slides, token = "pg3")
 
         // pg4 begin
         dslSlide {
@@ -454,7 +471,7 @@ fun main() {
         }
         // pg4 end
 
-        slideDefinition(source = slides, token = "pg4")
+        smallSlideDefinition(source = slides, token = "pg4")
 
         // pg5 begin
         dslSlide {
@@ -486,7 +503,7 @@ fun main() {
         }
         // pg5 end
 
-        slideDefinition(source = slides, token = "pg5")
+        smallSlideDefinition(source = slides, token = "pg5")
       }
 
       verticalSlides {
@@ -521,7 +538,7 @@ fun main() {
         }
         // graphviz1 end
 
-        slideDefinition(source = slides, token = "graphviz1")
+        smallSlideDefinition(source = slides, token = "graphviz1")
 
         // mermaid1 begin
         dslSlide {
@@ -548,7 +565,7 @@ fun main() {
         }
         // mermaid1 end
 
-        slideDefinition(source = slides, token = "mermaid1")
+        smallSlideDefinition(source = slides, token = "mermaid1")
 
         // mermaid2 begin
         dslSlide {
@@ -571,7 +588,7 @@ fun main() {
         }
         // mermaid2 end
 
-        slideDefinition(source = slides, token = "mermaid2")
+        smallSlideDefinition(source = slides, token = "mermaid2")
 
         // plantuml1 begin
         dslSlide {
@@ -617,7 +634,7 @@ fun main() {
         }
         // plantuml1 end
 
-        slideDefinition(source = slides, token = "plantuml1")
+        smallSlideDefinition(source = slides, token = "plantuml1")
 
         // blockdiag1 begin
         dslSlide {
@@ -646,7 +663,7 @@ fun main() {
         }
         // blockdiag1 end
 
-        slideDefinition(source = slides, token = "blockdiag1")
+        smallSlideDefinition(source = slides, token = "blockdiag1")
       }
 
       verticalSlides {
@@ -657,7 +674,7 @@ fun main() {
             h2 { +"A Lets-Plot Scatter Plot" }
             letsPlot(
               dimensions = 801 by 400,
-              iframeConfig = LetsPlotIframeConfig {
+              configBlock = {
                 style = "width: 85%; border: 2px solid #586E75;"
                 height = "415px"
               },
@@ -672,7 +689,7 @@ fun main() {
         }
         // letsplot1 end
 
-        slideDefinition(source = slides, token = "letsplot1")
+        smallSlideDefinition(source = slides, token = "letsplot1")
 
         // letsplot2 begin
         dslSlide {
@@ -680,7 +697,7 @@ fun main() {
             h2 { +"A Lets-Plot Histogram" }
             letsPlot(
               dimensions = 608 by 484,
-              iframeConfig = LetsPlotIframeConfig {
+              configBlock = {
                 style = "width: 65%; border: 2px solid #586E75;"
                 height = "500px"
               },
@@ -694,7 +711,7 @@ fun main() {
         }
         // letsplot2 end
 
-        slideDefinition(source = slides, token = "letsplot2")
+        smallSlideDefinition(source = slides, token = "letsplot2")
 
         // letsplot3 begin
         dslSlide {
@@ -702,7 +719,7 @@ fun main() {
             h2 { +"A Lets-Plot Heatmap (from matrix)" }
             letsPlot(
               dimensions = 503 by 484,
-              iframeConfig = LetsPlotIframeConfig {
+              configBlock = {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
@@ -741,7 +758,7 @@ fun main() {
         }
         // letsplot3 end
 
-        slideDefinition(source = slides, token = "letsplot3")
+        smallSlideDefinition(source = slides, token = "letsplot3")
 
         // letsplot4 begin
         dslSlide {
@@ -749,7 +766,7 @@ fun main() {
             h2 { +"A Lets-Plot Scatter with Color Encoding" }
             letsPlot(
               dimensions = 503 by 484,
-              iframeConfig = LetsPlotIframeConfig {
+              configBlock = {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
@@ -767,7 +784,7 @@ fun main() {
         }
         // letsplot4 end
 
-        slideDefinition(source = slides, token = "letsplot4")
+        smallSlideDefinition(source = slides, token = "letsplot4")
 
         // letsplot5 begin
         dslSlide {
@@ -775,7 +792,7 @@ fun main() {
             h2 { +"A Lets-Plot Red Heatmap" }
             letsPlot(
               dimensions = 503 by 484,
-              iframeConfig = LetsPlotIframeConfig {
+              configBlock = {
                 style = "width: 54%; border: 2px solid #586E75;"
                 height = "500px"
               },
@@ -797,7 +814,7 @@ fun main() {
         }
         // letsplot5 end
 
-        slideDefinition(source = slides, token = "letsplot5")
+        smallSlideDefinition(source = slides, token = "letsplot5")
       }
 
       verticalSlides {
@@ -822,7 +839,7 @@ fun main() {
           }
         // swapping end
 
-        slideDefinition(source = slides, token = "swapping")
+        smallSlideDefinition(source = slides, token = "swapping")
       }
 
       verticalSlides {
@@ -986,7 +1003,7 @@ fun main() {
         }
         // youtube end
 
-        slideDefinition(source = slides, token = "youtube")
+        smallSlideDefinition(source = slides, token = "youtube")
       }
 
       verticalSlides {
@@ -1021,7 +1038,7 @@ fun main() {
         }
         // twitter end
 
-        slideDefinition(source = slides, token = "twitter")
+        smallSlideDefinition(source = slides, token = "twitter")
       }
 
       css +=
@@ -1057,7 +1074,7 @@ fun main() {
         }
         // tabular end
 
-        slideDefinition(source = slides, token = "tabular")
+        smallSlideDefinition(source = slides, token = "tabular")
       }
 
       verticalSlides {
@@ -1088,7 +1105,7 @@ fun main() {
         }
         // iframe end
 
-        slideDefinition(source = slides, token = "iframe")
+        smallSlideDefinition(source = slides, token = "iframe")
       }
 
       verticalSlides {
@@ -1113,7 +1130,7 @@ fun main() {
         }
         // transition end
 
-        slideDefinition(source = slides, token = "transition")
+        smallSlideDefinition(source = slides, token = "transition")
       }
 
       verticalSlides {
@@ -1145,7 +1162,7 @@ fun main() {
         }
         // themes end
 
-        slideDefinition(source = slides, token = "themes")
+        smallSlideDefinition(source = slides, token = "themes")
       }
 
       verticalSlides {
@@ -1161,7 +1178,7 @@ fun main() {
         }
         // video1 end
 
-        slideDefinition(source = slides, token = "video1")
+        smallSlideDefinition(source = slides, token = "video1")
       }
 
       verticalSlides {
@@ -1179,7 +1196,7 @@ fun main() {
         }
         // webcontent end
 
-        slideDefinition(source = slides, token = "webcontent")
+        smallSlideDefinition(source = slides, token = "webcontent")
       }
 
       verticalSlides {
@@ -1207,7 +1224,7 @@ fun main() {
         }
         // other end
 
-        slideDefinition(source = slides, token = "other")
+        smallSlideDefinition(source = slides, token = "other")
       }
 
       verticalSlides {
@@ -1227,7 +1244,7 @@ fun main() {
         }
         // navigation end
 
-        slideDefinition(source = slides, token = "navigation")
+        smallSlideDefinition(source = slides, token = "navigation")
       }
 
       verticalSlides {
@@ -1240,7 +1257,7 @@ fun main() {
         )
         // slidedef end
 
-        slideDefinition(source = slides, token = "slidedef")
+        smallSlideDefinition(source = slides, token = "slidedef")
       }
     }
 // presentation end
@@ -1271,7 +1288,7 @@ fun main() {
         }
         // layouts end
 
-        slideDefinition(source = slides, token = "layouts")
+        smallSlideDefinition(source = slides, token = "layouts")
       }
 
       verticalSlides {
@@ -1305,7 +1322,7 @@ fun main() {
         }
         // ft1 end
 
-        slideDefinition(source = slides, token = "ft1")
+        smallSlideDefinition(source = slides, token = "ft1")
 
         // fit-text2 begin
         dslSlide {
@@ -1316,7 +1333,7 @@ fun main() {
         }
         // fit-text2 end
 
-        slideDefinition(source = slides, token = "fit-text2")
+        smallSlideDefinition(source = slides, token = "fit-text2")
       }
 
       verticalSlides {
@@ -1360,7 +1377,7 @@ fun main() {
         }
         // stretch end
 
-        slideDefinition(source = slides, token = "stretch")
+        smallSlideDefinition(source = slides, token = "stretch")
       }
 
       verticalSlides {
@@ -1404,7 +1421,7 @@ fun main() {
         }
         // stack1 end
 
-        slideDefinition(source = slides, token = "stack1")
+        smallSlideDefinition(source = slides, token = "stack1")
       }
 
       verticalSlides {
@@ -1435,7 +1452,7 @@ fun main() {
         }
         // hstack end
 
-        slideDefinition(source = slides, token = "hstack")
+        smallSlideDefinition(source = slides, token = "hstack")
       }
 
       verticalSlides {
@@ -1466,7 +1483,7 @@ fun main() {
         }
         // vstack end
 
-        slideDefinition(source = slides, token = "vstack")
+        smallSlideDefinition(source = slides, token = "vstack")
       }
     }
 
@@ -1509,7 +1526,7 @@ fun main() {
         }
         // fragment-styles end
 
-        slideDefinition(source = slides, token = "fragment-styles")
+        smallSlideDefinition(source = slides, token = "fragment-styles")
       }
 
       verticalSlides {
@@ -1534,7 +1551,7 @@ fun main() {
         }
         // fragment-md end
 
-        slideDefinition(source = slides, token = "fragment-md")
+        smallSlideDefinition(source = slides, token = "fragment-md")
       }
     }
 
@@ -1561,7 +1578,7 @@ fun main() {
         }
         // background1 end
 
-        slideDefinition(source = slides, token = "background1")
+        smallSlideDefinition(source = slides, token = "background1")
       }
 
       verticalSlides {
@@ -1576,7 +1593,7 @@ fun main() {
         }
         // background2 end
 
-        slideDefinition(source = slides, token = "background2")
+        smallSlideDefinition(source = slides, token = "background2")
       }
 
       verticalSlides {
@@ -1591,7 +1608,7 @@ fun main() {
         }
         // background3 end
 
-        slideDefinition(source = slides, token = "background3")
+        smallSlideDefinition(source = slides, token = "background3")
       }
 
       verticalSlides {
@@ -1624,7 +1641,7 @@ fun main() {
         }
         // background4 end
 
-        slideDefinition(source = slides, token = "background4")
+        smallSlideDefinition(source = slides, token = "background4")
       }
 
       // vertical-config begin
@@ -1654,7 +1671,7 @@ fun main() {
           }
         }
 
-        slideDefinition(source = slides, token = "vertical-config")
+        smallSlideDefinition(source = slides, token = "vertical-config")
       }
       // vertical-config end
 
@@ -1671,7 +1688,7 @@ fun main() {
         }
         // background-image end
 
-        slideDefinition(source = slides, token = "background-image")
+        smallSlideDefinition(source = slides, token = "background-image")
       }
 
       verticalSlides {
@@ -1689,7 +1706,7 @@ fun main() {
         }
         // repeat end
 
-        slideDefinition(source = slides, token = "repeat")
+        smallSlideDefinition(source = slides, token = "repeat")
       }
 
       verticalSlides {
@@ -1705,7 +1722,7 @@ fun main() {
         }
         // background-video end
 
-        slideDefinition(source = slides, token = "background-video")
+        smallSlideDefinition(source = slides, token = "background-video")
       }
 
       verticalSlides {
@@ -1721,7 +1738,7 @@ fun main() {
         }
         // background-iframe end
 
-        slideDefinition(source = slides, token = "background-iframe")
+        smallSlideDefinition(source = slides, token = "background-iframe")
       }
     }
 
@@ -1790,7 +1807,7 @@ fun main() {
         }
         // 2col end
 
-        slideDefinition(source = slides, token = "2col")
+        smallSlideDefinition(source = slides, token = "2col")
       }
 
       css += """
@@ -1841,7 +1858,7 @@ fun main() {
         }
         // 3col end
 
-        slideDefinition(source = slides, token = "3col")
+        smallSlideDefinition(source = slides, token = "3col")
       }
     }
 
@@ -1878,7 +1895,7 @@ fun main() {
       }
       // hmultislide end
 
-      slideDefinition(source = slides, token = "hmultislide")
+      smallSlideDefinition(source = slides, token = "hmultislide")
 
       // vmultislide begin
       verticalSlides {
@@ -1909,8 +1926,24 @@ fun main() {
       }
       // vmultislide end
 
-      slideDefinition(source = slides, token = "vmultislide")
+      smallSlideDefinition(source = slides, token = "vmultislide")
     }
   }
 // kslides end
 }
+
+// Convenience wrappers around slideDefinition() that tag the slide with the "smallcode" CSS class
+// (styled by the ".reveal .smallcode pre" rule above). Two receiver forms mirror slideDefinition():
+// one for calls directly inside presentation{}, one for calls inside verticalSlides{}.
+private fun Presentation.smallSlideDefinition(
+  source: String,
+  token: String,
+) = slideDefinition(source = source, token = token, classes = "smallcode")
+
+context(presentation: Presentation)
+private fun VerticalSlidesContext.smallSlideDefinition(
+  source: String,
+  token: String,
+) = with(presentation) {
+    this@smallSlideDefinition.slideDefinition(source = source, token = token, classes = "smallcode")
+  }

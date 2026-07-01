@@ -45,7 +45,7 @@ refresh:  ## Refresh dependencies and build (skips tests)
 	./gradlew --refresh-dependencies build -x test
 
 tests:  ## Clean test results and re-run the test suite
-	./gradlew cleanTest test
+	./gradlew cleanTest test --no-build-cache
 
 fatjar:  ## Build the executable fat JAR for kslides-examples
 	./gradlew buildFatJar

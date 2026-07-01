@@ -29,6 +29,10 @@ open class DiagramConfig : AbstractConfig() {
    * Per-diagram-type options forwarded to Kroki as `diagram_options`. See the
    * [Kroki docs](https://docs.kroki.io/kroki/setup/diagram-options/) for the keys each diagram
    * type supports.
+   *
+   * Note: like every [ConfigProperty], this **replaces** (does not deep-merge) across the config
+   * cascade — a per-diagram `options` map fully overrides the presentation/global one rather than
+   * adding to it. Set the complete map at the level you want it to take effect.
    */
   var options by ConfigProperty<Map<String, Any>>(kslidesManagedValues)
 
