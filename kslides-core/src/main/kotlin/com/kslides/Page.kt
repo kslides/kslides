@@ -29,12 +29,22 @@ internal object Page {
     p: Presentation,
     useHttp: Boolean = true,
     srcPrefix: String = "/",
+  ): String =
+    // Rendering mutates shared per-render state: it resets p.kslides.slideCount and then
+    // reconstructs each verticalSlides{} stack (drawing child ids from that counter, which keeps
+    // iframe filenames slide-<id>-<n> stable across the repeated renders an HTTP server performs)
+    // and bumps per-slide iframe counters. Because Ktor renders concurrently, hold renderLock so
+    // those transient mutations of one render can't interleave with another. The lock is a minimal,
+    // output-preserving fix; a future pure-read refactor (render-local counters) could drop it.
+    synchronized(p.kslides.renderLock) {
+      generatePageLocked(p, useHttp, srcPrefix)
+    }
+
+  private fun generatePageLocked(
+    p: Presentation,
+    useHttp: Boolean,
+    srcPrefix: String,
   ): String {
-    // Not dead code: vertical-stack child slides are (re)constructed during render via the
-    // verticalSlides{} block, and each one pulls its id from this shared counter (Slide.private_slideId).
-    // Resetting per render keeps those ids — and therefore the per-slide iframe filenames
-    // (slide-<id>-<n>) — stable across the repeated renders an HTTP server performs. NOTE: this makes
-    // generatePage mutate shared KSlides state, so concurrent renders are not yet thread-safe.
     p.kslides.slideCount = 0
     val htmldoc =
       document {
