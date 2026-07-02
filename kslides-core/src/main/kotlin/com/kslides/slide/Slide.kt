@@ -127,13 +127,24 @@ abstract class HorizontalSlide(
 ) : Slide(presentation, content)
 
 /**
- * Marker superclass for slides that appear inside a `verticalSlides {}` block. A single
- * `VerticalSlide` wraps the entire vertical stack and carries the shared [VerticalSlidesContext]
- * used by its children.
+ * Abstract marker superclass for the individual slides that appear inside a `verticalSlides {}`
+ * block ([com.kslides.slide.VerticalMarkdownSlide], [VerticalHtmlSlide], [VerticalDslSlide]). The
+ * stack that wraps them is a separate [VerticalSlideStack]; children no longer carry an (unused)
+ * [VerticalSlidesContext].
  */
-open class VerticalSlide(
+abstract class VerticalSlide(
   presentation: Presentation,
   content: SlideArgs,
-) : Slide(presentation, content) {
+) : Slide(presentation, content)
+
+/**
+ * The concrete slide that wraps an entire vertical stack. Constructed by
+ * [com.kslides.Presentation.verticalSlides]; carries the shared [VerticalSlidesContext] into which
+ * its child slides are collected and from which they are rendered.
+ */
+class VerticalSlideStack(
+  presentation: Presentation,
+  content: SlideArgs,
+) : VerticalSlide(presentation, content) {
   internal val verticalContext = VerticalSlidesContext()
 }
