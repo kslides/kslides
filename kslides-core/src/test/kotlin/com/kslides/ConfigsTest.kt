@@ -155,6 +155,15 @@ class ConfigsTest : StringSpec() {
       shouldThrowExactly<IllegalStateException> { PresentationConfig().enableMenu }
     }
 
+    "revealjsOption sets a raw reveal.js value that cascades through merge" {
+      val menu = MenuConfig().apply { revealjsOption("themes", listOf("black", "white")) }
+      menu.revealjsManagedValues["themes"] shouldBe listOf("black", "white")
+
+      // The raw value participates in the cascade like any typed option.
+      val merged = MenuConfig().also { it.merge(menu) }
+      merged.revealjsManagedValues["themes"] shouldBe listOf("black", "white")
+    }
+
     "assignDefaults seeds every kslides-managed option so it reads back without throwing" {
       val config = PresentationConfig().apply { assignDefaults() }
       // Each key that landed in kslidesManagedValues must read back through its delegate (the getter
