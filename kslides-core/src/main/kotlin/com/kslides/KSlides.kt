@@ -157,6 +157,11 @@ class KSlides : AutoCloseable {
   internal val staticKrokiContent = ConcurrentHashMap<String, ByteArray>()
   internal var slideCount = 1
 
+  // Rendering mutates shared per-render state (slideCount, each VerticalSlide's reconstructed child
+  // list, per-slide iframe counters). Ktor serves pages concurrently, so serialize renders of this
+  // KSlides on this lock to keep those transient mutations from interleaving. See Page.generatePage.
+  internal val renderLock = Any()
+
   internal val presentations get() = presentationMap.values
 
   internal fun presentation(
