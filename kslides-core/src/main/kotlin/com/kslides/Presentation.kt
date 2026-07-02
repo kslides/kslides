@@ -13,7 +13,7 @@ import com.kslides.slide.Slide
 import com.kslides.slide.VerticalDslSlide
 import com.kslides.slide.VerticalHtmlSlide
 import com.kslides.slide.VerticalMarkdownSlide
-import com.kslides.slide.VerticalSlide
+import com.kslides.slide.VerticalSlideStack
 import com.pambrose.common.util.nullIfBlank
 import com.pambrose.srcref.Api.srcrefUrl
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -98,9 +98,9 @@ class Presentation(
    * @throws IllegalArgumentException if the block adds zero slides.
    */
   fun verticalSlides(block: VerticalSlidesContext.() -> Unit) =
-    VerticalSlide(this) { div, slide, useHttp ->
+    VerticalSlideStack(this) { div, slide, useHttp ->
       div.apply {
-        (slide as VerticalSlide)
+        (slide as VerticalSlideStack)
           .verticalContext
           .also { vcontext ->
             // Calling resetContext() is a bit of a hack. It is required because the vertical slide lambdas
