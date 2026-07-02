@@ -43,8 +43,8 @@ class MenuConfig : AbstractConfig() {
   var custom by ConfigProperty<Boolean>(revealjsManagedValues)
 
   /**
-   * Enable the themes menu panel. `true` uses the default theme list; pass a custom theme list
-   * via `revealjsManagedValues` directly for non-trivial setups.
+   * Enable the themes menu panel. `true` uses the default theme list; for a custom theme list, set
+   * the raw option instead via [revealjsOption]`("themes", listOf(...))`.
    */
   var themes by ConfigProperty<Boolean>(revealjsManagedValues)
 

@@ -12,11 +12,13 @@ import kotlin.reflect.KProperty
  * [AbstractConfig.merge] or explicit assignment will fail loudly rather than silently return a
  * default.
  *
+ * Implementation detail of the config cascade — `internal`; consumers configure options through the
+ * typed properties on each config class, not by constructing this delegate.
+ *
  * @param T the property type (any Kotlin type; cast is unchecked on read).
- * @param configMap the backing map, typically [AbstractConfig.revealjsManagedValues] or
- *   [AbstractConfig.kslidesManagedValues].
+ * @param configMap the backing map, one of [AbstractConfig]'s two internal value maps.
  */
-class ConfigProperty<T>(
+internal class ConfigProperty<T>(
   private val configMap: MutableMap<String, Any>,
 ) {
   /**

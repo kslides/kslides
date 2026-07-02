@@ -11,10 +11,23 @@ package com.kslides.config
  */
 abstract class AbstractConfig {
   /** Values that correspond to documented [reveal.js config options](https://revealjs.com/config/). */
-  val revealjsManagedValues = mutableMapOf<String, Any>()
+  internal val revealjsManagedValues = mutableMapOf<String, Any>()
 
   /** Values consumed by kslides itself (theme, highlight plugin, corner links, iframe sizing, etc.). */
-  val kslidesManagedValues = mutableMapOf<String, Any>()
+  internal val kslidesManagedValues = mutableMapOf<String, Any>()
+
+  /**
+   * Set a raw [reveal.js config option](https://revealjs.com/config/) by [key] for options kslides
+   * does not expose as a typed property (e.g. the menu plugin's `themes` array). The [value] is
+   * emitted verbatim into the `Reveal.initialize({...})` call and participates in the config
+   * cascade like any other option. Prefer the typed properties where they exist.
+   */
+  fun revealjsOption(
+    key: String,
+    value: Any,
+  ) {
+    revealjsManagedValues[key] = value
+  }
 
   /**
    * Merge [other] into this config **in place**: every entry from [other]'s two maps is copied into
