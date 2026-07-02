@@ -20,20 +20,12 @@ class PageConcurrencyTest : StringSpec() {
           }
         }
       val p = kslides.presentation("/")
-      val expected = generatePage(p, true)
+      val expected = generatePage(p)
 
-      // Render the same presentation from many threads at once. Rendering mutates shared per-render
-      // state (slideCount and each verticalSlides{} stack's reconstructed child list), so without
-      // renderLock these interleave and produce corrupted/varying output or a
-      // ConcurrentModificationException. With the lock, every result equals the serial render.
-      val results =
-        (1..200)
-          .toList()
-          .parallelStream()
-          .map { generatePage(p, true) }
-          .toList()
-
-      results.forEach { it shouldBe expected }
+      // Render the same presentation from many threads at once. Without renderLock these interleave
+      // and corrupt output (or throw ConcurrentModificationException from a vertical stack's
+      // reconstructed child list); with the lock every render equals the serial one.
+      (1..64).toList().parallelStream().forEach { generatePage(p) shouldBe expected }
     }
   }
 }

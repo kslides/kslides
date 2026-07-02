@@ -30,50 +30,39 @@ internal object Page {
     useHttp: Boolean = true,
     srcPrefix: String = "/",
   ): String =
-    // Rendering mutates shared per-render state: it resets p.kslides.slideCount and then
-    // reconstructs each verticalSlides{} stack (drawing child ids from that counter, which keeps
-    // iframe filenames slide-<id>-<n> stable across the repeated renders an HTTP server performs)
-    // and bumps per-slide iframe counters. Because Ktor renders concurrently, hold renderLock so
-    // those transient mutations of one render can't interleave with another. The lock is a minimal,
-    // output-preserving fix; a future pure-read refactor (render-local counters) could drop it.
+    // Serialize concurrent Ktor renders on renderLock: rendering mutates shared per-render state
+    // (p.kslides.slideCount, reconstructed verticalSlides{} child lists, per-slide iframe counters).
+    // See KSlides.renderLock.
     synchronized(p.kslides.renderLock) {
-      generatePageLocked(p, useHttp, srcPrefix)
-    }
+      p.kslides.slideCount = 0
+      val htmldoc =
+        document {
+          val config = p.finalConfig
+          append.html {
+            generateHead(p, config, srcPrefix.ensureSuffix("/"))
+            generateBody(p, config, srcPrefix.ensureSuffix("/"), useHttp)
+          }
+        }
 
-  private fun generatePageLocked(
-    p: Presentation,
-    useHttp: Boolean,
-    srcPrefix: String,
-  ): String {
-    p.kslides.slideCount = 0
-    val htmldoc =
-      document {
-        val config = p.finalConfig
-        append.html {
-          generateHead(p, config, srcPrefix.ensureSuffix("/"))
-          generateBody(p, config, srcPrefix.ensureSuffix("/"), useHttp)
+      // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
+      val nodeList = htmldoc.getElementsByTagName("*")
+      for (i in 0..<nodeList.length) {
+        val node = nodeList.item(i)
+        if (node.nodeName == "section") {
+          node.attributes.getNamedItem("data-separator")?.apply {
+            nodeValue = nodeValue.replace("\n", "\\n")
+            nodeValue = nodeValue.replace("\r", "\\r")
+          }
+
+          node.attributes.getNamedItem("data-separator-vertical")?.apply {
+            nodeValue = nodeValue.replace("\n", "\\n")
+            nodeValue = nodeValue.replace("\r", "\\r")
+          }
         }
       }
 
-    // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
-    val nodeList = htmldoc.getElementsByTagName("*")
-    for (i in 0..<nodeList.length) {
-      val node = nodeList.item(i)
-      if (node.nodeName == "section") {
-        node.attributes.getNamedItem("data-separator")?.apply {
-          nodeValue = nodeValue.replace("\n", "\\n")
-          nodeValue = nodeValue.replace("\r", "\\r")
-        }
-
-        node.attributes.getNamedItem("data-separator-vertical")?.apply {
-          nodeValue = nodeValue.replace("\n", "\\n")
-          nodeValue = nodeValue.replace("\r", "\\r")
-        }
-      }
+      mergePreAndCode(htmldoc.serialize())
     }
-
-    return mergePreAndCode(htmldoc.serialize())
-  }
 
   /**
    * Fix a copycode issue: reveal.js needs the `<pre>` and `<code>` tags on the same line. The
