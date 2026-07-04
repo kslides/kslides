@@ -14,10 +14,10 @@ repositories {
 }
 
 dependencies {
-  implementation("com.kslides:kslides-core:0.25.0")
+  implementation("com.kslides:kslides-core:1.1.0")
 
   // Optional: Lets-Plot integration
-  implementation("com.kslides:kslides-letsplot:0.25.0")
+  implementation("com.kslides:kslides-letsplot:1.1.0")
 }
 
 kotlin {
@@ -31,7 +31,7 @@ If you use `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-kslides = "0.25.0"
+kslides = "1.1.0"
 
 [libraries]
 kslides-core    = { module = "com.kslides:kslides-core",     version.ref = "kslides" }

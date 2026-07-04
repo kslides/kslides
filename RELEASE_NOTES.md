@@ -6,25 +6,89 @@ structured, category-grouped log.
 
 ---
 
-## 1.0.1 — Unreleased
+## 1.1.0 — 2026-07-03
 
-Build-infrastructure release. No DSL or runtime API changes.
+A quality release from a full multi-agent code review. It fixes a batch of
+correctness and error-handling issues, makes page rendering thread-safe, adds
+type-safe DSL options, and tightens the public API — with two intentional
+breaking changes. It also folds in the build-infrastructure work that had been
+queued for an (unreleased) 1.0.1.
+
+### Breaking changes
+
+- **Config-cascade internals are now `internal`.** `AbstractConfig`'s two value
+  maps (`revealjsManagedValues`, `kslidesManagedValues`) and the `ConfigProperty`
+  delegate are no longer part of the public API. Configure options through the
+  typed properties as before; for a reveal.js option kslides doesn't model, use
+  the new `revealjsOption(key, value)` helper instead of poking the map. The
+  documented `MenuConfig.themes` escape hatch now points at `revealjsOption`.
+- **`VerticalSlide` is now abstract.** It was an `open` class doing double duty —
+  the concrete wrapper for a whole vertical stack *and* the base class for the
+  individual vertical child slides, so every child allocated a
+  `VerticalSlidesContext` it never used. The wrapper is now a separate concrete
+  `VerticalSlideStack`; children extend the abstract `VerticalSlide`. Rendered
+  HTML is byte-identical. Both types are constructed internally, so the practical
+  break is limited to code that instantiated `VerticalSlide` directly.
+
+### Correctness & error handling
+
+- **Google Analytics id leak.** The GA loader `<script src>` hardcoded the
+  maintainer's property id (`G-Z6YBNZS12K`) while only the `gtag('config', …)`
+  call used your configured `gaPropertyId`. Every generated deck now loads GA
+  with your id.
+- **`include()` no longer swallows authoring errors.** A missing begin/end token,
+  a malformed `linePattern`, or a bad token used to collapse to an empty string
+  and render a blank slide. Those now fail the build; only genuine I/O failures
+  (missing file, unreachable URL, 404) recover to `""` with a logged warning.
+  `include()` tokens are also matched literally now, so metacharacters like
+  `items[0]` work instead of being compiled as a regex. **Behavior change** — a
+  deck that was silently hiding a broken `include()` will now fail loudly.
+- `hidden` + `uncounted` on the same slide both wrote `data-visibility`, so
+  `hidden` now wins. Nested output directories are created with `mkdirs()`.
+  `fromTo`, `toIntList`, `diagram()` / `playground()` (blank source), and
+  `letsPlot{}` (non-positive dimensions, dev/localhost script URLs) now report
+  clear errors or warnings instead of throwing opaque exceptions or emitting
+  empty embeds.
+
+### Thread-safe rendering
+
+Page rendering mutates shared per-`KSlides` state (a slide-id counter,
+reconstructed vertical stacks, per-slide iframe counters). A Ktor server renders
+pages concurrently, so those mutations could interleave and corrupt output.
+`generatePage` now holds a per-`KSlides` render lock for the duration of a
+render; output is unchanged and iframe filenames are stable. `KSlides` also
+implements `AutoCloseable` now, releasing the lazily-created Ktor `HttpClient`
+(a filesystem-mode thread leak) — usable as `kslides { … }.use { }`.
+
+### New DSL options
+
+- `diagram(DiagramType.PLANTUML) { … }` — a type-safe enum overload of
+  `diagram()`; a mistyped type is a compile error rather than a far-away Kroki
+  400. The raw-`String` overload remains for types not in the enum.
+- `letsPlot(configBlock = { … }) { … }` — a config-lambda overload symmetric with
+  `playground{}` / `diagram{}`; the old `iframeConfig = …` overload is deprecated.
+- `revealjsOption(key, value)` on any config — set a raw reveal.js option.
+- `slideDefinition(…)` takes optional `githubAccount` / `githubRepo` /
+  `githubPath` / `githubBranch`, so the "GitHub Source" link works for your own
+  repository (previously hardcoded to `kslides/kslides`).
+- `CodeSnippetConfig.lineOffset` replaces the misspelled `lineOffSet` (kept as a
+  deprecated alias).
 
 ### Detekt
 
-[Detekt](https://detekt.dev) `2.0.0-alpha.3` is now wired into the
+[Detekt](https://detekt.dev) `2.0.0-alpha.5` is now wired into the
 `kslides.kotlin-module` convention plugin, so every Kotlin module
 exposes `detekt`, `detektMain`, `detektTest`, and the
 `detektBaseline*` tasks. Note that Detekt 2.x relocates to the
 `dev.detekt` Maven group and uses the matching `dev.detekt` plugin
 id (1.x lived under `io.gitlab.arturbosch.detekt`).
 
-The plugin runs with `ignoreFailures = true` and
-`buildUponDefaultConfig = true`, so analysis findings show up in
-the report without breaking the build. To enforce violations
-(useful in CI once a baseline is in place), invoke Gradle with
-`-Pdetekt.failOnViolation=true`. A `make detekt` shortcut wraps
-`./gradlew detekt`.
+Detekt now **fails the build on findings by default** (the config is
+valid and the tree is violation-free, so no baseline is needed). Pass
+`-Pdetekt.ignoreFailures=true` to downgrade to report-only while
+iterating. Line-length is left to Kotlinter/ktlint (Detekt's
+`MaxLineLength` is disabled) to avoid the two formatters conflicting.
+A `make detekt` shortcut wraps `./gradlew detekt`.
 
 ### Build hygiene
 
@@ -49,15 +113,17 @@ the report without breaking the build. To enforce violations
 
 The version catalog rolled forward to:
 
-- Gradle wrapper `9.5.1`
-- Kotlin `2.4.0-RC2`
-- Ktor `3.5.0`
-- Lets-Plot Kotlin `4.14.0`
-- kotlin-css `2026.5.6`
-- logback `1.5.33`
+- Gradle wrapper `9.6.1`
+- Kotlin `2.4.0`
+- Ktor `3.5.1`
+- Lets-Plot Kotlin `4.15.0`
+- kotlin-css `2026.7.0`
+- Detekt `2.0.0-alpha.5`
+- logback `1.5.37`
 - kotlin-logging `8.0.4`
+- common-utils `2.9.3`, srcref `2.1.1`, maven-publish `0.37.0`
 
-The Kotlin 2.4.0-RC2 bump prompted a sweep of `kslides-core` to
+The Kotlin 2.4.0 bump prompted a sweep of `kslides-core` to
 replace wildcard imports (`io.ktor.*`, `kotlinx.html.*`, stdlib
 collection/text packages) with explicit per-symbol imports. IDEA's
 project code style was updated to keep `io.ktor` out of the

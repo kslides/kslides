@@ -9,68 +9,121 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-07-03
+
+Quality release from a full code-review pass: correctness and error-handling
+fixes, thread-safe rendering, new type-safe DSL options, and a tightened public
+API. Two breaking changes (config-cascade visibility, `VerticalSlide`) — see
+below.
+
 ### Added
 
-- Detekt static analysis wired into the `kslides.kotlin-module`
-  convention plugin (Detekt `2.0.0-alpha.3`, group `dev.detekt`,
-  plugin id `dev.detekt`). All Kotlin modules now expose `detekt*`
-  tasks. Detekt is configured non-fatally (`ignoreFailures = true`,
-  `buildUponDefaultConfig = true`) so reports surface without
-  breaking the build; pass `-Pdetekt.failOnViolation=true` to fail
-  on violations. New `make detekt` shortcut.
+- `AbstractConfig.revealjsOption(key, value)` — set a raw
+  [reveal.js option](https://revealjs.com/config/) that kslides does not model
+  as a typed property (e.g. the menu plugin's `themes` array). It is emitted
+  verbatim into `Reveal.initialize({…})` and participates in the config cascade.
+  Replaces the previously-public map-mutation escape hatch.
+- `DiagramType` enum (28 Kroki types) and a `diagram(DiagramType, …)` overload,
+  so a mistyped diagram type is a compile error instead of a far-away Kroki 400.
+  The raw-`String` overload is retained for types not in the enum.
+- `letsPlot { … }` gained a `configBlock: LetsPlotIframeConfig.() -> Unit`
+  overload, symmetric with `playground{}` / `diagram{}`.
+- `slideDefinition(…)` gained optional `githubAccount` / `githubRepo` /
+  `githubPath` / `githubBranch` parameters so the "GitHub Source" link points at
+  a consumer's own repository (`githubPath` defaults to `source`).
+- `CodeSnippetConfig.lineOffset` — canonical spelling of the starting line
+  number.
+- `KSlides` now implements `AutoCloseable`, closing the lazily-created Ktor
+  `HttpClient`; usable with `kslides { … }.use { }`.
+- Detekt static analysis wired into the `kslides.kotlin-module` convention
+  plugin (Detekt `2.0.0-alpha.5`, group `dev.detekt`, plugin id `dev.detekt`).
+  All Kotlin modules expose `detekt*` tasks; `make detekt` shortcut.
 
 ### Changed
 
+- **BREAKING** — the config-cascade internals are no longer public:
+  `AbstractConfig.revealjsManagedValues` / `kslidesManagedValues` and the
+  `ConfigProperty` delegate are now `internal`. Configure options through the
+  typed properties, and use `revealjsOption(…)` for un-modeled raw options.
+  `AbstractConfig.merge(…)` remains public.
+- **BREAKING** — `VerticalSlide` is now `abstract` (the marker base for the
+  slides inside a `verticalSlides{}` block). The stack wrapper is a new concrete
+  `VerticalSlideStack`; vertical child slides no longer allocate an unused
+  `VerticalSlidesContext`. Rendered output is byte-identical.
+- Page rendering is now thread-safe: `generatePage` holds a per-`KSlides`
+  `renderLock`, so the concurrent renders a Ktor server performs can no longer
+  interleave the shared per-render state (slide counter, reconstructed vertical
+  stacks, iframe counters). Output is unchanged.
+- Detekt now **fails the build on findings by default** (was non-fatal). Pass
+  `-Pdetekt.ignoreFailures=true` to downgrade to report-only while iterating.
+- `include()` now fails loudly on authoring errors (a missing begin/end token,
+  a malformed `linePattern`, a bad token) instead of silently rendering a blank
+  slide; only genuine I/O failures (missing file, unreachable URL) recover to
+  `""` with a logged warning.
+- `KSlidesConfig.letsPlotJsVersion` default is `4.10.1`, matching the Lets-Plot
+  JS runtime the `letsPlot{}` DSL loads.
+- Deduplicated the horizontal/vertical slide renderers into shared
+  `renderMarkdownSlide` / `renderDslSlide` / `renderHtmlSlide` helpers; the
+  `appModule` Ktor lambda was decomposed into `installPlugins` plus per-route
+  functions. Output byte-identical.
+- Published JARs are now reproducible (stable file order, zeroed timestamps) and
+  no longer bundle ~5 MB of unused reveal.js demo media (`assets/video.mp4`,
+  `beeping.*`).
 - Centralized the Gradle wrapper version and JVM toolchain version in
-  `gradle/libs.versions.toml` as the new `gradle-wrapper` and `jvm`
-  version keys. The `kslides.kotlin-module` convention plugin now
-  reads the toolchain version from the catalog via
-  `VersionCatalogsExtension`, and the `Makefile`'s `upgrade-wrapper`
-  target reads `gradle-wrapper` from the same file (with a
-  missing-value guard).
-- Consolidated repeated string literals in build scripts: extracted
-  `repoSlug` / `repoUrl` constants in the
-  `kslides.published-module` convention plugin (deduping the GitHub
-  URL across `pom.url`, `scm.url`, `scm.connection`, and
-  `scm.developerConnection`), and a local `examples` constant in the
-  root `build.gradle.kts` for the `stage` task `dependsOn`.
-- Bumped the Gradle wrapper to `9.5.1`, Kotlin to `2.4.0-RC2`, Ktor
-  to `3.5.0`, Lets-Plot Kotlin to `4.14.0`, kotlin-css to
-  `2026.5.6`, logback to `1.5.33`, and kotlin-logging to `8.0.4`.
-- Source files tightened for Kotlin 2.4.0-RC2 forward compatibility:
-  wildcard imports across `kslides-core` (Ktor, kotlinx.html, stdlib
-  collections) replaced with explicit per-symbol imports; IntelliJ's
-  `PACKAGES_TO_USE_STAR_IMPORTS` updated to keep `io.ktor` from
-  re-expanding.
+  `gradle/libs.versions.toml` (new `gradle-wrapper` / `jvm` keys), read by the
+  convention plugin and the `Makefile`'s `upgrade-wrapper` target.
+- Bumped Kotlin to `2.4.0`, the Gradle wrapper to `9.6.1`, Ktor to `3.5.1`,
+  Lets-Plot Kotlin to `4.15.0`, kotlin-css to `2026.7.0`, Detekt to
+  `2.0.0-alpha.5`, logback to `1.5.37`, common-utils to `2.9.3`, srcref to
+  `2.1.1`, and maven-publish to `0.37.0`.
+
+### Deprecated
+
+- `CodeSnippetConfig.lineOffSet` — use `lineOffset` (`@Deprecated` with
+  `ReplaceWith`).
+- The `letsPlot(iframeConfig = …)` overload — use the `configBlock` overload.
 
 ### Fixed
 
-- `Page.kt` markdown-section attribute pass iterated `0..nodeList.length`
-  (inclusive) and relied on a null guard to skip the out-of-range
-  iteration; converted to `for (i in 0..<nodeList.length)` to fix the
-  off-by-one and drop the redundant guard. Also silences Detekt's
-  `ForEachOnRange` finding.
+- The Google Analytics loader hardcoded the maintainer's property id
+  (`?id=G-Z6YBNZS12K`) while only `gtag('config', …)` used the configured
+  `gaPropertyId`; the loader now uses the consumer's id.
+- `hidden` and `uncounted` both wrote `data-visibility`, so `uncounted`
+  overwrote `hidden`; `hidden` now wins.
+- `include()` compiled begin/end tokens as raw regex, so metacharacter tokens
+  (`items[0]`, `foo(x)`) threw or mismatched; tokens are now matched literally.
+- Single-level `mkdir()` no-op'd for nested output paths; switched to `mkdirs()`
+  with a logged failure.
+- `fromTo` threw an opaque `subList` exception when the begin token occurred
+  after the end token; it now fails with a clear message naming both tokens.
+- `toIntList` threw inconsistent exceptions on malformed ranges; unified on
+  `IllegalArgumentException("Invalid line range: …")`.
+- `diagram()` / `playground()` silently emitted empty embeds on blank source;
+  they now warn and skip.
+- `letsPlot{}` validates its `dimensions` (`require(width > 0 && height > 0)`),
+  wraps render failures with the filename and resolved JS version, and warns
+  when a dev/SNAPSHOT version resolves to a `127.0.0.1` script URL that would
+  not load off the build machine.
+- `generatePage`'s `<pre>`/`<code>` line merge could strip whitespace from an
+  unrelated later `<code>`; the flag is now scoped to the adjacent line.
+- Missing-`content{}` validation messages now name the offending slide by id.
+- The lazily-created Ktor `HttpClient` was never closed in filesystem mode
+  (leaked engine threads); `KSlides.close()` now releases it.
+- `Page.kt`'s markdown-section attribute pass iterated `0..nodeList.length`
+  (inclusive); converted to `for (i in 0..<nodeList.length)`.
 
 ### Build / tooling
 
-- New `Makefile` targets for the docs site dependencies:
-  `check-site` (uv lock --upgrade --dry-run), `upgrade-site`
-  (uv lock --upgrade), and a renamed `clean-site` (formerly
-  `clean-docs`) that the `site` target now depends on. All three
-  uv invocations run under `env -u VIRTUAL_ENV` so a stale
-  workspace virtualenv doesn't shadow `website/.venv`.
-- Added file-level Detekt suppressions on overload-heavy DSL files
-  (`@file:Suppress("TooManyFunctions")` on `KSlidesDsl.kt`,
-  `@file:Suppress("MatchingDeclarationName")` on `DiagramDsl.kt`)
-  and per-declaration suppressions on a few config/slide classes
-  where the default rule thresholds don't fit the DSL surface.
-  Extracted `CssValue.cssError`'s message into a `const val` so the
-  expression body fits on one line (resolving the conflict between
-  Detekt's `MaxLineLength` and ktlint's `function-signature`).
-- `Makefile` polish: `default` is now the `help` target (renamed
-  from `versioncheck` to `versions`); help column width widened so
-  `publish-local-snapshot` aligns; site/website paths factored into
-  `WEBSITE_DIR` / `SITE_DIR` variables.
+- New `Makefile` targets for the docs site dependencies: `check-site`,
+  `upgrade-site`, and a renamed `clean-site` that the `site` target depends on;
+  all run under `env -u VIRTUAL_ENV`. `default` is now the `help` target; site
+  paths factored into `WEBSITE_DIR` / `SITE_DIR` variables.
+- Sharpened the stable-versions `dependencyUpdates` filter: a delimiter-anchored
+  regex no longer misflags stable classifiers (`-jre`, `.Final`, `-macos`), and
+  a pre-release candidate is rejected only when the current version is itself
+  stable.
+- Consolidated repeated build-script literals (`repoSlug` / `repoUrl` in the
+  published-module plugin; an `examples` constant in the root build).
 
 ## [1.0.0] — 2026-04-29
 
@@ -735,7 +788,8 @@ chart-embedding integration, and the test/CI story
   filesystem and Ktor-server output modes, and configurable
   per-slide / per-presentation overrides.
 
-[Unreleased]: https://github.com/kslides/kslides/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/kslides/kslides/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/kslides/kslides/releases/tag/1.1.0
 [1.0.0]: https://github.com/kslides/kslides/releases/tag/1.0.0
 [0.24.0]: https://github.com/kslides/kslides/releases/tag/0.24.0
 [0.23.0]: https://github.com/kslides/kslides/releases/tag/0.23.0

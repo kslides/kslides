@@ -61,7 +61,7 @@ The `publish-snapshot` and `publish-maven-central` targets sign via `GPG_ENV`, w
 
 ### Releasing
 
-The first stable release is `1.0.1` (tag `1.0.1`, GitHub release `v1.0.1`, published to Maven Central as `com.kslides:kslides-core` and `com.kslides:kslides-letsplot`). To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md` and `RELEASE_NOTES.md`, run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
+The current release is `1.1.0` (tag `1.1.0`, GitHub release `v1.1.0`, published to Maven Central as `com.kslides:kslides-core` and `com.kslides:kslides-letsplot`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site (`website/kslides/docs/installation.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
 
 ## Module Structure
 
@@ -125,12 +125,12 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 
 ## Tech Stack
 
-- Kotlin 2.4.0-RC2, JVM 17 toolchain
-- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.5.0
-- Ktor 3.5.0 (server + client)
+- Kotlin 2.4.0, JVM 17 toolchain
+- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.6.1
+- Ktor 3.5.1 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
-- Lets-Plot Kotlin 4.14.0 for the `letsPlot{}` DSL (matched JS runtime v4.10.1 — the `lets-plot-common` core version it resolves to — configurable via `KSlidesConfig.letsPlotJsVersion`)
-- Kotlinter for linting (ktlint-based) and Detekt 2.0.0-alpha.3 for static analysis (`dev.detekt`)
+- Lets-Plot Kotlin 4.15.0 for the `letsPlot{}` DSL (JS runtime version configurable via `KSlidesConfig.letsPlotJsVersion`, default `4.10.1`)
+- Kotlinter for linting (ktlint-based) and Detekt 2.0.0-alpha.5 for static analysis (`dev.detekt`), fatal on findings by default (`-Pdetekt.ignoreFailures=true` to downgrade)
 - reveal.js assets live at the repo root in `docs/revealjs/` (single source of truth, committed for GitHub Pages). `kslides-core/build.gradle.kts` grafts them onto the published JAR's classpath at `revealjs/**` via `processResources` so the Ktor static handler can serve them at runtime — there is no checked-in `kslides-core/src/main/resources/revealjs/` directory.
 - All versions — including the JVM toolchain (`jvm`) and the Gradle wrapper distribution (`gradle-wrapper`) — are centralized in `gradle/libs.versions.toml`. The convention plugin reads `jvm` via `VersionCatalogsExtension`, and the `Makefile`'s `upgrade-wrapper` target reads `gradle-wrapper` from the same file.
 
