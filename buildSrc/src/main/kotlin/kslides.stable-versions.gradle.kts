@@ -4,19 +4,22 @@ plugins {
     id("com.github.ben-manes.versions")
 }
 
-// Applies the Ben-Manes versions plugin and rejects non-stable dependency update candidates from
-// the `dependencyUpdates` report. Replaces the com.pambrose.stable-versions wrapper, which applied
-// ben-manes and configured this same rejection rule.
-fun isNonStable(version: String): Boolean =
-    listOf("-RC", "-BETA", "-ALPHA", "-M").any { version.uppercase().contains(it) }
+// A pre-release qualifier is a `.` or `-` delimiter followed by a known unstable
+// keyword. `m\d` matches milestones (`-M1`/`.M2`) without catching stable classifiers
+// like `-macos`/`-MR1`, and the `[.-]` delimiter catches both dash-style (`-alpha`)
+// and dot-style (Netty's `.Beta1`) qualifiers while leaving `-jre`/`.Final` stable.
+val preReleaseQualifier =
+    Regex("""[.-](rc|beta|alpha|m\d|cr|snapshot|eap|dev|milestone|pre)""", RegexOption.IGNORE_CASE)
+
+fun isNonStable(version: String): Boolean = preReleaseQualifier.containsMatchIn(version)
 
 tasks.withType<DependencyUpdatesTask>().configureEach {
-    // The dependency updates plugin resolves configurations at execution time, which the
-    // configuration cache (enabled in gradle.properties) does not support.
-    notCompatibleWithConfigurationCache(
-        "the dependency updates plugin is not compatible with the configuration cache",
-    )
+    notCompatibleWithConfigurationCache("the dependency updates plugin is not compatible with the configuration cache")
+    // Reject a pre-release candidate only when the current version is stable. For
+    // dependencies we intentionally track on a pre-release line (e.g. a detekt
+    // alpha), newer pre-releases are still surfaced as available updates.
     rejectVersionIf {
-        isNonStable(candidate.version)
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
     }
 }
+
