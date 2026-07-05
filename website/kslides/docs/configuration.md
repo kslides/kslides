@@ -36,6 +36,20 @@ reveal.js renders small nav links in the top corners. kslides exposes them as `t
 --8<-- "Configuration.kt:href"
 ```
 
+## Copy-code button
+
+reveal.js can render a "Copy" button on every code block via the
+[CopyCode plugin](https://github.com/Martinomagnifico/reveal.js-copycode). Turn it on with
+`enableCodeCopy`, then tune it through `copyCodeConfig { }`:
+
+```kotlin
+--8<-- "Configuration.kt:copycode"
+```
+
+`button` (`ALWAYS` / `HOVER` / `FALSE`) and `display` (`TEXT` / `ICONS` / `BOTH`) are typed
+enums, so a mistyped value is a compile error. `scale`, `offset`, and `radius` are em values,
+so fractional numbers such as `0.8` are fine.
+
 ## What can I configure?
 
 The same DSL exposes every reveal.js setting (history, controls, progress bar, autoslide, …) and a number of kslides-managed extras (menu, copy-code button, code highlighting). Browse the source in `com.kslides.config` for the full list — every property is documented in-place.

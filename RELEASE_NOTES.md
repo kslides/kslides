@@ -6,6 +6,39 @@ structured, category-grouped log.
 
 ---
 
+## 1.1.1 — 2026-07-05
+
+A small feature release focused on the CopyCode plugin — the "Copy" button
+kslides renders on code blocks when `enableCodeCopy` is on.
+
+### CopyCode configuration
+
+`copyCodeConfig { }` now exposes the plugin's full option surface. Alongside the
+existing `copy` / `copied` labels, `timeout`, and button colors, you can now set:
+
+- `button` — `CopyCodeButton.ALWAYS` (default), `HOVER` (show only on hover), or
+  `FALSE` (disable the button);
+- `display` — `CopyCodeDisplay.TEXT` (default), `ICONS`, or `BOTH`;
+- `plaintextonly`, `copyborder` / `copiedborder`, `scale` / `offset` / `radius`,
+  `window` (a macOS-style window frame), and `tooltip`.
+
+`button` and `display` are typed enums, so a mistyped value is a compile error
+instead of a silently-ignored string.
+
+### Under the hood
+
+The `copycode: { … }` block is now built from a typed, `@Serializable` model and
+emitted with `kotlinx.serialization`, replacing the hand-assembled string map.
+Two consequences are worth calling out:
+
+- `scale`, `offset`, and `radius` are `Double` — the plugin forwards them
+  straight into CSS variables and its default `scale` is `0.8`, which an `Int`
+  couldn't express.
+- The raw `revealjsOption(key, value)` escape hatch is no longer available
+  inside `copyCodeConfig { }`: every option now has a typed property, so a
+  `revealjsOption(…)` call there is a compile-time error. Other config blocks
+  keep the escape hatch.
+
 ## 1.1.0 — 2026-07-03
 
 A quality release from a full multi-agent code review. It fixes a batch of

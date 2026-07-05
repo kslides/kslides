@@ -9,6 +9,33 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+## [1.1.1] — 2026-07-05
+
+Expands the CopyCode plugin configuration and rebuilds it on a typed,
+serializable model.
+
+### Added
+
+- `copyCodeConfig { }` gained `button` (`CopyCodeButton`: `ALWAYS` / `HOVER` /
+  `FALSE`), `display` (`CopyCodeDisplay`: `TEXT` / `ICONS` / `BOTH`),
+  `plaintextonly`, `copyborder` / `copiedborder`, `scale` / `offset` / `radius`,
+  `window`, and `tooltip` — on top of the existing `copy` / `copied` / `timeout`
+  and button-color options.
+- `CopyCodeButton` and `CopyCodeDisplay` enums (in `com.kslides.config`) whose
+  serialized form is the plugin's wire value (`"always"`, `"icons"`, …) rather
+  than the enum constant name.
+
+### Changed
+
+- The `copycode: { … }` reveal.js block is now produced from a typed,
+  `@Serializable` model via `kotlinx.serialization` instead of a hand-built
+  string map. `scale` / `offset` / `radius` are `Double`, so fractional em/scale
+  values work (the plugin's own default `scale` is `0.8`).
+- `copyCodeConfig { }` no longer accepts the raw `revealjsOption(key, value)`
+  escape hatch — it exposes every copycode option as a typed property, so a
+  `revealjsOption(…)` call inside a `copyCodeConfig { }` block is now a
+  compile-time error. Other config blocks are unaffected.
+
 ## [1.1.0] — 2026-07-03
 
 Quality release from a full code-review pass: correctness and error-handling
@@ -788,7 +815,8 @@ chart-embedding integration, and the test/CI story
   filesystem and Ktor-server output modes, and configurable
   per-slide / per-presentation overrides.
 
-[Unreleased]: https://github.com/kslides/kslides/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/kslides/kslides/compare/1.1.1...HEAD
+[1.1.1]: https://github.com/kslides/kslides/releases/tag/1.1.1
 [1.1.0]: https://github.com/kslides/kslides/releases/tag/1.1.0
 [1.0.0]: https://github.com/kslides/kslides/releases/tag/1.0.0
 [0.24.0]: https://github.com/kslides/kslides/releases/tag/0.24.0
