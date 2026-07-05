@@ -404,11 +404,14 @@ dslSlide {
 			},
 			
 			copycode: {
-				timeout: 2000,
-				copy: 'Copy',
-				copied: 'Copied!'
+			    "button": "always",
+			    "display": "icons",
+			    "text": {
+			        "copy": "Copy",
+			        "copied": "Copied!"
+			    },
+			    "timeout": 2000
 			},
-			
 			plugins: [ RevealNotes, RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight, RevealMenu, CopyCode ]
 		});
 
