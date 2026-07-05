@@ -2329,13 +2329,14 @@ fun slideDefinition(
   markdownSlide {
     if (id.isNotBlank()) this.id = id
     if (classes.isNotBlank()) this.classes = classes
+    val p = this@Presentation
     content {
       """
       ## $title
       ```$language $highlightPattern
       ${include(source, beginToken = "$token begin", endToken = "$token end")}
       ```
-      ${this@Presentation.githubLink(this@Presentation.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
+      ${p.githubLink(p.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
       """
     }
   }
@@ -2398,11 +2399,14 @@ slideDefinition(
 			},
 			
 			copycode: {
-				timeout: 2000,
-				copy: 'Copy',
-				copied: 'Copied!'
+			    "button": "always",
+			    "display": "icons",
+			    "text": {
+			        "copy": "Copy",
+			        "copied": "Copied!"
+			    },
+			    "timeout": 2000
 			},
-			
 			plugins: [ RevealNotes, RevealZoom, RevealSearch, RevealMarkdown, RevealHighlight, RevealMenu, CopyCode ]
 		});
 
