@@ -170,6 +170,43 @@ class ConfigsTest : StringSpec() {
       shouldThrowExactly<IllegalStateException> { CopyCodeConfig().scale }
     }
 
+    "CopyCodeConfig delegates round-trip every value type and backing location" {
+      val config = CopyCodeConfig().apply {
+        button = CopyCodeButton.HOVER // top-level enum
+        timeout = 500 // top-level Int
+        window = true // top-level Boolean
+        copy = "C" // nested under text
+        copybg = "#fff" // nested under style (String)
+        scale = 1.25 // nested under style (Double)
+      }
+      config.button shouldBe CopyCodeButton.HOVER
+      config.timeout shouldBe 500
+      config.window shouldBe true
+      config.copy shouldBe "C"
+      config.copybg shouldBe "#fff"
+      config.scale shouldBe 1.25
+    }
+
+    "CopyCodeConfig merge is per-field, including nested style options" {
+      val first = CopyCodeConfig().apply {
+        scale = 0.8
+        offset = 1.0
+        button = CopyCodeButton.ALWAYS
+      }
+      val second = CopyCodeConfig().apply {
+        offset = 2.0 // overrides first
+        radius = 0.5 // adds a field first never set
+      }
+      val merged = CopyCodeConfig().also {
+        it.merge(first)
+        it.merge(second)
+      }
+      merged.scale shouldBe 0.8 // untouched by second, preserved
+      merged.offset shouldBe 2.0 // later config wins
+      merged.radius shouldBe 0.5 // contributed only by second
+      merged.button shouldBe CopyCodeButton.ALWAYS // top-level field from first
+    }
+
     "PresentationConfig routes reveal.js vs kslides options into separate maps" {
       val config = PresentationConfig()
       config.controls = true // reveal.js-managed

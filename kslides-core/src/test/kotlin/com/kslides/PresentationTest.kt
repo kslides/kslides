@@ -1,6 +1,8 @@
 package com.kslides
 
 import com.kslides.Page.generatePage
+import com.kslides.config.CopyCodeButton
+import com.kslides.config.CopyCodeDisplay
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
@@ -155,6 +157,37 @@ class PresentationTest : StringSpec() {
           kslidesTest { presentation { htmlSlide { } } }.presentations.forEach { generatePage(it) }
         }
       htmlEx.message shouldContain "(id "
+    }
+
+    "copyCodeConfig values render into the reveal.js copycode block" {
+      val configured =
+        kslidesTest {
+          presentation {
+            presentationConfig {
+              copyCodeConfig {
+                button = CopyCodeButton.ALWAYS
+                display = CopyCodeDisplay.ICONS
+                copy = "Copy"
+                scale = 0.8
+              }
+            }
+            dslSlide { content { } }
+          }
+        }
+      val html = generatePage(configured.presentations.first())
+      html shouldContain "copycode: {"
+      // Serialized via the strict schema: enum wire values, nested text/style, the Double scale.
+      html shouldContain """"button": "always""""
+      html shouldContain """"display": "icons""""
+      html shouldContain """"copy": "Copy""""
+      html shouldContain """"scale": 0.8"""
+
+      // A presentation that never touches copyCodeConfig emits no copycode block.
+      val bare =
+        kslidesTest {
+          presentation { dslSlide { content { } } }
+        }
+      generatePage(bare.presentations.first()) shouldNotContain "copycode:"
     }
 
     "Default Css Test 1" {
