@@ -1,7 +1,6 @@
 package com.kslides
 
 import com.kslides.InternalUtils.indentInclude
-import com.kslides.config.CopyCodeAssignment
 import com.kslides.config.CopyCodeValues
 import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
@@ -555,11 +554,8 @@ class Presentation(
       }
     }
 
-    config.copyCodeConfig.revealjsManagedValues.also { valMap ->
-      if (valMap.isNotEmpty()) {
-        val copyCodeValues = CopyCodeValues()
-        @Suppress("UNCHECKED_CAST")
-        valMap.forEach { (_, v) -> copyCodeValues.apply(v as CopyCodeAssignment) }
+    config.copyCodeConfig.values.also { copyCodeValues ->
+      if (copyCodeValues != CopyCodeValues()) {
         appendLine(
           buildString {
             append("copycode: ")

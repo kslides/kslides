@@ -1,6 +1,8 @@
 package com.kslides
 
+import com.kslides.config.CopyCodeButton
 import com.kslides.config.CopyCodeConfig
+import com.kslides.config.CopyCodeDisplay
 import com.kslides.config.DiagramConfig
 import com.kslides.config.KSlidesConfig
 import com.kslides.config.LetsPlotIframeConfig
@@ -15,6 +17,8 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotBeBlank
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotlin.reflect.full.memberProperties
 
 class ConfigsTest : StringSpec() {
@@ -138,6 +142,32 @@ class ConfigsTest : StringSpec() {
       }
       merged.copy shouldBe "Copied"
       merged.timeout shouldBe 1000
+    }
+
+    "CopyCodeConfig serializes only the set options, using each enum's wire value" {
+      val config = CopyCodeConfig().apply {
+        button = CopyCodeButton.ALWAYS
+        display = CopyCodeDisplay.ICONS
+        timeout = 2000
+        copy = "Copy"
+        scale = 0.8
+      }
+      val encoded = Json.encodeToString(config.values)
+
+      // Enums emit their @SerialName wire value, not the enum constant name.
+      encoded.contains(""""button":"always"""") shouldBe true
+      encoded.contains(""""display":"icons"""") shouldBe true
+      // Nested + typed values round-trip (copy under text, the Double scale under style).
+      encoded.contains(""""copy":"Copy"""") shouldBe true
+      encoded.contains(""""scale":0.8""") shouldBe true
+      // Unset options are omitted entirely rather than emitted as null.
+      encoded.contains("copied") shouldBe false
+      encoded.contains("window") shouldBe false
+    }
+
+    "reading an unset CopyCodeConfig property throws rather than returning a default" {
+      shouldThrowExactly<IllegalStateException> { CopyCodeConfig().copy }
+      shouldThrowExactly<IllegalStateException> { CopyCodeConfig().scale }
     }
 
     "PresentationConfig routes reveal.js vs kslides options into separate maps" {

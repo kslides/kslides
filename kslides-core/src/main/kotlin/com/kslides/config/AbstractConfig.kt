@@ -22,7 +22,7 @@ abstract class AbstractConfig {
    * emitted verbatim into the `Reveal.initialize({...})` call and participates in the config
    * cascade like any other option. Prefer the typed properties where they exist.
    */
-  fun revealjsOption(
+  open fun revealjsOption(
     key: String,
     value: Any,
   ) {
@@ -39,7 +39,7 @@ abstract class AbstractConfig {
    * never mutated in place. Note this is distinct from (and name-collides with) the `Map.merge`
    * extension elsewhere; this one mutates the receiver rather than returning a new map.
    */
-  fun merge(other: AbstractConfig) {
+  open fun merge(other: AbstractConfig) {
     revealjsManagedValues.putAll(other.revealjsManagedValues)
     kslidesManagedValues.putAll(other.kslidesManagedValues)
   }
