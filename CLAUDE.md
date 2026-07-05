@@ -61,7 +61,7 @@ The `publish-snapshot` and `publish-maven-central` targets sign via `GPG_ENV`, w
 
 ### Releasing
 
-The current release is `1.1.0` (tag `1.1.0`, GitHub release `v1.1.0`, published to Maven Central as `com.kslides:kslides-core` and `com.kslides:kslides-letsplot`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site (`website/kslides/docs/installation.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
+The current release is `1.1.1` (tag `1.1.1`, GitHub release `v1.1.1`, published to Maven Central as `com.kslides:kslides-core` and `com.kslides:kslides-letsplot`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site (`website/kslides/docs/installation.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
 
 ## Module Structure
 
