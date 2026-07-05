@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.kslides.InternalUtils.indentInclude
+import com.kslides.config.CopyCodeValues
 import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
 import com.kslides.slide.DslSlide
@@ -24,6 +25,7 @@ import kotlinx.html.id
 import kotlinx.html.script
 import kotlinx.html.section
 import kotlinx.html.style
+import kotlinx.serialization.json.Json
 
 /**
  * A single presentation — the unit that reveal.js renders as one HTML page. Created via
@@ -210,16 +212,16 @@ class Presentation(
     path: String,
     branch: String,
   ) = srcrefUrl(
-      account = account,
-      repo = repo,
-      path = path,
-      branch = branch,
-      beginRegex = "//\\s*$token\\s+begin",
-      beginOffset = 1,
-      endRegex = "//\\s*$token\\s+end",
-      endOffset = -1,
-      escapeHtml4 = true,
-    )
+    account = account,
+    repo = repo,
+    path = path,
+    branch = branch,
+    beginRegex = "//\\s*$token\\s+begin",
+    beginOffset = 1,
+    endRegex = "//\\s*$token\\s+end",
+    endOffset = -1,
+    escapeHtml4 = true,
+  )
 
   private fun githubLink(href: String) = """<a id="ghsrc" href="$href" target="_blank">GitHub Source</a>"""
 
@@ -261,13 +263,14 @@ class Presentation(
     markdownSlide {
       if (id.isNotBlank()) this.id = id
       if (classes.isNotBlank()) this.classes = classes
+      val p = this@Presentation
       content {
         """
         ## $title
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        ${this@Presentation.githubLink(this@Presentation.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
+        ${p.githubLink(p.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
         """
       }
     }
@@ -298,13 +301,14 @@ class Presentation(
         markdownNotesSeparator = "^^"
       }
 
+      val p = this@Presentation
       content {
         """
         ## $title
         ```$language $highlightPattern
         ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
-        ${this@Presentation.githubLink(this@Presentation.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
+        ${p.githubLink(p.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
         """
       }
     }
@@ -550,15 +554,9 @@ class Presentation(
       }
     }
 
-    config.copyCodeConfig.revealjsManagedValues.also { valMap ->
-      if (valMap.isNotEmpty()) {
-        appendLine(
-          buildString {
-            appendLine("copycode: {")
-            appendLine(valMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
-            appendLine("},")
-          }.prependIndent(INDENT),
-        )
+    config.copyCodeConfig.values.also { copyCodeValues ->
+      if (copyCodeValues != emptyCopyCodeValues) {
+        appendLine("copycode: ${copyCodeJson.encodeToString(copyCodeValues)},".prependIndent(INDENT))
       }
     }
 
@@ -582,6 +580,8 @@ class Presentation(
   companion object {
     private val logger = KotlinLogging.logger {}
     private const val INDENT = "\t\t\t"
+    private val copyCodeJson = Json { prettyPrint = true }
+    private val emptyCopyCodeValues = CopyCodeValues()
   }
 }
 

@@ -12,6 +12,8 @@ import com.kslides.atag
 import com.kslides.bodyRow
 import com.kslides.by
 import com.kslides.codeSnippet
+import com.kslides.config.CopyCodeButton
+import com.kslides.config.CopyCodeDisplay
 import com.kslides.diagram
 import com.kslides.fragment
 import com.kslides.headRow
@@ -152,6 +154,8 @@ fun main() {
       }
 
       copyCodeConfig {
+        button = CopyCodeButton.ALWAYS
+        display = CopyCodeDisplay.ICONS
         timeout = 2000
         copy = "Copy"
         copied = "Copied!"
