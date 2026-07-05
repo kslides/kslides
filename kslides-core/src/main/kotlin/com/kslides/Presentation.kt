@@ -555,14 +555,8 @@ class Presentation(
     }
 
     config.copyCodeConfig.values.also { copyCodeValues ->
-      if (copyCodeValues != CopyCodeValues()) {
-        appendLine(
-          buildString {
-            append("copycode: ")
-            append(copyCodeJson.encodeToString<CopyCodeValues>(copyCodeValues))
-            appendLine(",")
-          }.prependIndent(INDENT),
-        )
+      if (copyCodeValues != emptyCopyCodeValues) {
+        appendLine("copycode: ${copyCodeJson.encodeToString(copyCodeValues)},".prependIndent(INDENT))
       }
     }
 
@@ -587,6 +581,7 @@ class Presentation(
     private val logger = KotlinLogging.logger {}
     private const val INDENT = "\t\t\t"
     private val copyCodeJson = Json { prettyPrint = true }
+    private val emptyCopyCodeValues = CopyCodeValues()
   }
 }
 
