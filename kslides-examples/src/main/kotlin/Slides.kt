@@ -110,21 +110,6 @@ fun main() {
       }
     """
 
-    // Shrink code blocks so long lines fit the slide window (reveal's default is 0.55em). This
-    // fits the ~85-92 char lines of the slideDefinition slides; the rare extra-long line (e.g. a
-    // full URL) wraps instead of overflowing horizontally rather than forcing an unreadable size.
-    css += """
-      .reveal pre { font-size: 0.60em; }
-      .reveal pre code { white-space: pre-wrap; word-break: break-word; }
-    """
-
-    // Per-slide override: the "highlighted code" slideDefinitions (classes = "smallcode") render their
-    // code smaller than the global 0.60em. ".reveal .smallcode pre" (two classes) outranks ".reveal pre"
-    // on specificity, so it wins regardless of order; long lines still wrap via the global pre-wrap rule.
-    css += """
-      .reveal .smallcode pre { font-size: 0.40em; }
-    """
-
     // Optional
     presentationConfig {
       //width = "100%"
@@ -185,7 +170,12 @@ fun main() {
         """
       }
 
-      slideConfig {}
+      slideConfig {
+        // Shrink code blocks so long lines fit the slide window (reveal's default is 0.55em),
+        // and wrap the rare extra-long line instead of overflowing horizontally.
+        codeFontSize = "0.60em"
+        codeWrap = true
+      }
     }
     // playgroundConfig end
 
@@ -1936,18 +1926,18 @@ fun main() {
 // kslides end
 }
 
-// Convenience wrappers around slideDefinition() that tag the slide with the "smallcode" CSS class
-// (styled by the ".reveal .smallcode pre" rule above). Two receiver forms mirror slideDefinition():
-// one for calls directly inside presentation{}, one for calls inside verticalSlides{}.
+// Convenience wrappers around slideDefinition() that shrink the definition slides' code below the
+// deck-wide codeFontSize default. Two receiver forms mirror slideDefinition(): one for calls
+// directly inside presentation{}, one for calls inside verticalSlides{}.
 private fun Presentation.smallSlideDefinition(
   source: String,
   token: String,
-) = slideDefinition(source = source, token = token, classes = "smallcode")
+) = slideDefinition(source = source, token = token) { codeFontSize = "0.40em" }
 
 context(presentation: Presentation)
 private fun VerticalSlidesContext.smallSlideDefinition(
   source: String,
   token: String,
 ) = with(presentation) {
-    this@smallSlideDefinition.slideDefinition(source = source, token = token, classes = "smallcode")
+    this@smallSlideDefinition.slideDefinition(source = source, token = token) { codeFontSize = "0.40em" }
   }
