@@ -100,8 +100,12 @@ abstract class Slide(
     if (id.isNotBlank())
       section.id = id
 
-    if (style.isNotBlank())
-      section.style = style
+    // font-size first, user style last — a user-declared font-size wins on conflict
+    buildList {
+      mergedSlideConfig.fontSize.also { if (it.isNotBlank()) add("font-size: $it;") }
+      if (style.isNotBlank()) add(style)
+    }.joinToString(" ")
+      .also { if (it.isNotBlank()) section.style = it }
 
     // hidden and uncounted both map to the single-valued data-visibility attribute; hidden is the
     // strictly stronger flag, so it wins when both are set rather than being silently overwritten.
