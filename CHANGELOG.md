@@ -9,6 +9,18 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+### Added
+
+- `slideConfig { }` gained three cascading font properties: `fontSize` (inline
+  `font-size` on the slide's `<section>` — any CSS length), `codeFontSize`
+  (font size for `<pre>` code blocks, emitted as a generated CSS class + head
+  rule), and `codeWrap` (wrap long code lines instead of overflowing). All
+  three resolve through the global → presentation → slide cascade, replacing
+  the raw-CSS approach previously needed for code sizing.
+- `slideDefinition()` (both overloads) gained a trailing
+  `configBlock: SlideConfig.() -> Unit` parameter for per-slide configuration,
+  e.g. `slideDefinition(source, token) { codeFontSize = "0.40em" }`.
+
 ## [1.1.1] — 2026-07-05
 
 Expands the CopyCode plugin configuration and rebuilds it on a typed,

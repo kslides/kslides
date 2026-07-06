@@ -44,9 +44,33 @@ css += """
 
 `htmlSlide` exposes `classes` for the same purpose — see [HTML slides](slides/html.md).
 
+## Font sizes
+
+Slide and code font sizes are plain config values — no CSS required. All three cascade from `kslides { }` → `presentation { }` → slide, same as any other [configuration](configuration.md) property:
+
+```kotlin
+presentationConfig {
+  slideConfig {
+    codeFontSize = "0.60em"   // default for all slides
+    codeWrap = true           // wrap long code lines
+  }
+}
+
+markdownSlide {
+  slideConfig {
+    fontSize = "34px"         // this slide only
+    codeFontSize = "0.40em"
+  }
+}
+```
+
+- `fontSize` — font size for all content on the slide (any CSS length). Themes size headings in `em`, so everything scales together.
+- `codeFontSize` — font size for code blocks (reveal.js's default is `0.55em`).
+- `codeWrap` — when `true`, long code lines wrap instead of overflowing horizontally. A slide can set `false` to override a presentation-wide `true`.
+
 ## Code font size
 
-reveal.js renders code blocks — Markdown fences, [code snippets](extensions/code-snippets.md), and `htmlSlide` `<pre>` blocks — at `0.55em` relative to the slide. Because the slide canvas is a fixed size, long lines overflow with a scrollbar instead of shrinking to fit. Override `.reveal pre` to change the size.
+reveal.js renders code blocks — Markdown fences, [code snippets](extensions/code-snippets.md), and `htmlSlide` `<pre>` blocks — at `0.55em` relative to the slide. Because the slide canvas is a fixed size, long lines overflow with a scrollbar instead of shrinking to fit. For most cases, [`codeFontSize`](#font-sizes) above is simpler; override `.reveal pre` directly when you need a selector the config API doesn't expose.
 
 ### Every code block
 
