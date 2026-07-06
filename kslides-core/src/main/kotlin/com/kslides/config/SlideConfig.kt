@@ -100,6 +100,27 @@ class SlideConfig : AbstractConfig() {
    */
   var disableTrimIndent by ConfigProperty<Boolean>(revealjsManagedValues)
 
+  /**
+   * Font size for all content on the slide — any CSS length (e.g. `"34px"`, `"0.9em"`).
+   * Rendered as an inline `font-size` on the slide's `<section>`; reveal.js themes size
+   * headings/text in `em`, so everything scales. Blank inherits the theme default.
+   */
+  var fontSize by ConfigProperty<String>(kslidesManagedValues)
+
+  /**
+   * Font size for code blocks (`<pre>`) on the slide (e.g. `"0.60em"`). Rendered as a
+   * generated CSS class + head rule because reveal.js renders Markdown client-side. Blank
+   * inherits reveal.js's default (`0.55em`).
+   */
+  var codeFontSize by ConfigProperty<String>(kslidesManagedValues)
+
+  /**
+   * When `true`, long code lines wrap (`white-space: pre-wrap; word-break: break-word`)
+   * instead of overflowing horizontally. A slide can set `false` to override a
+   * presentation-level `true`.
+   */
+  var codeWrap by ConfigProperty<Boolean>(kslidesManagedValues)
+
   internal fun assignDefaults() {
     transition = Transition.UNASSIGNED
     transitionIn = Transition.UNASSIGNED
@@ -129,6 +150,10 @@ class SlideConfig : AbstractConfig() {
 
     indentToken = INDENT_TOKEN  // Token for adjusting markdown content indentation
     disableTrimIndent = false   // Disable calling of trimIndent() on markdown content
+
+    fontSize = ""
+    codeFontSize = ""
+    codeWrap = false
   }
 
   @Suppress("CyclomaticComplexMethod")
