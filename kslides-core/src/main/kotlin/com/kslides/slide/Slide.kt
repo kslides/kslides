@@ -100,8 +100,16 @@ abstract class Slide(
     if (id.isNotBlank())
       section.id = id
 
-    if (style.isNotBlank())
-      section.style = style
+    // font-size first, user style last — a user-declared font-size wins on conflict
+    val fontSize = mergedSlideConfig.fontSize
+    val combinedStyle =
+      when {
+        fontSize.isBlank() -> style
+        style.isBlank() -> "font-size: $fontSize;"
+        else -> "font-size: $fontSize; $style"
+      }
+    if (combinedStyle.isNotBlank())
+      section.style = combinedStyle
 
     // hidden and uncounted both map to the single-valued data-visibility attribute; hidden is the
     // strictly stronger flag, so it wins when both are set rather than being silently overwritten.
@@ -117,6 +125,21 @@ abstract class Slide(
       section.attributes["data-auto-animate-restart"] = ""
 
     mergedSlideConfig.applyConfig(section)
+
+    // reveal.js renders Markdown client-side, so kslides never sees the resulting <pre>/<code>
+    // tags — codeFontSize/codeWrap can't be inline styles. Instead, register a generated CSS
+    // class (shared across slides with identical values) that Page.generatePage turns into
+    // head <style> rules once the whole document has been built.
+    val codeFontSize = mergedSlideConfig.codeFontSize
+    val codeWrap = mergedSlideConfig.codeWrap
+    if (codeFontSize.isNotBlank() || codeWrap) {
+      val cssClass =
+        presentation.codeStyleClasses.getOrPut(codeFontSize to codeWrap) {
+          "kslides-code-${presentation.codeStyleClasses.size + 1}"
+        }
+      val existingClasses = section.attributes["class"].orEmpty()
+      section.attributes["class"] = if (existingClasses.isBlank()) cssClass else "$existingClasses $cssClass"
+    }
   }
 }
 

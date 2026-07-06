@@ -71,9 +71,6 @@
 			.reveal.h5 {
 			  color: blue;
 			}
-			.reveal pre { font-size: 0.60em; }
-			.reveal pre code { white-space: pre-wrap; word-break: break-word; }
-			.reveal .smallcode pre { font-size: 0.40em; }
 			
 			#ghsrc {
 			  font-size: 30px;
@@ -100,6 +97,15 @@
 			
 		</style>
     
+    <style media="screen" type="text/css">
+			.reveal .kslides-code-1 pre { font-size: 0.60em; }
+			.reveal .kslides-code-1 pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal .kslides-code-2 pre { font-size: 0.40em; }
+			.reveal .kslides-code-2 pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal .kslides-code-3 pre { font-size: 0.25em; }
+			.reveal .kslides-code-3 pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal pre code .hljs-ln-numbers { white-space: nowrap; word-break: normal; }
+		</style>
   </head>
   <body>
     <div class="reveal">
@@ -115,7 +121,7 @@
 
       <div class="slides">
         <section>
-          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="intro">
+          <section class="kslides-code-1" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="intro">
             <script type="text/template">
 # kslides
 ![slideimg](images/slide-transparent.png)
@@ -126,7 +132,7 @@ Notes: This is a note for the opening slide 📝
 </script>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -151,7 +157,7 @@ markdownSlide {
         </section>
         
         <section>
-          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="markdownslide">
+          <section class="kslides-code-1" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="markdownslide">
             <script type="text/template">
 # A Markdown Slide
 ## 🍒
@@ -169,7 +175,7 @@ Notes: This is a note for the Markdown slide 📝
 </script>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -198,7 +204,7 @@ markdownSlide {
         </section>
         
         <section>
-          <section id="htmlslide">
+          <section class="kslides-code-1" id="htmlslide">
             
             <h1>An HTML Slide</h1>
             
@@ -217,7 +223,7 @@ markdownSlide {
 </aside>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -246,7 +252,7 @@ htmlSlide {
         </section>
         
         <section>
-          <section>
+          <section class="kslides-code-1">
             <h1>An HTML DSL Slide</h1>
             <h2>&#128064;</h2>
             <p class="fragment fade-right">Press CTRL+Shift+F to search all the slides</p>
@@ -255,7 +261,7 @@ htmlSlide {
             <aside class="notes">This is a note for the DSL slide &#128221;</aside>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -277,7 +283,7 @@ dslSlide {
         </section>
         
         <section>
-          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
+          <section class="kslides-code-1" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
             <script type="text/template">
 ## Highlighted Code with a markdownSlide
 ```kotlin [|3,7|4,6|5|4-6]
@@ -294,7 +300,7 @@ Note: This slide shows code highlights. You can specify the lines you want to hi
 </script>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -318,7 +324,7 @@ markdownSlide {
         </section>
         
         <section>
-          <section>
+          <section class="kslides-code-1">
             <h2>Highlighted Code with a dslSlide</h2>
             <pre><code class="kotlin" data-line-numbers="|3,7|4,6|5|4-6" data-noescape="" data-trim="">
 package content
@@ -334,7 +340,7 @@ fun main() {
             <aside class="notes">This slide shows highlighted code. You can specify the lines you want to highlight.</aside>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -360,7 +366,7 @@ dslSlide {
         </section>
         
         <section>
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             <h2>Animated Code with a dslSlide</h2>
             <pre data-id="code-animation"><code class="javascript" data-line-numbers="" data-noescape="" data-trim="">
 let planets = [
@@ -372,7 +378,7 @@ let planets = [
             <aside class="notes">This slide shows animated code highlights.</aside>
           </section>
           
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             <h2>Animated Code with a dslSlide</h2>
             <pre data-id="code-animation"><code class="javascript" data-line-numbers="" data-noescape="" data-trim="">
 let planets = [
@@ -386,7 +392,7 @@ let planets = [
             <aside class="notes">This slide shows animated code highlights.</aside>
           </section>
           
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             <h2>Animated Code with a dslSlide</h2>
             <pre data-id="code-animation"><code class="javascript" data-line-numbers="" data-noescape="" data-trim="">
 let circumferenceReducer = (c, planet) =&gt; {
@@ -406,7 +412,7 @@ let c = planets.reduce(circumferenceReducer, 0);
             <aside class="notes">This slide shows animated code highlights.</aside>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -437,7 +443,7 @@ for (linePattern in "[5,6,9|5-9|]".toLinePatterns()) {
         </section>
         
         <section>
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             
             <h2>Animated Code with an htmlSlide</h2>
             
@@ -456,7 +462,7 @@ This slide shows animated code highlights.
 </aside>
           </section>
           
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             
             <h2>Animated Code with an htmlSlide</h2>
             
@@ -477,7 +483,7 @@ This slide shows animated code highlights.
 </aside>
           </section>
           
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             
             <h2>Animated Code with an htmlSlide</h2>
             
@@ -504,7 +510,7 @@ This slide shows animated code highlights.
 </aside>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -536,12 +542,12 @@ for (linePattern in "[5,6,9|5-9|]".toLinePatterns()) {
         </section>
         
         <section>
-          <section id="playground">
+          <section class="kslides-code-1" id="playground">
             <h2>Kotlin Playground Support</h2>
             <iframe height="350px" src="playground/slide-20-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -560,12 +566,12 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>Playground with Additional Code</h2>
             <iframe height="350px" src="playground/slide-22-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -582,13 +588,13 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>Playground Using JUnit</h2>
             <small>( Replace TODO() with: <em>it%2==0</em> )</small>
             <iframe height="450px" src="playground/slide-24-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -611,12 +617,12 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>Playground Using Kotlin/JS</h2>
             <iframe height="350px" src="playground/slide-26-1.html" style="border:none;" width="100%"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -635,13 +641,13 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>Playground Support for other Languages</h2>
             <iframe height="375px" src="playground/slide-28-1.html" style="border:none;" width="100%"></iframe>
             Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -680,13 +686,13 @@ dslSlide {
         </section>
         
         <section>
-          <section id="kroki">
+          <section class="kslides-code-1" id="kroki">
             <h2>
               <a href="https://kroki.io" target="_blank">Kroki Diagram </a>Support &#128071;
             </h2>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>
               <a href="https://www.graphviz.org" target="_blank">Graphviz </a> Diagram
             </h2>
@@ -695,7 +701,7 @@ dslSlide {
             </div>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -722,7 +728,7 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>
               <a href="https://mermaid-js.github.io/mermaid/#/flowchart" target="_blank">Mermaid </a>Flowchart
             </h2>
@@ -731,7 +737,7 @@ dslSlide {
             </div>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -762,7 +768,7 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>
               <a href="https://mermaid-js.github.io/mermaid/#/pie" target="_blank">Mermaid </a>Pie Chart
             </h2>
@@ -771,7 +777,7 @@ dslSlide {
             </div>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -798,7 +804,7 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>
               <a href="https://plantuml.com" target="_blank">PlantUML </a>Diagram
             </h2>
@@ -807,7 +813,7 @@ dslSlide {
             </div>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -857,7 +863,7 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>
               <a href="http://blockdiag.com/en/" target="_blank">BlockDiag </a>Diagram
             </h2>
@@ -866,7 +872,7 @@ dslSlide {
             </div>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -902,12 +908,12 @@ dslSlide {
         </section>
         
         <section>
-          <section id="letsplot">
+          <section class="kslides-code-1" id="letsplot">
             <h2>A Lets-Plot Scatter Plot</h2>
             <iframe height="415px" src="letsPlot/slide-41-1.html" style="width: 85%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -935,12 +941,12 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>A Lets-Plot Histogram</h2>
             <iframe height="500px" src="letsPlot/slide-43-1.html" style="width: 65%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -966,12 +972,12 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>A Lets-Plot Heatmap (from matrix)</h2>
             <iframe height="500px" src="letsPlot/slide-45-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1022,12 +1028,12 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>A Lets-Plot Scatter with Color Encoding</h2>
             <iframe height="500px" src="letsPlot/slide-47-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1057,12 +1063,12 @@ dslSlide {
 </script>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>A Lets-Plot Red Heatmap</h2>
             <iframe height="500px" src="letsPlot/slide-49-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1099,7 +1105,7 @@ dslSlide {
         </section>
         
         <section>
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             <h2>Animated List Items</h2>
             <ul>
               <li>One</li>
@@ -1108,7 +1114,7 @@ dslSlide {
             </ul>
           </section>
           
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             <h2>Animated List Items</h2>
             <ul>
               <li>One</li>
@@ -1117,7 +1123,7 @@ dslSlide {
             </ul>
           </section>
           
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             <h2>Animated List Items</h2>
             <ul>
               <li>One</li>
@@ -1127,7 +1133,7 @@ dslSlide {
             </ul>
           </section>
           
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             <h2>Animated List Items</h2>
             <ul>
               <li>Two</li>
@@ -1137,7 +1143,7 @@ dslSlide {
             </ul>
           </section>
           
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             <h2>Animated List Items</h2>
             <ul>
               <li>Two</li>
@@ -1147,7 +1153,7 @@ dslSlide {
             </ul>
           </section>
           
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             <h2>Animated List Items</h2>
             <ul>
               <li>Two</li>
@@ -1157,7 +1163,7 @@ dslSlide {
             </ul>
           </section>
           
-          <section data-auto-animate="">
+          <section class="kslides-code-1" data-auto-animate="">
             <h2>Animated List Items</h2>
             <ul>
               <li>One</li>
@@ -1167,7 +1173,7 @@ dslSlide {
             </ul>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1197,7 +1203,7 @@ listOf("One", "Two", "Three", "Four", "👇")
         </section>
         
         <section>
-          <section data-auto-animate="" style="height: 600px">
+          <section class="kslides-code-1" data-auto-animate="" style="height: 600px">
             <h4 data-id="slidenum" style="opacity: 0.75;">Slide 1</h4>
             <h2 data-id="title" style="margin-top: 250px;">Animate Anything &#128071;</h2>
             <div data-id="1" style="background: cyan; position: absolute; top: 150px; left: 16%; width: 60px; height: 60px;"></div>
@@ -1206,7 +1212,7 @@ listOf("One", "Two", "Three", "Four", "👇")
             <div data-id="4" style="background: red; position: absolute; top: 150px; left: 76%; width: 60px; height: 60px;"></div>
           </section>
           
-          <section data-auto-animate="" style="height: 600px">
+          <section class="kslides-code-1" data-auto-animate="" style="height: 600px">
             <h4 data-id="slidenum" style="opacity: 0.75;">Slide 2</h4>
             <h2 data-id="title" style="margin-top: 450px">With Auto Animate &#128071;</h2>
             <div data-id="1" style="background: cyan; position: absolute; bottom: 190px; left: 16%; width: 60px; height: 60px;"></div>
@@ -1215,7 +1221,7 @@ listOf("One", "Two", "Three", "Four", "👇")
             <div data-id="4" style="background: red; position: absolute; bottom: 190px; left: 76%; width: 60px; height: 360px;"></div>
           </section>
           
-          <section data-auto-animate="" style="height: 600px">
+          <section class="kslides-code-1" data-auto-animate="" style="height: 600px">
             <h4 data-id="slidenum" style="opacity: 0.75;">Slide 3</h4>
             <h2 data-id="title" style="margin-top: 500px; opacity: 0.5;">With Auto Animate &#128071;</h2>
             <div data-id="1" style="background: cyan; position: absolute; top: 50%; left: 50%; width: 400px; height: 400px; margin: -200px 0 0 -200px; border-radius: 400px;"></div>
@@ -1224,7 +1230,7 @@ listOf("One", "Two", "Three", "Four", "👇")
             <div data-id="4" style="background: red; position: absolute; top: 50%; left: 50%; width: 100px; height: 100px; margin: -50px 0 0 -50px; border-radius: 400px;"></div>
           </section>
           
-          <section data-auto-animate="" style="height: 600px">
+          <section class="kslides-code-1" data-auto-animate="" style="height: 600px">
             <h4 data-id="slidenum" style="opacity: 0.75;">Slide 4</h4>
             <h2 data-id="title" style="margin-top: 300px; opacity: 0.25;">With Auto Animate</h2>
             <div data-id="1" style="background: cyan; position: absolute; top: 250px; left: 16%; width: 60px; height: 60px;"></div>
@@ -1236,12 +1242,12 @@ listOf("One", "Two", "Three", "Four", "👇")
         </section>
         
         <section>
-          <section id="youtube">
+          <section class="kslides-code-1" id="youtube">
             <h2>YouTube Content</h2>
             <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope" allowfullscreen="true" frameborder="0" height="315" src="https://www.youtube.com/embed/X8Az9X0mwUE?start=163" title="YouTube video player" width="560"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1268,7 +1274,7 @@ dslSlide {
         </section>
         
         <section>
-          <section id="twitter">
+          <section class="kslides-code-1" id="twitter">
             <h2>Twitter Content</h2>
             <blockquote class="twitter-tweet tw-align-center" style="">
               <p dir="ltr" lang="en">Procedural programming is good.Object oriented programming is good.Functional programming is good.Programming with all three is best.</p>
@@ -1277,7 +1283,7 @@ dslSlide {
             <script async="async" charset="utf-8" src="https://platform.twitter.com/widgets.js"></script>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1317,7 +1323,7 @@ dslSlide {
         </section>
         
         <section>
-          <section id="tables">
+          <section class="kslides-code-1" id="tables">
             <h2>Tables</h2>
             <table>
               <thead>
@@ -1339,7 +1345,7 @@ dslSlide {
             </table>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1372,7 +1378,7 @@ dslSlide {
         </section>
         
         <section>
-          <section data-background-iframe="https://revealjs.com/backgrounds/#iframe-backgrounds">
+          <section class="kslides-code-1" data-background-iframe="https://revealjs.com/backgrounds/#iframe-backgrounds">
             <div style="
                   position: absolute; width: 40%; right: 0;
                   box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2);
@@ -1388,7 +1394,7 @@ dslSlide {
             </div>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -1567,7 +1573,10 @@ dslSlide {
           token = "slideDefinition",
           title = "Slide Definition Source",
           id = "lastslide",
-        )
+        ) {
+          codeFontSize = "0.25em"
+        }
+
         // slidedef end
 
         smallSlideDefinition(source = slides, token = "slidedef")
@@ -2057,7 +2066,7 @@ dslSlide {
         </section>
         
         <section>
-          <section id="transitions">
+          <section class="kslides-code-1" id="transitions">
             <h2>Transitions</h2>
             <p>
               You can select from different transitions, like:
@@ -2073,7 +2082,7 @@ dslSlide {
             </p>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2103,7 +2112,7 @@ dslSlide {
         </section>
         
         <section>
-          <section id="themes">
+          <section class="kslides-code-1" id="themes">
             <h2>Themes</h2>
             <p>
               reveal.js comes with some built-in themes:
@@ -2126,7 +2135,7 @@ dslSlide {
             </p>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2163,11 +2172,11 @@ dslSlide {
         </section>
         
         <section>
-          <section data-background-video="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4">
+          <section class="kslides-code-1" data-background-video="http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4">
             <h1 style="color: red;">Video Backgrounds</h1>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2188,12 +2197,12 @@ dslSlide {
         </section>
         
         <section>
-          <section>
+          <section class="kslides-code-1">
             <h2>Embedded Web Content</h2>
             <iframe height="540" src="https://slides.com/news/auto-animate/embed" style="border:none;" width="700"></iframe>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2216,7 +2225,7 @@ dslSlide {
         </section>
         
         <section>
-          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="features">
+          <section class="kslides-code-1" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" id="features">
             <script type="text/template">
 ## Other Features 🚡
 
@@ -2236,7 +2245,7 @@ dslSlide {
 </script>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2269,7 +2278,7 @@ markdownSlide {
         </section>
         
         <section>
-          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
+          <section class="kslides-code-1" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
             <script type="text/template">
 ## Presentation Navigation 🦊
 
@@ -2284,7 +2293,7 @@ markdownSlide {
 </script>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2309,34 +2318,38 @@ markdownSlide {
         </section>
         
         <section>
-          <section data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="" id="lastslide">
+          <section class="kslides-code-3" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="" id="lastslide">
             <script type="text/template">
 ## Slide Definition Source
 ```kotlin []
-fun slideDefinition(
+private fun slideDefinitionContent(
   source: String,
   token: String,
-  title: String = "Slide Definition",
-  highlightPattern: String = "[]",
-  id: String = "",
-  classes: String = "",
-  language: String = "kotlin",
-  githubAccount: String = "kslides",
-  githubRepo: String = "kslides",
-  githubPath: String = source,
-  githubBranch: String = "master",
-) {
-  markdownSlide {
+  title: String,
+  highlightPattern: String,
+  id: String,
+  classes: String,
+  language: String,
+  githubAccount: String,
+  githubRepo: String,
+  githubPath: String,
+  githubBranch: String,
+  configBlock: SlideConfig.() -> Unit,
+  slideConfigDefaults: SlideConfig.() -> Unit = {},
+): MarkdownSlide.() -> Unit {
+  val githubSource = githubLink(srcref(token, githubAccount, githubRepo, githubPath, githubBranch))
+  return {
     if (id.isNotBlank()) this.id = id
     if (classes.isNotBlank()) this.classes = classes
-    val p = this@Presentation
+    slideConfig(slideConfigDefaults)
+    slideConfig(configBlock)
     content {
       """
       ## $title
       ```$language $highlightPattern
       ${include(source, beginToken = "$token begin", endToken = "$token end")}
       ```
-      ${p.githubLink(p.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
+      $githubSource
       """
     }
   }
@@ -2346,7 +2359,7 @@ fun slideDefinition(
 </script>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -2355,7 +2368,9 @@ slideDefinition(
   token = "slideDefinition",
   title = "Slide Definition Source",
   id = "lastslide",
-)
+) {
+  codeFontSize = "0.25em"
+}
 ```
 <a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*slidedef%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*slidedef%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
 </script>

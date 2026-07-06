@@ -71,13 +71,17 @@
 			.reveal.h5 {
 			  color: blue;
 			}
-			.reveal pre { font-size: 0.60em; }
-			.reveal pre code { white-space: pre-wrap; word-break: break-word; }
-			.reveal .smallcode pre { font-size: 0.40em; }
 			
 			
 		</style>
     
+    <style media="screen" type="text/css">
+			.reveal .kslides-code-1 pre { font-size: 0.60em; }
+			.reveal .kslides-code-1 pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal .kslides-code-2 pre { font-size: 0.40em; }
+			.reveal .kslides-code-2 pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal pre code .hljs-ln-numbers { white-space: nowrap; word-break: normal; }
+		</style>
   </head>
   <body>
     <div class="reveal">
@@ -93,11 +97,11 @@
 
       <div class="slides">
         <section>
-          <section data-background="#00ffff">
+          <section class="kslides-code-1" data-background="#00ffff">
             <h2>data-background: #00ffff</h2>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -117,11 +121,11 @@ dslSlide {
         </section>
         
         <section>
-          <section data-background="#bb00bb">
+          <section class="kslides-code-1" data-background="#bb00bb">
             <h2>data-background: #bb00bb</h2>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -141,11 +145,11 @@ dslSlide {
         </section>
         
         <section>
-          <section data-background-color="lightblue">
+          <section class="kslides-code-1" data-background-color="lightblue">
             <h2>data-background-color: lightblue</h2>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -165,19 +169,19 @@ dslSlide {
         </section>
         
         <section>
-          <section data-background="#ff0000">
+          <section class="kslides-code-1" data-background="#ff0000">
             <h2>data-background: #ff0000</h2>
           </section>
           
-          <section data-background="rgba(0, 0, 0, 0.2)">
+          <section class="kslides-code-1" data-background="rgba(0, 0, 0, 0.2)">
             <h2>data-background: rgba(0, 0, 0, 0.2)</h2>
           </section>
           
-          <section data-background="salmon">
+          <section class="kslides-code-1" data-background="salmon">
             <h2>data-background: salmon</h2>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -215,19 +219,19 @@ dslSlide {
         </section>
         
         <section data-background="rgba(0, 100, 100, 0.2)">
-          <section>
+          <section class="kslides-code-1">
             <h2>Background applied to stack (1/2)</h2>
           </section>
           
-          <section>
+          <section class="kslides-code-1">
             <h2>Background applied to stack (2/2)</h2>
           </section>
           
-          <section data-background="rgb(66, 66, 66)">
+          <section class="kslides-code-1" data-background="rgb(66, 66, 66)">
             <h2>Background applied to slide inside of stack</h2>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -267,11 +271,11 @@ verticalSlides {
         </section>
         
         <section>
-          <section data-background="revealjs/assets/image1.png" data-background-transition="slide">
+          <section class="kslides-code-1" data-background="revealjs/assets/image1.png" data-background-transition="slide">
             <h2>Background image</h2>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -292,11 +296,11 @@ dslSlide {
         </section>
         
         <section>
-          <section data-background="revealjs/assets/image2.png" data-background-color="#111" data-background-repeat="repeat" data-background-size="100px">
+          <section class="kslides-code-1" data-background="revealjs/assets/image2.png" data-background-color="#111" data-background-repeat="repeat" data-background-size="100px">
             <h2>Background repeat</h2>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -319,11 +323,11 @@ dslSlide {
         </section>
         
         <section>
-          <section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm">
+          <section class="kslides-code-1" data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm">
             <h2>Video background</h2>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -344,11 +348,11 @@ dslSlide {
         </section>
         
         <section>
-          <section data-background-iframe="https://slides.com/news/make-better-presentations/embed?style=hidden&amp;autoSlide=4000">
+          <section class="kslides-code-1" data-background-iframe="https://slides.com/news/make-better-presentations/embed?style=hidden&amp;autoSlide=4000">
             <h2>Iframe background</h2>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []

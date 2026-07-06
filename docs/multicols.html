@@ -71,9 +71,6 @@
 			.reveal.h5 {
 			  color: blue;
 			}
-			.reveal pre { font-size: 0.60em; }
-			.reveal pre code { white-space: pre-wrap; word-break: break-word; }
-			.reveal .smallcode pre { font-size: 0.40em; }
 			
 			
 			.multiColumn2:after {
@@ -111,6 +108,13 @@
 			
 		</style>
     
+    <style media="screen" type="text/css">
+			.reveal .kslides-code-1 pre { font-size: 0.60em; }
+			.reveal .kslides-code-1 pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal .kslides-code-2 pre { font-size: 0.40em; }
+			.reveal .kslides-code-2 pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal pre code .hljs-ln-numbers { white-space: nowrap; word-break: normal; }
+		</style>
   </head>
   <body>
     <div class="reveal">
@@ -126,7 +130,7 @@
 
       <div class="slides">
         <section>
-          <section>
+          <section class="kslides-code-1">
             <h2 style="margin-bottom:20px;">Two Column Slide</h2>
             <div class="multiColumn2">
               <div class="column2">
@@ -150,7 +154,7 @@
             </div>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -178,7 +182,7 @@ dslSlide {
         </section>
         
         <section>
-          <section>
+          <section class="kslides-code-1">
             <h2>Three Column Slide</h2>
             <div class="multiColumn3">
               <div class="column3">
@@ -214,7 +218,7 @@ dslSlide {
             </div>
           </section>
           
-          <section class="smallcode" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
             <script type="text/template">
 ## Slide Definition
 ```kotlin []

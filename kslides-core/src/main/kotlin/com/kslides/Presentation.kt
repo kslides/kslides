@@ -46,6 +46,13 @@ class Presentation(
   internal val dependencies = mutableListOf<String>()
   internal val presentationConfig = PresentationConfig()
   internal val slides = mutableListOf<Slide>()
+
+  // Per-render registry mapping each distinct (codeFontSize, codeWrap) combination to its
+  // generated CSS class (kslides-code-1, kslides-code-2, ... in first-appearance order).
+  // Populated by Slide.processSlide during body rendering and read back by Page.generatePage
+  // to build the head <style> rules; cleared at the start of every render (renders are
+  // serialized on KSlides.renderLock).
+  internal val codeStyleClasses = LinkedHashMap<Pair<String, Boolean>, String>()
   internal lateinit var finalConfig: PresentationConfig
 
   /**
@@ -225,6 +232,45 @@ class Presentation(
 
   private fun githubLink(href: String) = """<a id="ghsrc" href="$href" target="_blank">GitHub Source</a>"""
 
+  // Shared body for both slideDefinition overloads. Returns the slide-configuration lambda typed
+  // on the MarkdownSlide interface so it satisfies both markdownSlide variants (function types
+  // are contravariant in their receiver). slideConfigDefaults is applied before configBlock so
+  // callers can override it.
+  // slideDefinition begin
+  private fun slideDefinitionContent(
+    source: String,
+    token: String,
+    title: String,
+    highlightPattern: String,
+    id: String,
+    classes: String,
+    language: String,
+    githubAccount: String,
+    githubRepo: String,
+    githubPath: String,
+    githubBranch: String,
+    configBlock: SlideConfig.() -> Unit,
+    slideConfigDefaults: SlideConfig.() -> Unit = {},
+  ): MarkdownSlide.() -> Unit {
+    val githubSource = githubLink(srcref(token, githubAccount, githubRepo, githubPath, githubBranch))
+    return {
+      if (id.isNotBlank()) this.id = id
+      if (classes.isNotBlank()) this.classes = classes
+      slideConfig(slideConfigDefaults)
+      slideConfig(configBlock)
+      content {
+        """
+        ## $title
+        ```$language $highlightPattern
+        ${include(source, beginToken = "$token begin", endToken = "$token end")}
+        ```
+        $githubSource
+        """
+      }
+    }
+  }
+  // slideDefinition end
+
   /**
    * Generate a Markdown "meta" slide that embeds a highlighted code excerpt from [source]
    * between `// <token> begin` and `// <token> end` markers, and appends a "GitHub Source"
@@ -245,8 +291,8 @@ class Presentation(
    * @param githubRepo GitHub repository for the link. Defaults to `"kslides"`.
    * @param githubPath repo-relative path the link points at. Defaults to [source].
    * @param githubBranch branch the link points at. Defaults to `"master"`.
+   * @param configBlock optional per-slide configuration (e.g. codeFontSize) applied to the generated slide.
    */
-  // slideDefinition begin
   fun slideDefinition(
     source: String,
     token: String,
@@ -259,23 +305,25 @@ class Presentation(
     githubRepo: String = "kslides",
     githubPath: String = source,
     githubBranch: String = "master",
+    configBlock: SlideConfig.() -> Unit = {},
   ) {
-    markdownSlide {
-      if (id.isNotBlank()) this.id = id
-      if (classes.isNotBlank()) this.classes = classes
-      val p = this@Presentation
-      content {
-        """
-        ## $title
-        ```$language $highlightPattern
-        ${include(source, beginToken = "$token begin", endToken = "$token end")}
-        ```
-        ${p.githubLink(p.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
-        """
-      }
-    }
+    markdownSlide(
+      slideDefinitionContent(
+        source = source,
+        token = token,
+        title = title,
+        highlightPattern = highlightPattern,
+        id = id,
+        classes = classes,
+        language = language,
+        githubAccount = githubAccount,
+        githubRepo = githubRepo,
+        githubPath = githubPath,
+        githubBranch = githubBranch,
+        configBlock = configBlock,
+      ),
+    )
   }
-  // slideDefinition end
 
   /**
    * Vertical-stack variant of [slideDefinition]. Identical semantics but registers the generated
@@ -293,25 +341,25 @@ class Presentation(
     githubRepo: String = "kslides",
     githubPath: String = source,
     githubBranch: String = "master",
+    configBlock: SlideConfig.() -> Unit = {},
   ) {
-    markdownSlide {
-      if (id.isNotBlank()) this.id = id
-      if (classes.isNotBlank()) this.classes = classes
-      slideConfig {
-        markdownNotesSeparator = "^^"
-      }
-
-      val p = this@Presentation
-      content {
-        """
-        ## $title
-        ```$language $highlightPattern
-        ${include(source, beginToken = "$token begin", endToken = "$token end")}
-        ```
-        ${p.githubLink(p.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
-        """
-      }
-    }
+    markdownSlide(
+      slideDefinitionContent(
+        source = source,
+        token = token,
+        title = title,
+        highlightPattern = highlightPattern,
+        id = id,
+        classes = classes,
+        language = language,
+        githubAccount = githubAccount,
+        githubRepo = githubRepo,
+        githubPath = githubPath,
+        githubBranch = githubBranch,
+        configBlock = configBlock,
+        slideConfigDefaults = { markdownNotesSeparator = "^^" },
+      ),
+    )
   }
 
   internal fun validatePath() {
