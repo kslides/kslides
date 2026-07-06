@@ -135,6 +135,34 @@ class SlideFontSizeTest : StringSpec() {
       html shouldContain ".reveal .kslides-code-1 pre { font-size: 0.45em; }"
     }
 
+    "codeWrap emits a line-number gutter guard so wrapping never reaches the number cells" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            presentationConfig {
+              slideConfig { codeWrap = true }
+            }
+            markdownSlide { content { "# Wrapped" } }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain ".reveal pre code .hljs-ln-numbers { white-space: nowrap; word-break: normal; }"
+    }
+
+    "codeFontSize without codeWrap emits no gutter guard" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            presentationConfig {
+              slideConfig { codeFontSize = "0.60em" }
+            }
+            markdownSlide { content { "# Sized" } }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldNotContain "hljs-ln-numbers"
+    }
+
     "slide-level codeFontSize override gets its own class and rule" {
       val kslides =
         kslidesTest {
