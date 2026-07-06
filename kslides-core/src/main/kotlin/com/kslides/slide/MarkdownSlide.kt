@@ -2,6 +2,7 @@ package com.kslides.slide
 
 import com.kslides.KSlidesDslMarker
 import com.kslides.Presentation
+import com.kslides.config.SlideConfig
 import kotlinx.html.SECTION
 
 /**
@@ -41,6 +42,18 @@ interface MarkdownSlide {
 
   /** Apply the slide's attributes to the enclosing `<section>`. Invoked by the renderer. */
   fun processSlide(section: SECTION)
+
+  /** Configure per-slide reveal.js attributes. Implemented by [Slide.slideConfig]. */
+  fun slideConfig(block: SlideConfig.() -> Unit)
+
+  /**
+   * Supply inline Markdown content. Mutually exclusive with [filename]: exactly one of the two
+   * must be set before rendering.
+   */
+  fun content(block: () -> String) {
+    private_markdownBlock = block
+    private_markdownAssigned = true
+  }
 }
 
 /**
@@ -56,15 +69,6 @@ class HorizontalMarkdownSlide(
   override var private_markdownBlock: () -> String = { "" }
 
   override var filename = ""
-
-  /**
-   * Supply inline Markdown content. Mutually exclusive with [filename]: exactly one of the two
-   * must be set before rendering.
-   */
-  fun content(block: () -> String) {
-    private_markdownBlock = block
-    private_markdownAssigned = true
-  }
 }
 
 /**
@@ -80,13 +84,4 @@ class VerticalMarkdownSlide(
   override var private_markdownBlock: () -> String = { "" }
 
   override var filename = ""
-
-  /**
-   * Supply inline Markdown content for this slide. See [HorizontalMarkdownSlide.content] for
-   * the filename-vs-inline tradeoff.
-   */
-  fun content(markdownBlock: () -> String) {
-    private_markdownBlock = markdownBlock
-    private_markdownAssigned = true
-  }
 }

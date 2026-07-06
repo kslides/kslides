@@ -232,6 +232,45 @@ class Presentation(
 
   private fun githubLink(href: String) = """<a id="ghsrc" href="$href" target="_blank">GitHub Source</a>"""
 
+  // Shared body for both slideDefinition overloads. Returns the slide-configuration lambda typed
+  // on the MarkdownSlide interface so it satisfies both markdownSlide variants (function types
+  // are contravariant in their receiver). slideConfigDefaults is applied before configBlock so
+  // callers can override it.
+  // slideDefinition begin
+  private fun slideDefinitionContent(
+    source: String,
+    token: String,
+    title: String,
+    highlightPattern: String,
+    id: String,
+    classes: String,
+    language: String,
+    githubAccount: String,
+    githubRepo: String,
+    githubPath: String,
+    githubBranch: String,
+    configBlock: SlideConfig.() -> Unit,
+    slideConfigDefaults: SlideConfig.() -> Unit = {},
+  ): MarkdownSlide.() -> Unit {
+    val githubSource = githubLink(srcref(token, githubAccount, githubRepo, githubPath, githubBranch))
+    return {
+      if (id.isNotBlank()) this.id = id
+      if (classes.isNotBlank()) this.classes = classes
+      slideConfig(slideConfigDefaults)
+      slideConfig(configBlock)
+      content {
+        """
+        ## $title
+        ```$language $highlightPattern
+        ${include(source, beginToken = "$token begin", endToken = "$token end")}
+        ```
+        $githubSource
+        """
+      }
+    }
+  }
+  // slideDefinition end
+
   /**
    * Generate a Markdown "meta" slide that embeds a highlighted code excerpt from [source]
    * between `// <token> begin` and `// <token> end` markers, and appends a "GitHub Source"
@@ -254,7 +293,6 @@ class Presentation(
    * @param githubBranch branch the link points at. Defaults to `"master"`.
    * @param configBlock optional per-slide configuration (e.g. codeFontSize) applied to the generated slide.
    */
-  // slideDefinition begin
   fun slideDefinition(
     source: String,
     token: String,
@@ -269,23 +307,23 @@ class Presentation(
     githubBranch: String = "master",
     configBlock: SlideConfig.() -> Unit = {},
   ) {
-    markdownSlide {
-      if (id.isNotBlank()) this.id = id
-      if (classes.isNotBlank()) this.classes = classes
-      slideConfig(configBlock)
-      val p = this@Presentation
-      content {
-        """
-        ## $title
-        ```$language $highlightPattern
-        ${include(source, beginToken = "$token begin", endToken = "$token end")}
-        ```
-        ${p.githubLink(p.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
-        """
-      }
-    }
+    markdownSlide(
+      slideDefinitionContent(
+        source = source,
+        token = token,
+        title = title,
+        highlightPattern = highlightPattern,
+        id = id,
+        classes = classes,
+        language = language,
+        githubAccount = githubAccount,
+        githubRepo = githubRepo,
+        githubPath = githubPath,
+        githubBranch = githubBranch,
+        configBlock = configBlock,
+      ),
+    )
   }
-  // slideDefinition end
 
   /**
    * Vertical-stack variant of [slideDefinition]. Identical semantics but registers the generated
@@ -305,25 +343,23 @@ class Presentation(
     githubBranch: String = "master",
     configBlock: SlideConfig.() -> Unit = {},
   ) {
-    markdownSlide {
-      if (id.isNotBlank()) this.id = id
-      if (classes.isNotBlank()) this.classes = classes
-      slideConfig {
-        markdownNotesSeparator = "^^"
-      }
-      slideConfig(configBlock)
-
-      val p = this@Presentation
-      content {
-        """
-        ## $title
-        ```$language $highlightPattern
-        ${include(source, beginToken = "$token begin", endToken = "$token end")}
-        ```
-        ${p.githubLink(p.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
-        """
-      }
-    }
+    markdownSlide(
+      slideDefinitionContent(
+        source = source,
+        token = token,
+        title = title,
+        highlightPattern = highlightPattern,
+        id = id,
+        classes = classes,
+        language = language,
+        githubAccount = githubAccount,
+        githubRepo = githubRepo,
+        githubPath = githubPath,
+        githubBranch = githubBranch,
+        configBlock = configBlock,
+        slideConfigDefaults = { markdownNotesSeparator = "^^" },
+      ),
+    )
   }
 
   internal fun validatePath() {

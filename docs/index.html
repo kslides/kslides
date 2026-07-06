@@ -102,6 +102,8 @@
 			.reveal .kslides-code-1 pre code { white-space: pre-wrap; word-break: break-word; }
 			.reveal .kslides-code-2 pre { font-size: 0.40em; }
 			.reveal .kslides-code-2 pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal .kslides-code-3 pre { font-size: 0.25em; }
+			.reveal .kslides-code-3 pre code { white-space: pre-wrap; word-break: break-word; }
 		</style>
   </head>
   <body>
@@ -1570,7 +1572,10 @@ dslSlide {
           token = "slideDefinition",
           title = "Slide Definition Source",
           id = "lastslide",
-        )
+        ) {
+          codeFontSize = "0.25em"
+        }
+
         // slidedef end
 
         smallSlideDefinition(source = slides, token = "slidedef")
@@ -2312,36 +2317,38 @@ markdownSlide {
         </section>
         
         <section>
-          <section class="kslides-code-1" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="" id="lastslide">
+          <section class="kslides-code-3" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="" id="lastslide">
             <script type="text/template">
 ## Slide Definition Source
 ```kotlin []
-fun slideDefinition(
+private fun slideDefinitionContent(
   source: String,
   token: String,
-  title: String = "Slide Definition",
-  highlightPattern: String = "[]",
-  id: String = "",
-  classes: String = "",
-  language: String = "kotlin",
-  githubAccount: String = "kslides",
-  githubRepo: String = "kslides",
-  githubPath: String = source,
-  githubBranch: String = "master",
-  configBlock: SlideConfig.() -> Unit = {},
-) {
-  markdownSlide {
+  title: String,
+  highlightPattern: String,
+  id: String,
+  classes: String,
+  language: String,
+  githubAccount: String,
+  githubRepo: String,
+  githubPath: String,
+  githubBranch: String,
+  configBlock: SlideConfig.() -> Unit,
+  slideConfigDefaults: SlideConfig.() -> Unit = {},
+): MarkdownSlide.() -> Unit {
+  val githubSource = githubLink(srcref(token, githubAccount, githubRepo, githubPath, githubBranch))
+  return {
     if (id.isNotBlank()) this.id = id
     if (classes.isNotBlank()) this.classes = classes
+    slideConfig(slideConfigDefaults)
     slideConfig(configBlock)
-    val p = this@Presentation
     content {
       """
       ## $title
       ```$language $highlightPattern
       ${include(source, beginToken = "$token begin", endToken = "$token end")}
       ```
-      ${p.githubLink(p.srcref(token, githubAccount, githubRepo, githubPath, githubBranch))}
+      $githubSource
       """
     }
   }
@@ -2360,7 +2367,9 @@ slideDefinition(
   token = "slideDefinition",
   title = "Slide Definition Source",
   id = "lastslide",
-)
+) {
+  codeFontSize = "0.25em"
+}
 ```
 <a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*slidedef%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*slidedef%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
 </script>

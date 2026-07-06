@@ -1248,7 +1248,10 @@ fun main() {
           token = "slideDefinition",
           title = "Slide Definition Source",
           id = "lastslide",
-        )
+        ) {
+          codeFontSize = "0.25em"
+        }
+
         // slidedef end
 
         smallSlideDefinition(source = slides, token = "slidedef")
@@ -1939,5 +1942,5 @@ private fun VerticalSlidesContext.smallSlideDefinition(
   source: String,
   token: String,
 ) = with(presentation) {
-    this@smallSlideDefinition.slideDefinition(source = source, token = token) { codeFontSize = "0.40em" }
-  }
+  this@smallSlideDefinition.slideDefinition(source = source, token = token) { codeFontSize = "0.40em" }
+}
