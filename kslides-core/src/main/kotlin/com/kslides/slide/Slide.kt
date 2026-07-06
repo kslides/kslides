@@ -121,6 +121,23 @@ abstract class Slide(
       section.attributes["data-auto-animate-restart"] = ""
 
     mergedSlideConfig.applyConfig(section)
+
+    // reveal.js renders Markdown client-side, so kslides never sees the resulting <pre>/<code>
+    // tags — codeFontSize/codeWrap can't be inline styles. Instead, register a generated CSS
+    // class (shared across slides with identical values) that Page.generatePage turns into
+    // head <style> rules once the whole document has been built.
+    val codeFontSize = mergedSlideConfig.codeFontSize
+    val codeWrap = mergedSlideConfig.codeWrap
+    if (codeFontSize.isNotBlank() || codeWrap) {
+      val cssClass =
+        presentation.codeStyleClasses.getOrPut(codeFontSize to codeWrap) {
+          "kslides-code-${presentation.codeStyleClasses.size + 1}"
+        }
+      section.attributes["class"] =
+        listOf(section.attributes["class"].orEmpty(), cssClass)
+          .filter { it.isNotBlank() }
+          .joinToString(" ")
+    }
   }
 }
 

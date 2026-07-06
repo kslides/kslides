@@ -82,5 +82,113 @@ class SlideFontSizeTest : StringSpec() {
       html shouldContain """style="height: 600px""""
       html shouldNotContain "font-size"
     }
+
+    "presentation-level codeFontSize and codeWrap emit one shared class and head rules" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            presentationConfig {
+              slideConfig {
+                codeFontSize = "0.60em"
+                codeWrap = true
+              }
+            }
+            markdownSlide { content { "# One" } }
+            markdownSlide { content { "# Two" } }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain ".reveal .kslides-code-1 pre { font-size: 0.60em; }"
+      html shouldContain ".reveal .kslides-code-1 pre code { white-space: pre-wrap; word-break: break-word; }"
+      html shouldNotContain "kslides-code-2"
+      // both slides share the single generated class
+      Regex("""class="kslides-code-1"""").findAll(html).count() shouldBe 2
+    }
+
+    "slide-level codeFontSize override gets its own class and rule" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            presentationConfig {
+              slideConfig { codeFontSize = "0.60em" }
+            }
+            markdownSlide { content { "# Normal" } }
+            markdownSlide {
+              slideConfig { codeFontSize = "0.40em" }
+              content { "# Small" }
+            }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain ".reveal .kslides-code-1 pre { font-size: 0.60em; }"
+      html shouldContain ".reveal .kslides-code-2 pre { font-size: 0.40em; }"
+      Regex("""class="kslides-code-1"""").findAll(html).count() shouldBe 1
+      Regex("""class="kslides-code-2"""").findAll(html).count() shouldBe 1
+    }
+
+    "slide-level codeWrap=false overrides presentation-level true" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            presentationConfig {
+              slideConfig {
+                codeFontSize = "0.60em"
+                codeWrap = true
+              }
+            }
+            markdownSlide { content { "# Wrapped" } }
+            markdownSlide {
+              slideConfig { codeWrap = false }
+              content { "# Unwrapped" }
+            }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain ".reveal .kslides-code-1 pre code { white-space: pre-wrap; word-break: break-word; }"
+      html shouldContain ".reveal .kslides-code-2 pre { font-size: 0.60em; }"
+      html shouldNotContain ".kslides-code-2 pre code"
+    }
+
+    "generated class is appended after user classes" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            presentationConfig {
+              slideConfig { codeFontSize = "0.60em" }
+            }
+            markdownSlide {
+              classes = "mystyle"
+              content { "# Styled" }
+            }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain """class="mystyle kslides-code-1""""
+    }
+
+    "no code styling emits no class or rules" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            markdownSlide { content { "# Plain" } }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldNotContain "kslides-code"
+    }
+
+    "repeated renders are deterministic (registry cleared per render)" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            presentationConfig {
+              slideConfig { codeFontSize = "0.60em" }
+            }
+            markdownSlide { content { "# One" } }
+          }
+        }
+      val p = kslides.presentation("/")
+      generatePage(p) shouldBe generatePage(p)
+    }
   }
 }

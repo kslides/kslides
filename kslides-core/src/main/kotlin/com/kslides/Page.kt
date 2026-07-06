@@ -35,6 +35,7 @@ internal object Page {
     // See KSlides.renderLock.
     synchronized(p.kslides.renderLock) {
       p.kslides.slideCount = 0
+      p.codeStyleClasses.clear()
       val htmldoc =
         document {
           val config = p.finalConfig
@@ -59,6 +60,33 @@ internal object Page {
             nodeValue = nodeValue.replace("\r", "\\r")
           }
         }
+      }
+
+      // Per-slide slideConfig{} blocks only run during body rendering, so the code-style
+      // rules they produce are patched into the already-built head here, mirroring the
+      // data-separator post-processing above.
+      if (p.codeStyleClasses.isNotEmpty()) {
+        val headNode = htmldoc.getElementsByTagName("head").item(0)
+        val styleNode =
+          htmldoc.createElement("style").apply {
+            setAttribute("type", "text/css")
+            setAttribute("media", "screen")
+            textContent =
+              buildString {
+                appendLine()
+                p.codeStyleClasses.forEach { (values, cssClass) ->
+                  val (codeFontSize, codeWrap) = values
+                  if (codeFontSize.isNotBlank())
+                    appendLine("\t\t\t.reveal .$cssClass pre { font-size: $codeFontSize; }")
+                  if (codeWrap)
+                    appendLine(
+                      "\t\t\t.reveal .$cssClass pre code { white-space: pre-wrap; word-break: break-word; }",
+                    )
+                }
+                append("\t\t")
+              }
+          }
+        headNode.appendChild(styleNode)
       }
 
       mergePreAndCode(htmldoc.serialize())

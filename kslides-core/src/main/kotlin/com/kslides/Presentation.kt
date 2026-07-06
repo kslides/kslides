@@ -46,6 +46,13 @@ class Presentation(
   internal val dependencies = mutableListOf<String>()
   internal val presentationConfig = PresentationConfig()
   internal val slides = mutableListOf<Slide>()
+
+  // Per-render registry mapping each distinct (codeFontSize, codeWrap) combination to its
+  // generated CSS class (kslides-code-1, kslides-code-2, ... in first-appearance order).
+  // Populated by Slide.processSlide during body rendering and read back by Page.generatePage
+  // to build the head <style> rules; cleared at the start of every render (renders are
+  // serialized on KSlides.renderLock).
+  internal val codeStyleClasses = LinkedHashMap<Pair<String, Boolean>, String>()
   internal lateinit var finalConfig: PresentationConfig
 
   /**
