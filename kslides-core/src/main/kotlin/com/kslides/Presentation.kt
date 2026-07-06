@@ -252,6 +252,7 @@ class Presentation(
    * @param githubRepo GitHub repository for the link. Defaults to `"kslides"`.
    * @param githubPath repo-relative path the link points at. Defaults to [source].
    * @param githubBranch branch the link points at. Defaults to `"master"`.
+   * @param configBlock optional per-slide configuration (e.g. codeFontSize) applied to the generated slide.
    */
   // slideDefinition begin
   fun slideDefinition(
@@ -266,10 +267,12 @@ class Presentation(
     githubRepo: String = "kslides",
     githubPath: String = source,
     githubBranch: String = "master",
+    configBlock: SlideConfig.() -> Unit = {},
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
       if (classes.isNotBlank()) this.classes = classes
+      slideConfig(configBlock)
       val p = this@Presentation
       content {
         """
@@ -300,6 +303,7 @@ class Presentation(
     githubRepo: String = "kslides",
     githubPath: String = source,
     githubBranch: String = "master",
+    configBlock: SlideConfig.() -> Unit = {},
   ) {
     markdownSlide {
       if (id.isNotBlank()) this.id = id
@@ -307,6 +311,7 @@ class Presentation(
       slideConfig {
         markdownNotesSeparator = "^^"
       }
+      slideConfig(configBlock)
 
       val p = this@Presentation
       content {

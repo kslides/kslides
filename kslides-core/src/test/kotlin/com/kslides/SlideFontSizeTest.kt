@@ -190,5 +190,35 @@ class SlideFontSizeTest : StringSpec() {
       val p = kslides.presentation("/")
       generatePage(p) shouldBe generatePage(p)
     }
+
+    "slideDefinition configBlock applies per-slide code font size" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            slideDefinition(source = "does-not-exist.kt", token = "foo") {
+              codeFontSize = "0.40em"
+            }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain """class="kslides-code-1""""
+      html shouldContain ".reveal .kslides-code-1 pre { font-size: 0.40em; }"
+    }
+
+    "vertical slideDefinition configBlock applies per-slide code font size" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            verticalSlides {
+              slideDefinition(source = "does-not-exist.kt", token = "foo") {
+                codeFontSize = "0.40em"
+              }
+            }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain """class="kslides-code-1""""
+      html shouldContain ".reveal .kslides-code-1 pre { font-size: 0.40em; }"
+    }
   }
 }
