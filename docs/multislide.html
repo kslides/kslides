@@ -71,13 +71,16 @@
 			.reveal.h5 {
 			  color: blue;
 			}
-			.reveal pre { font-size: 0.60em; }
-			.reveal pre code { white-space: pre-wrap; word-break: break-word; }
-			.reveal .smallcode pre { font-size: 0.40em; }
 			
 			
 		</style>
     
+    <style media="screen" type="text/css">
+			.reveal .kslides-code-1 pre { font-size: 0.60em; }
+			.reveal .kslides-code-1 pre code { white-space: pre-wrap; word-break: break-word; }
+			.reveal .kslides-code-2 pre { font-size: 0.40em; }
+			.reveal .kslides-code-2 pre code { white-space: pre-wrap; word-break: break-word; }
+		</style>
   </head>
   <body>
     <div class="reveal">
@@ -92,7 +95,7 @@
 			<a class="top-right" href="/#/features" target="_self" title="Go back to main presentation">&#128281;</a>
 
       <div class="slides">
-        <section data-markdown="">
+        <section class="kslides-code-1" data-markdown="">
           <script type="text/template">
 ## This is a multi-slide Markdown Slide
 
@@ -112,7 +115,7 @@ This is page 3 of 3
 </script>
         </section>
         
-        <section class="smallcode" data-markdown="">
+        <section class="kslides-code-2" data-markdown="">
           <script type="text/template">
 ## Slide Definition
 ```kotlin []
@@ -143,7 +146,7 @@ markdownSlide {
         </section>
         
         <section>
-          <section data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
+          <section class="kslides-code-1" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
             <script type="text/template">
 ## This is a multi-slide Markdown Slide
 ### embedded in a verticalSlides{} block
@@ -168,7 +171,7 @@ This is page 3 of 3
           
         </section>
         
-        <section class="smallcode" data-markdown="">
+        <section class="kslides-code-2" data-markdown="">
           <script type="text/template">
 ## Slide Definition
 ```kotlin []
