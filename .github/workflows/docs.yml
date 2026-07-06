@@ -8,11 +8,14 @@ permissions:
   contents: read
   pages: write
   id-token: write
+
+# Allow one Pages deployment at a time; queue rather than cancel an in-progress one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -47,5 +50,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v5
         with:
           path: website/kslides/site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - uses: actions/deploy-pages@v5
         id: deployment
