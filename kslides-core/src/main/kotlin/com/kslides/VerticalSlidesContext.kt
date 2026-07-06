@@ -7,14 +7,19 @@ import kotlinx.css.CssBuilder
 
 /**
  * Receiver type for `verticalSlides{}` blocks. Exposes per-stack id/classes/style attributes plus
- * a [slideConfig] that applies to every child slide in the stack.
+ * a [slideConfig] that applies reveal.js `data-*` options (transitions, backgrounds, Markdown
+ * separators) to every child slide in the stack via the wrapper `<section>`.
  *
  * Intentionally *not* annotated with [KSlidesDslMarker] so that slide-defining calls
  * (`markdownSlide`, `htmlSlide`, `dslSlide`, `slideDefinition`) resolve without needing a
  * `this@Presentation` qualifier.
  *
  * The [slideConfig] declared here is not merged with the global/presentation `slideConfig{}`,
- * so it takes effect as a stack-local override.
+ * so it takes effect as a stack-local override. Note that this only covers reveal.js `data-*`
+ * options: the kslides-managed font properties (`fontSize`, `codeFontSize`, `codeWrap`) are
+ * resolved per-slide via `Slide.mergedSlideConfig` (global -> presentation -> slide) and a
+ * stack-level setting for them is silently ignored — set those per-slide or in the
+ * presentation/global `slideConfig{}` instead.
  */
 class VerticalSlidesContext {
   internal val slideConfig = SlideConfig().apply { assignDefaults() }
@@ -44,8 +49,11 @@ class VerticalSlidesContext {
   ): Unit = cssError()
 
   /**
-   * Configure a [SlideConfig] that applies to every child slide in this vertical stack. Useful
-   * for shared backgrounds, transitions, or Markdown separators across the whole stack.
+   * Configure a [SlideConfig] whose reveal.js `data-*` options (transitions, backgrounds,
+   * Markdown separators) apply to every child slide in this vertical stack via the wrapper
+   * `<section>`. The kslides-managed font properties (`fontSize`, `codeFontSize`, `codeWrap`)
+   * are *not* applied at the stack level — they are resolved per-slide, so set them inside each
+   * child slide's own `slideConfig{}` or in the presentation/global `slideConfig{}` instead.
    */
   fun slideConfig(block: SlideConfig.() -> Unit) = slideConfig.block()
 

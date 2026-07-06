@@ -68,6 +68,21 @@ class SlideFontSizeTest : StringSpec() {
       html shouldContain """style="font-size: 34px; height: 600px""""
     }
 
+    "fontSize conflicts with user style are resolved in the user's favor" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              style = "font-size: 20px"
+              slideConfig { fontSize = "34px" }
+              content { }
+            }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain """style="font-size: 34px; font-size: 20px""""
+    }
+
     "user style renders unchanged when fontSize is unset" {
       val kslides =
         kslidesTest {
@@ -103,6 +118,21 @@ class SlideFontSizeTest : StringSpec() {
       html shouldNotContain "kslides-code-2"
       // both slides share the single generated class
       Regex("""class="kslides-code-1"""").findAll(html).count() shouldBe 2
+    }
+
+    "dslSlide codeFontSize renders the same generated class and head rule as markdownSlide" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            dslSlide {
+              slideConfig { codeFontSize = "0.45em" }
+              content { }
+            }
+          }
+        }
+      val html = generatePage(kslides.presentation("/"))
+      html shouldContain """class="kslides-code-1""""
+      html shouldContain ".reveal .kslides-code-1 pre { font-size: 0.45em; }"
     }
 
     "slide-level codeFontSize override gets its own class and rule" {

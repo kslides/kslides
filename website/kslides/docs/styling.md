@@ -68,6 +68,8 @@ markdownSlide {
 - `codeFontSize` — font size for code blocks (reveal.js's default is `0.55em`).
 - `codeWrap` — when `true`, long code lines wrap instead of overflowing horizontally. A slide can set `false` to override a presentation-wide `true`.
 
+The generated `codeFontSize`/`codeWrap` rules (`fontSize` renders as an inline style, not a head rule) are emitted into the document head after any presentation `css` additions, so on an equal-specificity tie the config-driven value wins over legacy hand-written rules.
+
 ## Code font size
 
 reveal.js renders code blocks — Markdown fences, [code snippets](extensions/code-snippets.md), and `htmlSlide` `<pre>` blocks — at `0.55em` relative to the slide. Because the slide canvas is a fixed size, long lines overflow with a scrollbar instead of shrinking to fit. For most cases, [`codeFontSize`](#font-sizes) above is simpler; override `.reveal pre` directly when you need a selector the config API doesn't expose.
