@@ -24,20 +24,8 @@ internal object Mermaid {
   // root) serves the same file in HTTP mode.
   internal const val MERMAID_JS_PATH = "plugin/mermaid/mermaid.min.js"
 
-  // reveal.js themes with dark backgrounds; they map to Mermaid's "dark" theme, everything
-  // else to Mermaid's "default" (light) theme.
-  private val darkRevealThemes =
-    setOf(
-      PresentationTheme.BLACK,
-      PresentationTheme.BLACK_CONTRAST,
-      PresentationTheme.BLOOD,
-      PresentationTheme.DRACULA,
-      PresentationTheme.LEAGUE,
-      PresentationTheme.MOON,
-      PresentationTheme.NIGHT,
-    )
-
-  internal fun mermaidTheme(theme: PresentationTheme) = if (theme in darkRevealThemes) "dark" else "default"
+  // Mermaid's built-in "dark" theme pairs with dark reveal.js themes; "default" is its light theme.
+  internal fun mermaidTheme(theme: PresentationTheme) = if (theme.isDark) "dark" else "default"
 
   // Strip the reveal.js code-block chrome from the diagram containers and hide the raw diagram
   // source until Mermaid replaces it with an SVG (Mermaid marks each element data-processed
@@ -86,10 +74,8 @@ internal object Mermaid {
  *
  * Emits a `<pre class="mermaid">` element whose text content is the trimIndent-ed [source].
  * Presentations containing at least one mermaid block automatically get the bundled Mermaid
- * runtime plus an init snippet that renders each diagram as its slide becomes visible (hidden
- * reveal.js slides are `display:none`, which breaks Mermaid's size calculations, so diagrams are
- * not rendered up front). Mermaid's dark theme is selected automatically when the presentation's
- * reveal.js theme is dark.
+ * runtime plus an init snippet that renders each diagram as its slide becomes visible. Mermaid's
+ * dark theme is selected automatically when the presentation's reveal.js theme is dark.
  *
  * Diagram source can also be loaded from a file or URL via [include]:
  * `mermaid(include("path/to/diagram.mmd"))`.

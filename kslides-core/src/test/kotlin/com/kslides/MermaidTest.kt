@@ -7,43 +7,27 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 
 class MermaidTest : StringSpec() {
-  private fun renderDeck(block: KSlides.() -> Unit) = kslidesTest(block)
+  // Single-slide mermaid deck; most tests only vary the diagram source.
+  private fun mermaidDeck(source: String = "graph TD; A-->B") = kslidesTest { presentation { dslSlide { content { mermaid(source) } } } }
+
+  private fun renderMermaid(source: String = "graph TD; A-->B") = generatePage(mermaidDeck(source).presentation("/"))
 
   init {
     "mermaid() emits a pre.mermaid element containing the trimIndent-ed diagram source" {
-      val kslides =
-        renderDeck {
-          presentation {
-            dslSlide {
-              content {
-                mermaid(
-                  """
-                  graph TD
-                    A[Author] --> B(kslides)
-                  """,
-                )
-              }
-            }
-          }
-        }
-
-      val html = generatePage(kslides.presentation("/"))
+      val html =
+        renderMermaid(
+          """
+          graph TD
+            A[Author] --> B(kslides)
+          """,
+        )
       html shouldContain """<pre class="mermaid">"""
       val preContent = html.substringAfter("""<pre class="mermaid">""").substringBefore("</pre>")
       preContent shouldBe "graph TD\n  A[Author] --&gt; B(kslides)"
     }
 
     "a deck using mermaid gets the bundled runtime, init snippet, and head CSS" {
-      val kslides =
-        renderDeck {
-          presentation {
-            dslSlide {
-              content { mermaid("graph TD; A-->B") }
-            }
-          }
-        }
-
-      val html = generatePage(kslides.presentation("/"))
+      val html = renderMermaid()
       html shouldContain Mermaid.MERMAID_JS_PATH
       html shouldContain "mermaid.initialize({ startOnLoad: false,"
       html shouldContain "Reveal.on('ready', kslidesMermaidSync);"
@@ -52,12 +36,7 @@ class MermaidTest : StringSpec() {
     }
 
     "a deck without mermaid does not include the runtime or init snippet" {
-      val kslides =
-        renderDeck {
-          presentation {
-            markdownSlide { content { "# No diagrams here" } }
-          }
-        }
+      val kslides = kslidesTest { presentation { markdownSlide { content { "# No diagrams here" } } } }
 
       val html = generatePage(kslides.presentation("/"))
       html shouldNotContain Mermaid.MERMAID_JS_PATH
@@ -67,7 +46,7 @@ class MermaidTest : StringSpec() {
 
     "the runtime is scoped per presentation: only the deck with a mermaid block includes it" {
       val kslides =
-        renderDeck {
+        kslidesTest {
           presentation {
             dslSlide {
               content { mermaid("graph TD; A-->B") }
@@ -90,16 +69,7 @@ class MermaidTest : StringSpec() {
           A["x < y & 'z'"] --> B["a > b"]
           B --> C["say ${'"'}hi${'"'}"]
         """
-      val kslides =
-        renderDeck {
-          presentation {
-            dslSlide {
-              content { mermaid(source) }
-            }
-          }
-        }
-
-      val html = generatePage(kslides.presentation("/"))
+      val html = renderMermaid(source)
       val preContent = html.substringAfter("""<pre class="mermaid">""").substringBefore("</pre>")
 
       // The serializer must have escaped the markup-sensitive characters (a raw "<" would
@@ -120,24 +90,14 @@ class MermaidTest : StringSpec() {
     }
 
     "mermaid() with a blank source is skipped — no pre.mermaid, no runtime script" {
-      val kslides =
-        renderDeck {
-          presentation {
-            dslSlide {
-              id = "empty"
-              content { mermaid("   ") }
-            }
-          }
-        }
-
-      val html = generatePage(kslides.presentation("/"))
+      val html = renderMermaid("   ")
       html shouldNotContain """<pre class="mermaid">"""
       html shouldNotContain Mermaid.MERMAID_JS_PATH
     }
 
     "the init snippet picks Mermaid's theme from the reveal.js theme" {
       val kslides =
-        renderDeck {
+        kslidesTest {
           presentation {
             // The kslides default theme is BLACK (dark)
             dslSlide {
@@ -158,16 +118,7 @@ class MermaidTest : StringSpec() {
     }
 
     "the mermaid flag resets between renders — a re-render emits the runtime exactly once" {
-      val kslides =
-        renderDeck {
-          presentation {
-            dslSlide {
-              content { mermaid("graph TD; A-->B") }
-            }
-          }
-        }
-
-      val p = kslides.presentation("/")
+      val p = mermaidDeck().presentation("/")
       generatePage(p)
       val secondRender = generatePage(p)
       Regex
