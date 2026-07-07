@@ -21,6 +21,7 @@ import com.kslides.include
 import com.kslides.kslides
 import com.kslides.letsPlot
 import com.kslides.listHref
+import com.kslides.mermaid
 import com.kslides.orderedList
 import com.kslides.permuteBy
 import com.kslides.playground
@@ -658,6 +659,31 @@ fun main() {
         // blockdiag1 end
 
         smallSlideDefinition(source = slides, token = "blockdiag1")
+      }
+
+      verticalSlides {
+        // nativemermaid begin
+        dslSlide {
+          id = "mermaid"
+          content {
+            h2 {
+              atag("Native Mermaid ", "https://mermaid.js.org")
+              +"Diagram"
+            }
+            // Rendered in the browser by the bundled Mermaid runtime -- no Kroki server needed
+            mermaid(
+              """
+              sequenceDiagram
+                Browser->>Ktor: GET /slides
+                Ktor->>kslides: render()
+                kslides-->>Browser: HTML
+              """,
+            )
+          }
+        }
+        // nativemermaid end
+
+        smallSlideDefinition(source = slides, token = "nativemermaid")
       }
 
       verticalSlides {

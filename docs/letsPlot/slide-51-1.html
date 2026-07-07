@@ -1,11 +1,11 @@
-            <iframe src='about:blank' style='border:none !important;' width='608' height='484' srcdoc="&lt;html lang=&quot;en&quot;>
+            <iframe src='about:blank' style='border:none !important;' width='503' height='484' srcdoc="&lt;html lang=&quot;en&quot;>
    &lt;head>
        &lt;meta charset=&quot;UTF-8&quot;>
        &lt;style> html, body { margin: 0; padding: 0; overflow: hidden; } &lt;/style>
        &lt;script type=&quot;text/javascript&quot; data-lets-plot-script=&quot;library&quot; src=&quot;https://cdn.jsdelivr.net/gh/JetBrains/lets-plot@v4.10.1/js-package/distr/lets-plot.min.js&quot;>&lt;/script>
    &lt;/head>
    &lt;body>
-          &lt;div id=&quot;kfdIRP&quot; >&lt;/div>
+          &lt;div id=&quot;LugdhT&quot; >&lt;/div>
    &lt;script type=&quot;text/javascript&quot; data-lets-plot-script=&quot;plot&quot;>
    
    (function() {
@@ -17,7 +17,7 @@
    let sizing = {
        width_mode: &quot;FIXED&quot;,
        height_mode: &quot;FIXED&quot;,
-       width: 608.0, 
+       width: 503.0, 
        height: 484.0 
    };
    
@@ -30,51 +30,54 @@
        };
    }
    
-   const containerDiv = document.getElementById(&quot;kfdIRP&quot;);
+   const containerDiv = document.getElementById(&quot;LugdhT&quot;);
    let fig = null;
    
    function renderPlot() {
        if (fig === null) {
            const plotSpec = {
 &quot;ggtitle&quot;:{
-&quot;text&quot;:&quot;Histogram&quot;
+&quot;text&quot;:&quot;Red Heatmap&quot;
 },
 &quot;mapping&quot;:{
 },
-&quot;guides&quot;:{
-&quot;x&quot;:{
-&quot;title&quot;:&quot;Value&quot;
-},
-&quot;y&quot;:{
-&quot;title&quot;:&quot;Count&quot;
-}
-},
 &quot;data&quot;:{
+&quot;x&quot;:[1.0,2.0,3.0,4.0,5.0,1.0,2.0,3.0,4.0,5.0,1.0,2.0,3.0,4.0,5.0,1.0,2.0,3.0,4.0,5.0,1.0,2.0,3.0,4.0,5.0],
+&quot;y&quot;:[6.0,6.0,6.0,6.0,6.0,7.0,7.0,7.0,7.0,7.0,8.0,8.0,8.0,8.0,8.0,9.0,9.0,9.0,9.0,9.0,10.0,10.0,10.0,10.0,10.0],
+&quot;z&quot;:[1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0,25.0]
 },
 &quot;kind&quot;:&quot;plot&quot;,
-&quot;scales&quot;:[],
+&quot;scales&quot;:[{
+&quot;aesthetic&quot;:&quot;fill&quot;,
+&quot;low&quot;:&quot;#FFFFFF&quot;,
+&quot;scale_mapper_kind&quot;:&quot;color_gradient&quot;,
+&quot;high&quot;:&quot;#DC322F&quot;
+}],
 &quot;layers&quot;:[{
 &quot;mapping&quot;:{
-&quot;x&quot;:&quot;value&quot;
+&quot;x&quot;:&quot;x&quot;,
+&quot;y&quot;:&quot;y&quot;,
+&quot;fill&quot;:&quot;z&quot;
 },
-&quot;stat&quot;:&quot;bin&quot;,
-&quot;bins&quot;:4.0,
-&quot;color&quot;:&quot;white&quot;,
-&quot;position&quot;:&quot;stack&quot;,
-&quot;geom&quot;:&quot;histogram&quot;,
-&quot;fill&quot;:&quot;#268BD2&quot;,
+&quot;stat&quot;:&quot;identity&quot;,
+&quot;position&quot;:&quot;identity&quot;,
+&quot;geom&quot;:&quot;tile&quot;,
 &quot;data&quot;:{
-&quot;..count..&quot;:[2.0,3.0,1.0,2.0],
-&quot;value&quot;:[0.9812500000000001,1.99375,3.00625,4.01875]
 }
 }],
 &quot;data_meta&quot;:{
 &quot;series_annotations&quot;:[{
 &quot;type&quot;:&quot;int&quot;,
-&quot;column&quot;:&quot;value&quot;
+&quot;column&quot;:&quot;x&quot;
+},{
+&quot;type&quot;:&quot;int&quot;,
+&quot;column&quot;:&quot;y&quot;
+},{
+&quot;type&quot;:&quot;int&quot;,
+&quot;column&quot;:&quot;z&quot;
 }]
 },
-&quot;spec_id&quot;:&quot;2&quot;
+&quot;spec_id&quot;:&quot;5&quot;
 };
            fig = LetsPlot.buildPlotFromProcessedSpecs(plotSpec, containerDiv, sizing);
        } else {

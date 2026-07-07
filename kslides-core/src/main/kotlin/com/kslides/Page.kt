@@ -19,6 +19,7 @@ import kotlinx.html.meta
 import kotlinx.html.script
 import kotlinx.html.style
 import kotlinx.html.title
+import org.w3c.dom.Document
 import java.io.FileNotFoundException
 
 internal object Page {
@@ -36,6 +37,7 @@ internal object Page {
     synchronized(p.kslides.renderLock) {
       p.kslides.slideCount = 0
       p.codeStyleClasses.clear()
+      p.mermaidUsed = false
       val htmldoc =
         document {
           val config = p.finalConfig
@@ -66,9 +68,6 @@ internal object Page {
       // already been built — so the code-style rules they produce have to be patched into the
       // head via the DOM rather than emitted by the head builder.
       if (p.codeStyleClasses.isNotEmpty()) {
-        // The document is always html > (head, body); scan the two children rather than the tree.
-        val children = htmldoc.documentElement.childNodes
-        val headNode = (0..<children.length).map(children::item).first { it.nodeName == "head" }
         val rules =
           buildString {
             p.codeStyleClasses.forEach { (values, cssClass) ->
@@ -85,18 +84,32 @@ internal object Page {
             if (p.codeStyleClasses.keys.any { it.second })
               appendLine(".reveal pre code .hljs-ln-numbers { white-space: nowrap; word-break: normal; }")
           }
-        val styleNode =
-          htmldoc.createElement("style").apply {
-            setAttribute("type", "text/css")
-            setAttribute("media", "screen")
-            // Same layout convention as CssValue.writeCssToHead: \t\t\t-indented body, \t\t trailer.
-            textContent = "\n${rules.trimEnd().prependIndent("\t\t\t")}\n\t\t"
-          }
-        headNode.appendChild(styleNode)
+        htmldoc.appendHeadStyle(rules)
       }
+
+      // Like the code-style rules above, mermaid usage is only discovered while the body
+      // renders, so its CSS is patched into the already-built head the same way.
+      if (p.mermaidUsed)
+        htmldoc.appendHeadStyle(Mermaid.headCss)
 
       mergePreAndCode(htmldoc.serialize())
     }
+
+  // Appends a <style> node to the already-built <head> for rules discovered during body
+  // rendering.
+  private fun Document.appendHeadStyle(rules: String) {
+    // The document is always html > (head, body); scan the two children rather than the tree.
+    val children = documentElement.childNodes
+    val headNode = (0..<children.length).map(children::item).first { it.nodeName == "head" }
+    val styleNode =
+      createElement("style").apply {
+        setAttribute("type", "text/css")
+        setAttribute("media", "screen")
+        // Same layout convention as CssValue.writeCssToHead: \t\t\t-indented body, \t\t trailer.
+        textContent = "\n${rules.trimEnd().prependIndent("\t\t\t")}\n\t\t"
+      }
+    headNode.appendChild(styleNode)
+  }
 
   /**
    * Fix a copycode issue: reveal.js needs the `<pre>` and `<code>` tags on the same line. The
@@ -281,6 +294,18 @@ internal object Page {
     rawHtml("\n\t")
     script {
       rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config, srcPrefix)}\t\t});\n\n")
+    }
+
+    // Only decks that actually contain a mermaid{} block pay for the Mermaid runtime. The flag
+    // is set while the slides render above, which happens before this point in the body builder.
+    if (p.mermaidUsed) {
+      rawHtml("\n\t")
+      script { src = "$srcPrefix${Mermaid.MERMAID_JS_PATH}" }
+      rawHtml("\n\t")
+      script {
+        rawHtml("\n${Mermaid.initScript(config.theme).prependIndent("\t\t")}\n\t")
+      }
+      rawHtml("\n")
     }
   }
 }

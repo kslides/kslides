@@ -5,7 +5,7 @@
        &lt;script type=&quot;text/javascript&quot; data-lets-plot-script=&quot;library&quot; src=&quot;https://cdn.jsdelivr.net/gh/JetBrains/lets-plot@v4.10.1/js-package/distr/lets-plot.min.js&quot;>&lt;/script>
    &lt;/head>
    &lt;body>
-          &lt;div id=&quot;jSOrcf&quot; >&lt;/div>
+          &lt;div id=&quot;g1xujn&quot; >&lt;/div>
    &lt;script type=&quot;text/javascript&quot; data-lets-plot-script=&quot;plot&quot;>
    
    (function() {
@@ -30,38 +30,34 @@
        };
    }
    
-   const containerDiv = document.getElementById(&quot;jSOrcf&quot;);
+   const containerDiv = document.getElementById(&quot;g1xujn&quot;);
    let fig = null;
    
    function renderPlot() {
        if (fig === null) {
            const plotSpec = {
 &quot;ggtitle&quot;:{
-&quot;text&quot;:&quot;Red Heatmap&quot;
+&quot;text&quot;:&quot;Categorical Scatter&quot;
 },
 &quot;mapping&quot;:{
 },
 &quot;data&quot;:{
-&quot;x&quot;:[1.0,2.0,3.0,4.0,5.0,1.0,2.0,3.0,4.0,5.0,1.0,2.0,3.0,4.0,5.0,1.0,2.0,3.0,4.0,5.0,1.0,2.0,3.0,4.0,5.0],
-&quot;y&quot;:[6.0,6.0,6.0,6.0,6.0,7.0,7.0,7.0,7.0,7.0,8.0,8.0,8.0,8.0,8.0,9.0,9.0,9.0,9.0,9.0,10.0,10.0,10.0,10.0,10.0],
-&quot;z&quot;:[1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0,25.0]
+&quot;x&quot;:[1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0],
+&quot;y&quot;:[2.0,3.0,5.0,4.0,6.0,8.0,7.0,9.0,11.0,10.0],
+&quot;category&quot;:[&quot;A&quot;,&quot;A&quot;,&quot;A&quot;,&quot;B&quot;,&quot;B&quot;,&quot;B&quot;,&quot;C&quot;,&quot;C&quot;,&quot;C&quot;,&quot;C&quot;]
 },
 &quot;kind&quot;:&quot;plot&quot;,
-&quot;scales&quot;:[{
-&quot;aesthetic&quot;:&quot;fill&quot;,
-&quot;low&quot;:&quot;#FFFFFF&quot;,
-&quot;scale_mapper_kind&quot;:&quot;color_gradient&quot;,
-&quot;high&quot;:&quot;#DC322F&quot;
-}],
+&quot;scales&quot;:[],
 &quot;layers&quot;:[{
 &quot;mapping&quot;:{
 &quot;x&quot;:&quot;x&quot;,
 &quot;y&quot;:&quot;y&quot;,
-&quot;fill&quot;:&quot;z&quot;
+&quot;color&quot;:&quot;category&quot;
 },
 &quot;stat&quot;:&quot;identity&quot;,
+&quot;size&quot;:6.0,
 &quot;position&quot;:&quot;identity&quot;,
-&quot;geom&quot;:&quot;tile&quot;,
+&quot;geom&quot;:&quot;point&quot;,
 &quot;data&quot;:{
 }
 }],
@@ -73,11 +69,11 @@
 &quot;type&quot;:&quot;int&quot;,
 &quot;column&quot;:&quot;y&quot;
 },{
-&quot;type&quot;:&quot;int&quot;,
-&quot;column&quot;:&quot;z&quot;
+&quot;type&quot;:&quot;str&quot;,
+&quot;column&quot;:&quot;category&quot;
 }]
 },
-&quot;spec_id&quot;:&quot;5&quot;
+&quot;spec_id&quot;:&quot;4&quot;
 };
            fig = LetsPlot.buildPlotFromProcessedSpecs(plotSpec, containerDiv, sizing);
        } else {

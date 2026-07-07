@@ -67,6 +67,7 @@ nav = [
   { "Extensions" = [
       { "Code snippets" = "extensions/code-snippets.md" },
       { "Playground" = "extensions/playground.md" },
+      { "Mermaid" = "extensions/mermaid.md" },
       { "Diagrams" = "extensions/diagrams.md" },
       { "Lets-Plot" = "extensions/letsplot.md" },
   ] },
