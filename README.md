@@ -45,6 +45,25 @@ repo as a [template](https://github.com/kslides/kslides-template/generate).
 The kslides-template [README.md](https://github.com/kslides/kslides-template/blob/master/README.md) describes how to
 generate and publish slide content once you have created and updated your new kslides repo.
 
+### Create a new presentation
+
+Alternatively, the [kslides-init.sh](kslides-init.sh) scaffolding script clones
+[kslides-template](https://github.com/kslides/kslides-template), renames the project
+and presentation title, and initializes a fresh git repository:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kslides/kslides/master/kslides-init.sh | bash -s -- my-talk --title "My Talk"
+```
+
+Or, from a local clone of this repo:
+
+```bash
+./kslides-init.sh my-talk --title "My Talk"
+```
+
+The title defaults to the project name when `--title` is omitted. When it finishes,
+the script prints the build/run commands for the new project.
+
 ## Defining a Presentation
 
 A presentation is created using
