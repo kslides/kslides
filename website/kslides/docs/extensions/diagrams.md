@@ -6,6 +6,9 @@ icon: lucide/git-branch
 
 `diagram { }` embeds diagrams rendered by [Kroki](https://kroki.io). It supports every Kroki backend — PlantUML, Mermaid, Graphviz, BlockDiag, Vega, and many more.
 
+!!! tip
+    For Mermaid diagrams that render client-side with no Kroki server, see the bundled [`mermaid( )`](mermaid.md) helper.
+
 ## PlantUML
 
 ```kotlin

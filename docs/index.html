@@ -106,6 +106,17 @@
 			.reveal .kslides-code-3 pre code { white-space: pre-wrap; word-break: break-word; }
 			.reveal pre code .hljs-ln-numbers { white-space: nowrap; word-break: normal; }
 		</style>
+    <style media="screen" type="text/css">
+			.reveal pre.mermaid {
+			  width: auto;
+			  text-align: center;
+			  box-shadow: none;
+			  background: transparent;
+			}
+			.reveal pre.mermaid:not([data-processed]) {
+			  visibility: hidden;
+			}
+		</style>
   </head>
   <body>
     <div class="reveal">
@@ -908,9 +919,49 @@ dslSlide {
         </section>
         
         <section>
+          <section class="kslides-code-1" id="mermaid">
+            <h2>
+              <a href="https://mermaid.js.org" target="_blank">Native Mermaid </a>Diagram
+            </h2>
+            <pre class="mermaid">sequenceDiagram
+  Browser-&gt;&gt;Ktor: GET /slides
+  Ktor-&gt;&gt;kslides: render()
+  kslides--&gt;&gt;Browser: HTML</pre>
+          </section>
+          
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition
+```kotlin []
+dslSlide {
+  id = "mermaid"
+  content {
+    h2 {
+      atag("Native Mermaid ", "https://mermaid.js.org")
+      +"Diagram"
+    }
+    // Rendered in the browser by the bundled Mermaid runtime -- no Kroki server needed
+    mermaid(
+      """
+      sequenceDiagram
+        Browser->>Ktor: GET /slides
+        Ktor->>kslides: render()
+        kslides-->>Browser: HTML
+      """,
+    )
+  }
+}
+```
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*nativemermaid%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*nativemermaid%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
           <section class="kslides-code-1" id="letsplot">
             <h2>A Lets-Plot Scatter Plot</h2>
-            <iframe height="415px" src="letsPlot/slide-41-1.html" style="width: 85%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="415px" src="letsPlot/slide-43-1.html" style="width: 85%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -943,7 +994,7 @@ dslSlide {
           
           <section class="kslides-code-1">
             <h2>A Lets-Plot Histogram</h2>
-            <iframe height="500px" src="letsPlot/slide-43-1.html" style="width: 65%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="letsPlot/slide-45-1.html" style="width: 65%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -974,7 +1025,7 @@ dslSlide {
           
           <section class="kslides-code-1">
             <h2>A Lets-Plot Heatmap (from matrix)</h2>
-            <iframe height="500px" src="letsPlot/slide-45-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="letsPlot/slide-47-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -1030,7 +1081,7 @@ dslSlide {
           
           <section class="kslides-code-1">
             <h2>A Lets-Plot Scatter with Color Encoding</h2>
-            <iframe height="500px" src="letsPlot/slide-47-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="letsPlot/slide-49-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -1065,7 +1116,7 @@ dslSlide {
           
           <section class="kslides-code-1">
             <h2>A Lets-Plot Red Heatmap</h2>
-            <iframe height="500px" src="letsPlot/slide-49-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
+            <iframe height="500px" src="letsPlot/slide-51-1.html" style="width: 54%; border: 2px solid #586E75;" width="100%"></iframe>
           </section>
           
           <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
@@ -2426,6 +2477,22 @@ slideDefinition(
 		});
 
 </script>
+	<script src="revealjs/plugin/mermaid/mermaid.min.js"></script>
+	<script>
+		mermaid.initialize({ startOnLoad: false, theme: 'default' });
+		function kslidesMermaidRun(root) {
+		  var nodes = root.querySelectorAll('pre.mermaid:not([data-processed])');
+		  if (nodes.length > 0) mermaid.run({ nodes: nodes });
+		}
+		function kslidesMermaidSync() {
+		  if (Reveal.isPrintView()) kslidesMermaidRun(document);
+		  else if (Reveal.getCurrentSlide()) kslidesMermaidRun(Reveal.getCurrentSlide());
+		}
+		Reveal.on('ready', kslidesMermaidSync);
+		Reveal.on('slidechanged', kslidesMermaidSync);
+		if (Reveal.isReady()) kslidesMermaidSync();
+	</script>
+
   </body>
 </html>
 

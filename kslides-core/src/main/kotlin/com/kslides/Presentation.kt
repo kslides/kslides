@@ -53,6 +53,12 @@ class Presentation(
   // to build the head <style> rules; cleared at the start of every render (renders are
   // serialized on KSlides.renderLock).
   internal val codeStyleClasses = LinkedHashMap<Pair<String, Boolean>, String>()
+
+  // Per-render flag: set by mermaid() while slide content renders when at least one slide emits
+  // a pre.mermaid block; read back by Page.generatePage/generateBody (which run after the slide
+  // content) to conditionally include the bundled Mermaid runtime, init snippet, and head CSS.
+  // Cleared at the start of every render (renders are serialized on KSlides.renderLock).
+  internal var mermaidUsed = false
   internal lateinit var finalConfig: PresentationConfig
 
   /**

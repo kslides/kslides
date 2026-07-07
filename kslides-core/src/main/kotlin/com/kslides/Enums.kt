@@ -36,6 +36,17 @@ enum class PresentationTheme {
 
   /** Path (relative to the reveal.js static root) of this theme's stylesheet. */
   val cssSrc get() = "dist/theme/${name.lowercase().replace("_", "-")}.css"
+
+  /**
+   * `true` for themes with a dark background, e.g. to pair a diagram or plugin with a matching
+   * dark variant. Exhaustive by design: adding a theme forces a dark/light choice here.
+   */
+  val isDark
+    get() =
+      when (this) {
+        BLACK, BLACK_CONTRAST, BLOOD, DRACULA, LEAGUE, MOON, NIGHT -> true
+        BEIGE, SERIF, SIMPLE, SKY, SOLARIZED, WHITE, WHITE_CONTRAST -> false
+      }
 }
 
 /**
