@@ -254,7 +254,7 @@ Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
 - Produces:
   - `Presentation.codeStyleClasses: LinkedHashMap<Pair<String, Boolean>, String>` (internal) — keyed by (codeFontSize, codeWrap), value = generated class name `kslides-code-<N>`; cleared at the start of every render.
   - Sections whose merged config has `codeFontSize` non-blank OR `codeWrap` true carry the generated class in addition to user classes.
-  - A `<style type="text/css" media="screen">` element appended to `<head>` containing, per registry entry:
+  - A `<style media="screen">` element appended to `<head>` containing, per registry entry:
     `.reveal .<class> pre { font-size: <size>; }` (when size non-blank) and
     `.reveal .<class> pre code { white-space: pre-wrap; word-break: break-word; }` (when wrap true).
 

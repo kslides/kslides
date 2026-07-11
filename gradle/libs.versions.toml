@@ -12,7 +12,7 @@ maven-publish = "0.37.0"
 versions = "0.54.0"
 
 # Kotlin / kotlinx libraries
-css = "2026.7.0"
+css = "2026.7.1"
 kotlinx-html = "0.12.0"
 serialization = "1.11.0"
 
@@ -20,15 +20,15 @@ serialization = "1.11.0"
 ktor = "3.5.1"
 
 # Logging
-logback = "1.5.37"
+logback = "1.5.38"
 logging = "8.0.4"
 
 # Testing
 junit4 = "4.13.2"
-kotest = "6.1.11"
+kotest = "6.2.2"
 
 # Domain libraries
-common-utils = "2.9.3"
+common-utils = "3.1.0"
 commons-text = "1.15.0"
 letsplot = "4.15.0"
 srcref = "2.1.1"
