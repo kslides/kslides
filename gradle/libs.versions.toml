@@ -50,6 +50,7 @@ ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
 ktor-server-compression = { module = "io.ktor:ktor-server-compression", version.ref = "ktor" }
 ktor-server-html-builder = { module = "io.ktor:ktor-server-html-builder", version.ref = "ktor" }
 ktor-server-sessions = { module = "io.ktor:ktor-server-sessions", version.ref = "ktor" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
 
 # Logging
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "logging" }
@@ -85,6 +86,7 @@ ktor-server = [
     "ktor-server",
     "ktor-server-cio",
     "ktor-server-sessions",
+    "ktor-server-websockets",
     "ktor-server-call-logging",
     "ktor-server-compression",
 ]

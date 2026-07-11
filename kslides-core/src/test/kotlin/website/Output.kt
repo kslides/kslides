@@ -38,6 +38,24 @@ fun httpOutput() {
 }
 // --8<-- [end:http]
 
+// --8<-- [start:devmode]
+fun devModeOutput() {
+  kslides {
+    output {
+      // Live-reload dev server: the page refreshes to the current slide when the app restarts.
+      enableHttp = true
+      devMode = true
+      enableFileSystem = false // no need to write static files while authoring
+    }
+
+    presentation {
+      path = "index.html"
+      markdownSlide { content { "# Editing live" } }
+    }
+  }
+}
+// --8<-- [end:devmode]
+
 // --8<-- [start:multi]
 fun multiplePresentations() {
   kslides {

@@ -41,6 +41,15 @@ class OutputConfig(
   /** When `true`, start a Ktor HTTP server serving the presentations. Default `true`. */
   var enableHttp = true
 
+  /**
+   * When `true` (and [enableHttp]), served pages embed a live-reload client that reconnects to a
+   * websocket and refreshes the browser — restoring the current slide — whenever the server
+   * restarts. Intended for local authoring only: leave `false` for published output, since with
+   * [enableFileSystem] on the reload client is also written into the static pages under [outputDir].
+   * Default `false`.
+   */
+  var devMode = false
+
   /** HTTP port. Overridden at runtime by the `PORT` environment variable (Heroku convention). */
   var httpPort = 8080
 

@@ -458,6 +458,24 @@ If you choose to embed code directly in the slide, remove indentation in the `co
 Speaker Notes do not work properly when running locally. They will work from GitHub, Netlify, or Heroku
 though.
 
+### Live Reload (Dev Mode)
+
+When serving over HTTP, set `output.devMode = true` to have the browser follow your edits. Each served
+page embeds a small client that reconnects to the server over a websocket and refreshes — restoring the
+current slide and fragment — whenever the server restarts:
+
+```kotlin
+output {
+  enableHttp = true
+  devMode = true
+}
+```
+
+Because slide content is compiled Kotlin, picking up an edit requires restarting the app. Run the
+[kslides-dev.sh](kslides-dev.sh) watcher to recompile and restart automatically on every source change,
+or just rerun `main()` from your IDE — the browser reconnects and reloads either way. See the
+[Output modes docs](https://kslides.github.io/kslides/output/) for details.
+
 ### Kotlin Playground
 
 A DslSlide embeds Playground content with an [iframe](https://www.w3schools.com/tags/tag_iframe.asp).

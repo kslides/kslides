@@ -6,6 +6,7 @@ import com.kslides.InternalUtils.mkdir
 import com.kslides.KSlides.Companion.logger
 import com.kslides.KSlides.Companion.runHttpServer
 import com.kslides.KSlides.Companion.writeSlidesToFileSystem
+import com.kslides.LiveReload.kslidesReloadRoute
 import com.kslides.Page.generatePage
 import com.kslides.config.KSlidesConfig
 import com.kslides.config.OutputConfig
@@ -31,6 +32,7 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import io.ktor.server.websocket.WebSockets
 import kotlinx.css.CssBuilder
 import java.io.File
 import java.util.concurrent.ConcurrentHashMap
@@ -106,6 +108,9 @@ fun kslides(block: KSlides.() -> Unit) =
       if (!outputConfig.enableFileSystem && !outputConfig.enableHttp)
         logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} block" }
 
+      if (outputConfig.devMode && !outputConfig.enableHttp)
+        logger.warn { "output { devMode } has no effect without enableHttp = true" }
+
       if (outputConfig.enableFileSystem)
         writeSlidesToFileSystem(outputConfig)
 
@@ -156,6 +161,10 @@ class KSlides : AutoCloseable {
   internal val dynamicIframeContent = ConcurrentHashMap<String, () -> String>()
   internal val staticKrokiContent = ConcurrentHashMap<String, ByteArray>()
   internal var slideCount = 1
+
+  // Unique per-JVM id sent to live-reload clients on connect; a changed value after a restart is
+  // what tells a reconnecting browser to reload. See LiveReload.
+  internal val bootEpoch = System.currentTimeMillis().toString()
 
   // Rendering mutates shared per-render state (slideCount, each VerticalSlide's reconstructed child
   // list, per-slide iframe counters). Ktor serves pages concurrently, so serialize renders of this
@@ -284,6 +293,8 @@ class KSlides : AutoCloseable {
       {
         // Embedding this logic here, rather than in an Application.module() call, forgoes auto-reload.
         installPlugins(config)
+        if (config.devMode)
+          install(WebSockets)
 
         val kslides = config.kslides
         kslides.presentationMap
@@ -297,6 +308,8 @@ class KSlides : AutoCloseable {
           krokiRoute(config, kslides)
           staticRoutes(config, kslides)
           presentationRoutes(kslides)
+          if (config.devMode)
+            kslidesReloadRoute(kslides.bootEpoch)
         }
       }
 

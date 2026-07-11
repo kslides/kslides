@@ -31,8 +31,8 @@ internal object Page {
     useHttp: Boolean = true,
     srcPrefix: String = "/",
   ): String =
-    // Serialize concurrent Ktor renders on renderLock: rendering mutates shared per-render state
-    // (p.kslides.slideCount, reconstructed verticalSlides{} child lists, per-slide iframe counters).
+  // Serialize concurrent Ktor renders on renderLock: rendering mutates shared per-render state
+  // (p.kslides.slideCount, reconstructed verticalSlides{} child lists, per-slide iframe counters).
     // See KSlides.renderLock.
     synchronized(p.kslides.renderLock) {
       p.kslides.slideCount = 0
@@ -217,7 +217,7 @@ internal object Page {
     }
 
     rawHtml("\n")
-    style("text/css") {
+    style {
       media = "screen"
       rawHtml("\n")
       rawHtml(
@@ -235,7 +235,7 @@ internal object Page {
     writeCssToHead(p.css)
   }
 
-  @Suppress("CyclomaticComplexMethod")
+  @Suppress("CyclomaticComplexMethod", "LongMethod")
   private fun HTML.generateBody(
     p: Presentation,
     config: PresentationConfig,
@@ -305,6 +305,14 @@ internal object Page {
       script {
         rawHtml("\n${Mermaid.initScript(config.theme).prependIndent("\t\t")}\n\t")
       }
+      rawHtml("\n")
+    }
+
+    // In dev mode over HTTP, inject the live-reload client so the browser refreshes to the same
+    // slide when the server restarts. Never emitted for filesystem output or production HTTP.
+    if (useHttp && p.kslides.outputConfig.devMode) {
+      rawHtml("\n\t")
+      script { rawHtml("\n${LiveReload.clientScript.prependIndent("\t\t")}\n\t") }
       rawHtml("\n")
     }
   }

@@ -1,5 +1,5 @@
-.PHONY: default help build-all stop clean build local-build lint detekt refresh tests \
-        fatjar uber dist stage deps process-resources versions kdocs check-site upgrade-site clean-site site \
+.PHONY: default help build-all stop clean clean-cache clean-docs build local-build lint detekt refresh tests \
+        fatjar uber dist stage deps process-resources versions dev-server kdocs check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _require-version _require-gradle-version
 
@@ -28,6 +28,12 @@ stop:  ## Stop the Gradle daemon
 
 clean:  ## Remove Gradle build artifacts
 	./gradlew clean
+
+clean-cache: clean  ## Clean and delete the Gradle configuration cache
+	rm -rf .gradle/configuration-cache
+
+clean-docs:  ## Remove the generated example output under docs/
+	rm -rf docs/demo1 docs/kroki docs/letsPlot docs/playground docs/*.html
 
 build: clean  ## Clean and build (skips tests)
 	./gradlew build -x test
@@ -67,6 +73,9 @@ process-resources:  ## Run kslides-core processResources (grafts reveal.js asset
 
 versions:  ## Check for dependency updates
 	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
+
+dev-server:  ## Run the live-reload dev loop (watch sources, rebuild, reload the browser)
+	./kslides-dev.sh --task :kslides-examples:run --watch kslides-examples/src
 
 kdocs:  ## Generate Dokka HTML API docs
 	./gradlew :dokkaGenerate
