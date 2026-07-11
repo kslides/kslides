@@ -32,5 +32,9 @@ class OutputConfigTest : StringSpec() {
       output.enableHttp shouldBe true
       output.httpPort shouldBe 8080
     }
+
+    "OutputConfig devMode defaults to false" {
+      KSlides().outputConfig.devMode shouldBe false
+    }
   }
 }
