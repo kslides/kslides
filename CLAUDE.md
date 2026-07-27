@@ -42,6 +42,8 @@ make detekt                # Detekt static analysis (fails on findings)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
 make versions              # dependencyUpdates
+make kroki-start           # start the local Kroki diagram server (docker-compose, port 8000)
+make kroki-stop            # stop the local Kroki diagram server
 make check-site            # uv lock --upgrade --dry-run for the docs site
 make upgrade-site          # uv lock --upgrade for the docs site
 make site                  # clean-site + serve the Zensical docs site

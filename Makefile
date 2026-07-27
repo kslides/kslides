@@ -1,5 +1,6 @@
 .PHONY: default help build-all stop clean clean-cache clean-docs build local-build lint detekt refresh tests \
-        fatjar uber dist stage deps process-resources versions dev-server kdocs check-site upgrade-site clean-site site \
+        fatjar uber dist stage deps process-resources versions dev-server kroki-start kroki-stop \
+        kdocs check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _require-version _require-gradle-version
 
@@ -8,6 +9,7 @@ GRADLE_VERSION := $(shell sed -n 's/^gradle-wrapper = "\(.*\)"/\1/p' gradle/libs
 
 WEBSITE_DIR := website
 SITE_DIR    := $(WEBSITE_DIR)/kslides
+KROKI_DIR   := kroki
 
 GPG_ENV = \
 	ORG_GRADLE_PROJECT_signingInMemoryKey="$$(gpg --armor --export-secret-keys $$GPG_SIGNING_KEY_ID)" \
@@ -76,6 +78,12 @@ versions:  ## Check for dependency updates
 
 dev-server:  ## Run the live-reload dev loop (watch sources, rebuild, reload the browser)
 	./kslides-dev.sh --task :kslides-examples:run --watch kslides-examples/src
+
+kroki-start:  ## Start a local Kroki diagram server on port 8000 (docker-compose)
+	cd $(KROKI_DIR) && docker-compose up -d
+
+kroki-stop:  ## Stop the local Kroki diagram server
+	cd $(KROKI_DIR) && docker-compose down
 
 kdocs:  ## Generate Dokka HTML API docs
 	./gradlew :dokkaGenerate
