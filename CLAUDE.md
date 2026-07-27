@@ -125,7 +125,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 
 ## Tech Stack
 
-- Kotlin 2.4.0, JVM 17 toolchain
+- Kotlin 2.4.10, JVM 17 toolchain
 - Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.6.1
 - Ktor 3.5.1 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
