@@ -96,9 +96,11 @@ fun main() {
     output {
       enableFileSystem = true
       enableHttp = true
+      // devMode = true
     }
 
     // Optional
+    // Use the kotlinx.css classes
     css {
       rule(".reveal h4") {
         color = Color("#586E75")

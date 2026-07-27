@@ -42,6 +42,8 @@ make detekt                # Detekt static analysis (fails on findings)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
 make versions              # dependencyUpdates
+make kroki-start           # start the local Kroki diagram server (docker-compose, port 8000)
+make kroki-stop            # stop the local Kroki diagram server
 make check-site            # uv lock --upgrade --dry-run for the docs site
 make upgrade-site          # uv lock --upgrade for the docs site
 make site                  # clean-site + serve the Zensical docs site
@@ -125,7 +127,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 
 ## Tech Stack
 
-- Kotlin 2.4.0, JVM 17 toolchain
+- Kotlin 2.4.10, JVM 17 toolchain
 - Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.6.1
 - Ktor 3.5.1 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL

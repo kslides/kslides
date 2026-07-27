@@ -67,7 +67,7 @@ class CssValue(
     internal fun HEAD.writeCssToHead(css: CssValue) {
       if (css.isNotBlank()) {
         rawHtml("\n")
-        style("text/css") {
+        style {
           media = "screen"
           rawHtml("\n")
           rawHtml(css.prependIndent("\t\t\t"))
