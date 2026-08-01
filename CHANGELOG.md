@@ -63,7 +63,9 @@ local authoring.
 ### Changed
 
 - Kotlin 2.4.10, and refreshed version-catalog dependencies (kotlinx.css,
-  Logback, Kotest, common-utils).
+  Logback, Kotest, common-utils, srcref).
+- The Ben-Manes versions plugin moved to its `io.github.ben-manes.versions`
+  plugin id (0.57.0); the task class it provides is unchanged.
 - `writeCssToHead` no longer emits `type="text/css"` on its `<style>` element —
   `text/css` is the HTML5 default.
 - The Pages docs workflow is split into separate `build` and `deploy` jobs behind

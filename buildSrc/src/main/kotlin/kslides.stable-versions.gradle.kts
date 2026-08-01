@@ -1,7 +1,7 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 plugins {
-    id("com.github.ben-manes.versions")
+    id("io.github.ben-manes.versions")
 }
 
 // A pre-release qualifier is a `.` or `-` delimiter followed by a known unstable
