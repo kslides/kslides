@@ -9,10 +9,10 @@ detekt = "2.0.0-alpha.5"
 dokka = "2.2.0"
 gradle-plugins = "1.0.14"
 maven-publish = "0.37.0"
-versions = "0.54.0"
+versions = "0.57.0"
 
 # Kotlin / kotlinx libraries
-css = "2026.7.6"
+css = "2026.7.7"
 kotlinx-html = "0.12.0"
 serialization = "1.11.0"
 
@@ -20,18 +20,18 @@ serialization = "1.11.0"
 ktor = "3.5.1"
 
 # Logging
-logback = "1.6.0"
+logback = "1.6.1"
 logging = "8.0.4"
 
 # Testing
 junit4 = "4.13.2"
-kotest = "6.2.2"
+kotest = "6.2.3"
 
 # Domain libraries
-common-utils = "3.2.1"
+common-utils = "3.2.2"
 commons-text = "1.15.0"
 letsplot = "4.15.0"
-srcref = "2.1.1"
+srcref = "2.2.0"
 
 [libraries]
 # Kotlin / kotlinx libraries
@@ -68,7 +68,7 @@ letsplot-kotlin = { module = "org.jetbrains.lets-plot:lets-plot-kotlin-jvm", ver
 srcref = { module = "com.pambrose:srcref", version.ref = "srcref" }
 
 # Plugin-marker artifacts, consumed by buildSrc to apply plugins from precompiled scripts.
-plugin-ben-manes-versions = { module = "com.github.ben-manes.versions:com.github.ben-manes.versions.gradle.plugin", version.ref = "versions" }
+plugin-ben-manes-versions = { module = "io.github.ben-manes.versions:io.github.ben-manes.versions.gradle.plugin", version.ref = "versions" }
 plugin-detekt = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 plugin-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

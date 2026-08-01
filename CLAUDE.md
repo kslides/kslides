@@ -42,6 +42,7 @@ make detekt                # Detekt static analysis (fails on findings)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
 make versions              # dependencyUpdates
+make dev-server            # live-reload dev loop (kslides-dev.sh: watch, rebuild, restart)
 make kroki-start           # start the local Kroki diagram server (docker-compose, port 8000)
 make kroki-stop            # stop the local Kroki diagram server
 make check-site            # uv lock --upgrade --dry-run for the docs site
@@ -55,15 +56,24 @@ make publish-maven-central # release to Maven Central (signed)
 
 The `publish-snapshot` and `publish-maven-central` targets sign via `GPG_ENV`, which exports three vanniktech-maven-publish env vars: `ORG_GRADLE_PROJECT_signingInMemoryKey` (armored secret key from `gpg --armor --export-secret-keys $GPG_SIGNING_KEY_ID`), `ORG_GRADLE_PROJECT_signingInMemoryKeyId` (the same key id, needed when a subkey is selected), and `ORG_GRADLE_PROJECT_signingInMemoryKeyPassword` (read from the macOS Keychain via `security find-generic-password -a gpg-signing -s gradle-signing-password`). These publish targets only work on macOS with those credentials configured. Publishing uses the [vanniktech `maven-publish`](https://github.com/vanniktech/gradle-maven-publish-plugin) plugin; signing only runs when `signingInMemoryKey` is set, so `make publish-local` and snapshot builds work without the GPG env.
 
+### Shell scripts
+
+Two POSIX-ish bash scripts live at the repo root (both target macOS's default bash 3.2 as well as modern Linux bash, so no `declare -A`, no `${var^^}`, and no GNU-only `sed -i`):
+
+- `kslides-init.sh` — scaffolds a new presentation project by cloning `kslides-template`, stripping its git history, renaming the project name and presentation title, and initializing a fresh repo. Renames are guarded so a drifted template warns instead of silently no-op'ing.
+- `kslides-dev.sh` — the live-reload supervisor: recompiles and restarts the app on source changes. Takes `--task` / `--watch` / `--port` (or positionals, with env vars as fallback) and defaults to the root `run` task watching `src`, matching a single-module kslides-template project.
+
+`FEATURE_IDEAS.md` holds ranked product proposals (F1–F6). Shipped ones carry a Status block recording what actually landed and how the open questions resolved; check it before designing a feature that might already have a written design.
+
 ### CI
 
 `.github/workflows/ci.yml` runs on PRs to `master` and on pushes to `master`. Expect green CI before merging.
 
-`.github/workflows/docs.yml` builds the Zensical docs site under `website/kslides/` plus the Dokka HTML and publishes them to GitHub Pages. The published layout is: root → Zensical site, `/api-docs/` → Dokka HTML, `/docs/` → example slides.
+`.github/workflows/docs.yml` builds the Zensical docs site under `website/kslides/` plus the Dokka HTML and publishes them to GitHub Pages, split into a `build` job and a `deploy` job behind a `pages` concurrency group that queues rather than cancels an in-progress deployment. The published layout is: root → Zensical site, `/api-docs/` → Dokka HTML, `/docs/` → example slides.
 
 ### Releasing
 
-The current release is `1.1.1` (tag `1.1.1`, GitHub release `v1.1.1`, published to Maven Central as `com.kslides:kslides-core` and `com.kslides:kslides-letsplot`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site (`website/kslides/docs/installation.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
+The current release is `1.2.0` (tag `1.2.0`, GitHub release `v1.2.0`, published to Maven Central as `com.kslides:kslides-core` and `com.kslides:kslides-letsplot`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site (`website/kslides/docs/installation.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
 
 ## Module Structure
 
@@ -101,6 +111,9 @@ Configuration merges hierarchically: **global** (`kslides.presentationConfig{}`)
 - `Slide` (abstract) → `MarkdownSlide`, `HtmlSlide`, `DslSlide` — Three slide types with unified interface.
 - `Page` — HTML page generation and rendering for both filesystem and HTTP.
 - `VerticalSlidesContext` — Context for vertically-grouped slides.
+- `Mermaid` / `mermaid()` (`MermaidDsl.kt`) — Bundled-runtime Mermaid support: asset path, theme-aware init snippet, head CSS.
+- `LiveReload` (`LiveReload.kt`) — `devMode` websocket route and the injected reload client.
+- `PresentationTheme.isDark` (`Enums.kt`) — Exhaustive dark/light theme classification; adding a theme forces a dark/light decision at compile time.
 - Config classes in `com.kslides.config.*`: `KSlidesConfig`, `PresentationConfig`, `SlideConfig`, `OutputConfig`, `PlaygroundConfig`, `MenuConfig`, `CopyCodeConfig`, `LetsPlotIframeConfig`, `DiagramConfig`.
 
 ### Dual Output System
@@ -109,20 +122,30 @@ Configuration merges hierarchically: **global** (`kslides.presentationConfig{}`)
 1. **Filesystem** — Writes static HTML to `/docs` directory. Playground/letsPlot/kroki content generates separate HTML files in `docs/playground/`, `docs/letsPlot/`, `docs/kroki/`.
 2. **HTTP** — Ktor server with session-based iframe caching for dynamic content.
 
+`OutputConfig.devMode` (HTTP only) adds live reload for local authoring: a `/kslides-reload` websocket plus a client script injected per-render from `Page.generateBody`. The server sends a per-JVM boot epoch on connect, so a restarted app makes the reconnecting client reload, restoring slide/fragment position from `sessionStorage` (not the URL hash — it does not depend on `hash = true`). The route and script are never installed for filesystem output or non-devMode HTTP. `KSlides` warns if `devMode` is set without `enableHttp`.
+
+Because slide content is compiled Kotlin, a content edit requires restarting the JVM. `./gradlew -t run` does **not** work for this — Gradle continuous build cannot restart a long-running blocking server task. Use `kslides-dev.sh` (or `make dev-server`), which recompiles and restarts on source changes.
+
 ### DSL Extension Points
 
 - `playground{}` — Embeds Kotlin Playground iframes (kslides-core, `PlaygroundDsl.kt`)
 - `diagram{}` — Embeds Kroki diagrams (kslides-core, `DiagramDsl.kt`)
+- `mermaid()` — Client-side Mermaid diagrams from a bundled runtime, no external service (kslides-core, `MermaidDsl.kt`)
 - `letsPlot{}` — Embeds Lets-Plot figures (kslides-letsplot, `LetsPlotDsl.kt`)
 - `codeSnippet{}` — Syntax-highlighted code blocks
 - `include()` — Loads content from files or URLs (preferred over inline code)
 - Utility functions in `Utils.kt` and `KSlidesDsl.kt`
 
+`mermaid()` and `diagram("mermaid")` coexist deliberately: `mermaid()` is the zero-dependency default (offline-safe, renders client-side), while Kroki covers the long tail of diagram formats. The bundled Mermaid version is a checked-in browser asset under `docs/revealjs/plugin/mermaid/`, recorded as a constant in `MermaidDsl.kt` rather than in `libs.versions.toml` — bumping it means re-downloading the UMD build.
+
+Per-render assets (the Mermaid runtime, generated code font-size classes) are emitted only for presentations that actually use the feature, tracked with per-render flags on `Presentation`. Follow that pattern when adding a new asset-bearing extension.
+
 ### Testing
 
 For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesystem and HTTP output. Test classes use Kotest 6 (`StringSpec()` + `init {}` block) with the JUnit 5 runner. Tests live under:
 
-- `kslides-core/src/test/kotlin/com/kslides/` — `UtilsTest`, `PresentationTest`, `ConfigsTest`, `OutputConfigTest`.
+- `kslides-core/src/test/kotlin/com/kslides/` — `UtilsTest`, `PresentationTest`, `ConfigsTest`, `OutputConfigTest`, `MermaidTest`, `LiveReloadTest`, `SlideFontSizeTest`, and others.
+- `kslides-core/src/test/kotlin/website/` — compilable sources for the docs-site snippets, pulled into the Zensical pages via `--8<--` includes (e.g. `Mermaid.kt`, `Output.kt`, `Styling.kt`). Adding a docs snippet means adding it here so it stays compiler-checked.
 - `kslides-letsplot/src/test/kotlin/com/kslides/` — `LetsPlotTest` (renderer unit tests) and `LetsPlotDslTest` (full DSL → filesystem integration, writing to a temp `outputDir`). The letsplot test source set ships its own empty `src/test/resources/slides.css` so `Page.generateHead`'s classpath lookup succeeds without depending on kslides-core test resources.
 
 ## Tech Stack

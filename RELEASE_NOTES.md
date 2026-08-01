@@ -6,6 +6,89 @@ structured, category-grouped log.
 
 ---
 
+## 1.2.0 — 2026-08-01
+
+A feature release with three additions worth a look — native Mermaid diagrams,
+a slide font-size API, and a live-reload dev mode — plus two shell scripts that
+cover the "new deck" and "author a deck" loops.
+
+### Native Mermaid diagrams
+
+`mermaid(source)` inside a `dslSlide { }` content block renders a
+[Mermaid](https://mermaid.js.org) diagram client-side from a Mermaid 11.16.0
+runtime bundled with kslides. Unlike `diagram("mermaid") { }`, which round-trips
+through a Kroki server, this needs no network access, so decks keep working
+offline and on a plane.
+
+The runtime, its init snippet, and the head CSS are emitted only for
+presentations that actually contain a `mermaid()` block, so decks that don't use
+it pay nothing. Diagrams render as their slide becomes visible — hidden
+reveal.js sections are `display:none`, which breaks Mermaid's size calculation —
+and print view renders the whole deck up front. Mermaid's dark theme is selected
+automatically for dark reveal.js themes, driven by a new exhaustive
+`PresentationTheme.isDark` property.
+
+### Slide font sizes
+
+`slideConfig { }` gained three cascading font properties:
+
+- `fontSize` — inline `font-size` on the slide's `<section>`, any CSS length;
+- `codeFontSize` — font size for `<pre>` code blocks, emitted as a generated CSS
+  class plus a head rule;
+- `codeWrap` — wrap long code lines instead of letting them overflow.
+
+All three resolve through the global → presentation → slide cascade, replacing
+the raw-CSS workaround previously needed to shrink an oversized code listing.
+`slideDefinition()` (both overloads) also gained a trailing
+`configBlock: SlideConfig.() -> Unit` parameter, so a single generated slide can
+be configured in place: `slideDefinition(source, token) { codeFontSize = "0.40em" }`.
+
+### Live-reload dev mode
+
+`outputConfig { }` gained an opt-in `devMode` flag that makes the browser follow
+your code. With `enableHttp` on, each served page embeds a small client that
+connects to a `/kslides-reload` websocket. The server sends a per-JVM boot epoch
+on connect, so when you restart the app the reconnecting client sees a new epoch
+and reloads — restoring the current slide and fragment from `sessionStorage` so
+you land back where you were. The websocket plugin and route are installed only
+in `devMode`, and the client script is never injected for filesystem output or
+production HTTP.
+
+`kslides-dev.sh` closes the loop: it recompiles and restarts the app on source
+changes, taking `--task` / `--watch` / `--port` flags and defaulting to the root
+`run` task watching `src`.
+
+### Scaffolding a new deck
+
+`kslides-init.sh` clones
+[kslides-template](https://github.com/kslides/kslides-template), strips its git
+history, renames the project and presentation title, and initializes a fresh git
+repository:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kslides/kslides/master/kslides-init.sh | bash -s -- my-talk --title "My Talk"
+```
+
+### Also in this release
+
+- `make kroki-start` / `make kroki-stop` bring the local Kroki diagram server up
+  and down without remembering the docker-compose invocation, and
+  `make dev-server` runs the live-reload loop.
+- The docs site gained a Mermaid extensions page, a dev-mode section under Output
+  modes, and slide font-size coverage under Styling.
+- `FEATURE_IDEAS.md` collects ranked product proposals (F1–F6); the three that
+  shipped in this release carry a status block recording where the
+  implementation diverged from the proposal.
+- Kotlin 2.4.10 and refreshed version-catalog dependencies.
+- `writeCssToHead` no longer emits `type="text/css"` (it's the HTML5 default).
+- The `kslides-examples` `run` task now uses the repo root as its working
+  directory, so `include()` / source paths and `docs` output resolve correctly —
+  previously `./gradlew :kslides-examples:run` doubled the repo-relative
+  `include()` paths and threw `FileNotFoundException`.
+- The Pages docs workflow is split into `build` and `deploy` jobs behind a
+  `pages` concurrency group that queues rather than cancels an in-progress
+  deployment.
+
 ## 1.1.1 — 2026-07-05
 
 A small feature release focused on the CopyCode plugin — the "Copy" button

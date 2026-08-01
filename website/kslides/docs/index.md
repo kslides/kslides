@@ -13,7 +13,8 @@ and ship them as a static site or live Ktor server.
 - **One source, two output modes** — render to static HTML for Netlify or GitHub Pages, or serve dynamic content over HTTP with Ktor.
 - **Mix authoring styles** — Markdown for prose, raw HTML for fine control, the Kotlin DSL for anything generated.
 - **Hierarchical configuration** — set defaults globally, override per presentation, and tweak per slide.
-- **Batteries included** — embedded reveal.js, Kotlin Playground iframes, Kroki diagrams, and Lets-Plot charts.
+- **Live reload while authoring** — with [dev mode](output.md#dev-mode-live-reload), the browser follows your edits and lands you back on the slide you were working on.
+- **Batteries included** — embedded reveal.js, offline [Mermaid diagrams](extensions/mermaid.md), Kotlin Playground iframes, Kroki diagrams, and Lets-Plot charts.
 
 ## A taste
 
@@ -23,11 +24,18 @@ and ship them as a static site or live Ktor server.
 
 That's a complete kslides program. Run `main()`, open `docs/index.html`, and you've got a slide deck.
 
+To skip the setup entirely, scaffold a ready-to-run project:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kslides/kslides/master/kslides-init.sh | bash -s -- my-talk --title "My Talk"
+```
+
 ## Where to next?
 
-- [Installation](installation.md) — add kslides to a Gradle project.
+- [Installation](installation.md) — scaffold a project, or add kslides to an existing Gradle build.
 - [Quickstart](quickstart.md) — build your first deck end-to-end.
 - [Slides](slides/index.md) — Markdown, HTML, and DSL slide types.
 - [Configuration](configuration.md) — the global → presentation → slide cascade.
-- [Output modes](output.md) — static site vs Ktor server.
+- [Output modes](output.md) — static site, Ktor server, and live-reload dev mode.
+- [Styling](styling.md) — themes, custom CSS, and slide/code font sizes.
 - [KDocs](kdocs.md) — Dokka-generated API reference.
