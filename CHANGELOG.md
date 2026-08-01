@@ -9,6 +9,12 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-08-01
+
+Adds native client-side Mermaid diagrams, a slide font-size API, and an
+opt-in live-reload dev mode, plus two shell scripts for scaffolding and
+local authoring.
+
 ### Added
 
 - `slideConfig { }` gained three cascading font properties: `fontSize` (inline
@@ -20,6 +26,56 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 - `slideDefinition()` (both overloads) gained a trailing
   `configBlock: SlideConfig.() -> Unit` parameter for per-slide configuration,
   e.g. `slideDefinition(source, token) { codeFontSize = "0.40em" }`.
+- `DslSlide.mermaid(source)` — renders [Mermaid](https://mermaid.js.org)
+  diagrams client-side from a bundled Mermaid 11.16.0 runtime, so decks work
+  offline with no Kroki server. The runtime, its init snippet, and the head CSS
+  are emitted only for presentations that actually contain a `mermaid()` block.
+  Diagrams render as their slide becomes visible (hidden reveal.js sections are
+  `display:none`, which breaks Mermaid's size calculation); print view renders
+  the whole deck up front.
+- `PresentationTheme.isDark` — exhaustive dark/light classification of the
+  built-in reveal.js themes. Mermaid's dark theme is selected automatically for
+  dark presentation themes.
+- `OutputConfig.devMode` — opt-in live reload for local authoring. With
+  `enableHttp`, each served page embeds a client that connects to a
+  `/kslides-reload` websocket; the server sends a per-JVM boot epoch on connect,
+  so a restarted app makes the reconnecting client reload, restoring the current
+  slide and fragment from `sessionStorage`. The websocket plugin and route are
+  installed only in `devMode`, and the client script is never injected for
+  filesystem output or production HTTP. Adds a `ktor-server-websockets`
+  dependency.
+- `kslides-init.sh` — scaffolding script that clones
+  [kslides-template](https://github.com/kslides/kslides-template), strips its
+  git history, renames the project and presentation title, and initializes a
+  fresh git repository. Runs on macOS bash 3.2 and modern Linux bash.
+- `kslides-dev.sh` — supervisor that recompiles and restarts the app on source
+  changes, driving the `devMode` reload loop. Takes `--task` / `--watch` /
+  `--port` flags or positionals, defaulting to the root `run` task watching
+  `src`.
+- `make kroki-start` / `make kroki-stop` — bring the local Kroki diagram server
+  (the `kroki/` docker-compose stack, port 8000) up and down. `make dev-server`
+  runs the live-reload loop.
+- Docs site: a Mermaid extensions page, a dev-mode section in Output modes, and
+  slide font-size coverage in Styling.
+- `FEATURE_IDEAS.md` — ranked product proposals (F1–F6) with status tracking for
+  the ones that have shipped.
+
+### Changed
+
+- Kotlin 2.4.10, and refreshed version-catalog dependencies (kotlinx.css,
+  Logback, Kotest, common-utils).
+- `writeCssToHead` no longer emits `type="text/css"` on its `<style>` element —
+  `text/css` is the HTML5 default.
+- The Pages docs workflow is split into separate `build` and `deploy` jobs behind
+  a `pages` concurrency group that queues rather than cancels an in-progress
+  deployment.
+
+### Fixed
+
+- The `kslides-examples` `run` task now uses the repo root as its working
+  directory, so `include()` / source paths and `docs` output resolve correctly.
+  Previously `./gradlew :kslides-examples:run` doubled the repo-relative
+  `include()` paths and threw `FileNotFoundException`.
 
 ## [1.1.1] — 2026-07-05
 
@@ -827,7 +883,8 @@ chart-embedding integration, and the test/CI story
   filesystem and Ktor-server output modes, and configurable
   per-slide / per-presentation overrides.
 
-[Unreleased]: https://github.com/kslides/kslides/compare/1.1.1...HEAD
+[Unreleased]: https://github.com/kslides/kslides/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/kslides/kslides/releases/tag/1.2.0
 [1.1.1]: https://github.com/kslides/kslides/releases/tag/1.1.1
 [1.1.0]: https://github.com/kslides/kslides/releases/tag/1.1.0
 [1.0.0]: https://github.com/kslides/kslides/releases/tag/1.0.0

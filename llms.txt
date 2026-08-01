@@ -6,6 +6,12 @@
 
 New presentations should be created from the [kslides-template](https://github.com/kslides/kslides-template) repository. The template includes build configuration, deployment setup, and a starter presentation.
 
+The `kslides-init.sh` script automates that setup — it clones the template, strips its git history, renames the project and presentation title, and initializes a fresh repository:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kslides/kslides/master/kslides-init.sh | bash -s -- my-talk --title "My Talk"
+```
+
 ## Core Concepts
 
 ### DSL Structure
@@ -39,7 +45,7 @@ kslides {
 
 - **markdownSlide** — Content is a Markdown string
 - **htmlSlide** — Content is a raw HTML string
-- **dslSlide** — Content uses kotlinx.html DSL (supports `playground{}`, `diagram{}`, `codeSnippet{}`, `letsPlot{}`)
+- **dslSlide** — Content uses kotlinx.html DSL (supports `playground{}`, `diagram{}`, `mermaid()`, `codeSnippet{}`, `letsPlot{}`)
 
 `letsPlot{}` lives in the optional `kslides-letsplot` module; the others are in `kslides-core`.
 
@@ -57,16 +63,20 @@ Configured in the `output{}` block:
 - **Filesystem** (`enableFileSystem = true`): Writes static HTML to the `docs/` directory. Playground, Lets-Plot, and kroki content generates separate files in `docs/playground/`, `docs/letsPlot/`, `docs/kroki/`.
 - **HTTP** (`enableHttp = true`): Starts a Ktor CIO server (default port 8080). Static resources served from `src/main/resources/public/`.
 
+`devMode = true` (HTTP only) adds live reload for local authoring: each served page embeds a client that connects to a `/kslides-reload` websocket and reloads when the server restarts, restoring the current slide and fragment from `sessionStorage`. Because slide content is compiled Kotlin, picking up an edit requires restarting the JVM — the `kslides-dev.sh` script watches sources and does the rebuild/restart automatically. (`./gradlew -t run` does not work for this: Gradle continuous build cannot restart a blocking server task.)
+
 ### DslSlide-Specific Features
 
 - `playground {}` — Embeds an interactive [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) iframe
-- `diagram {}` — Generates diagrams via [Kroki](https://kroki.io/) (PlantUML, Mermaid, Graphviz, etc.). The Kroki endpoint is configurable via `diagramConfig.krokiUrl`; a local Kroki server can be started from the `kroki/` directory with `docker-compose up -d` to avoid public-server rate limits.
+- `mermaid(source)` — Renders a [Mermaid](https://mermaid.js.org) diagram client-side from a runtime bundled with kslides. No network access or external server, so decks work offline. Mermaid's dark theme is selected automatically for dark reveal.js themes; diagrams render lazily as their slide becomes visible. Since it takes a `String`, the source can come from `include()`.
+- `diagram {}` — Generates diagrams via [Kroki](https://kroki.io/) (PlantUML, Mermaid, Graphviz, etc.), rendered server-side to a static image. The Kroki endpoint is configurable via `diagramConfig.krokiUrl`; a local Kroki server can be started from the `kroki/` directory with `docker-compose up -d` to avoid public-server rate limits. Prefer `mermaid()` for Mermaid diagrams; use `diagram {}` for formats Mermaid doesn't cover.
 - `codeSnippet {}` — Syntax-highlighted code block with reveal.js highlight plugin
 - `letsPlot {}` — Embeds [Lets-Plot](https://lets-plot.org/kotlin/) visualization iframes (requires the `kslides-letsplot` module). The JS runtime version is configurable via `kslidesConfig.letsPlotJsVersion`.
 
 ### Utility Functions
 
 - `include(src)` — Include code from a file path or URL (preferred over inline code)
+- `slideDefinition(source, token)` — Generate a slide showing the source of another slide, delimited by `token`. Takes a trailing `SlideConfig.() -> Unit` block for per-slide configuration, e.g. `slideDefinition(src, token) { codeFontSize = "0.40em" }`
 - `githubRawUrl()` — Generate raw GitHub content URLs for `include()` calls
 - `fragment()` — Wrap content in reveal.js fragments for animation
 - `permuteBy()` — Generate animation step permutations
@@ -94,6 +104,8 @@ kslides-specific options include: `title`, `theme` (enum: BLACK, WHITE, LEAGUE, 
 
 Per-slide options: `backgroundColor`, `backgroundImage`, `backgroundSize`, `backgroundPosition`, `backgroundRepeat`, `backgroundOpacity`, `backgroundVideo`, `backgroundVideoLoop`, `backgroundVideoMuted`, `backgroundIframe`.
 
+Font sizing: `fontSize` (inline `font-size` on the slide's `<section>`, any CSS length), `codeFontSize` (font size for `<pre>` code blocks, emitted as a generated CSS class plus a head rule), and `codeWrap` (wrap long code lines instead of overflowing). These resolve through the global → presentation → slide cascade, so a deck-wide default can be set once in `presentationConfig { slideConfig { } }`. They are resolved *per-slide*, so setting them in a `verticalSlides { slideConfig { } }` block is silently ignored — a stack-level `slideConfig{}` only carries reveal.js `data-*` options.
+
 ### Slide Properties
 
 Common slide properties: `id`, `classes`, `style`, `hidden`, `uncounted`, `autoAnimate`, `autoAnimateRestart`. MarkdownSlides also support `filename` for external markdown files.
@@ -103,6 +115,8 @@ Common slide properties: `id`, `classes`, `style`, `hidden`, `uncounted`, `autoA
 - `kslides-core/` — Core DSL library
 - `kslides-examples/` — Example presentations with main entry point
 - `kslides-letsplot/` — Lets-Plot chart integration module
+- `kslides-init.sh` — Scaffolds a new presentation project from `kslides-template`
+- `kslides-dev.sh` — Live-reload supervisor: watches sources, rebuilds, restarts the app
 
 ## Dependencies
 
@@ -113,8 +127,8 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("com.kslides:kslides-core:1.1.1")
-    // Optional: implementation("com.kslides:kslides-letsplot:1.1.1")
+    implementation("com.kslides:kslides-core:1.2.0")
+    // Optional: implementation("com.kslides:kslides-letsplot:1.2.0")
 }
 ```
 
@@ -129,4 +143,4 @@ dependencies {
 - [Example source](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt): Full example presentation code
 - [reveal.js docs](https://revealjs.com): Underlying presentation framework
 - [CHANGELOG](https://github.com/kslides/kslides/blob/master/CHANGELOG.md): Version history
-- [RELEASE_NOTES](https://github.com/kslides/kslides/blob/master/RELEASE_NOTES.md): Narrative release notes (latest: 1.1.1)
+- [RELEASE_NOTES](https://github.com/kslides/kslides/blob/master/RELEASE_NOTES.md): Narrative release notes (latest: 1.2.0)

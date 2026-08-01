@@ -4,18 +4,49 @@ Product proposals for kslides, ranked by expected impact. Each idea has a number
 (referenced as F1–F6), a problem statement, a proposed design grounded in the current
 architecture, an effort estimate, and open questions.
 
-| #  | Feature                    | Primary user   | Effort | Theme               |
-|----|----------------------------|----------------|--------|---------------------|
-| F1 | Live-reload dev mode       | Deck authors   | M      | Developer experience |
-| F2 | One-command PDF export     | Deck sharers   | M      | Distribution        |
-| F3 | Type-safe theming DSL      | Teams/branding | L      | Customization       |
-| F4 | Native Mermaid diagrams    | Deck authors   | S      | Content             |
-| F5 | Follow-along presenting    | Presenters     | L      | Platform            |
-| F6 | Scaffolding command        | New users      | S      | Adoption            |
+Proposals are kept as originally written. Shipped features carry a **Status** block
+recording what actually landed, where it diverged from the proposal, and how the open
+questions were resolved — read the Status block first, since the proposal text below it
+describes the plan, not the code.
+
+| #  | Feature                    | Primary user   | Effort | Theme                | Status              |
+|----|----------------------------|----------------|--------|----------------------|---------------------|
+| F1 | Live-reload dev mode       | Deck authors   | M      | Developer experience | ✅ Shipped in 1.2.0 |
+| F2 | One-command PDF export     | Deck sharers   | M      | Distribution         | Proposed            |
+| F3 | Type-safe theming DSL      | Teams/branding | L      | Customization        | Proposed            |
+| F4 | Native Mermaid diagrams    | Deck authors   | S      | Content              | ✅ Shipped in 1.2.0 |
+| F5 | Follow-along presenting    | Presenters     | L      | Platform             | Proposed            |
+| F6 | Scaffolding command        | New users      | S      | Adoption             | ✅ Shipped in 1.2.0 |
 
 ---
 
 ## F1. Live-reload dev mode
+
+### Status: ✅ Shipped in 1.2.0 (PR #56)
+
+`OutputConfig.devMode` (`config/OutputConfig.kt`) gates a `/kslides-reload` websocket
+route (`KSlides.kt`) and the injected client script (`LiveReload.kt`, injected from
+`Page.generateBody`). The reload signal is the proposed one: a per-JVM boot epoch sent on
+connect, so a reconnecting client that sees a new epoch reloads.
+
+Two things landed differently from the proposal below:
+
+- **The rebuild story was wrong.** "kslides itself does not need a file watcher — Gradle
+  already provides one" does not hold: `./gradlew -t run` cannot restart a long-running
+  *blocking* server task, so continuous build never re-serves the deck. kslides ships
+  `kslides-dev.sh` instead — a supervisor that recompiles and restarts the app on source
+  changes, taking `--task` / `--watch` / `--port` and defaulting to the root `run` task
+  watching `src`. See `website/kslides/docs/output.md`.
+- **Position restore does not use the URL hash.** It records slide + fragment in
+  `sessionStorage` and replays via `Reveal.getState()` / `setState()`, so it works without
+  `hash = true` and does not touch `PresentationConfig`.
+
+Open questions resolved:
+
+- *Implied by `enableHttp`, or always opt-in?* → **Always opt-in.** `KSlides` logs a
+  warning when `devMode` is set without `enableHttp`.
+- *URL hash vs. server-remembered position?* → **Neither** — client-side `sessionStorage`.
+  The server holds no per-session position state.
 
 ### Problem
 
@@ -40,6 +71,8 @@ kslides {
 
 - **Rebuild**: document `./gradlew -t run` (Gradle continuous build) as the companion
   command; kslides itself does not need a file watcher — Gradle already provides one.
+  *(Superseded — see Status above: `-t` cannot restart a blocking server task, so
+  `kslides-dev.sh` does the watching.)*
 - **Reload**: the existing Ktor server (kslides-core already ships Ktor 3.5.1 with
   websockets available) exposes a `/kslides-reload` websocket. When `devMode = true`,
   `Page.generateHead` injects a small client script that connects to it.
@@ -175,6 +208,31 @@ documentation with visual examples.
 
 ## F4. Native Mermaid diagrams
 
+### Status: ✅ Shipped in 1.2.0 (PR #55)
+
+`DslSlide.mermaid(source)` in `MermaidDsl.kt`, backed by a Mermaid 11.16.0 UMD build
+checked in at `docs/revealjs/plugin/mermaid/` and grafted onto the published JAR classpath
+by `processResources` — the asset-bundling pattern the proposal called for. The runtime,
+its init snippet, and the head CSS are emitted only for presentations containing at least
+one mermaid block (a per-render flag on `Presentation`, mirroring `codeStyleClasses`).
+
+Shipped as a function taking the source string, `mermaid("…")`, rather than the
+`mermaid { }` block sketched below. Theme selection is driven by
+`PresentationTheme.isDark` (`Enums.kt`), which is exhaustive, so adding a reveal.js theme
+forces a dark/light decision at compile time instead of silently defaulting.
+
+Open questions resolved:
+
+- *Pin the bundled Mermaid version in `libs.versions.toml`?* → **No.** It is a checked-in
+  browser asset, not a Gradle dependency, so the version lives as a documented constant in
+  `MermaidDsl.kt` beside the CDN URL it came from.
+- *Eager vs. lazy render?* → **Lazy**, as each slide becomes visible. Hidden reveal.js
+  sections are `display:none`, which breaks Mermaid's size calculation; print view renders
+  the whole deck up front.
+
+`include()` support came for free, since `mermaid()` takes a `String` — documented on the
+Mermaid docs page. Kroki `diagram()` is retained for the long tail, as planned.
+
 ### Problem
 
 `diagram {}` (DiagramDsl.kt) renders through Kroki, which is a strong multi-format story
@@ -284,6 +342,29 @@ tabs. Needs load testing before it's honest to advertise.
 
 ## F6. Scaffolding command
 
+### Status: ✅ Shipped in 1.2.0 (PR #54)
+
+`kslides-init.sh` — the "shell script wrapping `git clone` + `sed`" that the effort
+estimate called a legitimate v1. It clones `kslides-template`, strips the git history,
+renames the project name and presentation title, and initializes a fresh repository. It
+runs on macOS's default bash 3.2 and modern Linux bash, uses `set -euo pipefail`, validates
+the project name, refuses to overwrite an existing directory, cleans up a partially created
+directory on failure, guards the renames so a drifted template warns instead of silently
+no-op'ing, and sidesteps the BSD/GNU `sed -i` split.
+
+Scoped down from the proposal: **there are no interactive prompts.** Output mode and extras
+(playground, mermaid/kroki, lets-plot) are not asked for — whatever `kslides-template`
+carries is what you get, including its Pages workflow and version catalog. That keeps the
+template as the single source of truth, which was the point, but it means "extras" is still
+a manual edit after scaffolding.
+
+Open questions resolved:
+
+- *Where does the generator live?* → **This repo**, invoked by `curl … | bash -s -- my-talk
+  --title "My Talk"` or run from a local clone.
+- *A `kslides.dev` short domain for the curl entry point?* → **Not pursued.** The one-liner
+  points at `raw.githubusercontent.com`.
+
 ### Problem
 
 Getting to a first slide today means cloning the `kslides-template` repo or copying from
@@ -332,9 +413,32 @@ legitimate v1.
 
 ## Suggested sequencing
 
-1. **F4 + F6 first** (both S): quick wins, visible momentum, no architectural risk.
-2. **F1 next** (M): highest sustained value for existing users; builds the websocket
-   client-injection plumbing.
+### Done — shipped in 1.2.0
+
+1. ~~**F4 + F6 first** (both S): quick wins, visible momentum, no architectural risk.~~
+2. ~~**F1 next** (M): highest sustained value for existing users; builds the websocket
+   client-injection plumbing.~~
+
+The sequencing held: F4 and F6 landed as small, self-contained additions, and F1 followed
+with the websocket route and client-injection plumbing it predicted.
+
+### Remaining
+
 3. **F2** (M): unlocks CI-attached PDFs for releases.
 4. **F3** (L): the team-adoption unlock; benefits from user feedback gathered above.
 5. **F5 last** (L): reuses F1's infrastructure; ship when the server story is mature.
+   **Its prerequisite is now met** — `LiveReload.kt` establishes the pattern F5 needs
+   (a `devMode`-style output flag gating a websocket route, plus per-render client-script
+   injection from `Page`), so the sync core is mostly a second route and a broadcast
+   channel. The resilience work the estimate flags (reconnection, late joiners, mobile
+   tab backgrounding, load testing) is unchanged and remains the bulk of the effort.
+
+### Follow-ups from shipped work
+
+- **F1**: `devMode` currently warns when set without `enableHttp`. If F5 lands, both flags
+  will gate websocket routes and the two client scripts will coexist on the same page —
+  worth a shared injection point rather than a second special case in `Page`.
+- **F4**: the bundled Mermaid version is a checked-in asset with no upgrade automation;
+  bumping it is a manual re-download. Worth a Makefile target if it drifts.
+- **F6**: no prompts means "add lets-plot / playground" is still a manual post-scaffold
+  edit. If the template grows variants, revisit the guided-generator design above.
