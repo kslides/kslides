@@ -4,7 +4,6 @@ import com.kslides.DiagramOutputType.Companion.outputTypeFromSuffix
 import com.kslides.DiagramOutputType.SVG
 import com.kslides.InternalUtils.mkdir
 import com.kslides.KSlides.Companion.logger
-import com.kslides.KSlides.Companion.runHttpServer
 import com.kslides.KSlides.Companion.writeSlidesToFileSystem
 import com.kslides.LiveReload.kslidesReloadRoute
 import com.kslides.Page.generatePage
@@ -73,6 +72,36 @@ annotation class KSlidesDslMarker
  *   presentation contains zero slides.
  */
 fun kslides(block: KSlides.() -> Unit) =
+  buildKSlides(block)
+    .apply {
+      if (!outputConfig.enableFileSystem && !outputConfig.enableHttp)
+        logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} block" }
+
+      if (outputConfig.devMode && !outputConfig.enableHttp)
+        logger.warn { "output { devMode } has no effect without enableHttp = true" }
+
+      if (outputConfig.enableFileSystem)
+        writeSlidesToFileSystem(outputConfig)
+
+      if (outputConfig.enableHttp)
+        startHttpServer(wait = true)
+      else
+        close() // HTTP mode keeps the client for the server's lifetime; otherwise release it now
+    }
+
+/**
+ * Evaluates the kslides DSL and validates the result **without emitting any output**: no files are
+ * written and no HTTP server is started, but all configuration blocks (including `output {}`) are
+ * applied. Used by tooling that renders presentations on its own terms — e.g. `exportPdf()` in the
+ * kslides-export module, which serves the built [KSlides] from an ephemeral-port server via
+ * [KSlides.startHttpServer].
+ *
+ * @param block the same configuration block accepted by [kslides].
+ * @return the populated [KSlides] instance.
+ * @throws IllegalArgumentException if no [KSlides.presentation] blocks are declared, or if any
+ *   presentation contains zero slides.
+ */
+fun buildKSlides(block: KSlides.() -> Unit) =
   KSlides()
     .apply {
       block()
@@ -104,20 +133,6 @@ fun kslides(block: KSlides.() -> Unit) =
       }
 
       outputConfigBlock(outputConfig)
-
-      if (!outputConfig.enableFileSystem && !outputConfig.enableHttp)
-        logger.warn { "Set enableHttp or enableFileSystem to true in the kslides output{} block" }
-
-      if (outputConfig.devMode && !outputConfig.enableHttp)
-        logger.warn { "output { devMode } has no effect without enableHttp = true" }
-
-      if (outputConfig.enableFileSystem)
-        writeSlidesToFileSystem(outputConfig)
-
-      if (outputConfig.enableHttp)
-        runHttpServer(outputConfig, true)
-      else
-        close() // HTTP mode keeps the client for the server's lifetime; otherwise release it now
     }
 
 /**
@@ -151,7 +166,12 @@ fun kslidesTest(block: KSlides.() -> Unit) =
 class KSlides : AutoCloseable {
   internal val kslidesConfig = KSlidesConfig()
   internal val globalPresentationConfig = PresentationConfig().apply { assignDefaults() }
-  internal val outputConfig = OutputConfig(this)
+
+  /**
+   * The output configuration populated by the `output {}` block. Public so that tooling built on
+   * [buildKSlides] (e.g. kslides-export) can read it after the DSL has been evaluated.
+   */
+  val outputConfig = OutputConfig(this)
   internal var kslidesConfigBlock: KSlidesConfig.() -> Unit = {}
   internal var globalPresentationConfigBlock: PresentationConfig.() -> Unit = {}
   internal var outputConfigBlock: OutputConfig.() -> Unit = {}
@@ -173,9 +193,31 @@ class KSlides : AutoCloseable {
 
   internal val presentations get() = presentationMap.values
 
+  /**
+   * The URL paths of all registered presentations (e.g. `"/"`, `"/demo.html"`), in declaration
+   * order. Populated once [buildKSlides]/[kslides] has evaluated the DSL. Public for tooling
+   * (e.g. kslides-export) that iterates the presentations served by [startHttpServer].
+   */
+  val presentationPaths: List<String> get() = presentationMap.keys.toList()
+
   internal fun presentation(
     name: String,
   ) = presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
+
+  /**
+   * Start the same Ktor HTTP server that `output { enableHttp = true }` runs, serving every
+   * registered presentation plus the bundled static assets.
+   *
+   * @param port port to bind; `0` picks an ephemeral free port (read it back from
+   *   [KSlidesHttpServer.port]). Defaults to the configured HTTP port.
+   * @param wait when `true`, block until the server is shut down (the [kslides] HTTP output mode);
+   *   when `false` (the default), return immediately — the caller owns the returned handle and
+   *   must [KSlidesHttpServer.close] it.
+   */
+  fun startHttpServer(
+    port: Int = outputConfig.port,
+    wait: Boolean = false,
+  ) = KSlidesHttpServer(embeddedServer(CIO, port = port, module = appModule(outputConfig)).start(wait = wait))
 
   private val clientLazy =
     lazy {
@@ -389,13 +431,6 @@ class KSlides : AutoCloseable {
             }
           }
         }
-    }
-
-    internal fun runHttpServer(
-      config: OutputConfig,
-      wait: Boolean,
-    ) {
-      embeddedServer(CIO, port = config.port, module = appModule(config)).start(wait = wait)
     }
   }
 }

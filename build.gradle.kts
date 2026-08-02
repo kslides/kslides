@@ -11,6 +11,7 @@ plugins {
 // Aggregate Dokka HTML across publishing modules into the root build/ output.
 dependencies {
     dokka(projects.kslidesCore)
+    dokka(projects.kslidesExport)
     dokka(projects.kslidesLetsplot)
 }
 

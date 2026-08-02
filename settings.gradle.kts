@@ -24,4 +24,5 @@ rootProject.name = "kslides"
 
 include(":kslides-core")
 include(":kslides-examples")
+include(":kslides-export")
 include(":kslides-letsplot")

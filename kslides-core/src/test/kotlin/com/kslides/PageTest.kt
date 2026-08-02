@@ -19,5 +19,23 @@ class PageTest : StringSpec() {
       out shouldContain "   <code>standalone</code>"
       out shouldNotContain "<pre><code"
     }
+
+    "author styles are not scoped to screen media, so they also apply when printing" {
+      // Regression for PDF export: media="screen" styles vanish in ?print-pdf / kslides-export
+      // output, which un-positioned the corner links and produced a blank leading PDF page.
+      val presentation =
+        kslidesTest {
+          css += ".reveal h4 { color: red; }"
+          presentation {
+            markdownSlide {
+              slideConfig { codeFontSize = "0.5em" }
+              content { "# Styled\n```kotlin\nval x = 1\n```" }
+            }
+          }
+        }.presentation("/")
+
+      val html = Page.generatePage(presentation, useHttp = true, srcPrefix = "/revealjs")
+      html shouldNotContain "media=\"screen\""
+    }
   }
 }

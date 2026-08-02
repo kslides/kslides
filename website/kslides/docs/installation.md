@@ -37,6 +37,9 @@ dependencies {
 
   // Optional: Lets-Plot integration
   implementation("com.kslides:kslides-letsplot:1.2.0")
+
+  // Optional: PDF export via headless Chromium (see the PDF export page)
+  implementation("com.kslides:kslides-export:1.2.0")
 }
 
 kotlin {
@@ -53,8 +56,9 @@ If you use `gradle/libs.versions.toml`:
 kslides = "1.2.0"
 
 [libraries]
-kslides-core    = { module = "com.kslides:kslides-core",     version.ref = "kslides" }
+kslides-core     = { module = "com.kslides:kslides-core",     version.ref = "kslides" }
 kslides-letsplot = { module = "com.kslides:kslides-letsplot", version.ref = "kslides" }
+kslides-export   = { module = "com.kslides:kslides-export",   version.ref = "kslides" }
 ```
 
 then in your build script:

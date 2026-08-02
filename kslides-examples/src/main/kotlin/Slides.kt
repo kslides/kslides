@@ -1,5 +1,6 @@
 import com.kslides.DiagramOutputType
 import com.kslides.Effect
+import com.kslides.KSlides
 import com.kslides.PlaygroundMode
 import com.kslides.PlaygroundTheme
 import com.kslides.Presentation
@@ -82,9 +83,17 @@ import org.jetbrains.letsPlot.letsPlot
 import org.jetbrains.letsPlot.scale.scaleFillGradient
 import kotlin.random.Random
 
-@Suppress("LongMethod")
 fun main() {
-  kslides {
+  kslides(exampleSlides())
+}
+
+/**
+ * The complete example deck definition, shared by [main] (filesystem + HTTP output) and the
+ * PDF-export entry point (`Export.kt` in the `export` source set).
+ */
+@Suppress("LongMethod")
+fun exampleSlides(): KSlides.() -> Unit =
+  {
     // Optional
     kslidesConfig {
       // kslides configuration options
@@ -1954,8 +1963,6 @@ fun main() {
       smallSlideDefinition(source = slides, token = "vmultislide")
     }
   }
-// kslides end
-}
 
 // Convenience wrappers around slideDefinition() that shrink the definition slides' code below the
 // deck-wide codeFontSize default. Two receiver forms mirror slideDefinition(): one for calls

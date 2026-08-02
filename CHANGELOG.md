@@ -9,6 +9,30 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+### Added
+
+- **`kslides-export` module — one-command PDF export** (F2). `exportPdf()` builds
+  the presentations, serves them from an ephemeral-port Ktor server, and prints
+  each deck through headless Chromium (Playwright), waiting for reveal.js'
+  `pdf-ready` event and any Mermaid diagrams before printing. Configured via the
+  new `pdf {}` block in `output {}` (`PdfConfig`: output directory, explicit page
+  size, per-presentation `exclude()`, optional first-slide `previewPng`, and
+  `browserChannel` to drive an installed Chrome/Edge instead of downloading
+  Chromium). In this repo: `./gradlew exportPdf [-Pdeck=<name>]` or
+  `make pdf [DECK=<name>]` writes `build/pdf/<deck>.pdf`.
+- `buildKSlides()` — evaluates and validates the kslides DSL without emitting
+  any output, and `KSlides.startHttpServer()` — starts the HTTP-mode Ktor server
+  programmatically (port `0` picks an ephemeral port) and returns a closeable
+  `KSlidesHttpServer` handle. Both public for tooling such as kslides-export.
+
+### Fixed
+
+- Generated `<style>` blocks (the inlined `slides.css`, `css {}` rules, and the
+  per-render code-size/Mermaid rules) are no longer scoped to `media="screen"`,
+  so custom styling now applies in reveal.js' `?print-pdf` view and exported
+  PDFs. Previously the unstyled corner links rendered full-width in print,
+  shifting every deck one page down and producing a blank leading PDF page.
+
 ## [1.2.0] — 2026-08-01
 
 Adds native client-side Mermaid diagrams, a slide font-size API, and an

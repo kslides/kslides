@@ -31,6 +31,7 @@ kotest = "6.2.3"
 common-utils = "3.2.2"
 commons-text = "1.15.0"
 letsplot = "4.15.0"
+playwright = "1.61.0"
 srcref = "2.2.0"
 
 [libraries]
@@ -65,6 +66,7 @@ common-utils-core = { module = "com.pambrose.common-utils:core-utils", version.r
 common-utils-ktor-server = { module = "com.pambrose.common-utils:ktor-server-utils", version.ref = "common-utils" }
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commons-text" }
 letsplot-kotlin = { module = "org.jetbrains.lets-plot:lets-plot-kotlin-jvm", version.ref = "letsplot" }
+playwright = { module = "com.microsoft.playwright:playwright", version.ref = "playwright" }
 srcref = { module = "com.pambrose:srcref", version.ref = "srcref" }
 
 # Plugin-marker artifacts, consumed by buildSrc to apply plugins from precompiled scripts.

@@ -1,6 +1,6 @@
 .PHONY: default help build-all stop clean clean-cache clean-docs build local-build lint detekt refresh tests \
         fatjar uber dist stage deps process-resources versions dev-server kroki-start kroki-stop \
-        kdocs check-site upgrade-site clean-site site \
+        pdf clean-pdf kdocs check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _require-version _require-gradle-version
 
@@ -84,6 +84,13 @@ kroki-start:  ## Start a local Kroki diagram server on port 8000 (docker-compose
 
 kroki-stop:  ## Stop the local Kroki diagram server
 	cd $(KROKI_DIR) && docker-compose down
+
+# The example deck's Kroki diagrams render through the local Kroki server (make kroki-start).
+pdf:  ## Export the example presentations to PDF in build/pdf (optionally DECK=<name>)
+	./gradlew :kslides-examples:exportPdf $(if $(DECK),-Pdeck=$(DECK))
+
+clean-pdf:  ## Remove the exported PDFs
+	rm -rf build/pdf
 
 kdocs:  ## Generate Dokka HTML API docs
 	./gradlew :dokkaGenerate

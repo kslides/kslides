@@ -24,10 +24,36 @@ ktor {
     }
 }
 
+// PDF export (Export.kt) lives in its own source set so the Playwright dependency never reaches
+// the runnable fat JAR: the Ktor plugin bundles only the main source set's runtime classpath.
+sourceSets {
+    create("export") {
+        compileClasspath += sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().output
+    }
+}
+
+configurations {
+    named("exportImplementation") { extendsFrom(configurations.implementation.get()) }
+    named("exportRuntimeOnly") { extendsFrom(configurations.runtimeOnly.get()) }
+}
+
 dependencies {
     implementation(projects.kslidesCore)
     implementation(projects.kslidesLetsplot)
 
     implementation(libs.junit4) // for junit playgrounds, which are in main
     runtimeOnly(libs.logback.classic) // logging implementation lives with the application, not the libraries
+
+    "exportImplementation"(projects.kslidesExport)
+}
+
+tasks.register<JavaExec>("exportPdf") {
+    group = "distribution"
+    description = "Print the example presentations to PDF via headless Chromium (-Pdeck=<name> for one deck)"
+    mainClass = "ExportKt"
+    classpath = sourceSets["export"].runtimeClasspath
+    // Match the run task: include()/source paths resolve relative to the repo root.
+    workingDir = rootProject.projectDir
+    providers.gradleProperty("deck").orNull?.let { systemProperty("kslides.export.deck", it) }
 }
