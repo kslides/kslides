@@ -2,11 +2,40 @@
 
 package website
 
+import com.kslides.PresentationTheme
+import com.kslides.config.LogoPosition
 import com.kslides.kslides
 import kotlinx.css.Color
 import kotlinx.css.FontWeight
+import kotlinx.css.TextTransform
 import kotlinx.css.color
 import kotlinx.css.fontWeight
+import kotlinx.css.px
+
+// --8<-- [start:custom-theme]
+fun customTheming() {
+  kslides {
+    presentationConfig {
+      customTheme {
+        baseTheme = PresentationTheme.WHITE // start from a stock theme
+        backgroundColor = Color("#f5f5f5")
+        mainColor = Color("#1a1a2e")
+        headingColor = Color("#0f4c81")
+        headingTextTransform = TextTransform.none // keep headings as written
+        linkColor = Color("#0f4c81")
+        headingFont = "Inter, sans-serif"
+        codeFont = "JetBrains Mono, monospace"
+        customProperty("--r-heading-letter-spacing", "0.02em") // unmodeled vars pass through
+        logo("assets/logo.svg", position = LogoPosition.TOP_RIGHT, size = 80.px)
+      }
+    }
+
+    presentation {
+      markdownSlide { content { "# On brand" } }
+    }
+  }
+}
+// --8<-- [end:custom-theme]
 
 // --8<-- [start:string]
 fun stringCss() {

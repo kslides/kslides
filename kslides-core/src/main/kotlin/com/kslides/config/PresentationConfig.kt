@@ -394,6 +394,7 @@ class PresentationConfig : AbstractConfig() {
   internal val copyCodeConfig = CopyCodeConfig()
   internal val slideConfig = SlideConfig()
   internal val playgroundConfig = PlaygroundConfig()
+  internal val customThemeConfig = ThemeConfig()
   internal val letsPlotIframeConfig = LetsPlotIframeConfig()
   internal val diagramConfig = DiagramConfig()
 
@@ -464,7 +465,15 @@ class PresentationConfig : AbstractConfig() {
     this.playgroundConfig.merge(other.playgroundConfig)
     this.letsPlotIframeConfig.merge(other.letsPlotIframeConfig)
     this.diagramConfig.merge(other.diagramConfig)
+    this.customThemeConfig.merge(other.customThemeConfig)
   }
+
+  /**
+   * The stock theme the presentation actually renders with: [ThemeConfig.baseTheme] when the
+   * `customTheme {}` block set one, otherwise [theme]. Drives the theme stylesheet link and
+   * theme-derived behavior (e.g. Mermaid's dark/light selection).
+   */
+  internal val effectiveTheme: PresentationTheme get() = customThemeConfig.baseTheme ?: theme
 
   /** Configure the reveal.js-menu plugin. Only takes effect when [enableMenu] is `true`. */
   fun menuConfig(block: MenuConfig.() -> Unit) = menuConfig.block()
@@ -483,4 +492,10 @@ class PresentationConfig : AbstractConfig() {
 
   /** Configure defaults for [com.kslides.diagram] Kroki images. */
   fun diagramConfig(block: DiagramConfig.() -> Unit) = diagramConfig.block()
+
+  /**
+   * Customize the presentation's look on top of a stock reveal.js theme: typed brand colors,
+   * fonts, heading treatment, and an optional corner logo. See [ThemeConfig].
+   */
+  fun customTheme(block: ThemeConfig.() -> Unit) = customThemeConfig.block()
 }

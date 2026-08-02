@@ -4,7 +4,25 @@ icon: lucide/palette
 
 # Styling
 
-Each presentation has its own CSS. You can attach styles either as a raw string or via the [kotlinx.css](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started-with-kotlinx.css) DSL — and you can mix the two on the same presentation.
+Each presentation has its own CSS. You can attach styles either as a raw string or via the [kotlinx.css](https://github.com/Kotlin/kotlinx.html/wiki/Getting-started-with-kotlinx.css) DSL — and you can mix the two on the same presentation. For brand-level styling, start with the typed `customTheme {}` block below before reaching for raw CSS.
+
+## Custom themes
+
+"Make it look like our brand" doesn't require reverse-engineering reveal.js theme variables. The `customTheme {}` block (in `presentationConfig {}`, globally or per presentation, cascading like every other config) layers typed overrides on top of a stock theme:
+
+```kotlin
+--8<-- "Styling.kt:custom-theme"
+```
+
+Each property maps to one of the CSS custom properties (`--r-*`) that reveal.js themes expose, and only the properties you assign are emitted — as a `<style id="custom-theme">` block after the base theme's stylesheet, so your values win the cascade while `css {}` rules and `slides.css` can still override them. The overrides also apply in `?print-pdf` view and [PDF export](pdf-export.md).
+
+A few details worth knowing:
+
+- `baseTheme` picks the stock theme to start from and takes precedence over `theme` — it also drives theme-derived behavior like [Mermaid's](extensions/mermaid.md) dark/light selection.
+- `logo()` pins a brand image to a corner of every slide (and every exported PDF page). Without an `href` it ignores pointer events, so it never blocks slide interaction.
+- `customProperty("--r-…", …)` passes through any reveal.js theme variable the DSL doesn't model.
+
+The [theme example deck](https://kslides.github.io/kslides/docs/theme.html) shows the result, with its own `customTheme {}` source on the second slide.
 
 ## Raw CSS
 
