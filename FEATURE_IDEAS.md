@@ -12,7 +12,7 @@ describes the plan, not the code.
 | #  | Feature                    | Primary user   | Effort | Theme                | Status              |
 |----|----------------------------|----------------|--------|----------------------|---------------------|
 | F1 | Live-reload dev mode       | Deck authors   | M      | Developer experience | ✅ Shipped in 1.2.0 |
-| F2 | One-command PDF export     | Deck sharers   | M      | Distribution         | Proposed            |
+| F2 | One-command PDF export     | Deck sharers   | M      | Distribution         | ✅ Merged (PR #60)  |
 | F3 | Type-safe theming DSL      | Teams/branding | L      | Customization        | Proposed            |
 | F4 | Native Mermaid diagrams    | Deck authors   | S      | Content              | ✅ Shipped in 1.2.0 |
 | F5 | Follow-along presenting    | Presenters     | L      | Platform             | Proposed            |
@@ -103,6 +103,48 @@ output, and documenting the `-t` workflow.
 
 ## F2. One-command PDF export
 
+### Status: ✅ Merged for the next release (PR #60)
+
+`exportPdf(deck?) { … }` in the new **`kslides-export`** module (`com.kslides.export`,
+`PdfExport.kt`) — the separate-module option the effort estimate recommended. It accepts
+the same block as `kslides {}`, builds the presentations with the new core `buildKSlides()`
+(DSL evaluation with no output), serves them from an ephemeral-port Ktor server via
+`KSlides.startHttpServer(port = 0)` / `KSlidesHttpServer`, and prints each deck through
+headless Chromium (Playwright). The `pdf {}` block in `output {}` (`PdfConfig`) covers the
+proposed knobs — output directory, explicit page size (defaulting to the deck's own print
+CSS), per-presentation `exclude()` — plus `browserChannel` (`"chrome"`/`"msedge"` drives an
+installed browser and skips the Chromium download) and readiness/settle timeouts. The
+first-slide-PNG bonus shipped as `previewPng`. In this repo: `./gradlew exportPdf
+[-Pdeck=<name>]` or `make pdf [DECK=<name>]` → `build/pdf/<deck>.pdf`; docs at
+`website/kslides/docs/pdf-export.md`.
+
+Two things landed differently from the proposal below:
+
+- **"Wait for reveal's `ready` event" was wrong.** reveal 6's print view assembles
+  *asynchronously after* `ready` — printing on `Reveal.isReady()` produced Letter-portrait
+  pages because the `@page` size rule didn't exist yet. The exporter instead records
+  reveal's **`pdf-ready`** event via an init script installed before any page script runs,
+  and also waits for Mermaid `data-processed` completion. Navigation waits for
+  `DOMContentLoaded`, not `load` — decks with external iframes (Kotlin Playground) can keep
+  the window load event pending indefinitely.
+- **It surfaced a pre-existing kslides print bug.** Every generated `<style>` block (the
+  inlined `slides.css`, `css {}` rules, code-size/Mermaid rules) was scoped
+  `media="screen"`, so all author styling vanished in print — the unstyled corner-link SVG
+  rendered full-width in flow and pushed every deck down one page, leaving a blank leading
+  PDF page. Fixed in core (`Page.kt`, `CssValue.kt`), which also fixes manual
+  `?print-pdf` printing.
+
+Open questions resolved:
+
+- *Separate `kslides-export` module vs. dev-only dependency?* → **Both.** kslides-export is
+  a separate published module, and the consumer wiring keeps it dev-only in effect:
+  `Export.kt` lives in a dedicated `export` source set in kslides-examples, so Playwright
+  never reaches the runnable fat JAR (the deck definition is shared via `exampleSlides()`).
+- *Bundle fonts for identical CI rendering?* → **Not needed.** The reveal.js theme fonts
+  are checked-in assets served by the same ephemeral server, so PDFs render identically on
+  CI. Only render-time external content needs its backing service at export time (Kroki
+  decks need a reachable Kroki server; native `mermaid()` renders offline).
+
 ### Problem
 
 reveal.js supports print-to-PDF via the `?print-pdf` query parameter, and kslides already
@@ -125,6 +167,8 @@ A Gradle task (or `KSlides` output option) that drives headless Chromium:
   Chromium via Playwright-Java (or Chrome DevTools Protocol directly to avoid the
   dependency), load `http://localhost:<port>/<deck>?print-pdf`, wait for reveal's
   `ready` event, call `Page.printToPDF`, write `build/pdf/<deck>.pdf`.
+  *(Partly superseded — see Status above: the readiness signal is `pdf-ready`, not
+  `ready`, which fires before the print view has assembled.)*
 - **Config**: a `pdf {}` block in `OutputConfig` for page size, output directory, and
   per-presentation opt-out.
 - **Bonus**: the same headless session can capture a first-slide PNG for use as a social
@@ -422,9 +466,13 @@ legitimate v1.
 The sequencing held: F4 and F6 landed as small, self-contained additions, and F1 followed
 with the websocket route and client-injection plumbing it predicted.
 
+### Done — merged for the next release
+
+3. ~~**F2** (M): unlocks CI-attached PDFs for releases.~~ Merged in PR #60. The
+   CI-attach payoff is unlocked but not yet claimed — see the F2 follow-up below.
+
 ### Remaining
 
-3. **F2** (M): unlocks CI-attached PDFs for releases.
 4. **F3** (L): the team-adoption unlock; benefits from user feedback gathered above.
 5. **F5 last** (L): reuses F1's infrastructure; ship when the server story is mature.
    **Its prerequisite is now met** — `LiveReload.kt` establishes the pattern F5 needs
@@ -438,6 +486,12 @@ with the websocket route and client-injection plumbing it predicted.
 - **F1**: `devMode` currently warns when set without `enableHttp`. If F5 lands, both flags
   will gate websocket routes and the two client scripts will coexist on the same page —
   worth a shared injection point rather than a second special case in `Page`.
+- **F2**: the motivating "CI attaches PDFs to GitHub releases" use case is not wired up —
+  it needs a release-workflow step (pre-install Chromium via the Playwright CLI, run
+  `exportPdf`, upload the artifacts). The readiness wait is tied to reveal 6's print-view
+  internals (`pdf-ready`, Mermaid `data-processed`), so re-verify it when bumping the
+  bundled reveal.js. `kslides-export` is unpublished until the next Maven Central release,
+  and `installation.md` already lists it — the release checklist covers the version bump.
 - **F4**: the bundled Mermaid version is a checked-in asset with no upgrade automation;
   bumping it is a manual re-download. Worth a Makefile target if it drifts.
 - **F6**: no prompts means "add lets-plot / playground" is still a manual post-scaffold
