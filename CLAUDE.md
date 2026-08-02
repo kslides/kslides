@@ -119,7 +119,7 @@ Configuration merges hierarchically: **global** (`kslides.presentationConfig{}`)
 - `LiveReload` (`LiveReload.kt`) — `devMode` websocket route and the injected reload client.
 - `buildKSlides()` / `KSlides.startHttpServer()` / `KSlidesHttpServer` — tooling entry points: evaluate the DSL without emitting output, then serve it programmatically (port `0` = ephemeral). Used by kslides-export.
 - `PresentationTheme.isDark` (`Enums.kt`) — Exhaustive dark/light theme classification; adding a theme forces a dark/light decision at compile time.
-- Config classes in `com.kslides.config.*`: `KSlidesConfig`, `PresentationConfig`, `SlideConfig`, `OutputConfig`, `PdfConfig`, `PlaygroundConfig`, `MenuConfig`, `CopyCodeConfig`, `LetsPlotIframeConfig`, `DiagramConfig`.
+- Config classes in `com.kslides.config.*`: `KSlidesConfig`, `PresentationConfig`, `SlideConfig`, `OutputConfig`, `PdfConfig`, `ThemeConfig` (the `customTheme {}` typed-theming block: `--r-*` overrides, `baseTheme`, corner `logo()`), `PlaygroundConfig`, `MenuConfig`, `CopyCodeConfig`, `LetsPlotIframeConfig`, `DiagramConfig`.
 
 ### Dual Output System
 

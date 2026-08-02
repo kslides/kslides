@@ -11,6 +11,19 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Added
 
+- **`customTheme {}` — type-safe theming DSL** (F3). A new block inside
+  `presentationConfig {}` (global or per presentation, cascading like every
+  other config) that layers typed overrides on a stock reveal.js theme:
+  brand colors, fonts, heading treatment (including
+  `headingTextTransform = TextTransform.none` to disable the stock themes'
+  UPPERCASE headings), per-level heading sizes, `baseTheme` selection, a
+  `customProperty("--r-…", …)` passthrough for unmodeled theme variables,
+  and `logo()` to pin a corner logo/watermark to every slide and exported
+  PDF page. Only assigned properties are emitted, as a
+  `<style id="custom-theme">` override block after the base theme's
+  stylesheet — no SCSS compilation involved. See the styling docs page and
+  the new `theme.html` example deck.
+
 - **`kslides-export` module — one-command PDF export** (F2). `exportPdf()` builds
   the presentations, serves them from an ephemeral-port Ktor server, and prints
   each deck through headless Chromium (Playwright), waiting for reveal.js'

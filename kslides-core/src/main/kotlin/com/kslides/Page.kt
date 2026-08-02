@@ -204,6 +204,18 @@ internal object Page {
       }
     }
 
+    // customTheme{} overrides, layered directly after the stylesheet links so they win over the
+    // base theme while slides.css and css{} rules (emitted below) can still override them.
+    if (config.customThemeConfig.hasStyleContent()) {
+      rawHtml("\n")
+      style {
+        id = "custom-theme"
+        rawHtml("\n")
+        rawHtml(config.customThemeConfig.cssText().prependIndent("\t\t\t"))
+        rawHtml("\n\t\t")
+      }
+    }
+
     rawHtml("\n")
     link {
       rel = "shortcut icon"
@@ -279,6 +291,16 @@ internal object Page {
         }
       }
 
+      config.customThemeConfig.logoValue?.let { logo ->
+        rawHtml("\n\t\t\t")
+        if (logo.href.isBlank())
+          img(classes = "kslides-logo") { src = logo.src }
+        else
+          a(href = logo.href, classes = "kslides-logo") {
+            img { src = logo.src }
+          }
+      }
+
       rawHtml("\n")
       div("slides") {
         p.slides.forEach { slide -> slide.content(this, slide, useHttp) }
@@ -304,7 +326,7 @@ internal object Page {
       script { src = "$srcPrefix${Mermaid.MERMAID_JS_PATH}" }
       rawHtml("\n\t")
       script {
-        rawHtml("\n${Mermaid.initScript(config.theme).prependIndent("\t\t")}\n\t")
+        rawHtml("\n${Mermaid.initScript(config.effectiveTheme).prependIndent("\t\t")}\n\t")
       }
       rawHtml("\n")
     }

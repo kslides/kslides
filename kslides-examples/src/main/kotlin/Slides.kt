@@ -15,6 +15,7 @@ import com.kslides.by
 import com.kslides.codeSnippet
 import com.kslides.config.CopyCodeButton
 import com.kslides.config.CopyCodeDisplay
+import com.kslides.config.LogoPosition
 import com.kslides.diagram
 import com.kslides.fragment
 import com.kslides.headRow
@@ -35,6 +36,7 @@ import kotlinx.css.Display
 import kotlinx.css.Float
 import kotlinx.css.LinearDimension
 import kotlinx.css.QuotedString
+import kotlinx.css.TextTransform
 import kotlinx.css.clear
 import kotlinx.css.color
 import kotlinx.css.content
@@ -44,6 +46,7 @@ import kotlinx.css.fontSize
 import kotlinx.css.lineHeight
 import kotlinx.css.marginBottom
 import kotlinx.css.properties.LineHeight
+import kotlinx.css.px
 import kotlinx.css.width
 import kotlinx.html.Dir
 import kotlinx.html.a
@@ -1961,6 +1964,49 @@ fun exampleSlides(): KSlides.() -> Unit =
       // vmultislide end
 
       smallSlideDefinition(source = slides, token = "vmultislide")
+    }
+
+    presentation {
+      path = "theme.html"
+
+      presentationConfig {
+        topRightHref = "/#/features"
+        topRightTitle = "Go to main presentation"
+        topRightText = "🔙"
+
+        // customtheme begin
+        customTheme {
+          baseTheme = PresentationTheme.WHITE
+          backgroundColor = Color("#f8f5ef")
+          mainColor = Color("#1a1a2e")
+          headingColor = Color("#0f4c81")
+          headingTextTransform = TextTransform.none
+          linkColor = Color("#b3550f")
+          codeFont = "Menlo, Consolas, monospace"
+          customProperty("--r-heading-letter-spacing", "0.02em")
+          logo(
+            "images/slide-transparent.png",
+            position = LogoPosition.BOTTOM_RIGHT,
+            size = 90.px,
+            opacity = 0.6,
+          )
+        }
+        // customtheme end
+      }
+
+      markdownSlide {
+        content {
+          """
+          # Custom Theme
+
+          Brand colors, fonts, and a corner logo — all typed, with IDE completion
+
+          This deck restyles the stock `WHITE` theme with the `customTheme {}` block shown [below](/theme.html#/1) 👇
+          """
+        }
+      }
+
+      slideDefinition(source = slides, token = "customtheme")
     }
   }
 

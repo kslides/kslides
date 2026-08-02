@@ -18,10 +18,35 @@
 
     <link href="revealjs/dist/reveal.css" rel="stylesheet">
     <link href="revealjs/dist/reset.css" rel="stylesheet">
-    <link href="revealjs/dist/theme/solarized.css" id="theme" rel="stylesheet">
+    <link href="revealjs/dist/theme/white.css" id="theme" rel="stylesheet">
     <link href="revealjs/plugin/highlight/monokai.css" id="highlight-theme" rel="stylesheet">
     <link href="revealjs/plugin/copycode/copycode.css" rel="stylesheet">
     <link href="revealjs/plugin/copycode/copycode-button-fix.css" rel="stylesheet">
+    
+    <style id="custom-theme">
+			:root {
+			  --r-background-color: #f8f5ef;
+			  --r-main-color: #1a1a2e;
+			  --r-heading-color: #0f4c81;
+			  --r-heading-text-transform: none;
+			  --r-link-color: #b3550f;
+			  --r-code-font: Menlo, Consolas, monospace;
+			  --r-heading-letter-spacing: 0.02em;
+			}
+			.kslides-logo {
+			  position: fixed;
+			  bottom: 16px;
+			  right: 16px;
+			  width: 90px;
+			  z-index: 5;
+			  opacity: 0.6;
+			  pointer-events: none;
+			}
+			.kslides-logo img {
+			  width: 100%;
+			  display: block;
+			}
+		</style>
     
     <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
     <link href="/favicon.ico" rel="icon" type="image/x-icon">
@@ -78,8 +103,6 @@
     <style type="text/css">
 			.reveal .kslides-code-1 pre { font-size: 0.60em; }
 			.reveal .kslides-code-1 pre code { white-space: pre-wrap; word-break: break-word; }
-			.reveal .kslides-code-2 pre { font-size: 0.40em; }
-			.reveal .kslides-code-2 pre code { white-space: pre-wrap; word-break: break-word; }
 			.reveal pre code .hljs-ln-numbers { white-space: nowrap; word-break: normal; }
 		</style>
   </head>
@@ -94,112 +117,42 @@
         </svg>
               </a>
 			<a class="top-right" href="/#/features" target="_self" title="Go to main presentation">&#128281;</a>
+			<img class="kslides-logo" src="images/slide-transparent.png">
 
       <div class="slides">
-        <section>
-          <section class="kslides-code-1">
-            <h2>Fragment Styles</h2>
-            <p>There are different types of fragments, like: &#128071;</p>
-            <p class="fragment grow">grow</p>
-            <p class="fragment shrink">shrink</p>
-            <p class="fragment fade-out">fade-out</p>
-            <p>
-              <span class="fragment fade-right" style="display: inline-block;">fade-right,</span> <span class="fragment fade-up" style="display: inline-block;">fade-up,</span> <span class="fragment fade-down" style="display: inline-block;">fade-down, </span> <span class="fragment fade-left" style="display: inline-block;">fade-left</span>
-            </p>
-            <p class="fragment fade-in-then-out">fade-in-then-out</p>
-            <p class="fragment fade-in-then-semi-out">fade-in-then-semi-out</p>
-            <p>
-              Highlight <span class="fragment highlight-red">red </span><span class="fragment highlight-blue">blue </span><span class="fragment highlight-green">green </span>
-            </p>
-          </section>
-          
-          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
-            <script type="text/template">
-## Slide Definition
-```kotlin []
-dslSlide {
-  content {
-    h2 { +"Fragment Styles" }
-    p { +"There are different types of fragments, like: 👇" }
-    p("fragment grow") { +"grow" }
-    p("fragment shrink") { +"shrink" }
-    p("fragment fade-out") { +"fade-out" }
-    p {
-      span("fragment fade-right") { style = "display: inline-block;"; +"fade-right," }
-      +" "
-      span("fragment fade-up") { style = "display: inline-block;"; +"fade-up," }
-      +" "
-      span("fragment fade-down") { style = "display: inline-block;"; +"fade-down, " }
-      +" "
-      span("fragment fade-left") { style = "display: inline-block;"; +"fade-left" }
-    }
-    p("fragment fade-in-then-out") { +"fade-in-then-out" }
-    p("fragment fade-in-then-semi-out") { +"fade-in-then-semi-out" }
-    p {
-      +"Highlight "
-      span("fragment highlight-red") { +"red " }
-      span("fragment highlight-blue") { +"blue " }
-      span("fragment highlight-green") { +"green " }
-    }
-  }
-}
-```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*fragment-styles%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*fragment-styles%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+        <section class="kslides-code-1" data-markdown="">
+          <script type="text/template">
+# Custom Theme
+
+Brand colors, fonts, and a corner logo — all typed, with IDE completion
+
+This deck restyles the stock `WHITE` theme with the `customTheme {}` block shown [below](/theme.html#/1) 👇
 </script>
-          </section>
-          
         </section>
         
-        <section>
-          <section class="kslides-code-1" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="">
-            <script type="text/template">
-## Markdown Slide with Fragments
-
-highlight-red 
-              <!-- .element: class="fragment highlight-red" -->
-
-fade-in-then-semi-out 
-              <!-- .element: class="fragment fade-in-then-semi-out" -->
-
-fade-left 
-              <!-- .element: class="fragment fade-left" -->
-
-fade-right 
-              <!-- .element: class="fragment fade-right" -->
-
-fade-up 👇 
-              <!-- .element: class="fragment fade-up" -->
-
-</script>
-          </section>
-          
-          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
-            <script type="text/template">
+        <section class="kslides-code-1" data-markdown="">
+          <script type="text/template">
 ## Slide Definition
 ```kotlin []
-markdownSlide {
-  content {
-    """
-    ## Markdown Slide with Fragments
-
-    highlight-red ${fragment(Effect.HIGHLIGHT_RED)}
-
-    fade-in-then-semi-out ${fragment(Effect.FADE_IN_THEN_SEMI_OUT)}
-
-    fade-left ${fragment(Effect.FADE_LEFT)}
-
-    fade-right ${fragment(Effect.FADE_RIGHT)}
-
-    fade-up 👇 ${fragment(Effect.FADE_UP)}
-
-    """
-  }
+customTheme {
+  baseTheme = PresentationTheme.WHITE
+  backgroundColor = Color("#f8f5ef")
+  mainColor = Color("#1a1a2e")
+  headingColor = Color("#0f4c81")
+  headingTextTransform = TextTransform.none
+  linkColor = Color("#b3550f")
+  codeFont = "Menlo, Consolas, monospace"
+  customProperty("--r-heading-letter-spacing", "0.02em")
+  logo(
+    "images/slide-transparent.png",
+    position = LogoPosition.BOTTOM_RIGHT,
+    size = 90.px,
+    opacity = 0.6,
+  )
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*fragment-md%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*fragment-md%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*customtheme%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*customtheme%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
 </script>
-          </section>
-          
         </section>
         
       </div>

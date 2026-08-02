@@ -382,7 +382,7 @@ class Presentation(
   }
 
   internal fun assignCssFiles() {
-    cssFiles += CssFile(finalConfig.theme.cssSrc, "theme")
+    cssFiles += CssFile(finalConfig.effectiveTheme.cssSrc, "theme")
     cssFiles += CssFile(finalConfig.highlight.cssSrc, "highlight-theme")
 
     if (finalConfig.enableCodeCopy) {
