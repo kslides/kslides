@@ -13,7 +13,7 @@ describes the plan, not the code.
 |----|----------------------------|----------------|--------|----------------------|---------------------|
 | F1 | Live-reload dev mode       | Deck authors   | M      | Developer experience | ✅ Shipped in 1.2.0 |
 | F2 | One-command PDF export     | Deck sharers   | M      | Distribution         | ✅ Merged (PR #60)  |
-| F3 | Type-safe theming DSL      | Teams/branding | L      | Customization        | Proposed            |
+| F3 | Type-safe theming DSL      | Teams/branding | L      | Customization        | ✅ Merged (PR #61)  |
 | F4 | Native Mermaid diagrams    | Deck authors   | S      | Content              | ✅ Shipped in 1.2.0 |
 | F5 | Follow-along presenting    | Presenters     | L      | Platform             | Proposed            |
 | F6 | Scaffolding command        | New users      | S      | Adoption             | ✅ Shipped in 1.2.0 |
@@ -194,6 +194,41 @@ e.g. `kslides-export`, following the `kslides-letsplot` precedent) and CI ergono
 
 ## F3. Type-safe theming DSL
 
+### Status: ✅ Merged for the next release (PR #61)
+
+`customTheme {}` inside `presentationConfig {}` — backed by `ThemeConfig`
+(`config/ThemeConfig.kt`) — shipped with the block name and property names the proposal
+sketched. Eighteen typed properties (brand colors, `mainFont`/`headingFont`/`codeFont`,
+`headingTextTransform`, per-level heading sizes, selection colors, `blockMargin`) each map
+1:1 to a reveal.js `--r-*` variable: the `ConfigProperty` key (the Kotlin property name) is
+kebab-cased and `--r-`-prefixed at emission time, so only assigned properties are emitted
+and the cascade works by plain map merge like every other config. `baseTheme` picks the
+stock theme to layer on and takes precedence over `theme` via the new
+`PresentationConfig.effectiveTheme`, which also drives theme-derived behavior such as
+Mermaid's dark/light selection. `logo()` pins a corner logo/watermark to every slide (and
+every exported PDF page). Docs: the "Custom themes" section of
+`website/kslides/docs/styling.md`, plus the `theme.html` example deck.
+
+Two things landed differently from the proposal below:
+
+- **No `theme/<name>.css` output file.** The overrides are inlined as a
+  `<style id="custom-theme">` block in `Page.generateHead`, layered after the base theme's
+  stylesheet link. That matches how kslides already inlines `slides.css` and `css {}`
+  rules, keeps filesystem and HTTP output byte-identical, and needs no new route or output
+  path — at the cost of not being separately cacheable.
+- **Print required a z-index decision the proposal didn't anticipate.** reveal.js' print
+  view wraps each slide in a `.pdf-page` stacking context at `z-index: 1` whose opaque
+  background painted over the fixed-position logo. The logo sits at `z-index: 5` — above
+  the print pages, below reveal's progress bar (10) and controls (11).
+
+Open questions resolved:
+
+- *Raw `--r-*` passthrough?* → **Yes.** `customProperty("--r-heading-letter-spacing",
+  "0.02em")` covers the variables the DSL doesn't model; the name is validated to start
+  with `--`, and values cascade per property name like the typed ones.
+- *`slideConfig`-level overrides in v1?* → **No**, per the proposal's own recommendation.
+  Theming is global/presentation-level; per-slide styling stays with `classes`/CSS.
+
 ### Problem
 
 Theming today means picking from the stock reveal.js themes via the `PresentationTheme`
@@ -230,6 +265,8 @@ presentationConfig {
   with the same `ConfigProperty` delegate pattern as other config classes.
 - **Output**: filesystem mode writes `theme/<name>.css` next to the deck; HTTP mode
   serves it from the same route tree as `slides.css`.
+  *(Superseded — see Status above: the overrides are inlined into the page head instead,
+  so both output modes emit identical HTML and no new route or output path is needed.)*
 
 ### User value
 
@@ -470,10 +507,14 @@ with the websocket route and client-injection plumbing it predicted.
 
 3. ~~**F2** (M): unlocks CI-attached PDFs for releases.~~ Merged in PR #60. The
    CI-attach payoff is unlocked but not yet claimed — see the F2 follow-up below.
+4. ~~**F3** (L): the team-adoption unlock; benefits from user feedback gathered above.~~
+   Merged in PR #61. It landed ahead of the "user feedback gathered above" the sequencing
+   assumed, so the coverage decision (which reveal.js variables to model) rests on the
+   stock themes' own variable set rather than on reported demand — the
+   `customProperty()` passthrough is the release valve if that guessed wrong.
 
 ### Remaining
 
-4. **F3** (L): the team-adoption unlock; benefits from user feedback gathered above.
 5. **F5 last** (L): reuses F1's infrastructure; ship when the server story is mature.
    **Its prerequisite is now met** — `LiveReload.kt` establishes the pattern F5 needs
    (a `devMode`-style output flag gating a websocket route, plus per-render client-script
@@ -492,6 +533,14 @@ with the websocket route and client-injection plumbing it predicted.
   internals (`pdf-ready`, Mermaid `data-processed`), so re-verify it when bumping the
   bundled reveal.js. `kslides-export` is unpublished until the next Maven Central release,
   and `installation.md` already lists it — the release checklist covers the version bump.
+- **F3**: the typed properties track reveal.js' `--r-*` variable names by convention (the
+  Kotlin property name is kebab-cased and prefixed at emission), so a reveal.js upgrade
+  that renames or drops a variable would silently stop applying — worth a check when
+  bumping the bundled reveal.js, alongside the F2 print-view check. The proposal's
+  "documentation with visual examples" is covered by the `theme.html` example deck rather
+  than by screenshots on the docs page. Fonts are named but not loaded: `headingFont`/
+  `codeFont` assume the family is already available (system font or a webfont the deck
+  pulls in itself); a `webFont()` helper would close that gap.
 - **F4**: the bundled Mermaid version is a checked-in asset with no upgrade automation;
   bumping it is a manual re-download. Worth a Makefile target if it drifts.
 - **F6**: no prompts means "add lets-plot / playground" is still a manual post-scaffold
