@@ -104,7 +104,7 @@ internal object Page {
     val styleNode =
       createElement("style").apply {
         setAttribute("type", "text/css")
-        setAttribute("media", "screen")
+        // No media="screen" scoping: code-size and mermaid rules must also apply when printing.
         // Same layout convention as CssValue.writeCssToHead: \t\t\t-indented body, \t\t trailer.
         textContent = "\n${rules.trimEnd().prependIndent("\t\t\t")}\n\t\t"
       }
@@ -217,8 +217,9 @@ internal object Page {
     }
 
     rawHtml("\n")
+    // No media="screen" scoping: author styles must also apply when printing (?print-pdf /
+    // kslides-export), where screen-only styles would silently vanish from the PDF.
     style {
-      media = "screen"
       rawHtml("\n")
       rawHtml(
         Page::class.java.classLoader

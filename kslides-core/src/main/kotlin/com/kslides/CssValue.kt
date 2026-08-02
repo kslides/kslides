@@ -67,8 +67,8 @@ class CssValue(
     internal fun HEAD.writeCssToHead(css: CssValue) {
       if (css.isNotBlank()) {
         rawHtml("\n")
+        // No media="screen" scoping: css{} rules must also apply when printing to PDF.
         style {
-          media = "screen"
           rawHtml("\n")
           rawHtml(css.prependIndent("\t\t\t"))
           rawHtml("\n\t\t")

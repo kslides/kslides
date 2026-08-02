@@ -59,6 +59,12 @@ class OutputConfig(
   /** Log level passed to Ktor's `CallLogging` plugin. */
   var callLoggingLogLevel = Level.INFO
 
+  /** PDF export settings, consumed by the `kslides-export` module. Configured via [pdf]. */
+  val pdfConfig = PdfConfig()
+
+  /** Configure PDF export (page size, output directory, per-presentation opt-out). See [PdfConfig]. */
+  fun pdf(block: PdfConfig.() -> Unit) = pdfConfig.block()
+
   internal val port: Int get() = System.getenv("PORT")?.toInt() ?: httpPort
 
   internal val playgroundPath: String get() = listOf(outputDir, playgroundDir).toPath(false)

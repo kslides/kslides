@@ -12,6 +12,7 @@ kslides is a Kotlin DSL for the [reveal.js](https://revealjs.com) presentation f
 ./gradlew build -x test     # Build without tests
 ./gradlew test              # Run tests (Kotest + JUnit 5)
 ./gradlew buildFatJar       # Build executable fat JAR (kslides-examples)
+./gradlew exportPdf         # Print the example decks to build/pdf (-Pdeck=<name> for one)
 ./gradlew clean             # Clean build artifacts
 ./gradlew stage             # Heroku deployment build
 ./gradlew lintKotlin        # Lint with Kotlinter
@@ -45,6 +46,8 @@ make versions              # dependencyUpdates
 make dev-server            # live-reload dev loop (kslides-dev.sh: watch, rebuild, restart)
 make kroki-start           # start the local Kroki diagram server (docker-compose, port 8000)
 make kroki-stop            # stop the local Kroki diagram server
+make pdf                   # export the example decks to build/pdf (DECK=<name> for one; kroki decks need kroki-start)
+make clean-pdf             # remove build/pdf
 make check-site            # uv lock --upgrade --dry-run for the docs site
 make upgrade-site          # uv lock --upgrade for the docs site
 make site                  # clean-site + serve the Zensical docs site
@@ -77,10 +80,11 @@ The current release is `1.2.0` (tag `1.2.0`, GitHub release `v1.2.0`, published 
 
 ## Module Structure
 
-Three Gradle modules defined in `settings.gradle.kts`:
+Four Gradle modules defined in `settings.gradle.kts`:
 
 - **kslides-core** — Core DSL library: slide types, configuration, page rendering, Ktor server, filesystem output. This is what consumers depend on.
-- **kslides-examples** — Example presentations with `main()` entry point in `Slides.kt`. Uses ShadowJar to build `kslides.jar`. Main class: `SlidesKt`.
+- **kslides-examples** — Example presentations with `main()` entry point in `Slides.kt` (the deck definition lives in `exampleSlides()` so the PDF-export entry point `Export.kt` — in its own `export` source set, keeping Playwright out of the fat JAR — can reuse it). Uses ShadowJar to build `kslides.jar`. Main class: `SlidesKt`; `./gradlew exportPdf [-Pdeck=<name>]` runs `ExportKt`.
+- **kslides-export** — One-command PDF export (F2): `exportPdf()` serves the built presentations from an ephemeral-port Ktor server and prints each deck via headless Chromium (Playwright), waiting for reveal.js' `pdf-ready` event and Mermaid completion. Depends on kslides-core.
 - **kslides-letsplot** — Lets-Plot visualization integration (JetBrains Lets-Plot). Depends on kslides-core.
 
 ### Build conventions
@@ -113,8 +117,9 @@ Configuration merges hierarchically: **global** (`kslides.presentationConfig{}`)
 - `VerticalSlidesContext` — Context for vertically-grouped slides.
 - `Mermaid` / `mermaid()` (`MermaidDsl.kt`) — Bundled-runtime Mermaid support: asset path, theme-aware init snippet, head CSS.
 - `LiveReload` (`LiveReload.kt`) — `devMode` websocket route and the injected reload client.
+- `buildKSlides()` / `KSlides.startHttpServer()` / `KSlidesHttpServer` — tooling entry points: evaluate the DSL without emitting output, then serve it programmatically (port `0` = ephemeral). Used by kslides-export.
 - `PresentationTheme.isDark` (`Enums.kt`) — Exhaustive dark/light theme classification; adding a theme forces a dark/light decision at compile time.
-- Config classes in `com.kslides.config.*`: `KSlidesConfig`, `PresentationConfig`, `SlideConfig`, `OutputConfig`, `PlaygroundConfig`, `MenuConfig`, `CopyCodeConfig`, `LetsPlotIframeConfig`, `DiagramConfig`.
+- Config classes in `com.kslides.config.*`: `KSlidesConfig`, `PresentationConfig`, `SlideConfig`, `OutputConfig`, `PdfConfig`, `PlaygroundConfig`, `MenuConfig`, `CopyCodeConfig`, `LetsPlotIframeConfig`, `DiagramConfig`.
 
 ### Dual Output System
 
@@ -147,6 +152,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 - `kslides-core/src/test/kotlin/com/kslides/` — `UtilsTest`, `PresentationTest`, `ConfigsTest`, `OutputConfigTest`, `MermaidTest`, `LiveReloadTest`, `SlideFontSizeTest`, and others.
 - `kslides-core/src/test/kotlin/website/` — compilable sources for the docs-site snippets, pulled into the Zensical pages via `--8<--` includes (e.g. `Mermaid.kt`, `Output.kt`, `Styling.kt`). Adding a docs snippet means adding it here so it stays compiler-checked.
 - `kslides-letsplot/src/test/kotlin/com/kslides/` — `LetsPlotTest` (renderer unit tests) and `LetsPlotDslTest` (full DSL → filesystem integration, writing to a temp `outputDir`). The letsplot test source set ships its own empty `src/test/resources/slides.css` so `Page.generateHead`'s classpath lookup succeeds without depending on kslides-core test resources.
+- `kslides-export/src/test/kotlin/` — `PdfExportUtilsTest` (deck naming/filtering and PDF options) plus `PdfExportIntegrationTest`, an opt-in end-to-end browser test (`KSLIDES_EXPORT_TEST=true`; skipped by default since it needs a headless browser). Ships its own empty `src/test/resources/slides.css` (letsplot pattern), and `src/test/kotlin/website/` holds the PDF-export docs snippets (the Zensical snippets `base_path` lists both this dir and kslides-core's).
 
 ## Tech Stack
 
@@ -155,6 +161,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 - Ktor 3.5.1 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
 - Lets-Plot Kotlin 4.15.0 for the `letsPlot{}` DSL (JS runtime version configurable via `KSlidesConfig.letsPlotJsVersion`, default `4.10.1`)
+- Playwright Java (kslides-export only) for driving headless Chromium during PDF export
 - Kotlinter for linting (ktlint-based) and Detekt 2.0.0-alpha.5 for static analysis (`dev.detekt`), fatal on findings by default (`-Pdetekt.ignoreFailures=true` to downgrade)
 - reveal.js assets live at the repo root in `docs/revealjs/` (single source of truth, committed for GitHub Pages). `kslides-core/build.gradle.kts` grafts them onto the published JAR's classpath at `revealjs/**` via `processResources` so the Ktor static handler can serve them at runtime — there is no checked-in `kslides-core/src/main/resources/revealjs/` directory.
 - All versions — including the JVM toolchain (`jvm`) and the Gradle wrapper distribution (`gradle-wrapper`) — are centralized in `gradle/libs.versions.toml`. The convention plugin reads `jvm` via `VersionCatalogsExtension`, and the `Makefile`'s `upgrade-wrapper` target reads `gradle-wrapper` from the same file.

@@ -62,6 +62,7 @@ nav = [
   ] },
   { "Configuration" = "configuration.md" },
   { "Output modes" = "output.md" },
+  { "PDF export" = "pdf-export.md" },
   { "Styling" = "styling.md" },
   { "Including content" = "include.md" },
   { "Extensions" = [
@@ -364,7 +365,10 @@ pygments_lang_class = true
 [project.markdown_extensions.pymdownx.mark]
 [project.markdown_extensions.pymdownx.smartsymbols]
 [project.markdown_extensions.pymdownx.snippets]
-base_path = ["../../kslides-core/src/test/kotlin/website"]
+base_path = [
+  "../../kslides-core/src/test/kotlin/website",
+  "../../kslides-export/src/test/kotlin/website",
+]
 check_paths = true
 dedent_subsections = true
 [project.markdown_extensions.pymdownx.superfences]
