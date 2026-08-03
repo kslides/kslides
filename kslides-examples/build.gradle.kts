@@ -38,6 +38,13 @@ configurations {
     named("exportRuntimeOnly") { extendsFrom(configurations.runtimeOnly.get()) }
 }
 
+// Custom source sets are not wired into `check`, so `build` compiles only main and test — a broken
+// Export.kt would stay invisible until someone ran `make pdf`. Compile it as part of check so the
+// build (and CI) fails on it instead.
+tasks.named("check") {
+    dependsOn(tasks.named("compileExportKotlin"))
+}
+
 dependencies {
     implementation(projects.kslidesCore)
     implementation(projects.kslidesLetsplot)
