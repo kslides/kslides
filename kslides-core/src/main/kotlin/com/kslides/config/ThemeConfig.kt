@@ -5,6 +5,7 @@ import com.kslides.PresentationTheme
 import kotlinx.css.Color
 import kotlinx.css.LinearDimension
 import kotlinx.css.TextTransform
+import kotlinx.css.hyphenize
 import kotlinx.css.px
 
 /** Corner of the viewport a [ThemeConfig.logo] is pinned to. */
@@ -23,7 +24,39 @@ internal data class Logo(
   val margin: LinearDimension,
   val opacity: Double,
   val href: String,
-)
+) {
+  /** The rules pinning this logo to its corner, emitted as part of [ThemeConfig.cssText]. */
+  fun css() =
+    buildString {
+      val (vertical, horizontal) =
+        when (position) {
+          LogoPosition.TOP_LEFT -> "top" to "left"
+          LogoPosition.TOP_RIGHT -> "top" to "right"
+          LogoPosition.BOTTOM_LEFT -> "bottom" to "left"
+          LogoPosition.BOTTOM_RIGHT -> "bottom" to "right"
+        }
+      appendLine(".kslides-logo {")
+      // Fixed positioning keeps the logo pinned in scroll view and repeats it on every page
+      // when printing (reveal.js print view lays all slides out in one document flow). The
+      // z-index must clear the print view's .pdf-page stacking contexts (z-index 1), whose
+      // opaque backgrounds would otherwise paint over the logo, while staying below reveal's
+      // progress bar (10) and navigation controls (11).
+      appendLine("  position: fixed;")
+      appendLine("  $vertical: $margin;")
+      appendLine("  $horizontal: $margin;")
+      appendLine("  width: $size;")
+      appendLine("  z-index: 5;")
+      if (opacity < 1.0)
+        appendLine("  opacity: $opacity;")
+      if (href.isBlank())
+        appendLine("  pointer-events: none;")
+      appendLine("}")
+      appendLine(".kslides-logo img {")
+      appendLine("  width: 100%;")
+      appendLine("  display: block;")
+      append("}")
+    }
+}
 
 /**
  * Type-safe theming on top of a stock reveal.js theme, configured via the `customTheme {}` block
@@ -166,13 +199,14 @@ class ThemeConfig : AbstractConfig() {
     }
   }
 
-  internal fun hasStyleContent() = kslidesManagedValues.isNotEmpty() || customProperties.isNotEmpty() || logoValue != null
-
-  /** The override stylesheet for everything assigned on this config; empty when nothing is set. */
+  /**
+   * The override stylesheet for everything assigned on this config; empty when nothing is set.
+   * Rendered once per presentation — see [com.kslides.Presentation.indentedCustomThemeCss].
+   */
   internal fun cssText() =
     buildString {
       val variables =
-        kslidesManagedValues.map { (name, value) -> "--r-${name.toKebabCase()}" to value.toString() } +
+        kslidesManagedValues.map { (name, value) -> "--r-${name.hyphenize()}" to value.toString() } +
           customProperties.toList()
 
       if (variables.isNotEmpty()) {
@@ -183,38 +217,4 @@ class ThemeConfig : AbstractConfig() {
 
       logoValue?.let { append(it.css()) }
     }.trimEnd()
-
-  companion object {
-    private fun String.toKebabCase() = replace(Regex("([a-z0-9])([A-Z])"), "$1-$2").lowercase()
-
-    private fun Logo.css() =
-      buildString {
-        val edges =
-          when (position) {
-            LogoPosition.TOP_LEFT -> "top: $margin;\n  left: $margin;"
-            LogoPosition.TOP_RIGHT -> "top: $margin;\n  right: $margin;"
-            LogoPosition.BOTTOM_LEFT -> "bottom: $margin;\n  left: $margin;"
-            LogoPosition.BOTTOM_RIGHT -> "bottom: $margin;\n  right: $margin;"
-          }
-        appendLine(".kslides-logo {")
-        // Fixed positioning keeps the logo pinned in scroll view and repeats it on every page
-        // when printing (reveal.js print view lays all slides out in one document flow). The
-        // z-index must clear the print view's .pdf-page stacking contexts (z-index 1), whose
-        // opaque backgrounds would otherwise paint over the logo, while staying below reveal's
-        // progress bar (10) and navigation controls (11).
-        appendLine("  position: fixed;")
-        appendLine("  $edges")
-        appendLine("  width: $size;")
-        appendLine("  z-index: 5;")
-        if (opacity < 1.0)
-          appendLine("  opacity: $opacity;")
-        if (href.isBlank())
-          appendLine("  pointer-events: none;")
-        appendLine("}")
-        appendLine(".kslides-logo img {")
-        appendLine("  width: 100%;")
-        appendLine("  display: block;")
-        append("}")
-      }
-  }
 }

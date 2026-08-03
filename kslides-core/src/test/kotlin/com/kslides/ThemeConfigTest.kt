@@ -16,9 +16,7 @@ import kotlinx.css.px
 class ThemeConfigTest : StringSpec() {
   init {
     "an unconfigured ThemeConfig emits nothing" {
-      val theme = ThemeConfig()
-      theme.hasStyleContent() shouldBe false
-      theme.cssText() shouldBe ""
+      ThemeConfig().cssText() shouldBe ""
     }
 
     "typed properties map to their reveal.js theme variables" {

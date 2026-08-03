@@ -90,6 +90,20 @@ class Presentation(
   val jsFiles by lazy { mutableListOf<JsFile>().apply { addAll(kslides.kslidesConfig.jsFiles) } }
 
   /**
+   * The `customTheme{}` override block, ready to emit — blank when the presentation defines no
+   * overrides. Precomputed once: [finalConfig] is frozen when the DSL is evaluated, while
+   * generatePage runs per HTTP request under the render lock, so neither the CSS assembly nor the
+   * re-indent belongs there.
+   */
+  internal val indentedCustomThemeCss: String by lazy {
+    finalConfig.customThemeConfig
+      .cssText()
+      .takeIf { it.isNotEmpty() }
+      ?.prependIndent("\t\t\t")
+      .orEmpty()
+  }
+
+  /**
    * Append CSS (declared via Kotlin's CSS DSL) to this presentation's stylesheet. Can be placed
    * anywhere inside the `presentation{}` block — unlike raw HTML, CSS does not have to appear
    * at the top.

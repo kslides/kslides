@@ -2,6 +2,7 @@ package com.kslides
 
 import kotlinx.css.CssBuilder
 import kotlinx.html.HEAD
+import kotlinx.html.id
 import kotlinx.html.style
 
 /**
@@ -66,14 +67,33 @@ class CssValue(
 
     internal fun HEAD.writeCssToHead(css: CssValue) {
       if (css.isNotBlank()) {
+        writeStyleToHead(css.prependIndent("\t\t\t"))
+        rawHtml("\n")
+      }
+    }
+
+    /**
+     * Emits [indentedCss] as a `<style>` block, keeping the head-style layout convention — a
+     * leading newline, a `\t\t\t`-indented body, a `\t\t` trailer — in one place. Callers holding
+     * a [CssValue] should use [writeCssToHead]; this variant takes content the caller has already
+     * indented (and, for per-render hot paths, cached).
+     *
+     * @param styleId optional `id` attribute, so a block can be targeted by CSS or asserted on by name.
+     */
+    internal fun HEAD.writeStyleToHead(
+      indentedCss: String,
+      styleId: String = "",
+    ) {
+      if (indentedCss.isNotBlank()) {
         rawHtml("\n")
         // No media="screen" scoping: css{} rules must also apply when printing to PDF.
         style {
+          if (styleId.isNotBlank())
+            id = styleId
           rawHtml("\n")
-          rawHtml(css.prependIndent("\t\t\t"))
+          rawHtml(indentedCss)
           rawHtml("\n\t\t")
         }
-        rawHtml("\n")
       }
     }
   }
