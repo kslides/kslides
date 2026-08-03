@@ -135,7 +135,7 @@ fun exampleSlides(): KSlides.() -> Unit =
       topLeftHref = "https://github.com/kslides/kslides/"
       topLeftTitle = "View presentation source on Github"
 
-      topRightHref = "/"
+      topRightHref = "./"
       topRightTitle = "Go to 1st Slide"
       topRightText = "🏠"
 
@@ -1304,7 +1304,7 @@ fun exampleSlides(): KSlides.() -> Unit =
       path = "layouts.html"
 
       presentationConfig {
-        topRightHref = "/#/features"
+        topRightHref = "./#/features"
         topRightTitle = "Go back to main presentation"
         topRightText = "🔙"
       }
@@ -1529,7 +1529,7 @@ fun exampleSlides(): KSlides.() -> Unit =
       path = "fragments.html"
 
       presentationConfig {
-        topRightHref = "/#/features"
+        topRightHref = "./#/features"
         topRightTitle = "Go to main presentation"
         topRightText = "🔙"
       }
@@ -1597,7 +1597,7 @@ fun exampleSlides(): KSlides.() -> Unit =
       path = "backgrounds.html"
 
       presentationConfig {
-        topRightHref = "/#/features"
+        topRightHref = "./#/features"
         topRightTitle = "Go to main presentation"
         topRightText = "🔙"
 
@@ -1784,7 +1784,7 @@ fun exampleSlides(): KSlides.() -> Unit =
       path = "multicols.html"
 
       presentationConfig {
-        topRightHref = "/#/features"
+        topRightHref = "./#/features"
         topRightTitle = "Go to main presentation"
         topRightText = "🔙"
       }
@@ -1904,7 +1904,7 @@ fun exampleSlides(): KSlides.() -> Unit =
       path = "multislide.html"
 
       presentationConfig {
-        topRightHref = "/#/features"
+        topRightHref = "./#/features"
         topRightTitle = "Go back to main presentation"
         topRightText = "🔙"
       }
@@ -1971,7 +1971,7 @@ fun exampleSlides(): KSlides.() -> Unit =
       path = "theme.html"
 
       presentationConfig {
-        topRightHref = "/#/features"
+        topRightHref = "./#/features"
         topRightTitle = "Go to main presentation"
         topRightText = "🔙"
 
