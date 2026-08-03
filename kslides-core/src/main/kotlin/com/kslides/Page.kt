@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.kslides.CssValue.Companion.writeCssToHead
+import com.kslides.CssValue.Companion.writeStyleToHead
 import com.kslides.config.PresentationConfig
 import com.pambrose.common.util.ensureSuffix
 import kotlinx.html.BODY
@@ -212,15 +213,7 @@ internal object Page {
 
     // customTheme{} overrides, layered directly after the stylesheet links so they win over the
     // base theme while slides.css and css{} rules (emitted below) can still override them.
-    if (config.customThemeConfig.hasStyleContent()) {
-      rawHtml("\n")
-      style {
-        id = "custom-theme"
-        rawHtml("\n")
-        rawHtml(config.customThemeConfig.cssText().prependIndent("\t\t\t"))
-        rawHtml("\n\t\t")
-      }
-    }
+    writeStyleToHead(p.indentedCustomThemeCss, styleId = "custom-theme")
 
     rawHtml("\n")
     link {
