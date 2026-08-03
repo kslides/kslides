@@ -2,6 +2,8 @@ package com.kslides
 
 import com.kslides.Page.generatePage
 import com.kslides.config.SlideConfig
+import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -261,6 +263,19 @@ class SlideFontSizeTest : StringSpec() {
       val html = generatePage(kslides.presentation("/"))
       html shouldContain """class="kslides-code-1""""
       html shouldContain ".reveal .kslides-code-1 pre { font-size: 0.40em; }"
+    }
+
+    "malformed font sizes are rejected at the assignment site" {
+      // Both values are interpolated verbatim into an inline style / a generated head rule.
+      shouldThrowExactly<IllegalArgumentException> { SlideConfig().fontSize = "34px; color: red" }
+      shouldThrowExactly<IllegalArgumentException> { SlideConfig().codeFontSize = "0.6em;}" }
+      shouldNotThrowAny {
+        SlideConfig().apply {
+          fontSize = "34px"
+          codeFontSize = "0.60em"
+          codeFontSize = ""
+        }
+      }
     }
 
     "vertical slideDefinition configBlock applies per-slide code font size" {

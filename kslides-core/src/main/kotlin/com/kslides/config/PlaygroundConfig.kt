@@ -140,26 +140,34 @@ class PlaygroundConfig : AbstractConfig() {
   }
 
   /**
-   * The CSS implementing [fontSize] / [lineHeight], or an empty string when neither is set.
-   * Emitted into the iframe's `<head>` ahead of any [css] declared by the user, so a hand-written
-   * rule of equal specificity still wins.
+   * The CSS this config generates — the rules implementing [fontSize] / [lineHeight], or an empty
+   * string when neither is set. Named to match [ThemeConfig.cssText].
    *
    * Both properties are declared on `.CodeMirror` itself rather than on the `<pre>` lines: the
    * editor's own `.CodeMirror pre.CodeMirror-line` rule sets `line-height: inherit` and outranks
    * any `.CodeMirror pre` selector, so the lines take their spacing from the container.
    */
-  internal fun fontSizeCss(): String =
-    buildString {
-      val declarations =
-        listOfNotNull(
-          "font-size: $fontSize;".takeIf { fontSize.isNotBlank() },
-          "line-height: $lineHeight;".takeIf { lineHeight.isNotBlank() },
-        ).joinToString(" ")
+  internal fun cssText(): String {
+    val declarations =
+      listOfNotNull(
+        if (fontSize.isNotBlank()) "font-size: $fontSize;" else null,
+        if (lineHeight.isNotBlank()) "line-height: $lineHeight;" else null,
+      ).joinToString(" ")
 
-      if (declarations.isNotEmpty()) {
-        appendLine(".CodeMirror { $declarations }")
-        append(".code-output { $declarations }")
-      }
+    return if (declarations.isEmpty())
+      ""
+    else
+      ".CodeMirror { $declarations }\n.code-output { $declarations }"
+  }
+
+  /**
+   * The Playground iframe's complete stylesheet: this config's generated [cssText] followed by
+   * [userCss], so a hand-written rule of equal specificity wins. Ordering lives here rather than at
+   * the call site so it cannot be inverted by rearranging arguments.
+   */
+  internal fun stylesheet(userCss: CssValue): CssValue =
+    cssText().let { generated ->
+      if (generated.isBlank()) CssValue(userCss) else CssValue(CssValue(generated), userCss)
     }
 
   /** Append CSS (via the Kotlin CSS DSL) to the Playground iframe's stylesheet. */

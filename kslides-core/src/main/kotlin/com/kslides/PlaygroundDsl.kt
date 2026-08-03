@@ -47,14 +47,14 @@ fun DslSlide.playground(
         config.merge(localConfig)
       }
 
-  // CSS values are additive. The generated fontSize rules go first so that a user-declared rule of
-  // equal specificity — from any level — still wins.
+  // CSS values are additive; stylesheet() puts the config's generated rules ahead of the user's.
   val combinedCss =
-    CssValue(
-      CssValue(mergedConfig.fontSizeCss()),
-      globalPlaygroundConfig.css,
-      presentationPlaygroundConfig.css,
-      localConfig.css,
+    mergedConfig.stylesheet(
+      CssValue(
+        globalPlaygroundConfig.css,
+        presentationPlaygroundConfig.css,
+        localConfig.css,
+      ),
     )
 
   recordIframeContent(private_useHttp, mergedConfig.staticContent, presentation.kslides, playgroundPath, filename) {
