@@ -15,26 +15,30 @@ class PdfExportIntegrationTest : StringSpec() {
     "exportPdf prints a deck to PDF end to end".config(enabled = enabled) {
       val tmpDir = Files.createTempDirectory("kslides-export-test").toFile()
 
-      val files =
-        exportPdf {
-          output {
-            pdf {
-              outputDir = tmpDir.absolutePath
-              previewPng = true
+      try {
+        val files =
+          exportPdf {
+            output {
+              pdf {
+                outputDir = tmpDir.absolutePath
+                previewPng = true
+              }
+            }
+            presentation {
+              markdownSlide { content { "# PDF Export" } }
+              markdownSlide { content { "# Second Slide" } }
             }
           }
-          presentation {
-            markdownSlide { content { "# PDF Export" } }
-            markdownSlide { content { "# Second Slide" } }
-          }
-        }
 
-      files shouldHaveSize 2
-      files.map { it.name }.sorted() shouldBe listOf("index.pdf", "index.png")
+        files shouldHaveSize 2
+        files.map { it.name }.sorted() shouldBe listOf("index.pdf", "index.png")
 
-      val pdf = files.single { it.name == "index.pdf" }
-      pdf.length() shouldBeGreaterThan 1_000L
-      pdf.readBytes().copyOfRange(0, 4).decodeToString() shouldBe "%PDF"
+        val pdf = files.single { it.name == "index.pdf" }
+        pdf.length() shouldBeGreaterThan 1_000L
+        pdf.readBytes().copyOfRange(0, 4).decodeToString() shouldBe "%PDF"
+      } finally {
+        tmpDir.deleteRecursively()
+      }
     }
   }
 }

@@ -11,10 +11,10 @@ application {
 
 // The example deck resolves include()/source paths relative to the repo root (e.g.
 // "kslides-examples/src/..."), matching the documented `java -jar` invocation from the root.
-// Gradle's run task otherwise defaults to this subproject's dir, which doubles those paths and
-// throws FileNotFoundException. Run from the root so `./gradlew :kslides-examples:run` (and the
-// kslides-dev.sh live-reload loop) resolve them.
-tasks.named<JavaExec>("run") {
+// Gradle otherwise defaults to this subproject's dir, which doubles those paths and throws
+// FileNotFoundException. Applies to every JavaExec task in this module — `run` (and the
+// kslides-dev.sh live-reload loop) plus the exportPdf task registered below.
+tasks.withType<JavaExec>().configureEach {
     workingDir = rootProject.projectDir
 }
 
@@ -53,7 +53,5 @@ tasks.register<JavaExec>("exportPdf") {
     description = "Print the example presentations to PDF via headless Chromium (-Pdeck=<name> for one deck)"
     mainClass = "ExportKt"
     classpath = sourceSets["export"].runtimeClasspath
-    // Match the run task: include()/source paths resolve relative to the repo root.
-    workingDir = rootProject.projectDir
     providers.gradleProperty("deck").orNull?.let { systemProperty("kslides.export.deck", it) }
 }

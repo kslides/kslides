@@ -27,12 +27,9 @@ private const val PRINT_READY_FUNCTION = "() => window.__kslidesPdfReady === tru
 // Screen-view readiness (used for the preview PNG, where pdf-ready never fires).
 private const val VIEW_READY_FUNCTION = "() => window.Reveal !== undefined && Reveal.isReady()"
 
-// The print view may clone slides to expand fragments; re-run kslides' Mermaid hook (a no-op on
-// decks without Mermaid) so any cloned, still-unrendered diagram is processed too.
-private const val MERMAID_RUN_SNIPPET =
-  "() => { if (window.kslidesMermaidRun) kslidesMermaidRun(document); }"
-
 // Every Mermaid diagram has rendered (Mermaid marks each processed element with data-processed).
+// Mirrors the markup and marker kslides-core emits in MermaidDsl.kt; core re-runs its own sweep on
+// pdf-ready, so the export only has to wait for the result. Vacuously true on Mermaid-free decks.
 private const val MERMAID_DONE_FUNCTION =
   "() => document.querySelectorAll('pre.mermaid:not([data-processed])').length === 0"
 
@@ -83,9 +80,11 @@ private fun exportPresentations(
 
   val outputDir = File(pdfConfig.outputDir).apply { mkdirs() }
 
-  return kslides.startHttpServer(port = 0).use { server ->
-    createPlaywright(pdfConfig).use { playwright ->
-      launchBrowser(playwright, pdfConfig).use { browser ->
+  // The browser starts first: on a cold run Playwright downloads Chromium here, and there is no
+  // point holding a bound port open for that.
+  return createPlaywright(pdfConfig).use { playwright ->
+    launchBrowser(playwright, pdfConfig).use { browser ->
+      kslides.startHttpServer(port = 0).use { server ->
         logger.info { "Exporting ${paths.size} presentation(s) to $outputDir" }
         val page = browser.newPage().apply { addInitScript(INIT_SCRIPT) }
         exportDecks(page, "http://localhost:${server.port}", paths, pdfConfig, outputDir)
@@ -108,8 +107,9 @@ private fun exportDecks(
     try {
       written += exportDeck(page, baseUrl, path, config, outputDir)
     } catch (e: PlaywrightException) {
-      logger.error(e) { "Failed to export presentation \"${deckName(path)}\"" }
-      failed += deckName(path)
+      val name = deckName(path)
+      logger.error(e) { "Failed to export presentation \"$name\"" }
+      failed += name
     }
   }
 
@@ -125,17 +125,18 @@ private fun exportDeck(
   outputDir: File,
 ): List<File> {
   val name = deckName(path)
+  val deckUrl = "$baseUrl$path"
   val files = mutableListOf<File>()
 
   if (config.previewPng) {
-    navigateAndAwait(page, "$baseUrl$path", config, printView = false)
+    navigateAndAwait(page, deckUrl, config, printView = false)
     val png = File(outputDir, "$name.png")
     page.screenshot(Page.ScreenshotOptions().setPath(png.toPath()))
     logger.info { "Wrote $png" }
     files += png
   }
 
-  navigateAndAwait(page, "$baseUrl$path?print-pdf", config, printView = true)
+  navigateAndAwait(page, deckUrl, config, printView = true)
   val pdf = File(outputDir, "$name.pdf")
   page.pdf(pdfOptions(config, pdf))
   logger.info { "Wrote $pdf" }
@@ -146,7 +147,7 @@ private fun exportDeck(
 
 private fun navigateAndAwait(
   page: Page,
-  url: String,
+  deckUrl: String,
   config: PdfConfig,
   printView: Boolean,
 ) {
@@ -154,18 +155,13 @@ private fun navigateAndAwait(
   // Playground) may keep the window load event pending indefinitely, while reveal.js
   // initializes as soon as the document itself is parsed.
   page.navigate(
-    url,
+    if (printView) "$deckUrl?print-pdf" else deckUrl,
     Page
       .NavigateOptions()
       .setWaitUntil(WaitUntilState.DOMCONTENTLOADED)
       .setTimeout(config.readyTimeoutMillis.toDouble()),
   )
-  if (printView) {
-    page.awaitFunction(PRINT_READY_FUNCTION, config)
-    page.evaluate(MERMAID_RUN_SNIPPET)
-  } else {
-    page.awaitFunction(VIEW_READY_FUNCTION, config)
-  }
+  page.awaitFunction(if (printView) PRINT_READY_FUNCTION else VIEW_READY_FUNCTION, config)
   page.awaitFunction(MERMAID_DONE_FUNCTION, config)
   page.evaluate("() => document.fonts.ready")
   if (config.settleMillis > 0)

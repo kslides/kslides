@@ -32,6 +32,11 @@ PDF export is configured in the `pdf { }` block inside `output { }`:
 
 All settings are optional. By default the page size comes from the presentation's own print CSS (reveal.js sizes pages to match the slide dimensions); set `pageWidth` / `pageHeight` (e.g. `"11in"`, `"297mm"`) to force a paper size instead.
 
+Two timing knobs are available for decks that need them:
+
+- `readyTimeoutMillis` (default 30 s) caps how long the export waits for a deck to become printable — reveal.js initialized and every Mermaid diagram rendered. Raise it for very large decks.
+- `settleMillis` (default 1 s) is an extra pause after those checks pass, giving asynchronous content such as `playground { }` iframes time to finish. Set it to `0` to skip the pause on decks that have none.
+
 ## Wiring it into a deck project
 
 Add the dependency and a small entry point that reuses your deck definition:

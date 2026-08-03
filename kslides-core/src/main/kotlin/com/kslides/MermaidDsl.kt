@@ -49,6 +49,11 @@ internal object Mermaid {
   // view lays every slide out at once, so there the whole deck renders up front. The trailing
   // isReady() call covers the race where reveal.js finishes initializing while mermaid.min.js
   // is still being fetched (the ready event would then fire before the listener is attached).
+  //
+  // The pdf-ready listener re-runs the sweep because reveal.js' print view clones slides to
+  // expand fragments *after* it initializes: the clones are fresh, unprocessed elements that the
+  // ready-time pass never saw. This covers both PDF paths — the kslides-export module and a
+  // manual ?print-pdf in the browser.
   internal fun initScript(theme: PresentationTheme) =
     """
     mermaid.initialize({ startOnLoad: false, theme: '${mermaidTheme(theme)}' });
@@ -62,6 +67,7 @@ internal object Mermaid {
     }
     Reveal.on('ready', kslidesMermaidSync);
     Reveal.on('slidechanged', kslidesMermaidSync);
+    Reveal.on('pdf-ready', kslidesMermaidSync);
     if (Reveal.isReady()) kslidesMermaidSync();
     """.trimIndent()
 }

@@ -140,13 +140,15 @@ fun buildKSlides(block: KSlides.() -> Unit) =
     }
 
 /**
- * Convenience wrapper around [kslides] for tests: evaluates the DSL with both [OutputConfig.enableFileSystem]
- * and [OutputConfig.enableHttp] forced to `false` so no files are written and no server is started.
+ * Convenience wrapper around [buildKSlides] for tests: evaluates the DSL with both
+ * [OutputConfig.enableFileSystem] and [OutputConfig.enableHttp] forced to `false`, so no files are
+ * written and no server is started. The instance is closed before it is returned, releasing the
+ * HTTP client a `diagram{}` deck may have created.
  *
  * @param block the same configuration block accepted by [kslides].
  */
 fun kslidesTest(block: KSlides.() -> Unit) =
-  kslides {
+  buildKSlides {
     block()
     val userOutputBlock = outputConfigBlock
     output {
@@ -154,7 +156,7 @@ fun kslidesTest(block: KSlides.() -> Unit) =
       enableFileSystem = false
       enableHttp = false
     }
-  }
+  }.apply { close() }
 
 /**
  * Root orchestrator for a set of presentations. Instances are not meant to be constructed
