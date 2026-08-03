@@ -17,9 +17,15 @@ import kotlin.reflect.KProperty
  *
  * @param T the property type (any Kotlin type; cast is unchecked on read).
  * @param configMap the backing map, one of [AbstractConfig]'s two internal value maps.
+ * @param validator optional check run on every assignment, receiving the value and the property
+ *   name. Used by properties whose values land verbatim in generated CSS (see [requireCssLength]),
+ *   so a malformed value fails at the assignment site instead of corrupting the rendered page.
+ *   [AbstractConfig.merge] copies map entries directly and bypasses this — safe, because the values
+ *   it copies were validated where they were first assigned.
  */
 internal class ConfigProperty<T>(
   private val configMap: MutableMap<String, Any>,
+  private val validator: ((value: T, propertyName: String) -> Unit)? = null,
 ) {
   /**
    * @throws IllegalStateException if the property has not been assigned.
@@ -36,11 +42,15 @@ internal class ConfigProperty<T>(
       ?: throw IllegalStateException("Config property ${property.name} has not been set")
     ) as T
 
+  /**
+   * @throws IllegalArgumentException if a [validator] was supplied and rejects [value].
+   */
   operator fun setValue(
     thisRef: Any?,
     property: KProperty<*>,
     value: T,
   ) {
+    validator?.invoke(value, property.name)
     configMap[property.name] = value as Any
   }
 }

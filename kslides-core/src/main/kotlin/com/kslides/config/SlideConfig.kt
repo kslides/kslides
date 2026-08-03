@@ -104,15 +104,19 @@ class SlideConfig : AbstractConfig() {
    * Font size for all content on the slide — any CSS length (e.g. `"34px"`, `"0.9em"`).
    * Rendered as an inline `font-size` on the slide's `<section>`; reveal.js themes size
    * headings/text in `em`, so everything scales. Blank inherits the theme default.
+   *
+   * @throws IllegalArgumentException on assignment of a value that is not a CSS length.
    */
-  var fontSize by ConfigProperty<String>(kslidesManagedValues)
+  var fontSize by ConfigProperty<String>(kslidesManagedValues, ::requireCssLength)
 
   /**
    * Font size for code blocks (`<pre>`) on the slide (e.g. `"0.60em"`). Rendered as a
    * generated CSS class + head rule because reveal.js renders Markdown client-side. Blank
    * inherits reveal.js's default (`0.55em`).
+   *
+   * @throws IllegalArgumentException on assignment of a value that is not a CSS length.
    */
-  var codeFontSize by ConfigProperty<String>(kslidesManagedValues)
+  var codeFontSize by ConfigProperty<String>(kslidesManagedValues, ::requireCssLength)
 
   /**
    * When `true`, long code lines wrap (`white-space: pre-wrap; word-break: break-word`)

@@ -20,8 +20,9 @@ import kotlinx.html.title
  * @param srcName path or URL of the primary source file shown in the editor.
  * @param otherSrcs additional source files attached as hidden dependencies (supporting classes,
  *   JUnit helpers, etc.).
- * @param configBlock optional [PlaygroundConfig] overrides (iframe size, editor theme, target
- *   platform, auto-complete, etc.). Merged with global and presentation-level defaults.
+ * @param configBlock optional [PlaygroundConfig] overrides (iframe size, editor theme, code
+ *   `fontSize`, target platform, auto-complete, etc.). Merged with global and presentation-level
+ *   defaults.
  *
  * The enclosing `<section>` is supplied via the [SECTION] context parameter, so calling this
  * outside a [DslSlide] `content{}` block is a compile-time error.
@@ -46,9 +47,11 @@ fun DslSlide.playground(
         config.merge(localConfig)
       }
 
-  // CSS values are additive
+  // CSS values are additive. The generated fontSize rules go first so that a user-declared rule of
+  // equal specificity — from any level — still wins.
   val combinedCss =
     CssValue(
+      CssValue(mergedConfig.fontSizeCss()),
       globalPlaygroundConfig.css,
       presentationPlaygroundConfig.css,
       localConfig.css,

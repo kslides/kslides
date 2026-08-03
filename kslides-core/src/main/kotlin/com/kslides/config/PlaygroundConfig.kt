@@ -14,8 +14,9 @@ import kotlin.reflect.full.isSubclassOf
  * [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) library itself; the lower
  * section controls the iframe wrapper kslides generates around it.
  *
- * CSS declared via [css] is injected into the generated iframe's `<head>` — use it to tweak
- * font size or editor height for the embedded Playground, not to style the surrounding slide.
+ * Use [fontSize] to size the code in the editor and run-output pane. CSS declared via [css] is
+ * injected into the generated iframe's `<head>` after the generated [fontSize] rules — the escape
+ * hatch for anything else inside the Playground, not for styling the surrounding slide.
  */
 @KSlidesDslMarker
 class PlaygroundConfig : AbstractConfig() {
@@ -92,6 +93,29 @@ class PlaygroundConfig : AbstractConfig() {
   var title by ConfigProperty<String>(kslidesManagedValues)
 
   /**
+   * Font size of the code in the Playground editor and its run-output pane — any CSS length.
+   * Blank keeps Playground's own default.
+   *
+   * Prefer absolute units (`"20px"`): the Playground renders in its own iframe document, so `em`
+   * resolves against that document's root font size rather than the surrounding slide's.
+   *
+   * Line spacing follows automatically — CodeMirror's own `line-height` is a unitless ratio, so it
+   * scales with whatever font size is set here. Use [lineHeight] to change the ratio itself.
+   *
+   * @throws IllegalArgumentException on assignment of a value that is not a CSS length.
+   */
+  var fontSize by ConfigProperty<String>(kslidesManagedValues, ::requireCssLength)
+
+  /**
+   * `line-height` for the Playground editor and run-output pane — a unitless ratio (`"1.4"`) or a
+   * CSS length. Blank keeps CodeMirror's own ratio, which already scales with [fontSize]; set this
+   * only to tighten or loosen the spacing itself.
+   *
+   * @throws IllegalArgumentException on assignment of a value that is not a valid `line-height`.
+   */
+  var lineHeight by ConfigProperty<String>(kslidesManagedValues, ::requireCssLineHeight)
+
+  /**
    * When `true`, the generated Playground HTML is cached for the lifetime of the
    * [com.kslides.KSlides] instance. Set to `false` only if the Playground content depends on
    * runtime state that changes between requests.
@@ -99,8 +123,9 @@ class PlaygroundConfig : AbstractConfig() {
   var staticContent by ConfigProperty<Boolean>(kslidesManagedValues)
 
   /**
-   * CSS injected into the generated Playground iframe's `<head>`. Commonly used to override
-   * `.CodeMirror { font-size: ...; }` to match the surrounding slide's typography.
+   * CSS injected into the generated Playground iframe's `<head>`, after the rules generated for
+   * [fontSize] — so a rule declared here wins over them at equal specificity. Reach for [fontSize]
+   * first; use this for Playground internals it does not cover.
    */
   val css = CssValue()
 
@@ -110,7 +135,32 @@ class PlaygroundConfig : AbstractConfig() {
     style = ""
     title = ""
     staticContent = false
+    fontSize = ""
+    lineHeight = ""
   }
+
+  /**
+   * The CSS implementing [fontSize] / [lineHeight], or an empty string when neither is set.
+   * Emitted into the iframe's `<head>` ahead of any [css] declared by the user, so a hand-written
+   * rule of equal specificity still wins.
+   *
+   * Both properties are declared on `.CodeMirror` itself rather than on the `<pre>` lines: the
+   * editor's own `.CodeMirror pre.CodeMirror-line` rule sets `line-height: inherit` and outranks
+   * any `.CodeMirror pre` selector, so the lines take their spacing from the container.
+   */
+  internal fun fontSizeCss(): String =
+    buildString {
+      val declarations =
+        listOfNotNull(
+          "font-size: $fontSize;".takeIf { fontSize.isNotBlank() },
+          "line-height: $lineHeight;".takeIf { lineHeight.isNotBlank() },
+        ).joinToString(" ")
+
+      if (declarations.isNotEmpty()) {
+        appendLine(".CodeMirror { $declarations }")
+        append(".code-output { $declarations }")
+      }
+    }
 
   /** Append CSS (via the Kotlin CSS DSL) to the Playground iframe's stylesheet. */
   fun css(block: CssBuilder.() -> Unit) {

@@ -40,6 +40,24 @@ class ConfigPropertyTest : StringSpec() {
       B().x shouldBe 42
     }
 
+    "a validator rejects a bad assignment before it reaches the backing map" {
+      class Holder {
+        val backing = mutableMapOf<String, Any>()
+        var value by
+          ConfigProperty<String>(backing) { v, name ->
+            require(v.isNotBlank()) { "$name must not be blank" }
+          }
+      }
+
+      val h = Holder()
+      val e = shouldThrowExactly<IllegalArgumentException> { h.value = "" }
+      e.message shouldBe "value must not be blank"
+      h.backing.containsKey("value") shouldBe false
+
+      h.value = "ok"
+      h.value shouldBe "ok"
+    }
+
     "reassignment overwrites the prior value" {
       class Holder {
         var value by ConfigProperty<Int>(mutableMapOf())
