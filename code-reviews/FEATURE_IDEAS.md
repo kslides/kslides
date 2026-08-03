@@ -12,10 +12,10 @@ describes the plan, not the code.
 | #  | Feature                    | Primary user   | Effort | Theme                | Status              |
 |----|----------------------------|----------------|--------|----------------------|---------------------|
 | F1 | Live-reload dev mode       | Deck authors   | M      | Developer experience | ✅ Shipped in 1.2.0 |
-| F2 | One-command PDF export     | Deck sharers   | M      | Distribution         | ✅ Merged (PR #60)  |
-| F3 | Type-safe theming DSL      | Teams/branding | L      | Customization        | ✅ Merged (PR #61)  |
+| F2 | One-command PDF export     | Deck sharers   | M      | Distribution         | ✅ Shipped in 1.3.0 |
+| F3 | Type-safe theming DSL      | Teams/branding | L      | Customization        | ✅ Shipped in 1.3.0 |
 | F4 | Native Mermaid diagrams    | Deck authors   | S      | Content              | ✅ Shipped in 1.2.0 |
-| F5 | Follow-along presenting    | Presenters     | L      | Platform             | ✅ Merged (PR #62)  |
+| F5 | Follow-along presenting    | Presenters     | L      | Platform             | ✅ Shipped in 1.3.0 |
 | F6 | Scaffolding command        | New users      | S      | Adoption             | ✅ Shipped in 1.2.0 |
 
 ---
@@ -103,7 +103,7 @@ output, and documenting the `-t` workflow.
 
 ## F2. One-command PDF export
 
-### Status: ✅ Merged for the next release (PR #60)
+### Status: ✅ Shipped in 1.3.0 (PR #60)
 
 `exportPdf(deck?) { … }` in the new **`kslides-export`** module (`com.kslides.export`,
 `PdfExport.kt`) — the separate-module option the effort estimate recommended. It accepts
@@ -194,7 +194,7 @@ e.g. `kslides-export`, following the `kslides-letsplot` precedent) and CI ergono
 
 ## F3. Type-safe theming DSL
 
-### Status: ✅ Merged for the next release (PR #61)
+### Status: ✅ Shipped in 1.3.0 (PR #61)
 
 `customTheme {}` inside `presentationConfig {}` — backed by `ThemeConfig`
 (`config/ThemeConfig.kt`) — shipped with the block name and property names the proposal
@@ -370,7 +370,7 @@ Main work is the theme integration and a fragment-interaction test (diagrams ins
 
 ## F5. Follow-along presenting mode
 
-### Status: ✅ Merged for the next release (PR #62)
+### Status: ✅ Shipped in 1.3.0 (PR #62)
 
 `output { followAlong = true }` (`OutputConfig`) gates a `/kslides-follow` websocket route
 and an injected client script (`FollowAlong.kt`) — the F1 pattern the sequencing predicted.
@@ -545,7 +545,7 @@ legitimate v1.
 The sequencing held: F4 and F6 landed as small, self-contained additions, and F1 followed
 with the websocket route and client-injection plumbing it predicted.
 
-### Done — merged for the next release
+### Done — shipped in 1.3.0
 
 3. ~~**F2** (M): unlocks CI-attached PDFs for releases.~~ Merged in PR #60. The
    CI-attach payoff is unlocked but not yet claimed — see the F2 follow-up below.
@@ -562,9 +562,8 @@ with the websocket route and client-injection plumbing it predicted.
    bug that actually cost the most was one the estimate didn't list (bfcache, see F5's
    Status block). Load testing remains outstanding.
 
-With F5 merged, every proposal in this document has shipped or is merged for the next
-release. New ideas go below as F7+; the follow-ups from shipped work are tracked in the
-next section.
+With F5 shipped in 1.3.0, every proposal in this document has shipped. New ideas go below
+as F7+; the follow-ups from shipped work are tracked in the next section.
 
 ### Follow-ups from shipped work
 
@@ -581,8 +580,8 @@ next section.
   bundled reveal.js. The post-merge cleanup (PR #63) moved the print-view Mermaid fix into
   core — `MermaidDsl.kt` now re-runs its own sweep on `pdf-ready`, so a manual `?print-pdf`
   in the browser gets the same fragment-clone handling the exporter used to arrange for
-  itself. `kslides-export` is unpublished until the next Maven Central release,
-  and `installation.md` already lists it — the release checklist covers the version bump.
+  itself. `kslides-export` is new to Maven Central in 1.3.0, so it has no prior version to
+  upgrade from — the docs and `installation.md` list it at 1.3.0 alongside the other modules.
 - **F3**: the typed properties track reveal.js' `--r-*` variable names by convention (the
   Kotlin property name is kebab-cased and prefixed at emission), so a reveal.js upgrade
   that renames or drops a variable would silently stop applying — worth a check when
