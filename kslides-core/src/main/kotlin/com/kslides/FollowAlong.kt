@@ -306,6 +306,31 @@ internal object FollowAlong {
         ws.onerror = function () { try { ws.close(); } catch (e) { /* ignore */ } };
       }
 
+      // A corner link (or any other in-deck link) to another deck is a full page load, and the
+      // new page reads its role from the query string — so without the token the presenter
+      // silently lands as a viewer. Carry it across same-origin links. External links and
+      // in-page '#' navigation are left alone: the former must not leak the token, the latter
+      // never reloads.
+      function carryTokenAcrossLinks() {
+        if (!isPresenter) return;
+        var carried = new RegExp('[?' + AMP + ']$PRESENT_PARAM=');
+        // forEach rather than an indexed loop, whose less-than comparison would break the XML
+        // parser that serializes this script into the page (see the note above).
+        [].forEach.call(document.querySelectorAll('a[href]'), function (a) {
+          var raw = a.getAttribute('href');
+          if (!raw) return;
+          if (raw.charAt(0) === '#') return;
+          if (a.origin !== location.origin) return;
+          if (carried.test(a.search)) return;
+          var sep = a.search ? AMP : '?';
+          a.href = a.origin + a.pathname + a.search + sep + '$PRESENT_PARAM=' + encodeURIComponent(token) + a.hash;
+        });
+      }
+      if (document.readyState === 'loading')
+        document.addEventListener('DOMContentLoaded', carryTokenAcrossLinks);
+      else
+        carryTokenAcrossLinks();
+
       // Chrome's back-forward cache freezes navigated-away pages instead of destroying them,
       // leaving their websocket open at the network layer — the server would never see the
       // presenter leave. Close eagerly on pagehide; on a bfcache restore the pending reconnect
