@@ -11,6 +11,20 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Fixed
 
+- Decks whose `path` is a `.html` file inside a subdirectory now emit correct
+  reveal.js asset links. The filesystem writer derived the `../` prefix only for
+  directory-style paths, so a deck at `greattalk1/other.html` linked
+  `revealjs/dist/reveal.css` and 404'd against `<site>/greattalk1/revealjs/…`,
+  leaving the page unstyled with `Can't find variable: Reveal` in the console.
+  The prefix is now derived from the deck's own path depth for every path style.
+  Decks at the output root (`greattalk2.html`) and directory decks
+  (`greattalk1`) are unaffected — their output is byte-identical.
+- A `.html` deck nested in a subdirectory now creates its own parent directory.
+  Previously it only wrote successfully if a directory-style deck declared
+  earlier happened to create it first.
+- The `../` prefix is derived from the deck path rather than from
+  `outputDir`, so a multi-segment `outputDir` such as `build/docs` no longer
+  produces too many `../` levels.
 - The `followAlong` presenter no longer loses their role by following a link.
   The presenter token lives only in the `?present=` query parameter, and each
   page decides its role by reading that on load, so clicking a corner link (or
