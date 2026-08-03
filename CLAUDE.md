@@ -66,7 +66,7 @@ Two POSIX-ish bash scripts live at the repo root (both target macOS's default ba
 - `kslides-init.sh` — scaffolds a new presentation project by cloning `kslides-template`, stripping its git history, renaming the project name and presentation title, and initializing a fresh repo. Renames are guarded so a drifted template warns instead of silently no-op'ing.
 - `kslides-dev.sh` — the live-reload supervisor: recompiles and restarts the app on source changes. Takes `--task` / `--watch` / `--port` (or positionals, with env vars as fallback) and defaults to the root `run` task watching `src`, matching a single-module kslides-template project.
 
-`FEATURE_IDEAS.md` holds ranked product proposals (F1–F6). Shipped ones carry a Status block recording what actually landed and how the open questions resolved; check it before designing a feature that might already have a written design.
+`code-reviews/FEATURE_IDEAS.md` holds ranked product proposals (F1–F6, all now shipped or merged). Shipped ones carry a Status block recording what actually landed and how the open questions resolved; check it before designing a feature that might already have a written design.
 
 ### CI
 
@@ -76,7 +76,7 @@ Two POSIX-ish bash scripts live at the repo root (both target macOS's default ba
 
 ### Releasing
 
-The current release is `1.2.0` (tag `1.2.0`, GitHub release `v1.2.0`, published to Maven Central as `com.kslides:kslides-core` and `com.kslides:kslides-letsplot`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site (`website/kslides/docs/installation.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
+The current version is `1.3.0` (tag `1.3.0`, GitHub release `v1.3.0`, published to Maven Central as `com.kslides:kslides-core`, `com.kslides:kslides-letsplot`, and — new in 1.3.0 — `com.kslides:kslides-export`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site (`website/kslides/docs/installation.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
 
 ## Module Structure
 

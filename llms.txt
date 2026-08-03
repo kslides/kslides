@@ -53,7 +53,7 @@ kslides {
 
 Configuration merges hierarchically: global `presentationConfig{}` → per-presentation `presentationConfig{}` → per-slide `slideConfig{}`. Each level overrides its parent.
 
-Sub-configs within `presentationConfig{}`: `menuConfig{}`, `copyCodeConfig{}`, `playgroundConfig{}`, `letsPlotIframeConfig{}`, `slideConfig{}`, `diagramConfig{}`.
+Sub-configs within `presentationConfig{}`: `menuConfig{}`, `copyCodeConfig{}`, `playgroundConfig{}`, `letsPlotIframeConfig{}`, `slideConfig{}`, `diagramConfig{}`, `customTheme{}`.
 
 `copyCodeConfig{}` configures the reveal.js CopyCode button (requires `enableCodeCopy = true`): `button` (`ALWAYS`/`HOVER`/`FALSE`) and `display` (`TEXT`/`ICONS`/`BOTH`) typed enums, `copy`/`copied` labels, `timeout`, button colors/borders, and `scale`/`offset`/`radius` sizing.
 
@@ -64,6 +64,10 @@ Configured in the `output{}` block:
 - **HTTP** (`enableHttp = true`): Starts a Ktor CIO server (default port 8080). Static resources served from `src/main/resources/public/`.
 
 `devMode = true` (HTTP only) adds live reload for local authoring: each served page embeds a client that connects to a `/kslides-reload` websocket and reloads when the server restarts, restoring the current slide and fragment from `sessionStorage`. Because slide content is compiled Kotlin, picking up an edit requires restarting the JVM — the `kslides-dev.sh` script watches sources and does the rebuild/restart automatically. (`./gradlew -t run` does not work for this: Gradle continuous build cannot restart a blocking server task.)
+
+`followAlong = true` (HTTP only) adds follow-along presenting: the presenter opens a deck with `?present=<token>` — the presenter URLs are logged at startup — and every other visitor's browser follows the presenter's slide and fragment position live over a `/kslides-follow` websocket. Viewers get a badge they can click to break away and navigate freely, then click again to rejoin; late joiners land on the presenter's current slide. Viewers are read-only by construction (the server ignores their frames). One presenter per deck: a newcomer with a valid token supersedes the previous connection, which demotes itself to a viewer. Set `presenterToken` for a fixed token instead of a random one per launch. This is lightweight, demo-grade auth — the token travels in the URL.
+
+`pdf { }` inside `output { }` configures PDF export (consumed by the `kslides-export` module, see below): `outputDir` (default `build/pdf`), `pageWidth`/`pageHeight` as CSS lengths (default: the deck's own print CSS decides), `exclude(...)` for per-presentation opt-out, `previewPng` to also capture a first-slide screenshot, `browserChannel` (`"chrome"`/`"msedge"`) to drive an installed browser instead of downloading Chromium, and `readyTimeoutMillis`/`settleMillis` timing knobs.
 
 ### DslSlide-Specific Features
 
@@ -100,6 +104,27 @@ All [reveal.js configuration options](https://revealjs.com/config/) are exposed 
 
 kslides-specific options include: `title`, `theme` (enum: BLACK, WHITE, LEAGUE, BEIGE, SKY, NIGHT, SERIF, SIMPLE, SOLARIZED, BLOOD, MOON, DRACULA), `highlight` (MONOKAI, ZENBURN), `enableSpeakerNotes`, `enableMenu`, `enableCodeCopy`, `topLeftHref`/`topRightHref` (corner links), `gaPropertyId`.
 
+### ThemeConfig (`customTheme{}`)
+
+`customTheme{}` inside `presentationConfig{}` layers typed overrides on a stock reveal.js theme, so brand styling does not require hand-written CSS. It cascades global → presentation like every other config, and only assigned properties are emitted — as a `<style id="custom-theme">` block layered after the base theme's stylesheet, so `slides.css` and `css{}` rules can still override it.
+
+```kotlin
+presentationConfig {
+  customTheme {
+    baseTheme = PresentationTheme.WHITE       // stock theme to layer on; wins over `theme`
+    backgroundColor = Color("#f8f5ef")
+    mainColor = Color("#1a1a2e")
+    headingColor = Color("#0f4c81")
+    headingTextTransform = TextTransform.none // disable the stock themes' UPPERCASE headings
+    codeFont = "Menlo, Consolas, monospace"
+    customProperty("--r-heading-letter-spacing", "0.02em")
+    logo("images/logo.png", position = LogoPosition.BOTTOM_RIGHT, size = 90.px)
+  }
+}
+```
+
+Eighteen typed properties map 1:1 to reveal.js `--r-*` theme variables: `backgroundColor`, `mainColor`, `mainFont`, `mainFontSize`, `headingColor`, `headingFont`, `headingTextTransform`, `headingFontWeight`, `heading1Size`–`heading4Size`, `codeFont`, `linkColor`, `linkColorHover`, `selectionColor`, `selectionBackgroundColor`, `blockMargin`. Values use kotlinx.css types (`Color`, `LinearDimension`, `TextTransform`). `customProperty(name, value)` passes through variables the DSL does not model (the name must start with `--`). `logo(src, position, size, margin, opacity, href)` pins a brand image to a corner of every slide and every exported PDF page; `position` is a `LogoPosition` (TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT), and without an `href` the logo ignores pointer events.
+
 ### SlideConfig
 
 Per-slide options: `backgroundColor`, `backgroundImage`, `backgroundSize`, `backgroundPosition`, `backgroundRepeat`, `backgroundOpacity`, `backgroundVideo`, `backgroundVideoLoop`, `backgroundVideoMuted`, `backgroundIframe`.
@@ -110,10 +135,34 @@ Font sizing: `fontSize` (inline `font-size` on the slide's `<section>`, any CSS 
 
 Common slide properties: `id`, `classes`, `style`, `hidden`, `uncounted`, `autoAnimate`, `autoAnimateRestart`. MarkdownSlides also support `filename` for external markdown files.
 
+## PDF Export
+
+The optional `kslides-export` module turns a deck into a PDF with one command. `exportPdf()` accepts the same block as `kslides{}`, builds the presentations, serves them from an ephemeral-port Ktor server, and prints each deck through headless Chromium (Playwright), waiting for reveal.js' `pdf-ready` event and any Mermaid diagrams before printing:
+
+```kotlin
+fun KSlides.myDeck() {
+  presentation { markdownSlide { content { "# My Deck" } } }
+}
+
+fun main() {
+  exportPdf { myDeck() }          // every presentation -> one PDF each
+  // exportPdf("demo") { myDeck() } // just the presentation at /demo.html
+}
+```
+
+Settings come from the `pdf { }` block in `output { }` (above). On first use Playwright downloads its own browsers; set `browserChannel` to skip that and drive an installed Chrome/Edge. Content fetched at render time still needs its backing service — Kroki `diagram{}` slides need a reachable Kroki server, while native `mermaid()` renders offline. Keep the dependency out of a runnable fat JAR by putting the export entry point in its own source set.
+
+## Tooling Entry Points
+
+- `buildKSlides(block)` — evaluates and validates the DSL without emitting any output, returning the populated `KSlides`
+- `KSlides.startHttpServer(port, wait)` — starts the HTTP-mode Ktor server programmatically (port `0` picks an ephemeral port) and returns a closeable `KSlidesHttpServer` exposing the bound `port`
+- `kslidesTest(block)` — evaluates the DSL with both output modes forced off, for tests
+
 ## Project Structure
 
 - `kslides-core/` — Core DSL library
 - `kslides-examples/` — Example presentations with main entry point
+- `kslides-export/` — One-command PDF export via headless Chromium (Playwright)
 - `kslides-letsplot/` — Lets-Plot chart integration module
 - `kslides-init.sh` — Scaffolds a new presentation project from `kslides-template`
 - `kslides-dev.sh` — Live-reload supervisor: watches sources, rebuilds, restarts the app
@@ -127,8 +176,9 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("com.kslides:kslides-core:1.2.0")
-    // Optional: implementation("com.kslides:kslides-letsplot:1.2.0")
+    implementation("com.kslides:kslides-core:1.3.0")
+    // Optional: implementation("com.kslides:kslides-letsplot:1.3.0")
+    // Optional: implementation("com.kslides:kslides-export:1.3.0")
 }
 ```
 
@@ -143,4 +193,4 @@ dependencies {
 - [Example source](https://github.com/kslides/kslides/blob/master/kslides-examples/src/main/kotlin/Slides.kt): Full example presentation code
 - [reveal.js docs](https://revealjs.com): Underlying presentation framework
 - [CHANGELOG](https://github.com/kslides/kslides/blob/master/CHANGELOG.md): Version history
-- [RELEASE_NOTES](https://github.com/kslides/kslides/blob/master/RELEASE_NOTES.md): Narrative release notes (latest: 1.2.0)
+- [RELEASE_NOTES](https://github.com/kslides/kslides/blob/master/RELEASE_NOTES.md): Narrative release notes (latest: 1.3.0)
