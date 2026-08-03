@@ -3,6 +3,7 @@ package com.kslides
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.config.PresentationConfig
 import com.pambrose.common.util.ensureSuffix
+import kotlinx.html.BODY
 import kotlinx.html.HTML
 import kotlinx.html.a
 import kotlinx.html.body
@@ -91,6 +92,11 @@ internal object Page {
       // renders, so its CSS is patched into the already-built head the same way.
       if (p.mermaidUsed)
         htmldoc.appendHeadStyle(Mermaid.headCss)
+
+      // Badge styling goes through the head like every other feature CSS, so deck authors can
+      // restyle or hide it with ordinary css{} rules (the client script only sets text/cursor).
+      if (useHttp && p.kslides.outputConfig.followAlong)
+        htmldoc.appendHeadStyle(FollowAlong.badgeCss)
 
       mergePreAndCode(htmldoc.serialize())
     }
@@ -331,12 +337,28 @@ internal object Page {
       rawHtml("\n")
     }
 
-    // In dev mode over HTTP, inject the live-reload client so the browser refreshes to the same
-    // slide when the server restarts. Never emitted for filesystem output or production HTTP.
-    if (useHttp && p.kslides.outputConfig.devMode) {
+    // Shared injection point for HTTP-only client scripts (live reload, follow-along). Never
+    // emitted for filesystem output; each script is gated by its own output{} flag.
+    injectClientScripts(p, useHttp)
+  }
+
+  /** Emits the HTTP-only client scripts whose output{} flags are enabled. */
+  private fun BODY.injectClientScripts(
+    p: Presentation,
+    useHttp: Boolean,
+  ) {
+    if (!useHttp)
+      return
+
+    // Pre-indented once per JVM: this runs per HTTP request under the render lock.
+    fun emit(indentedClientScript: String) {
       rawHtml("\n\t")
-      script { rawHtml("\n${LiveReload.clientScript.prependIndent("\t\t")}\n\t") }
+      script { rawHtml("\n$indentedClientScript\n\t") }
       rawHtml("\n")
     }
+
+    val outputConfig = p.kslides.outputConfig
+    if (outputConfig.devMode) emit(LiveReload.indentedClientScript)
+    if (outputConfig.followAlong) emit(FollowAlong.indentedClientScript)
   }
 }

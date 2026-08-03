@@ -36,5 +36,11 @@ class OutputConfigTest : StringSpec() {
     "OutputConfig devMode defaults to false" {
       KSlides().outputConfig.devMode shouldBe false
     }
+
+    "OutputConfig followAlong defaults to off with a blank presenterToken" {
+      val output = KSlides().outputConfig
+      output.followAlong shouldBe false
+      output.presenterToken shouldBe ""
+    }
   }
 }

@@ -64,6 +64,10 @@ internal object LiveReload {
     })();
     """.trimIndent()
 
+  // Precomputed once: generatePage runs per HTTP request under the render lock, so the
+  // re-indent must not happen there.
+  internal val indentedClientScript by lazy { clientScript.prependIndent("\t\t") }
+
   /**
    * Registers the live-reload websocket. On connect it sends [epoch] (the server's boot id) and
    * holds the socket open until the client disconnects or this server dies on restart.

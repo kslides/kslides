@@ -4,6 +4,7 @@ import com.kslides.KSlides
 import com.kslides.KSlidesDslMarker
 import com.pambrose.common.util.toPath
 import org.slf4j.event.Level
+import java.util.UUID
 
 /**
  * Controls where and how presentations are emitted. Configured via [com.kslides.KSlides.output].
@@ -49,6 +50,28 @@ class OutputConfig(
    * Default `false`.
    */
   var devMode = false
+
+  /**
+   * When `true` (and [enableHttp]), enable follow-along presenting: the presenter opens a deck
+   * with `?present=<token>` and every other visitor's browser follows the presenter's slide and
+   * fragment position live, with a break-away/rejoin toggle. The presenter URLs (with the token)
+   * are logged at server startup. Has no effect on filesystem output. Default `false`.
+   */
+  var followAlong = false
+
+  /**
+   * The presenter token for [followAlong]. Blank (the default) generates a random token per
+   * launch; set it explicitly when the presenter needs a predictable URL (e.g. typing it on
+   * another device). This is lightweight, demo-grade auth — the token travels in the URL.
+   */
+  var presenterToken = ""
+
+  // Only the random fallback is cached — a configured presenterToken always wins, no matter
+  // when it is assigned relative to the first read.
+  private val randomPresenterToken by lazy { UUID.randomUUID().toString() }
+
+  /** The effective [followAlong] presenter token: [presenterToken], or a random one per launch. */
+  internal val followAlongToken: String get() = presenterToken.ifBlank { randomPresenterToken }
 
   /** HTTP port. Overridden at runtime by the `PORT` environment variable (Heroku convention). */
   var httpPort = 8080
