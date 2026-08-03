@@ -9,6 +9,29 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+### Fixed
+
+- The `followAlong` presenter no longer loses their role by following a link.
+  The presenter token lives only in the `?present=` query parameter, and each
+  page decides its role by reading that on load, so clicking a corner link (or
+  any other in-deck link to another deck) arrived without it and silently
+  demoted the presenter to a viewer. The injected client now carries the token
+  across same-origin links. External links are skipped so the token cannot leak
+  to another origin, and bare `#` navigation is skipped because it never
+  reloads; viewers are untouched.
+- The example decks' corner links are relative (`./`, `./#/features`) instead of
+  absolute, so they resolve correctly when the decks are served under a path
+  prefix. Previously the corner links on the GitHub Pages copy pointed at the
+  site root rather than the deck. Note this is a fix to the bundled examples, not
+  a library change: `topRightHref` is still emitted verbatim, so decks published
+  under a subpath should use relative hrefs.
+
+### Changed
+
+- `./gradlew build` now compiles the `export` source set in `kslides-examples`.
+  Custom source sets are not wired into `check`, so a broken `Export.kt` stayed
+  invisible until someone ran `make pdf` — CI never compiled it.
+
 ## [1.3.0] — 2026-08-02
 
 Three features aimed at what happens after a deck is written — follow-along
