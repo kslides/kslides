@@ -319,6 +319,33 @@ class KSlides : AutoCloseable {
   companion object {
     internal val logger = KotlinLogging.logger {}
 
+    /**
+     * Resolve the file presentation [key] is written to under [outputDir], together with the
+     * prefix its asset links need in order to reach [rootPrefix].
+     *
+     * Asset links are relative to the generated page, so a deck nested in a subdirectory has to
+     * walk back up to [outputDir] before naming an asset. The number of levels comes from the
+     * deck's own key and never from [outputDir] — the page lives at `<outputDir>/<key>` and the
+     * assets at `<outputDir>/<rootPrefix>`, so a multi-segment [outputDir] such as `build/docs`
+     * adds no distance between the two.
+     *
+     * Keys arrive with a leading slash from [Presentation.validatePath]; the blank filter drops it.
+     */
+    internal fun outputTarget(
+      outputDir: String,
+      key: String,
+      rootPrefix: String,
+    ): Pair<File, String> {
+      val keyElems = key.split("/").filter { it.isNotBlank() }
+      // A ".html" key names the file itself, so its last segment contributes no depth. Every other
+      // key names a directory holding an index.html, so all of its segments do.
+      val isHtmlFile = key.endsWith(".html")
+      val dirElems = if (isHtmlFile) keyElems.dropLast(1) else keyElems
+      val fileName = if (isHtmlFile) keyElems.last() else "index.html"
+      val dir = (listOf(outputDir) + dirElems).joinToString("/")
+      return File("$dir/$fileName") to "${"../".repeat(dirElems.size)}$rootPrefix"
+    }
+
     internal fun writeSlidesToFileSystem(config: OutputConfig) {
       require(config.outputDir.isNotBlank()) { "outputDir value must not be empty" }
 
@@ -330,25 +357,13 @@ class KSlides : AutoCloseable {
 
       config.kslides.presentationMap
         .forEach { (key, p) ->
-          val (file, srcPrefix) =
-            when {
-              key == "/" -> {
-                File("$outputDir/index.html") to rootPrefix
-              }
-
-              key.endsWith(".html") -> {
-                File("$outputDir/$key") to rootPrefix
-              }
-
-              else -> {
-                val pathElems = "$outputDir/$key".split("/").filter { it.isNotBlank() }
-                val path = pathElems.joinToString("/")
-                val dotDot = List(pathElems.size - 1) { "../" }.joinToString("")
-                // Create directory (including any missing parents) if absent
-                if (!mkdir(path)) logger.warn { "Unable to create directory: $path" }
-                File("$path/index.html") to "$dotDot$rootPrefix"
-              }
-            }
+          val (file, srcPrefix) = outputTarget(outputDir, key, rootPrefix)
+          // Create the containing directory (including any missing parents) if absent. Nested
+          // ".html" decks need this too — they cannot rely on a sibling directory deck having
+          // been declared first to create it for them.
+          file.parentFile?.also { dir ->
+            if (!mkdir(dir.path)) logger.warn { "Unable to create directory: $dir" }
+          }
           logger.info { "Writing presentation $key to $file" }
           file.writeText(generatePage(p, false, srcPrefix))
         }
