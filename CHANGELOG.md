@@ -9,6 +9,12 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-08-02
+
+Three features aimed at what happens after a deck is written — follow-along
+presenting, one-command PDF export, and a type-safe theming DSL — plus a third
+published module, `kslides-export`.
+
 ### Added
 
 - **`followAlong` — follow-along presenting** (F5). With `output { followAlong = true }`
@@ -52,6 +58,21 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   any output, and `KSlides.startHttpServer()` — starts the HTTP-mode Ktor server
   programmatically (port `0` picks an ephemeral port) and returns a closeable
   `KSlidesHttpServer` handle. Both public for tooling such as kslides-export.
+- Docs site: new **PDF export** and **Presenting** pages, a "Custom themes"
+  section in Styling, and a nested-config-blocks table in Configuration.
+
+### Changed
+
+- `kslides-export` joins `kslides-core` and `kslides-letsplot` on Maven Central.
+  It is a separate module so Playwright (which downloads a browser) never lands
+  on a deck's runtime classpath.
+- The websocket plugin is now installed unconditionally in HTTP mode; the
+  `devMode` and `followAlong` routes are registered per flag. Previously the
+  plugin install was itself conditional, which made the two flags an invariant
+  that had to be maintained in two places.
+- `kslidesTest { }` is built on `buildKSlides()` rather than `kslides { }`, so it
+  no longer runs the output branch or logs a spurious "Set enableHttp or
+  enableFileSystem" warning on every test.
 
 ### Fixed
 
@@ -60,6 +81,12 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   so custom styling now applies in reveal.js' `?print-pdf` view and exported
   PDFs. Previously the unstyled corner links rendered full-width in print,
   shifting every deck one page down and producing a blank leading PDF page.
+- Mermaid diagrams now render in reveal.js' print view when a slide's fragments
+  are expanded. The print view clones slides *after* reveal.js initializes, so
+  the clones were never picked up by the initial render pass; the bundled
+  runtime now re-runs its sweep on `pdf-ready`. This previously only affected
+  `kslides-export`, which worked around it — a manual `?print-pdf` in the
+  browser now gets the same handling.
 
 ## [1.2.0] — 2026-08-01
 
@@ -937,7 +964,8 @@ chart-embedding integration, and the test/CI story
   filesystem and Ktor-server output modes, and configurable
   per-slide / per-presentation overrides.
 
-[Unreleased]: https://github.com/kslides/kslides/compare/1.2.0...HEAD
+[Unreleased]: https://github.com/kslides/kslides/compare/1.3.0...HEAD
+[1.3.0]: https://github.com/kslides/kslides/releases/tag/1.3.0
 [1.2.0]: https://github.com/kslides/kslides/releases/tag/1.2.0
 [1.1.1]: https://github.com/kslides/kslides/releases/tag/1.1.1
 [1.1.0]: https://github.com/kslides/kslides/releases/tag/1.1.0

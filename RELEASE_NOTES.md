@@ -6,6 +6,89 @@ structured, category-grouped log.
 
 ---
 
+## 1.3.0 — 2026-08-02
+
+Three features, all aimed at what happens *after* a deck is written: getting it
+to an audience, getting it into someone's inbox, and making it look like yours.
+It also adds a third published module, `kslides-export`.
+
+### Follow-along presenting
+
+`output { followAlong = true }` turns the HTTP server into a lightweight
+presentation platform. The presenter opens a deck with `?present=<token>` — the
+per-deck presenter URLs are logged at startup — and everyone else just opens the
+plain deck URL. Their browsers follow the presenter's slide and fragment position
+live over a `/kslides-follow` websocket.
+
+A badge at the bottom of the screen reads `● LIVE` while following. Click it to
+break away and navigate freely, click again to snap back to wherever the
+presenter is now. Late joiners land on the current slide rather than slide one,
+because the server keeps each deck's last known position.
+
+The audience is read-only by construction: the server ignores frames from anyone
+who isn't the presenter, so a crafted message can't hijack the deck. There is one
+presenter per deck — a newcomer with a valid token supersedes the previous
+connection, and the superseded tab quietly demotes itself to a viewer. Set
+`presenterToken` if you want a predictable URL you can type on a tablet instead of
+a random token per launch.
+
+The presenter token is deliberately lightweight auth: it travels in the URL, so it
+gates control of a slide deck, not a security boundary.
+
+### One-command PDF export
+
+The new `kslides-export` module turns "send me the deck" into a build artifact:
+
+```bash
+./gradlew exportPdf                 # every presentation -> build/pdf/<deck>.pdf
+./gradlew exportPdf -Pdeck=demo     # just one
+```
+
+`exportPdf()` builds the presentations, serves them from an ephemeral-port Ktor
+server, and prints each deck through headless Chromium via Playwright — waiting
+for reveal.js' `pdf-ready` event and any Mermaid diagrams before printing, so
+pages are sized by the deck's own print stylesheet. The `pdf { }` block inside
+`output { }` covers the output directory, an explicit page size, per-presentation
+`exclude()`, an optional first-slide `previewPng` for social previews, and
+`browserChannel` to drive an installed Chrome or Edge instead of downloading
+Chromium.
+
+Building this surfaced a long-standing print bug: every generated `<style>` block
+was scoped `media="screen"`, so all custom styling silently vanished when
+printing. That is fixed in core, which also fixes manual `?print-pdf` printing.
+
+### Type-safe theming
+
+`customTheme { }` inside `presentationConfig { }` replaces CSS archaeology with
+typed properties and IDE completion:
+
+```kotlin
+customTheme {
+  baseTheme = PresentationTheme.WHITE
+  mainColor = Color("#1a1a2e")
+  headingTextTransform = TextTransform.none  // kill reveal's default UPPERCASE
+  codeFont = "JetBrains Mono, monospace"
+  logo("assets/logo.svg", position = LogoPosition.TOP_RIGHT, size = 80.px)
+}
+```
+
+Eighteen typed properties map to reveal.js' `--r-*` theme variables — brand
+colors, fonts, heading treatment, per-level heading sizes, selection colors —
+and `customProperty("--r-…", …)` covers anything the DSL doesn't model. Only
+assigned properties are emitted, as a `<style id="custom-theme">` block layered
+after the base theme's stylesheet, and the whole thing cascades global →
+presentation like every other config. `logo()` pins a corner logo or watermark to
+every slide and every exported PDF page. See the new `theme.html` example deck.
+
+### Also in this release
+
+`buildKSlides()` evaluates and validates the DSL without emitting output, and
+`KSlides.startHttpServer()` starts the HTTP-mode server programmatically (port `0`
+picks an ephemeral port), returning a closeable handle. Both are public for
+tooling — `kslides-export` is built on them.
+
+---
+
 ## 1.2.0 — 2026-08-01
 
 A feature release with three additions worth a look — native Mermaid diagrams,

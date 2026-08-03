@@ -15,7 +15,7 @@ describes the plan, not the code.
 | F2 | One-command PDF export     | Deck sharers   | M      | Distribution         | ✅ Merged (PR #60)  |
 | F3 | Type-safe theming DSL      | Teams/branding | L      | Customization        | ✅ Merged (PR #61)  |
 | F4 | Native Mermaid diagrams    | Deck authors   | S      | Content              | ✅ Shipped in 1.2.0 |
-| F5 | Follow-along presenting    | Presenters     | L      | Platform             | Proposed            |
+| F5 | Follow-along presenting    | Presenters     | L      | Platform             | ✅ Merged (PR #62)  |
 | F6 | Scaffolding command        | New users      | S      | Adoption             | ✅ Shipped in 1.2.0 |
 
 ---
@@ -370,6 +370,48 @@ Main work is the theme integration and a fragment-interaction test (diagrams ins
 
 ## F5. Follow-along presenting mode
 
+### Status: ✅ Merged for the next release (PR #62)
+
+`output { followAlong = true }` (`OutputConfig`) gates a `/kslides-follow` websocket route
+and an injected client script (`FollowAlong.kt`) — the F1 pattern the sequencing predicted.
+The presenter opens `?present=<token>`; the audience uses the plain deck URL and follows
+live, with a break-away/rejoin badge. Presenter URLs (token included) are logged at startup,
+using the server's actual bound port so ephemeral-port embedders see a usable link.
+`presenterToken` pins a predictable token instead of the per-launch random one. The server
+keeps each deck's last state, so a late joiner lands on the current slide rather than slide
+one. Print view is skipped entirely, so exported PDFs carry no badge and open no socket.
+Docs: `website/kslides/docs/presenting.md`.
+
+The served HTML is byte-identical for presenter and audience: the client reads `present`
+from the query string, decides its own role, and asserts it on the websocket handshake,
+where the server validates the token. Role is a connection-level concept, so nothing in the
+rendering path varies per viewer and pages stay cacheable.
+
+Two things landed differently from the proposal below:
+
+- **The resilience problem that actually bit was not one of the predicted ones.** Chrome's
+  bfcache freezes a navigated-away page rather than destroying it, so the presenter's
+  websocket stayed open at the network layer — protocol pings are answered by the browser's
+  network process, not page JS — and viewers sat on "● LIVE" indefinitely after the
+  presenter left. Fixed on both ends: the client closes on `pagehide`, and the server runs
+  15s/30s pings as the backstop. Viewers now see "presenter offline" within a couple of
+  seconds.
+- **"Needs load testing before it's honest to advertise" is only partly discharged.** What
+  landed is a 40-viewer broadcast integration test against a real in-process server, plus a
+  non-suspending `trySend` fan-out so one slow viewer cannot stall the presenter's read loop
+  or the other viewers. That is not the same as load testing against real clients over a
+  real network — see the follow-up below.
+
+Open questions resolved:
+
+- *Scope v1 to a single presenter per presentation?* → **Yes**, with takeover: a newcomer
+  holding a valid token supersedes the previous presenter, which is closed with a
+  distinguishing reason and demotes itself to a viewer rather than reconnect-looping.
+- *Does F1's websocket infrastructure share code with this?* → **Partly.** The *pattern* was
+  reused as predicted, and F1's follow-up landed with it — both client scripts now share one
+  injection point in `Page`. The route/reconnect scaffolding itself is still written twice;
+  extracting it was deliberately declined as premature with two callers.
+
 ### Problem
 
 When presenting remotely or to a large room, the audience either watches a screen-share
@@ -512,26 +554,34 @@ with the websocket route and client-injection plumbing it predicted.
    assumed, so the coverage decision (which reveal.js variables to model) rests on the
    stock themes' own variable set rather than on reported demand — the
    `customProperty()` passthrough is the release valve if that guessed wrong.
+5. ~~**F5 last** (L): reuses F1's infrastructure; ship when the server story is mature.~~
+   Merged in PR #62. The prerequisite call was right: `LiveReload.kt`'s pattern carried
+   over directly and the sync core was a second route plus per-deck broadcast state. The
+   estimate's read on where the effort would go was half right — late joiners and
+   reconnection were cheap (last-state replay; exponential backoff), while the resilience
+   bug that actually cost the most was one the estimate didn't list (bfcache, see F5's
+   Status block). Load testing remains outstanding.
 
-### Remaining
-
-5. **F5 last** (L): reuses F1's infrastructure; ship when the server story is mature.
-   **Its prerequisite is now met** — `LiveReload.kt` establishes the pattern F5 needs
-   (a `devMode`-style output flag gating a websocket route, plus per-render client-script
-   injection from `Page`), so the sync core is mostly a second route and a broadcast
-   channel. The resilience work the estimate flags (reconnection, late joiners, mobile
-   tab backgrounding, load testing) is unchanged and remains the bulk of the effort.
+With F5 merged, every proposal in this document has shipped or is merged for the next
+release. New ideas go below as F7+; the follow-ups from shipped work are tracked in the
+next section.
 
 ### Follow-ups from shipped work
 
-- **F1**: `devMode` currently warns when set without `enableHttp`. If F5 lands, both flags
-  will gate websocket routes and the two client scripts will coexist on the same page —
-  worth a shared injection point rather than a second special case in `Page`.
+- **F1**: ~~worth a shared injection point rather than a second special case in `Page`.~~
+  Done — landed with F5 (PR #62): `Page` has one injection point that emits whichever client
+  scripts are enabled, and `devMode` + `followAlong` coexist on the same page. The route and
+  reconnect scaffolding is still written twice (`LiveReload.kt`, `FollowAlong.kt`);
+  extracting it was declined as premature with two callers, so a third websocket feature is
+  the trigger to revisit.
 - **F2**: the motivating "CI attaches PDFs to GitHub releases" use case is not wired up —
   it needs a release-workflow step (pre-install Chromium via the Playwright CLI, run
   `exportPdf`, upload the artifacts). The readiness wait is tied to reveal 6's print-view
   internals (`pdf-ready`, Mermaid `data-processed`), so re-verify it when bumping the
-  bundled reveal.js. `kslides-export` is unpublished until the next Maven Central release,
+  bundled reveal.js. The post-merge cleanup (PR #63) moved the print-view Mermaid fix into
+  core — `MermaidDsl.kt` now re-runs its own sweep on `pdf-ready`, so a manual `?print-pdf`
+  in the browser gets the same fragment-clone handling the exporter used to arrange for
+  itself. `kslides-export` is unpublished until the next Maven Central release,
   and `installation.md` already lists it — the release checklist covers the version bump.
 - **F3**: the typed properties track reveal.js' `--r-*` variable names by convention (the
   Kotlin property name is kebab-cased and prefixed at emission), so a reveal.js upgrade
@@ -540,8 +590,24 @@ with the websocket route and client-injection plumbing it predicted.
   "documentation with visual examples" is covered by the `theme.html` example deck rather
   than by screenshots on the docs page. Fonts are named but not loaded: `headingFont`/
   `codeFont` assume the family is already available (system font or a webfont the deck
-  pulls in itself); a `webFont()` helper would close that gap.
+  pulls in itself); a `webFont()` helper would close that gap. Two gaps surfaced by the
+  post-merge cleanup (PR #64): `customTheme {}` can invert a deck's appearance while
+  `PresentationTheme.isDark` still reports the *base* theme's darkness, so
+  `baseTheme = WHITE` plus a dark `backgroundColor` yields a dark deck with light Mermaid
+  diagrams — and every future dark/light-derived asset inherits the same blind spot; and
+  `Page.generateHead` re-reads `slides.css` off the classpath on **every** render inside the
+  render lock, which costs more than everything that cleanup fixed (it predates F3, so it
+  was left alone, but it fits the same `by lazy` treatment).
 - **F4**: the bundled Mermaid version is a checked-in asset with no upgrade automation;
   bumping it is a manual re-download. Worth a Makefile target if it drifts.
+- **F5**: load testing is the honest gap — the 40-viewer test runs in one JVM over loopback,
+  which exercises the fan-out but not real clients, real networks, or mobile browsers
+  backgrounding tabs. The auth is deliberately demo-grade: the token travels in the URL, so
+  it lands in browser history and anything screen-shared; a POST handshake setting a
+  short-lived cookie is the natural upgrade if it ever needs to be more than a talk
+  convenience. The presenter has no view of how many viewers are connected, and viewers have
+  no indication of who is presenting. Note for anyone editing the injected client: inline
+  page scripts pass through an XML parser during DOM serialization, so the source must
+  contain no bare `&` or `<` (hence the `AMP` workaround in `FollowAlong.kt`).
 - **F6**: no prompts means "add lets-plot / playground" is still a manual post-scaffold
   edit. If the template grows variants, revisit the guided-generator design above.

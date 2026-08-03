@@ -41,6 +41,10 @@ Because slide content is compiled Kotlin, picking up an edit requires restarting
 
 **Note:** keep `devMode` out of published builds. If `enableFileSystem` is also enabled, the generated static pages under `outputDir` embed the reload client too. That is harmless on a static host — the client simply can't reach the websocket and retries quietly — but it is dead weight in your deployable output. Use `devMode = false` (or disable filesystem output) for the run that produces the `docs/` you publish.
 
+## Follow-along presenting
+
+`followAlong = true` is the other HTTP-only output flag. It keeps a remote audience on the presenter's slide over a websocket, with a break-away/rejoin toggle — see [Presenting](presenting.md). Like `devMode`, it has no effect on filesystem output and is never written into the static pages under `outputDir`. The two can be enabled together; both client scripts share one injection point.
+
 ## Multiple presentations in one program
 
 ```kotlin
@@ -56,4 +60,6 @@ Each `presentation { }` becomes a separate page; nested directories under `path`
 | Deploy to GitHub Pages / Netlify                     | `enableFileSystem = true`        |
 | Local preview during development                     | `enableHttp = true` (default)    |
 | Render dynamic data per request                      | HTTP only                        |
+| Present live to a remote audience                    | `followAlong = true` (HTTP only) |
+| Hand someone the deck as a file                      | [`exportPdf()`](pdf-export.md)   |
 | Both — preview locally, deploy the static artifact   | Leave both enabled               |
