@@ -108,6 +108,7 @@ fun exampleSlides(): KSlides.() -> Unit =
     output {
       enableFileSystem = true
       enableHttp = true
+      followAlong = true // audience browsers follow the presenter; presenter URL logged at startup
       // devMode = true
     }
 

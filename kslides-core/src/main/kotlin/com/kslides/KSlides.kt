@@ -2,6 +2,7 @@ package com.kslides
 
 import com.kslides.DiagramOutputType.Companion.outputTypeFromSuffix
 import com.kslides.DiagramOutputType.SVG
+import com.kslides.FollowAlong.kslidesFollowRoute
 import com.kslides.InternalUtils.mkdir
 import com.kslides.KSlides.Companion.logger
 import com.kslides.KSlides.Companion.writeSlidesToFileSystem
@@ -79,6 +80,9 @@ fun kslides(block: KSlides.() -> Unit) =
 
       if (outputConfig.devMode && !outputConfig.enableHttp)
         logger.warn { "output { devMode } has no effect without enableHttp = true" }
+
+      if (outputConfig.followAlong && !outputConfig.enableHttp)
+        logger.warn { "output { followAlong } has no effect without enableHttp = true" }
 
       if (outputConfig.enableFileSystem)
         writeSlidesToFileSystem(outputConfig)
@@ -204,9 +208,20 @@ class KSlides : AutoCloseable {
     name: String,
   ) = presentationMap[name] ?: throw IllegalArgumentException("Presentation $name not found")
 
+  // Log the per-deck presenter URLs (with the token) so the presenter can copy one at launch.
+  private fun logPresenterUrls(port: Int) {
+    logger.info { "Follow-along presenting enabled. Presenter URLs:" }
+    presentationPaths.forEach { path ->
+      logger.info {
+        "  http://localhost:$port$path?${FollowAlong.PRESENT_PARAM}=${outputConfig.followAlongToken}"
+      }
+    }
+  }
+
   /**
    * Start the same Ktor HTTP server that `output { enableHttp = true }` runs, serving every
-   * registered presentation plus the bundled static assets.
+   * registered presentation plus the bundled static assets. When [com.kslides.config.OutputConfig.followAlong]
+   * is enabled, the presenter URLs (with the token) are logged against the actual bound port.
    *
    * @param port port to bind; `0` picks an ephemeral free port (read it back from
    *   [KSlidesHttpServer.port]). Defaults to the configured HTTP port.
@@ -217,7 +232,16 @@ class KSlides : AutoCloseable {
   fun startHttpServer(
     port: Int = outputConfig.port,
     wait: Boolean = false,
-  ) = KSlidesHttpServer(embeddedServer(CIO, port = port, module = appModule(outputConfig)).start(wait = wait))
+  ): KSlidesHttpServer {
+    // A blocking start never returns, so its URLs must be logged up front from the requested
+    // port; a non-blocking start logs after binding, when even port 0 has resolved.
+    if (outputConfig.followAlong && wait)
+      logPresenterUrls(port)
+    val server = KSlidesHttpServer(embeddedServer(CIO, port = port, module = appModule(outputConfig)).start(wait = wait))
+    if (outputConfig.followAlong && !wait)
+      logPresenterUrls(server.port)
+    return server
+  }
 
   private val clientLazy =
     lazy {
@@ -335,8 +359,17 @@ class KSlides : AutoCloseable {
       {
         // Embedding this logic here, rather than in an Application.module() call, forgoes auto-reload.
         installPlugins(config)
-        if (config.devMode)
-          install(WebSockets)
+        // Installed unconditionally: the plugin is inert without a webSocket{} route, and gating
+        // it on the flags that register routes (devMode, followAlong) would be an invariant to
+        // hand-maintain across two code sites.
+        install(WebSockets) {
+          // Reap dead connections (network drop, laptop sleep) so follow-along viewers learn
+          // the presenter is gone even without a clean close. Browsers answer protocol pings
+          // from their network process, so this cannot detect frozen (bfcache) pages — the
+          // follow-along client closes eagerly on pagehide for that case instead.
+          pingPeriodMillis = 15_000
+          timeoutMillis = 30_000
+        }
 
         val kslides = config.kslides
         kslides.presentationMap
@@ -352,6 +385,8 @@ class KSlides : AutoCloseable {
           presentationRoutes(kslides)
           if (config.devMode)
             kslidesReloadRoute(kslides.bootEpoch)
+          if (config.followAlong)
+            kslidesFollowRoute(kslides, config.followAlongToken)
         }
       }
 

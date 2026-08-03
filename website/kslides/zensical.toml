@@ -63,6 +63,7 @@ nav = [
   { "Configuration" = "configuration.md" },
   { "Output modes" = "output.md" },
   { "PDF export" = "pdf-export.md" },
+  { "Presenting" = "presenting.md" },
   { "Styling" = "styling.md" },
   { "Including content" = "include.md" },
   { "Extensions" = [

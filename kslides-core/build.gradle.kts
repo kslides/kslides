@@ -18,6 +18,8 @@ dependencies {
     implementation(libs.common.utils.ktor.server)
     implementation(libs.commons.text)
     implementation(libs.kotlin.logging)
+
+    testImplementation(libs.ktor.client.websockets) // follow-along websocket integration tests
 }
 
 // Single source of truth for reveal.js assets: docs/revealjs/ (committed for GitHub Pages).

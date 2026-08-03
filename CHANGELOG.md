@@ -11,6 +11,21 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Added
 
+- **`followAlong` — follow-along presenting** (F5). With `output { followAlong = true }`
+  (HTTP mode), the presenter opens a deck with `?present=<token>` — the per-deck
+  presenter URLs are logged at startup — and every other visitor's browser follows
+  the presenter's slide and fragment position live over a `/kslides-follow`
+  websocket. Viewers get a `● LIVE` badge, can break away by navigating on their
+  own (`⏸ Paused — click to rejoin`), and late joiners land on the current slide
+  immediately. Viewers are read-only by construction (the server ignores their
+  frames); one presenter per deck, with a valid newcomer superseding the previous
+  connection and the superseded tab demoting itself to a viewer. The client closes
+  its socket on `pagehide` (so browsers that freeze navigated-away pages — bfcache —
+  still surface `presenter offline`), and the server pings connections to reap dead
+  ones. Set `presenterToken` for a fixed token instead of a random one per launch.
+  The client script is never emitted into filesystem output or print/PDF views;
+  it shares one injection point in `Page` with the dev-mode live-reload client.
+
 - **`customTheme {}` — type-safe theming DSL** (F3). A new block inside
   `presentationConfig {}` (global or per presentation, cascading like every
   other config) that layers typed overrides on a stock reveal.js theme:
