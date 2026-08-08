@@ -382,6 +382,13 @@ class Presentation(
     )
   }
 
+  /**
+   * The `../` walk from this deck's generated page back to [OutputConfig.outputDir]; empty for a
+   * deck at the output root. Shares [KSlides.deckLocation] with the writer that places the page, so
+   * a page and the srcs it emits cannot disagree about their depth.
+   */
+  internal val dotDotPrefix: String get() = "../".repeat(KSlides.deckLocation(path).first.size)
+
   internal fun validatePath() {
     require(path.removePrefix("/") !in kslides.kslidesConfig.httpStaticRoots.map { it.dirname }) {
       "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\""

@@ -330,26 +330,33 @@ class KSlides : AutoCloseable {
      * assets at `<outputDir>/<rootPrefix>`, so a multi-segment [outputDir] such as `build/docs`
      * adds no distance between the two.
      *
-     * Keys arrive with a leading slash from [Presentation.validatePath], so blank segments are
-     * dropped — the root key `/` thereby yields no segments at all: `<outputDir>/index.html`, with
-     * an unprefixed link.
+     * The key's own shape decides the depth — see [deckLocation].
      */
     internal fun outputTarget(
       outputDir: String,
       key: String,
       rootPrefix: String,
     ): Pair<File, String> {
-      val keyElems = key.split("/").filter { it.isNotBlank() }
-      // A ".html" key names the file itself, so its last segment contributes no depth. Every other
-      // key names a directory holding an index.html, so all of its segments do.
-      val (dirElems, fileName) =
-        if (key.endsWith(".html"))
-          keyElems.dropLast(1) to keyElems.last()
-        else
-          keyElems to "index.html"
-
+      val (dirElems, fileName) = deckLocation(key)
       return File((listOf(outputDir) + dirElems + fileName).toPath(addPrefix = false, addTrailing = false)) to
         "${"../".repeat(dirElems.size)}$rootPrefix"
+    }
+
+    /**
+     * Split presentation [key] into the directory segments it nests under and the file it names.
+     *
+     * A `".html"` key names the file itself, so its last segment contributes no depth. Every other
+     * key names a directory holding an `index.html`, so all of its segments do. Blank segments are
+     * dropped, so the root key `/` yields no directories at all.
+     *
+     * Every consumer of "how deep is this deck" derives it here, so they cannot disagree.
+     */
+    internal fun deckLocation(key: String): Pair<List<String>, String> {
+      val keyElems = key.split("/").filter { it.isNotBlank() }
+      return if (key.endsWith(".html"))
+        keyElems.dropLast(1) to keyElems.last()
+      else
+        keyElems to "index.html"
     }
 
     internal fun writeSlidesToFileSystem(config: OutputConfig) {
