@@ -2,6 +2,7 @@ package com.kslides
 
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.CssValue.Companion.writeStyleToHead
+import com.kslides.InternalUtils.fromOutputRoot
 import com.pambrose.common.util.ensureSuffix
 import kotlinx.html.BODY
 import kotlinx.html.HTML
@@ -31,10 +32,8 @@ internal object Page {
    * What one page render needs: the deck, the output mode, and the two prefixes that follow from
    * where the page will sit.
    *
-   * Private because `Page`'s builders are its only consumers today. [fromOutputRoot] is the rule
-   * for author-supplied paths generally, so a consumer outside `Page` — slide backgrounds, say,
-   * which are applied from [com.kslides.slide.Slide.processSlide] and cannot reach here — wants
-   * that rule hoisted next to [Presentation.renderRootPrefix] rather than retyped.
+   * Private because `Page`'s builders are its only consumers. The rule they apply,
+   * [InternalUtils.fromOutputRoot], lives there so consumers that cannot reach here share it.
    *
    * @param rootPrefix the walk from this page back to the output root — `"/"` under HTTP, `"../"`
    *   per directory level for a filesystem deck, empty at the root.
@@ -54,21 +53,8 @@ internal object Page {
     val srcPrefix = "$rootPrefix$assetDir".ensureSuffix("/")
 
     /**
-     * Resolve an author-supplied asset path against the output root, the way a bare path reads
-     * everywhere else in kslides, so one value works from a deck at any depth. A path the author
-     * already anchored — absolute or protocol-relative (`/`, `//`), external, or a `data:` URI —
-     * is their own business and passes through untouched.
-     *
-     * This is the canonical rule for author-supplied paths.
-     */
-    fun String.fromOutputRoot(): String {
-      val anchored = startsWith("/") || startsWith("http") || startsWith("data:")
-      return if (anchored) this else "$rootPrefix$this"
-    }
-
-    /**
      * Resolve a reveal.js asset filename against [srcPrefix] rather than the output root — the
-     * intended difference from [fromOutputRoot].
+     * intended difference from [InternalUtils.fromOutputRoot].
      *
      * It also recognizes fewer anchored forms, which is not intended: an absolute value lands under
      * the asset directory (`cssFiles += CssFile("/css/mine.css")` emits `…/revealjs//css/mine.css`)
@@ -274,7 +260,7 @@ internal object Page {
       rawHtml("\n")
       // Author-supplied: a favicon.ico at the output root, or on the classpath under
       // OutputConfig.defaultHttpRoot, which HTTP serves at "/".
-      val faviconHref = "favicon.ico".fromOutputRoot()
+      val faviconHref = "favicon.ico".fromOutputRoot(rootPrefix)
       link {
         rel = "shortcut icon"
         href = faviconHref
@@ -318,7 +304,7 @@ internal object Page {
               rawHtml(config.topLeftSvg)
             if (config.topLeftSvgSrc.isNotBlank())
               img(classes = config.topLeftSvgClass) {
-                src = config.topLeftSvgSrc.fromOutputRoot()
+                src = config.topLeftSvgSrc.fromOutputRoot(rootPrefix)
                 if (config.topLeftSvgStyle.isNotBlank())
                   style = config.topLeftSvgStyle
               }
@@ -336,7 +322,7 @@ internal object Page {
               rawHtml(config.topRightSvg)
             if (config.topRightSvgSrc.isNotBlank())
               img(classes = config.topRightSvgClass) {
-                src = config.topRightSvgSrc.fromOutputRoot()
+                src = config.topRightSvgSrc.fromOutputRoot(rootPrefix)
                 if (config.topRightSvgStyle.isNotBlank())
                   style = config.topRightSvgStyle
               }
@@ -348,7 +334,7 @@ internal object Page {
         config.customThemeConfig.logoValue?.let { logo ->
           rawHtml("\n\t\t\t")
           // The image is ours to resolve; the link target, like the corner hrefs, is not.
-          val logoSrc = logo.src.fromOutputRoot()
+          val logoSrc = logo.src.fromOutputRoot(rootPrefix)
           if (logo.href.isBlank())
             img(classes = "kslides-logo") { src = logoSrc }
           else

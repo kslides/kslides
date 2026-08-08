@@ -215,6 +215,37 @@ internal object InternalUtils {
 
   internal fun String.isUrl() = lowercase().matches(httpRegex)
 
+  /**
+   * Resolve an author-supplied asset path against the output root, the way a bare path reads
+   * everywhere else in kslides, so one value works from a deck at any depth. [rootPrefix] is the
+   * render's walk back to that root (see [com.kslides.Presentation.renderRootPrefix]).
+   *
+   * A path the author already anchored — absolute or protocol-relative (`/`, `//`), external, or a
+   * `data:` URI — is their own business and passes through untouched.
+   *
+   * This is the canonical rule for author-supplied paths, shared by the page builders in
+   * [com.kslides.Page] and the slide-background attributes in
+   * [com.kslides.config.SlideConfig.applyConfig].
+   */
+  internal fun String.fromOutputRoot(rootPrefix: String): String {
+    val anchored = startsWith("/") || startsWith("http") || startsWith("data:")
+    return if (anchored) this else "$rootPrefix$this"
+  }
+
+  /**
+   * [fromOutputRoot] for an attribute that takes a comma-separated list of sources, resolving each
+   * one. Sources are trimmed, since a leading space would otherwise land between the prefix and the
+   * path.
+   *
+   * A `data:` URI carries a comma by construction, so such a value is passed through whole rather
+   * than split — splitting it would strip the anchoring [fromOutputRoot] promises to honor.
+   */
+  internal fun String.fromOutputRootList(rootPrefix: String): String =
+    if (startsWith("data:"))
+      this
+    else
+      split(",").joinToString(",") { it.trim().fromOutputRoot(rootPrefix) }
+
   internal fun String.stripBraces() = trimStart().trimEnd().trimStart('[', '(').trimEnd(']', ')')
 
   internal fun String.pad() = "\n$this\n"

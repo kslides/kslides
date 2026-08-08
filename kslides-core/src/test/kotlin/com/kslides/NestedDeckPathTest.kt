@@ -31,6 +31,11 @@ class NestedDeckPathTest : StringSpec() {
           customTheme { logo("images/logo.png") }
         }
         dslSlide {
+          slideConfig {
+            backgroundImage = "images/bg.png"
+            // data-background takes a color too, and a color must survive untouched.
+            background = "#ffffff"
+          }
           content {
             h2 { +"Deck" }
             playground("does-not-exist.kt")
@@ -71,11 +76,13 @@ class NestedDeckPathTest : StringSpec() {
           withClue(page) {
             src!! shouldStartWith "${walk}playground/"
             html shouldContain """href="${walk}favicon.ico""""
-            // Author-supplied asset paths resolve the same way...
+            // Author-supplied asset paths resolve the same way, including slide backgrounds...
             html shouldContain """src="${walk}images/gh.svg""""
             html shouldContain """src="${walk}images/logo.png""""
-            // ...while an already-anchored src, and corner links of any kind, are left alone.
+            html shouldContain """data-background-image="${walk}images/bg.png""""
+            // ...while an already-anchored src, a color, and corner links of any kind, are not.
             html shouldContain """src="https://example.com/home.svg""""
+            html shouldContain """data-background="#ffffff""""
             html shouldContain """href="./""""
             // The browser resolves the src against the page's own directory, so that resolution has
             // to land on a file that exists — this is the 404 the fix is about.
@@ -90,6 +97,27 @@ class NestedDeckPathTest : StringSpec() {
       }
     }
 
+    "background values follow reveal.js's own color-vs-image test, and data: URIs survive whole" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            path = "talks/deck.html"
+            dslSlide {
+              slideConfig {
+                // reveal.js treats a cache-busted path as an image, so it has to resolve too.
+                background = "images/bg.png?v=2"
+                // A data: URI carries its own comma; splitting the video list must not cut it up.
+                backgroundVideo = "data:video/mp4;base64,AAAA"
+              }
+              content { h2 { +"Deck" } }
+            }
+          }
+        }
+      val html = generatePage(kslides.presentation("/talks/deck.html"), useHttp = false, rootPrefix = "../")
+      html shouldContain """data-background="../images/bg.png?v=2""""
+      html shouldContain """data-background-video="data:video/mp4;base64,AAAA""""
+    }
+
     "HTTP mode addresses the output root absolutely, from any deck depth" {
       // The iframe routes and the classpath root that supplies the favicon are both registered at
       // the root of the routing tree, so a relative URL would resolve against the deck's own path
@@ -101,6 +129,7 @@ class NestedDeckPathTest : StringSpec() {
       // Author-supplied paths too: the classpath root that backs them is served at "/".
       html shouldContain """src="/images/gh.svg""""
       html shouldContain """src="/images/logo.png""""
+      html shouldContain """data-background-image="/images/bg.png""""
       html shouldContain """src="https://example.com/home.svg""""
     }
   }
