@@ -97,52 +97,72 @@ class NestedDeckPathTest : StringSpec() {
       }
     }
 
-    "background values follow reveal.js's own color-vs-image test, and data: URIs survive whole" {
+    // A deck one level below the output root, rendered to the filesystem — the depth every walk
+    // asserted below is keyed on.
+    fun nestedDeckHtml(block: Presentation.() -> Unit): String {
       val kslides =
         kslidesTest {
           presentation {
             path = "talks/deck.html"
-            dslSlide {
-              slideConfig {
-                // reveal.js treats a cache-busted path as an image, so it has to resolve too.
-                background = "images/bg.png?v=2"
-                // A data: URI carries its own comma; splitting the video list must not cut it up.
-                backgroundVideo = "data:video/mp4;base64,AAAA"
-              }
-              content { h2 { +"Deck" } }
+            block()
+            dslSlide { content { h2 { +"Deck" } } }
+          }
+        }
+      return generatePage(kslides.presentation("/talks/deck.html"), useHttp = false, rootPrefix = "../")
+    }
+
+    "background values follow reveal.js's own color-vs-image test, and data: URIs survive whole" {
+      val html =
+        nestedDeckHtml {
+          presentationConfig {
+            slideConfig {
+              // reveal.js treats a cache-busted path as an image, so it has to resolve too.
+              background = "images/bg.png?v=2"
+              // A data: URI carries its own comma; splitting the video list must not cut it up.
+              backgroundVideo = "data:video/mp4;base64,AAAA"
             }
           }
         }
-      val html = generatePage(kslides.presentation("/talks/deck.html"), useHttp = false, rootPrefix = "../")
       html shouldContain """data-background="../images/bg.png?v=2""""
       html shouldContain """data-background-video="data:video/mp4;base64,AAAA""""
     }
 
     "an anchored value is emitted as written; one that merely starts with http is not" {
-      val kslides =
-        kslidesTest {
-          presentation {
-            path = "talks/deck.html"
-            presentationConfig {
-              // Uppercase scheme: anchored, and must not collect a "../" walk.
-              topLeftHref = "https://example.com"
-              topLeftSvgSrc = "HTTPS://cdn.example.com/gh.svg"
-              // "http" is a prefix of this filename, not a scheme — the old guard called it
-              // anchored and left it bare, so it 404'd from a nested deck.
-              topRightHref = "./"
-              topRightSvgSrc = "http-icons/gh.svg"
-            }
-            // Site-absolute, through the asset-directory resolver rather than the output root.
-            cssFiles += CssFile("/css/mine.css")
-            jsFiles += JsFile("/js/mine.js")
-            dslSlide { content { h2 { +"Deck" } } }
+      val html =
+        nestedDeckHtml {
+          presentationConfig {
+            // Uppercase scheme: anchored, and must not collect a "../" walk.
+            topLeftHref = "https://example.com"
+            topLeftSvgSrc = "HTTPS://cdn.example.com/gh.svg"
+            // "http" is a prefix of this filename, not a scheme — the old guard called it
+            // anchored and left it bare, so it 404'd from a nested deck.
+            topRightHref = "./"
+            topRightSvgSrc = "http-icons/gh.svg"
           }
+          // Site-absolute: anchored, so neither origin's prefix is applied.
+          cssFiles += CssFile("/css/mine.css")
+          jsFiles += JsFile("/js/mine.js")
         }
-      val html = generatePage(kslides.presentation("/talks/deck.html"), useHttp = false, rootPrefix = "../")
       html shouldContain """src="HTTPS://cdn.example.com/gh.svg""""
       html shouldContain """src="../http-icons/gh.svg""""
       html shouldContain """href="/css/mine.css""""
       html shouldContain """src="/js/mine.js""""
+    }
+
+    "a css or js file resolves against the origin it names" {
+      val html =
+        nestedDeckHtml {
+          // The default names a file inside the reveal.js assets...
+          cssFiles += CssFile("plugin/mine/mine.css")
+          jsFiles += JsFile("plugin/mine/mine.js")
+          // ...and OUTPUT_ROOT one published alongside the decks, reached from this deck's depth.
+          cssFiles += CssFile("css/site.css", origin = AssetOrigin.OUTPUT_ROOT)
+          jsFiles += JsFile("js/site.js", origin = AssetOrigin.OUTPUT_ROOT)
+        }
+      html shouldContain """href="../revealjs/plugin/mine/mine.css""""
+      html shouldContain """src="../revealjs/plugin/mine/mine.js""""
+      html shouldContain """href="../css/site.css""""
+      html shouldContain """src="../js/site.js""""
     }
 
     "HTTP mode addresses the output root absolutely, from any deck depth" {

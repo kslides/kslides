@@ -224,11 +224,11 @@ internal object InternalUtils {
    * kslides' one path-resolution rule: a relative path is resolved against [prefix], and a path the
    * author already anchored is emitted as written.
    *
-   * Every URL the renderer emits goes through this, differing only in which prefix is passed —
-   * the render's walk back to the output root for author-supplied paths (see
-   * [com.kslides.Presentation.renderRootPrefix]), or the reveal.js asset directory for the
-   * stylesheet and script filenames in [com.kslides.Presentation.cssFiles] /
-   * [com.kslides.Presentation.jsFiles].
+   * Every URL the renderer emits goes through this, differing only in which prefix is passed: the
+   * render's walk back to the output root (see [com.kslides.Presentation.renderRootPrefix]) for
+   * author-supplied paths, the reveal.js asset directory for kslides' own filenames, and for
+   * [com.kslides.CssFile] / [com.kslides.JsFile] whichever the entry's
+   * [com.kslides.AssetOrigin] names.
    */
   internal fun String.resolveAgainst(prefix: String): String = if (isAnchoredPath()) this else "$prefix$this"
 

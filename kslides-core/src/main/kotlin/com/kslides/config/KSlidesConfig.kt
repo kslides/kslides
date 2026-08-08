@@ -27,6 +27,10 @@ class KSlidesConfig {
   /**
    * Base stylesheets injected into every presentation's `<head>`. Theme and highlight
    * stylesheets are appended separately based on [PresentationConfig.theme] / `highlight`.
+   *
+   * A relative [CssFile.filename] resolves against its [CssFile.origin] — the reveal.js assets by
+   * default, or [com.kslides.AssetOrigin.OUTPUT_ROOT] for a stylesheet you publish alongside your
+   * decks.
    */
   val cssFiles =
     mutableListOf(
@@ -34,7 +38,10 @@ class KSlidesConfig {
       CssFile("dist/reset.css"),
     )
 
-  /** Base JavaScript files injected into every presentation. Reveal.js plugin scripts are appended separately. */
+  /**
+   * Base JavaScript files injected into every presentation. Reveal.js plugin scripts are appended
+   * separately. A relative [JsFile.filename] resolves against its [JsFile.origin], like [cssFiles].
+   */
   val jsFiles =
     mutableListOf(
       JsFile("dist/reveal.js"),

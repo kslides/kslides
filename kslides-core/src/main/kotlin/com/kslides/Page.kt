@@ -53,15 +53,15 @@ internal object Page {
     val srcPrefix = "$rootPrefix$assetDir".ensureSuffix("/")
 
     /**
-     * [InternalUtils.resolveAgainst] bound to the reveal.js asset directory rather than the output
-     * root — the only difference between the two.
-     *
-     * A relative filename names a file inside the reveal.js assets, which is what
-     * [Presentation.cssFiles] and [Presentation.jsFiles] hold. Anchoring a value points it
-     * elsewhere — though the only non-URL anchor is site-root-absolute, which does not survive
-     * publishing under a path prefix.
+     * The prefix a relative path with this origin resolves against, for this render. Exhaustive by
+     * design: this is the one site a new [AssetOrigin] has to be taught about, so adding one should
+     * fail to compile here rather than silently resolve against the assets.
      */
-    fun String.fromAssetDir(): String = resolveAgainst(srcPrefix)
+    fun AssetOrigin.prefix(): String =
+      when (this) {
+        AssetOrigin.REVEAL_ASSETS -> srcPrefix
+        AssetOrigin.OUTPUT_ROOT -> rootPrefix
+      }
   }
 
   /**
@@ -246,7 +246,7 @@ internal object Page {
       rawHtml("\n")
       p.cssFiles.forEach {
         link(rel = "stylesheet") {
-          href = it.filename.fromAssetDir()
+          href = it.filename.resolveAgainst(it.origin.prefix())
           if (it.id.isNotBlank())
             id = it.id
         }
@@ -351,20 +351,20 @@ internal object Page {
       rawHtml("\n\t\n")
       p.jsFiles.forEach { jsFile ->
         rawHtml("\t")
-        script { src = jsFile.filename.fromAssetDir() }
+        script { src = jsFile.filename.resolveAgainst(jsFile.origin.prefix()) }
         rawHtml("\n")
       }
 
       rawHtml("\n\t")
       script {
-        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config, srcPrefix)}\t\t});\n\n")
+        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config)}\t\t});\n\n")
       }
 
       // Only decks that actually contain a mermaid{} block pay for the Mermaid runtime. The flag
       // is set while the slides render above, which happens before this point in the body builder.
       if (p.mermaidUsed) {
         rawHtml("\n\t")
-        script { src = Mermaid.MERMAID_JS_PATH.fromAssetDir() }
+        script { src = Mermaid.MERMAID_JS_PATH.resolveAgainst(srcPrefix) }
         rawHtml("\n\t")
         script {
           rawHtml("\n${Mermaid.initScript(config.effectiveTheme).prependIndent("\t\t")}\n\t")

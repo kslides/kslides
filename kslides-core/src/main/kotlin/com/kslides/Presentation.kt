@@ -1,7 +1,6 @@
 package com.kslides
 
 import com.kslides.InternalUtils.indentInclude
-import com.kslides.InternalUtils.resolveAgainst
 import com.kslides.config.CopyCodeValues
 import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
@@ -44,7 +43,6 @@ class Presentation(
   val kslides: KSlides,
 ) {
   internal val plugins = mutableListOf<String>()
-  internal val dependencies = mutableListOf<String>()
   internal val presentationConfig = PresentationConfig()
   internal val slides = mutableListOf<Slide>()
 
@@ -441,10 +439,6 @@ class Presentation(
 
     if (finalConfig.enableMenu)
       jsFiles += JsFile("plugin/menu/menu.js")
-
-    // if (finalConfig.toolbar) {
-    //   jsFiles += "plugin/toolbar/toolbar.js"
-    // }
   }
 
   internal fun assignPlugins() {
@@ -479,11 +473,6 @@ class Presentation(
       plugins += "CopyCode"
   }
 
-  internal fun assignDependencies() {
-    // if (finalConfig.toolbar)
-    //   dependencies += "plugin/toolbar/toolbar.js"
-  }
-
   private fun toJsValue(
     key: String,
     value: Any,
@@ -501,157 +490,141 @@ class Presentation(
   }
 
   @Suppress("CyclomaticComplexMethod", "LongMethod")
-  internal fun toJs(
-    config: PresentationConfig,
-    srcPrefix: String,
-  ) = buildString {
-    config.revealjsManagedValues.also { vals ->
-      if (vals.isNotEmpty()) {
-        vals.forEach { (k, v) ->
-          append("$INDENT${toJsValue(k, v)},\n")
-        }
-        appendLine()
-      }
-    }
-
-    config.autoSlide
-      .also { autoSlide ->
-        when (autoSlide) {
-          is Boolean if !autoSlide -> {
-            append("$INDENT${toJsValue("autoSlide", autoSlide)},\n")
-            appendLine()
+  internal fun toJs(config: PresentationConfig) =
+    buildString {
+      config.revealjsManagedValues.also { vals ->
+        if (vals.isNotEmpty()) {
+          vals.forEach { (k, v) ->
+            append("$INDENT${toJsValue(k, v)},\n")
           }
+          appendLine()
+        }
+      }
 
-          is Int -> {
-            if (autoSlide > 0) {
+      config.autoSlide
+        .also { autoSlide ->
+          when (autoSlide) {
+            is Boolean if !autoSlide -> {
               append("$INDENT${toJsValue("autoSlide", autoSlide)},\n")
               appendLine()
             }
-          }
 
-          else -> {
-            error("Invalid value for autoSlide: $autoSlide")
+            is Int -> {
+              if (autoSlide > 0) {
+                append("$INDENT${toJsValue("autoSlide", autoSlide)},\n")
+                appendLine()
+              }
+            }
+
+            else -> {
+              error("Invalid value for autoSlide: $autoSlide")
+            }
           }
         }
-      }
 
-    config.slideNumber
-      .also { slideNumber ->
-        when (slideNumber) {
-          is Boolean -> {
-            if (slideNumber) {
+      config.slideNumber
+        .also { slideNumber ->
+          when (slideNumber) {
+            is Boolean -> {
+              if (slideNumber) {
+                append("$INDENT${toJsValue("slideNumber", slideNumber)},\n")
+                appendLine()
+              }
+            }
+
+            is String -> {
               append("$INDENT${toJsValue("slideNumber", slideNumber)},\n")
               appendLine()
             }
-          }
 
-          is String -> {
-            append("$INDENT${toJsValue("slideNumber", slideNumber)},\n")
+            else -> {
+              error("Invalid value for slideNumber: $slideNumber")
+            }
+          }
+        }
+
+      config.jumpToSlide
+        .also { jumpToSlide ->
+          if (!jumpToSlide) {
+            append("$INDENT${toJsValue("jumpToSlide", jumpToSlide)},\n")
             appendLine()
           }
-
-          else -> {
-            error("Invalid value for slideNumber: $slideNumber")
-          }
         }
-      }
 
-    config.jumpToSlide
-      .also { jumpToSlide ->
-        if (!jumpToSlide) {
-          append("$INDENT${toJsValue("jumpToSlide", jumpToSlide)},\n")
-          appendLine()
-        }
-      }
-
-    config.view
-      .also { view ->
-        if (view == ViewType.SCROLL) {
-          append("$INDENT${toJsValue("view", view)},\n")
-          appendLine()
-        }
-      }
-
-    config.scrollLayout
-      .also { scrollLayout ->
-        append("$INDENT${toJsValue("scrollLayout", scrollLayout)},\n")
-        appendLine()
-      }
-
-    config.scrollProgress
-      .also { scrollProgress ->
-        when (scrollProgress) {
-          is Boolean,
-          is ScrollProgress,
-            -> {
-            append("$INDENT${toJsValue("scrollProgress", scrollProgress)},\n")
+      config.view
+        .also { view ->
+          if (view == ViewType.SCROLL) {
+            append("$INDENT${toJsValue("view", view)},\n")
             appendLine()
           }
-
-          else -> {
-            error("Invalid value for scrollProgress: $scrollProgress")
-          }
         }
-      }
 
-    config.scrollActivationWidth
-      .also { scrollActivationWidth ->
-        if (scrollActivationWidth != 0) {
-          append("$INDENT${toJsValue("scrollActivationWidth", scrollActivationWidth)},\n")
+      config.scrollLayout
+        .also { scrollLayout ->
+          append("$INDENT${toJsValue("scrollLayout", scrollLayout)},\n")
           appendLine()
         }
-      }
 
-    config.scrollSnap
-      .also { scrollSnap ->
-        when (scrollSnap) {
-          is Boolean,
-          is ScrollSnap,
-            -> {
-            append("$INDENT${toJsValue("scrollSnap", scrollSnap)},\n")
-            appendLine()
-          }
+      config.scrollProgress
+        .also { scrollProgress ->
+          when (scrollProgress) {
+            is Boolean,
+            is ScrollProgress,
+              -> {
+              append("$INDENT${toJsValue("scrollProgress", scrollProgress)},\n")
+              appendLine()
+            }
 
-          else -> {
-            error("Invalid value for scrollSnap: $scrollSnap")
+            else -> {
+              error("Invalid value for scrollProgress: $scrollProgress")
+            }
           }
         }
-      }
 
-    config.menuConfig.revealjsManagedValues.also { valMap ->
-      if (valMap.isNotEmpty()) {
-        appendLine(
-          buildString {
-            appendLine("menu: {")
-            appendLine(valMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
-            appendLine("},")
-          }.prependIndent(INDENT),
-        )
-      }
-    }
+      config.scrollActivationWidth
+        .also { scrollActivationWidth ->
+          if (scrollActivationWidth != 0) {
+            append("$INDENT${toJsValue("scrollActivationWidth", scrollActivationWidth)},\n")
+            appendLine()
+          }
+        }
 
-    config.copyCodeConfig.values.also { copyCodeValues ->
-      if (copyCodeValues != emptyCopyCodeValues) {
-        appendLine("copycode: ${copyCodeJson.encodeToString(copyCodeValues)},".prependIndent(INDENT))
-      }
-    }
+      config.scrollSnap
+        .also { scrollSnap ->
+          when (scrollSnap) {
+            is Boolean,
+            is ScrollSnap,
+              -> {
+              append("$INDENT${toJsValue("scrollSnap", scrollSnap)},\n")
+              appendLine()
+            }
 
-    if (dependencies.isNotEmpty()) {
-      appendLine(
-        buildString {
-          appendLine("dependencies: [")
+            else -> {
+              error("Invalid value for scrollSnap: $scrollSnap")
+            }
+          }
+        }
+
+      config.menuConfig.revealjsManagedValues.also { valMap ->
+        if (valMap.isNotEmpty()) {
           appendLine(
-            dependencies.joinToString(",\n") {
-              "\t{ src: '${it.resolveAgainst(srcPrefix)}' }"
-            },
+            buildString {
+              appendLine("menu: {")
+              appendLine(valMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
+              appendLine("},")
+            }.prependIndent(INDENT),
           )
-          appendLine("],")
-        }.prependIndent(INDENT),
-      )
-    }
+        }
+      }
 
-    appendLine("${INDENT}plugins: [ ${plugins.joinToString(", ")} ]")
-  }
+      config.copyCodeConfig.values.also { copyCodeValues ->
+        if (copyCodeValues != emptyCopyCodeValues) {
+          appendLine("copycode: ${copyCodeJson.encodeToString(copyCodeValues)},".prependIndent(INDENT))
+        }
+      }
+
+      appendLine("${INDENT}plugins: [ ${plugins.joinToString(", ")} ]")
+    }
 
   companion object {
     private val logger = KotlinLogging.logger {}
@@ -672,22 +645,23 @@ data class StaticRoot(
 )
 
 /**
- * A JavaScript file referenced from the generated `<body>`. The [filename] may be a relative
- * path (resolved against the reveal.js static root) or an absolute `http(s)://` URL.
+ * A JavaScript file referenced from the generated `<body>`. A relative [filename] resolves against
+ * [origin]; an absolute, external, or `data:` value is emitted as written.
  */
 data class JsFile(
   val filename: String,
+  val origin: AssetOrigin = AssetOrigin.REVEAL_ASSETS,
 )
 
 /**
- * A CSS file referenced from the generated `<head>`. The [filename] may be a relative path
- * (resolved against the reveal.js static root) or an absolute `http(s)://` URL. The optional
- * [id] is emitted as the `<link>`'s `id` attribute — used internally to tag theme / highlight
- * stylesheets.
+ * A CSS file referenced from the generated `<head>`. A relative [filename] resolves against
+ * [origin]; an absolute, external, or `data:` value is emitted as written. The optional [id] is
+ * emitted as the `<link>`'s `id` attribute — used internally to tag theme / highlight stylesheets.
  */
 data class CssFile(
   val filename: String,
   val id: String = "",
+  val origin: AssetOrigin = AssetOrigin.REVEAL_ASSETS,
 )
 
 // Shared <section> renderer for both HorizontalMarkdownSlide and VerticalMarkdownSlide. The only
