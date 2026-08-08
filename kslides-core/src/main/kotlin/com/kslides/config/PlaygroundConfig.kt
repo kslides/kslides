@@ -14,9 +14,15 @@ import kotlin.reflect.full.isSubclassOf
  * [Kotlin Playground](https://github.com/JetBrains/kotlin-playground) library itself; the lower
  * section controls the iframe wrapper kslides generates around it.
  *
- * Use [fontSize] to size the code in the editor and run-output pane. CSS declared via [css] is
- * injected into the generated iframe's `<head>` after the generated [fontSize] rules — the escape
- * hatch for anything else inside the Playground, not for styling the surrounding slide.
+ * Three separate CSS surfaces, differing by *scope*:
+ * - [style] — inline CSS on the `<iframe>` element itself, in the **surrounding slide's** document.
+ *   Sizes and frames the box; it cannot reach the code inside.
+ * - [fontSize] / [lineHeight] — typed properties rendered by [cssText] into the **iframe's** head.
+ * - [css] — raw rules, also in the iframe's head, emitted after [cssText].
+ *
+ * A Playground styling option earns a typed property when it needs a Playground-internal selector
+ * or a specificity workaround a deck author cannot reasonably discover (see [cssText]); anything
+ * reachable by an obvious selector stays in [css].
  */
 @KSlidesDslMarker
 class PlaygroundConfig : AbstractConfig() {
@@ -141,34 +147,33 @@ class PlaygroundConfig : AbstractConfig() {
 
   /**
    * The CSS this config generates — the rules implementing [fontSize] / [lineHeight], or an empty
-   * string when neither is set. Named to match [ThemeConfig.cssText].
+   * string when neither is set. Named to match [ThemeConfig.cssText]; a new typed styling property
+   * is wired in here.
    *
    * Both properties are declared on `.CodeMirror` itself rather than on the `<pre>` lines: the
    * editor's own `.CodeMirror pre.CodeMirror-line` rule sets `line-height: inherit` and outranks
    * any `.CodeMirror pre` selector, so the lines take their spacing from the container.
    */
   internal fun cssText(): String {
+    val size = fontSize
+    val height = lineHeight
+    if (size.isBlank() && height.isBlank())
+      return ""
+
     val declarations =
       listOfNotNull(
-        if (fontSize.isNotBlank()) "font-size: $fontSize;" else null,
-        if (lineHeight.isNotBlank()) "line-height: $lineHeight;" else null,
+        if (size.isNotBlank()) "font-size: $size;" else null,
+        if (height.isNotBlank()) "line-height: $height;" else null,
       ).joinToString(" ")
 
-    return if (declarations.isEmpty())
-      ""
-    else
-      ".CodeMirror { $declarations }\n.code-output { $declarations }"
+    return ".CodeMirror { $declarations }\n.code-output { $declarations }"
   }
 
-  /**
-   * The Playground iframe's complete stylesheet: this config's generated [cssText] followed by
-   * [userCss], so a hand-written rule of equal specificity wins. Ordering lives here rather than at
-   * the call site so it cannot be inverted by rearranging arguments.
-   */
-  internal fun stylesheet(userCss: CssValue): CssValue =
-    cssText().let { generated ->
-      if (generated.isBlank()) CssValue(userCss) else CssValue(CssValue(generated), userCss)
-    }
+  /** [cssText] followed by [userCss] — the Playground iframe's complete stylesheet. */
+  internal fun stylesheet(userCss: CssValue): CssValue {
+    val generated = cssText()
+    return if (generated.isBlank()) CssValue(userCss) else CssValue(CssValue(generated), userCss)
+  }
 
   /** Append CSS (via the Kotlin CSS DSL) to the Playground iframe's stylesheet. */
   fun css(block: CssBuilder.() -> Unit) {

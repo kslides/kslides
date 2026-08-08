@@ -47,7 +47,6 @@ fun DslSlide.playground(
         config.merge(localConfig)
       }
 
-  // CSS values are additive; stylesheet() puts the config's generated rules ahead of the user's.
   val combinedCss =
     mergedConfig.stylesheet(
       CssValue(

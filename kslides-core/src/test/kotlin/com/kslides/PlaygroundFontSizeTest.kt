@@ -12,14 +12,15 @@ import io.kotest.matchers.string.shouldNotStartWith
 
 class PlaygroundFontSizeTest : StringSpec() {
   init {
-    fun playgroundConfig(block: PlaygroundConfig.() -> Unit) =
+    // Named to not shadow PresentationConfig.playgroundConfig{}, which this file also calls.
+    fun configWithDefaults(block: PlaygroundConfig.() -> Unit) =
       PlaygroundConfig().apply {
         assignDefaults()
         block()
       }
 
     "font properties default to unset values" {
-      val config = playgroundConfig { }
+      val config = configWithDefaults { }
       config.fontSize shouldBe ""
       config.lineHeight shouldBe ""
       config.cssText() shouldBe ""
@@ -28,7 +29,7 @@ class PlaygroundFontSizeTest : StringSpec() {
     "font properties cascade global -> presentation -> playground" {
       // Mirrors the merge order in the playground() DSL function
       val globalLevel =
-        playgroundConfig {
+        configWithDefaults {
           fontSize = "20px"
           lineHeight = "1.5"
         }
@@ -46,37 +47,27 @@ class PlaygroundFontSizeTest : StringSpec() {
       merged.lineHeight shouldBe "1.5"   // inherited from global
     }
 
-    "cssText() sizes the editor and the output pane, and emits no line-height of its own" {
-      // CodeMirror's own line-height is a unitless ratio, so spacing already follows the font size.
-      val css = playgroundConfig { fontSize = "20px" }.cssText()
-      css shouldContain ".CodeMirror { font-size: 20px; }"
-      css shouldContain ".code-output { font-size: 20px; }"
-      css shouldNotContain "line-height"
-    }
+    "cssText() emits only the set properties, on .CodeMirror and .code-output" {
+      // Targets .CodeMirror, not its pre lines: .CodeMirror pre.CodeMirror-line { line-height:
+      // inherit } outranks any .CodeMirror pre rule, so a per-line declaration is a silent no-op.
+      // No line-height is emitted for a bare fontSize — CodeMirror's own ratio is unitless, so
+      // spacing already follows the font size.
+      configWithDefaults { fontSize = "20px" }.cssText() shouldBe
+        ".CodeMirror { font-size: 20px; }\n.code-output { font-size: 20px; }"
 
-    "cssText() targets .CodeMirror rather than its pre lines" {
-      // .CodeMirror pre.CodeMirror-line { line-height: inherit } outranks any .CodeMirror pre rule,
-      // so declaring line-height on the pre elements would be a silent no-op.
-      val css = playgroundConfig { lineHeight = "1.8" }.cssText()
-      css shouldContain ".CodeMirror { line-height: 1.8; }"
-      css shouldContain ".code-output { line-height: 1.8; }"
-      css shouldNotContain "pre"
-      css shouldNotContain "font-size"
-    }
+      configWithDefaults { lineHeight = "1.8" }.cssText() shouldBe
+        ".CodeMirror { line-height: 1.8; }\n.code-output { line-height: 1.8; }"
 
-    "cssText() emits both declarations when both properties are set" {
-      val css =
-        playgroundConfig {
-          fontSize = "15px"
-          lineHeight = "20px"
-        }.cssText()
-      css shouldContain ".CodeMirror { font-size: 15px; line-height: 20px; }"
-      css shouldContain ".code-output { font-size: 15px; line-height: 20px; }"
+      configWithDefaults {
+        fontSize = "15px"
+        lineHeight = "20px"
+      }.cssText() shouldBe
+        ".CodeMirror { font-size: 15px; line-height: 20px; }\n.code-output { font-size: 15px; line-height: 20px; }"
     }
 
     "stylesheet() adds nothing when neither property is set" {
       // Not even a leading blank line, so decks that do not use fontSize render byte-identically.
-      val css = playgroundConfig { }.stylesheet(CssValue(".foo { color: red; }")).toString()
+      val css = configWithDefaults { }.stylesheet(CssValue(".foo { color: red; }")).toString()
       css.trim() shouldBe ".foo { color: red; }"
       css shouldNotStartWith "\n"
     }

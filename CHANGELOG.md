@@ -22,10 +22,6 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   resolves against that document's root font size rather than the surrounding
   slide's. The generated rules are written to the iframe head ahead of any
   `css { }`, which remains the escape hatch and still wins at equal specificity.
-  Both rules are declared on `.CodeMirror` itself: the editor's own
-  `.CodeMirror pre.CodeMirror-line { line-height: inherit }` outranks any
-  `.CodeMirror pre` selector, so per-line rules — including the ones the example
-  deck used to carry — never applied.
 
 ### Fixed
 
