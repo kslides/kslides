@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.kslides.InternalUtils.indentInclude
+import com.kslides.InternalUtils.resolveAgainst
 import com.kslides.config.CopyCodeValues
 import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
@@ -641,7 +642,7 @@ class Presentation(
           appendLine("dependencies: [")
           appendLine(
             dependencies.joinToString(",\n") {
-              "\t{ src: '${if (it.startsWith("http")) it else "$srcPrefix$it"}' }"
+              "\t{ src: '${it.resolveAgainst(srcPrefix)}' }"
             },
           )
           appendLine("],")

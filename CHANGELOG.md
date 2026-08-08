@@ -47,11 +47,22 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   itself: corner *links* (`topLeftHref`, `topRightHref`) and `logo(href = )`,
   which are navigation targets and deliberately left alone; image paths written
   inside Markdown or HTML slide content, which kslides hands to reveal.js
-  unparsed; and `cssFiles`, `jsFiles`, and `menuConfig { themesPath }`, which name
-  locations inside the reveal.js asset directory rather than at the output root.
+  unparsed; and `menuConfig { themesPath }`, which names a directory inside the
+  reveal.js assets. `cssFiles` and `jsFiles` are likewise relative to the
+  reveal.js asset directory; anchoring a value yourself points it elsewhere, but
+  note that the only non-URL anchor is a site-root-absolute `/…`, which does not
+  survive publishing under a path prefix.
 
 ### Fixed
 
+- Every path resolver now agrees on what counts as an already-anchored value:
+  absolute or protocol-relative (`/foo`, `//cdn/foo`), an `http(s)` URL, or a
+  `data:` URI. Three cases were wrong. An absolute `cssFiles += CssFile("/css/mine.css")`
+  emitted `revealjs//css/mine.css` — a doubled separator under the wrong
+  directory — and now emits `/css/mine.css`. An uppercase `HTTPS://…` was treated
+  as relative and had a path prefix pasted in front of it. And a relative path
+  that merely *starts with* the letters `http`, such as `http-icons/gh.svg`, was
+  taken for a URL and left un-prefixed, so it 404'd from a nested deck.
 - The `favicon.ico` link is no longer hardcoded to the site root. It was emitted
   as `href="/favicon.ico"` on every page, which misses on a site published under
   a path prefix (a GitHub Pages project site resolves it against the domain root)

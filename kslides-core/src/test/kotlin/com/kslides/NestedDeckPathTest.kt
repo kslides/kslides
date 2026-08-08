@@ -118,6 +118,33 @@ class NestedDeckPathTest : StringSpec() {
       html shouldContain """data-background-video="data:video/mp4;base64,AAAA""""
     }
 
+    "an anchored value is emitted as written; one that merely starts with http is not" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            path = "talks/deck.html"
+            presentationConfig {
+              // Uppercase scheme: anchored, and must not collect a "../" walk.
+              topLeftHref = "https://example.com"
+              topLeftSvgSrc = "HTTPS://cdn.example.com/gh.svg"
+              // "http" is a prefix of this filename, not a scheme — the old guard called it
+              // anchored and left it bare, so it 404'd from a nested deck.
+              topRightHref = "./"
+              topRightSvgSrc = "http-icons/gh.svg"
+            }
+            // Site-absolute, through the asset-directory resolver rather than the output root.
+            cssFiles += CssFile("/css/mine.css")
+            jsFiles += JsFile("/js/mine.js")
+            dslSlide { content { h2 { +"Deck" } } }
+          }
+        }
+      val html = generatePage(kslides.presentation("/talks/deck.html"), useHttp = false, rootPrefix = "../")
+      html shouldContain """src="HTTPS://cdn.example.com/gh.svg""""
+      html shouldContain """src="../http-icons/gh.svg""""
+      html shouldContain """href="/css/mine.css""""
+      html shouldContain """src="/js/mine.js""""
+    }
+
     "HTTP mode addresses the output root absolutely, from any deck depth" {
       // The iframe routes and the classpath root that supplies the favicon are both registered at
       // the root of the routing tree, so a relative URL would resolve against the deck's own path
