@@ -4,6 +4,8 @@ import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.CssValue.Companion.writeStyleToHead
 import com.kslides.InternalUtils.resolveAgainst
 import com.pambrose.common.util.ensureSuffix
+import io.ktor.http.ContentType
+import io.ktor.http.fromFilePath
 import kotlinx.html.BODY
 import kotlinx.html.HTML
 import kotlinx.html.a
@@ -256,18 +258,19 @@ internal object Page {
       // base theme while slides.css and css{} rules (emitted below) can still override them.
       writeStyleToHead(p.indentedCustomThemeCss, styleId = "custom-theme")
 
-      // Author-supplied (see PresentationConfig.favicon), so blank emits nothing rather than
-      // pointing every page at a file kslides does not ship. The type attribute is a hint and is
-      // only stated when it is knowable: browsers otherwise infer it from the response.
-      if (config.favicon.isNotBlank()) {
+      // See PresentationConfig.favicon. The type attribute is a hint, so it is stated only when the
+      // filename gives it away — a data: URI or an extension-less path gets none, and the browser
+      // infers from the response instead.
+      val favicon = config.favicon
+      if (favicon.isNotBlank()) {
         rawHtml("\n")
-        val faviconHref = config.favicon.resolveAgainst(rootPrefix)
+        val faviconHref = favicon.resolveAgainst(rootPrefix)
+        val faviconType = ContentType.fromFilePath(favicon).firstOrNull()?.toString()
         listOf("shortcut icon", "icon").forEach { iconRel ->
-          link {
-            rel = iconRel
+          link(rel = iconRel) {
             href = faviconHref
-            if (config.favicon.endsWith(".ico", ignoreCase = true))
-              type = "image/x-icon"
+            if (faviconType != null)
+              type = faviconType
           }
         }
       }

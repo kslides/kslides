@@ -260,14 +260,18 @@ class PresentationConfig : AbstractConfig() {
   var title by ConfigProperty<String>(kslidesManagedValues)
 
   /**
-   * Browser tab icon, defaulting to `favicon.ico`. **Blank omits the `<link>` elements** — kslides
-   * ships no icon of its own, so set this blank if you are not supplying one, rather than letting
-   * every page request a file that is not there.
+   * Browser tab icon, defaulting to `favicon.ico`.
    *
-   * A relative value resolves against the output root, so the same path works from a deck at any
-   * depth. Absolute (`/img/icon.png`), external (`https://...`), and `data:` values pass through.
-   * Supply the file at the output root for filesystem output, or on the classpath under
+   * The `<link>` is what makes an icon at the output root reachable at all: a browser's implicit
+   * favicon request always goes to the *origin* root, which on a project site published under a
+   * path prefix is not where your decks are. A relative value resolves against the output root, so
+   * one path works from a deck at any depth; absolute (`/img/icon.png`), external
+   * (`https://...`), and `data:` values pass through. Supply the file at the output root for
+   * filesystem output, or on the classpath under
    * [com.kslides.config.OutputConfig.defaultHttpRoot] for HTTP.
+   *
+   * **Blank omits the `<link>` elements.** kslides ships no icon, so set this blank if your site
+   * has none rather than asking every page for a file that is not there.
    */
   var favicon by ConfigProperty<String>(kslidesManagedValues)
 

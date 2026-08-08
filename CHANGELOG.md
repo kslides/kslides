@@ -28,9 +28,9 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   icon of its own, so every page previously asked for a `favicon.ico` that may
   not exist, with no way to point elsewhere or opt out. A relative value resolves
   against the output root like any other author asset, so one path works from a
-  deck at any depth; the `type="image/x-icon"` hint is now stated only for an
-  `.ico` file rather than claimed for whatever you supply. The default,
-  `"favicon.ico"`, emits exactly what it did before.
+  deck at any depth; the `type` hint is derived from the filename rather than
+  hardcoded to `image/x-icon`, and omitted when the name gives nothing to derive
+  it from. The default, `"favicon.ico"`, emits exactly what it did before.
 - `cssFiles += CssFile("css/site.css", origin = AssetOrigin.OUTPUT_ROOT)` puts a
   stylesheet or script of your own at the output root rather than inside the
   reveal.js asset directory. It resolves from whatever depth the deck sits at, so
