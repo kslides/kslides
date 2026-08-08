@@ -1,7 +1,6 @@
 package com.kslides
 
 import com.kslides.InternalUtils.indentInclude
-import com.kslides.InternalUtils.resolveAgainst
 import com.kslides.config.CopyCodeValues
 import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
@@ -44,7 +43,6 @@ class Presentation(
   val kslides: KSlides,
 ) {
   internal val plugins = mutableListOf<String>()
-  internal val dependencies = mutableListOf<String>()
   internal val presentationConfig = PresentationConfig()
   internal val slides = mutableListOf<Slide>()
 
@@ -479,11 +477,6 @@ class Presentation(
       plugins += "CopyCode"
   }
 
-  internal fun assignDependencies() {
-    // if (finalConfig.toolbar)
-    //   dependencies += "plugin/toolbar/toolbar.js"
-  }
-
   private fun toJsValue(
     key: String,
     value: Any,
@@ -501,10 +494,8 @@ class Presentation(
   }
 
   @Suppress("CyclomaticComplexMethod", "LongMethod")
-  internal fun toJs(
-    config: PresentationConfig,
-    srcPrefix: String,
-  ) = buildString {
+  internal fun toJs(config: PresentationConfig) =
+    buildString {
     config.revealjsManagedValues.also { vals ->
       if (vals.isNotEmpty()) {
         vals.forEach { (k, v) ->
@@ -636,20 +627,6 @@ class Presentation(
       }
     }
 
-    if (dependencies.isNotEmpty()) {
-      appendLine(
-        buildString {
-          appendLine("dependencies: [")
-          appendLine(
-            dependencies.joinToString(",\n") {
-              "\t{ src: '${it.resolveAgainst(srcPrefix)}' }"
-            },
-          )
-          appendLine("],")
-        }.prependIndent(INDENT),
-      )
-    }
-
     appendLine("${INDENT}plugins: [ ${plugins.joinToString(", ")} ]")
   }
 
@@ -672,22 +649,23 @@ data class StaticRoot(
 )
 
 /**
- * A JavaScript file referenced from the generated `<body>`. The [filename] may be a relative
- * path (resolved against the reveal.js static root) or an absolute `http(s)://` URL.
+ * A JavaScript file referenced from the generated `<body>`. A relative [filename] resolves against
+ * [origin]; an absolute, external, or `data:` value is emitted as written.
  */
 data class JsFile(
   val filename: String,
+  val origin: AssetOrigin = AssetOrigin.REVEAL_ASSETS,
 )
 
 /**
- * A CSS file referenced from the generated `<head>`. The [filename] may be a relative path
- * (resolved against the reveal.js static root) or an absolute `http(s)://` URL. The optional
- * [id] is emitted as the `<link>`'s `id` attribute — used internally to tag theme / highlight
- * stylesheets.
+ * A CSS file referenced from the generated `<head>`. A relative [filename] resolves against
+ * [origin]; an absolute, external, or `data:` value is emitted as written. The optional [id] is
+ * emitted as the `<link>`'s `id` attribute — used internally to tag theme / highlight stylesheets.
  */
 data class CssFile(
   val filename: String,
   val id: String = "",
+  val origin: AssetOrigin = AssetOrigin.REVEAL_ASSETS,
 )
 
 // Shared <section> renderer for both HorizontalMarkdownSlide and VerticalMarkdownSlide. The only

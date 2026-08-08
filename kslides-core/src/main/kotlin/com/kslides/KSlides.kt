@@ -132,7 +132,6 @@ fun buildKSlides(block: KSlides.() -> Unit) =
             assignCssFiles()
             assignJsFiles()
             assignPlugins()
-            assignDependencies()
           }
       }
 

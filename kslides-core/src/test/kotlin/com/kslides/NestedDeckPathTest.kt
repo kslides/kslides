@@ -132,7 +132,7 @@ class NestedDeckPathTest : StringSpec() {
               topRightHref = "./"
               topRightSvgSrc = "http-icons/gh.svg"
             }
-            // Site-absolute, through the asset-directory resolver rather than the output root.
+            // Site-absolute: anchored, so neither origin's prefix is applied.
             cssFiles += CssFile("/css/mine.css")
             jsFiles += JsFile("/js/mine.js")
             dslSlide { content { h2 { +"Deck" } } }
@@ -143,6 +143,27 @@ class NestedDeckPathTest : StringSpec() {
       html shouldContain """src="../http-icons/gh.svg""""
       html shouldContain """href="/css/mine.css""""
       html shouldContain """src="/js/mine.js""""
+    }
+
+    "a css or js file resolves against the origin it names" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            path = "talks/deck.html"
+            // The default names a file inside the reveal.js assets...
+            cssFiles += CssFile("plugin/mine/mine.css")
+            jsFiles += JsFile("plugin/mine/mine.js")
+            // ...and OUTPUT_ROOT one published alongside the decks, reached from this deck's depth.
+            cssFiles += CssFile("css/site.css", origin = AssetOrigin.OUTPUT_ROOT)
+            jsFiles += JsFile("js/site.js", origin = AssetOrigin.OUTPUT_ROOT)
+            dslSlide { content { h2 { +"Deck" } } }
+          }
+        }
+      val html = generatePage(kslides.presentation("/talks/deck.html"), useHttp = false, rootPrefix = "../")
+      html shouldContain """href="../revealjs/plugin/mine/mine.css""""
+      html shouldContain """src="../revealjs/plugin/mine/mine.js""""
+      html shouldContain """href="../css/site.css""""
+      html shouldContain """src="../js/site.js""""
     }
 
     "HTTP mode addresses the output root absolutely, from any deck depth" {

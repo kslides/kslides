@@ -210,3 +210,23 @@ enum class ScrollLayout { COMPACT, FULL }
 
 /** reveal.js 5.0+ scroll-snap mode. Use the config property's `Boolean` form to disable snapping. */
 enum class ScrollSnap { PROXIMITY, MANDATORY }
+
+/**
+ * What a relative [com.kslides.CssFile] or [com.kslides.JsFile] path is relative *to*. A value the
+ * author already anchored — absolute, external, or a `data:` URI — ignores this and is emitted as
+ * written.
+ */
+enum class AssetOrigin {
+  /**
+   * The bundled reveal.js asset directory, where its stylesheets and plugins live. The default,
+   * and what kslides' own entries use.
+   */
+  REVEAL_ASSETS,
+
+  /**
+   * The output root, alongside the generated decks — for a stylesheet or script of your own that
+   * you publish next to them. Reached from whatever depth the deck sits at, so one path works
+   * everywhere and survives publishing under a path prefix.
+   */
+  OUTPUT_ROOT,
+}
