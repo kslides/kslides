@@ -41,6 +41,18 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Changed
 
+- Viewers can pinch-zoom a deck. The viewport meta carried
+  `maximum-scale=1.0, user-scalable=no`, which fails WCAG 2.1 SC 1.4.4 by
+  blocking zoom — and only ever bound on Android, since iOS has ignored the
+  directive since iOS 10. reveal.js's own template still ships it; kslides now
+  emits `width=device-width, initial-scale=1.0` instead, which is a deliberate
+  divergence. reveal.js already scales slides to the viewport, so nothing here
+  needed zoom disabled.
+- The `apple-mobile-web-app-capable` and `apple-mobile-web-app-status-bar-style`
+  meta tags are gone. They were reveal.js 3-era carry-over — upstream dropped
+  them, Apple deprecated the first in favour of `mobile-web-app-capable`, and the
+  second does nothing without it. kslides emits no web-app manifest, so nothing
+  replaces them.
 - Pages emit one favicon `<link>` instead of two. The `rel="shortcut icon"` that
   accompanied `rel="icon"` was an IE ≤10 alias — `shortcut` is not a registered
   link relation, so every browser since tokenizes it to plain `icon`, making the

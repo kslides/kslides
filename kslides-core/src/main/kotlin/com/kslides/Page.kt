@@ -208,17 +208,13 @@ internal object Page {
       meta {
         charset = "utf-8"
       }
-      meta {
-        name = "apple-mobile-web-app-capable"
-        content = "yes"
-      }
-      meta {
-        name = "apple-mobile-web-app-status-bar-style"
-        content = "black-translucent"
-      }
+      // No maximum-scale/user-scalable=no. reveal.js's own template still ships them, but blocking
+      // pinch-zoom fails WCAG 2.1 SC 1.4.4, and iOS has ignored the directive since iOS 10 — so it
+      // only ever bound on Android, where it cost low-vision viewers the ability to zoom. reveal.js
+      // already scales slides to the viewport, so there is nothing here that needs zoom disabled.
       meta {
         name = "viewport"
-        content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        content = "width=device-width, initial-scale=1.0"
       }
 
       if (config.title.isNotBlank())

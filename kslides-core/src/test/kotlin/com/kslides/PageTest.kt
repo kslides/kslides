@@ -20,6 +20,17 @@ class PageTest : StringSpec() {
       out shouldNotContain "<pre><code"
     }
 
+    "the viewport lets a viewer zoom" {
+      // Blocking pinch-zoom fails WCAG 2.1 SC 1.4.4. reveal.js's own template still ships
+      // maximum-scale/user-scalable=no; kslides deliberately does not.
+      val html = Page.generatePage(kslidesTest { presentation { markdownSlide { content { "# Hi" } } } }.presentation("/"))
+      html shouldContain """<meta content="width=device-width, initial-scale=1.0" name="viewport">"""
+      html shouldNotContain "user-scalable"
+      html shouldNotContain "maximum-scale"
+      // reveal.js 3-era carry-over: upstream dropped these, and Apple deprecated the first.
+      html shouldNotContain "apple-mobile-web-app"
+    }
+
     "author styles are not scoped to screen media, so they also apply when printing" {
       // Regression for PDF export: media="screen" styles vanish in ?print-pdf / kslides-export
       // output, which un-positioned the corner links and produced a blank leading PDF page.
