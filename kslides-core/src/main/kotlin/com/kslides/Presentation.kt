@@ -439,10 +439,6 @@ class Presentation(
 
     if (finalConfig.enableMenu)
       jsFiles += JsFile("plugin/menu/menu.js")
-
-    // if (finalConfig.toolbar) {
-    //   jsFiles += "plugin/toolbar/toolbar.js"
-    // }
   }
 
   internal fun assignPlugins() {
@@ -496,139 +492,139 @@ class Presentation(
   @Suppress("CyclomaticComplexMethod", "LongMethod")
   internal fun toJs(config: PresentationConfig) =
     buildString {
-    config.revealjsManagedValues.also { vals ->
-      if (vals.isNotEmpty()) {
-        vals.forEach { (k, v) ->
-          append("$INDENT${toJsValue(k, v)},\n")
-        }
-        appendLine()
-      }
-    }
-
-    config.autoSlide
-      .also { autoSlide ->
-        when (autoSlide) {
-          is Boolean if !autoSlide -> {
-            append("$INDENT${toJsValue("autoSlide", autoSlide)},\n")
-            appendLine()
+      config.revealjsManagedValues.also { vals ->
+        if (vals.isNotEmpty()) {
+          vals.forEach { (k, v) ->
+            append("$INDENT${toJsValue(k, v)},\n")
           }
+          appendLine()
+        }
+      }
 
-          is Int -> {
-            if (autoSlide > 0) {
+      config.autoSlide
+        .also { autoSlide ->
+          when (autoSlide) {
+            is Boolean if !autoSlide -> {
               append("$INDENT${toJsValue("autoSlide", autoSlide)},\n")
               appendLine()
             }
-          }
 
-          else -> {
-            error("Invalid value for autoSlide: $autoSlide")
+            is Int -> {
+              if (autoSlide > 0) {
+                append("$INDENT${toJsValue("autoSlide", autoSlide)},\n")
+                appendLine()
+              }
+            }
+
+            else -> {
+              error("Invalid value for autoSlide: $autoSlide")
+            }
           }
         }
-      }
 
-    config.slideNumber
-      .also { slideNumber ->
-        when (slideNumber) {
-          is Boolean -> {
-            if (slideNumber) {
+      config.slideNumber
+        .also { slideNumber ->
+          when (slideNumber) {
+            is Boolean -> {
+              if (slideNumber) {
+                append("$INDENT${toJsValue("slideNumber", slideNumber)},\n")
+                appendLine()
+              }
+            }
+
+            is String -> {
               append("$INDENT${toJsValue("slideNumber", slideNumber)},\n")
               appendLine()
             }
-          }
 
-          is String -> {
-            append("$INDENT${toJsValue("slideNumber", slideNumber)},\n")
+            else -> {
+              error("Invalid value for slideNumber: $slideNumber")
+            }
+          }
+        }
+
+      config.jumpToSlide
+        .also { jumpToSlide ->
+          if (!jumpToSlide) {
+            append("$INDENT${toJsValue("jumpToSlide", jumpToSlide)},\n")
             appendLine()
           }
-
-          else -> {
-            error("Invalid value for slideNumber: $slideNumber")
-          }
         }
-      }
 
-    config.jumpToSlide
-      .also { jumpToSlide ->
-        if (!jumpToSlide) {
-          append("$INDENT${toJsValue("jumpToSlide", jumpToSlide)},\n")
-          appendLine()
-        }
-      }
-
-    config.view
-      .also { view ->
-        if (view == ViewType.SCROLL) {
-          append("$INDENT${toJsValue("view", view)},\n")
-          appendLine()
-        }
-      }
-
-    config.scrollLayout
-      .also { scrollLayout ->
-        append("$INDENT${toJsValue("scrollLayout", scrollLayout)},\n")
-        appendLine()
-      }
-
-    config.scrollProgress
-      .also { scrollProgress ->
-        when (scrollProgress) {
-          is Boolean,
-          is ScrollProgress,
-            -> {
-            append("$INDENT${toJsValue("scrollProgress", scrollProgress)},\n")
+      config.view
+        .also { view ->
+          if (view == ViewType.SCROLL) {
+            append("$INDENT${toJsValue("view", view)},\n")
             appendLine()
           }
-
-          else -> {
-            error("Invalid value for scrollProgress: $scrollProgress")
-          }
         }
-      }
 
-    config.scrollActivationWidth
-      .also { scrollActivationWidth ->
-        if (scrollActivationWidth != 0) {
-          append("$INDENT${toJsValue("scrollActivationWidth", scrollActivationWidth)},\n")
+      config.scrollLayout
+        .also { scrollLayout ->
+          append("$INDENT${toJsValue("scrollLayout", scrollLayout)},\n")
           appendLine()
         }
-      }
 
-    config.scrollSnap
-      .also { scrollSnap ->
-        when (scrollSnap) {
-          is Boolean,
-          is ScrollSnap,
-            -> {
-            append("$INDENT${toJsValue("scrollSnap", scrollSnap)},\n")
+      config.scrollProgress
+        .also { scrollProgress ->
+          when (scrollProgress) {
+            is Boolean,
+            is ScrollProgress,
+              -> {
+              append("$INDENT${toJsValue("scrollProgress", scrollProgress)},\n")
+              appendLine()
+            }
+
+            else -> {
+              error("Invalid value for scrollProgress: $scrollProgress")
+            }
+          }
+        }
+
+      config.scrollActivationWidth
+        .also { scrollActivationWidth ->
+          if (scrollActivationWidth != 0) {
+            append("$INDENT${toJsValue("scrollActivationWidth", scrollActivationWidth)},\n")
             appendLine()
           }
+        }
 
-          else -> {
-            error("Invalid value for scrollSnap: $scrollSnap")
+      config.scrollSnap
+        .also { scrollSnap ->
+          when (scrollSnap) {
+            is Boolean,
+            is ScrollSnap,
+              -> {
+              append("$INDENT${toJsValue("scrollSnap", scrollSnap)},\n")
+              appendLine()
+            }
+
+            else -> {
+              error("Invalid value for scrollSnap: $scrollSnap")
+            }
           }
+        }
+
+      config.menuConfig.revealjsManagedValues.also { valMap ->
+        if (valMap.isNotEmpty()) {
+          appendLine(
+            buildString {
+              appendLine("menu: {")
+              appendLine(valMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
+              appendLine("},")
+            }.prependIndent(INDENT),
+          )
         }
       }
 
-    config.menuConfig.revealjsManagedValues.also { valMap ->
-      if (valMap.isNotEmpty()) {
-        appendLine(
-          buildString {
-            appendLine("menu: {")
-            appendLine(valMap.map { (k, v) -> "\t${toJsValue(k, v)}" }.joinToString(",\n"))
-            appendLine("},")
-          }.prependIndent(INDENT),
-        )
+      config.copyCodeConfig.values.also { copyCodeValues ->
+        if (copyCodeValues != emptyCopyCodeValues) {
+          appendLine("copycode: ${copyCodeJson.encodeToString(copyCodeValues)},".prependIndent(INDENT))
+        }
       }
+
+      appendLine("${INDENT}plugins: [ ${plugins.joinToString(", ")} ]")
     }
-
-    config.copyCodeConfig.values.also { copyCodeValues ->
-      if (copyCodeValues != emptyCopyCodeValues) {
-        appendLine("copycode: ${copyCodeJson.encodeToString(copyCodeValues)},".prependIndent(INDENT))
-      }
-    }
-
-    appendLine("${INDENT}plugins: [ ${plugins.joinToString(", ")} ]")
-  }
 
   companion object {
     private val logger = KotlinLogging.logger {}

@@ -23,19 +23,13 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   slide's. The generated rules are written to the iframe head ahead of any
   `css { }`, which remains the escape hatch and still wins at equal specificity.
 
-### Added
-
-- `CssFile` and `JsFile` take an `origin`, so a stylesheet or script of your own
-  can live at the output root rather than inside the reveal.js asset directory:
-
-  ```kotlin
-  cssFiles += CssFile("css/site.css", origin = AssetOrigin.OUTPUT_ROOT)
-  ```
-
-  It resolves from whatever depth the deck sits at, so one path works everywhere
-  and survives publishing under a path prefix — previously the only way out of
-  the asset directory was a site-root-absolute `/…`, which does not. The default,
-  `AssetOrigin.REVEAL_ASSETS`, is what every existing entry does today.
+- `cssFiles += CssFile("css/site.css", origin = AssetOrigin.OUTPUT_ROOT)` puts a
+  stylesheet or script of your own at the output root rather than inside the
+  reveal.js asset directory. It resolves from whatever depth the deck sits at, so
+  one path works everywhere and survives publishing under a path prefix —
+  previously the only way out of the asset directory was a site-root-absolute
+  `/…`, which does not. The default, `AssetOrigin.REVEAL_ASSETS`, is what every
+  existing entry does today.
 
 ### Changed
 
@@ -61,10 +55,10 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   itself: corner *links* (`topLeftHref`, `topRightHref`) and `logo(href = )`,
   which are navigation targets and deliberately left alone; image paths written
   inside Markdown or HTML slide content, which kslides hands to reveal.js
-  unparsed; and `menuConfig { themesPath }`, which names a directory inside the
-  reveal.js assets. `cssFiles` and `jsFiles` are likewise relative to the
-  reveal.js asset directory unless given `origin = AssetOrigin.OUTPUT_ROOT`
-  (see Added, above).
+  unparsed; and `menuConfig { themesPath }`, which kslides hands to the menu
+  plugin verbatim rather than emitting as a URL itself. `cssFiles` and `jsFiles`
+  are relative to the reveal.js asset directory unless given
+  `origin = AssetOrigin.OUTPUT_ROOT`.
 
 ### Fixed
 

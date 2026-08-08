@@ -52,8 +52,16 @@ internal object Page {
     /** Where the reveal.js assets sit, relative to this page. */
     val srcPrefix = "$rootPrefix$assetDir".ensureSuffix("/")
 
-    /** The prefix a relative path with this origin resolves against, for this render. */
-    fun AssetOrigin.prefix(): String = if (this == AssetOrigin.OUTPUT_ROOT) rootPrefix else srcPrefix
+    /**
+     * The prefix a relative path with this origin resolves against, for this render. Exhaustive by
+     * design: this is the one site a new [AssetOrigin] has to be taught about, so adding one should
+     * fail to compile here rather than silently resolve against the assets.
+     */
+    fun AssetOrigin.prefix(): String =
+      when (this) {
+        AssetOrigin.REVEAL_ASSETS -> srcPrefix
+        AssetOrigin.OUTPUT_ROOT -> rootPrefix
+      }
   }
 
   /**

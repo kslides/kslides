@@ -53,8 +53,9 @@ class MenuConfig : AbstractConfig() {
    * custom list is provided.
    *
    * Emitted as written, and the menu plugin resolves it against the page — so a deck below the
-   * output root has to walk up itself. It names a directory inside the reveal.js assets rather
-   * than one at the output root, which is why it is not resolved for you.
+   * output root has to walk up itself. kslides resolves the paths it writes into the document
+   * itself; this one it hands to the plugin verbatim, inside the opaque reveal.js options object,
+   * so it never sees it as a URL.
    */
   var themesPath by ConfigProperty<String>(revealjsManagedValues)
 

@@ -217,16 +217,9 @@ enum class ScrollSnap { PROXIMITY, MANDATORY }
  * written.
  */
 enum class AssetOrigin {
-  /**
-   * The bundled reveal.js asset directory, where its stylesheets and plugins live. The default,
-   * and what kslides' own entries use.
-   */
+  /** The bundled reveal.js asset directory. The default, and what kslides' own entries use. */
   REVEAL_ASSETS,
 
-  /**
-   * The output root, alongside the generated decks — for a stylesheet or script of your own that
-   * you publish next to them. Reached from whatever depth the deck sits at, so one path works
-   * everywhere and survives publishing under a path prefix.
-   */
+  /** The output root, alongside the generated decks, reached from whatever depth the deck sits at. */
   OUTPUT_ROOT,
 }
