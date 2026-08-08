@@ -41,6 +41,11 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Changed
 
+- Pages emit one favicon `<link>` instead of two. The `rel="shortcut icon"` that
+  accompanied `rel="icon"` was an IE ≤10 alias — `shortcut` is not a registered
+  link relation, so every browser since tokenizes it to plain `icon`, making the
+  two elements the same link twice. Generated pages lose a line; nothing that can
+  still run reveal.js notices.
 - Slide background assets — `slideConfig`'s `backgroundImage`, `backgroundIframe`,
   and `backgroundVideo` — now resolve against the output root, completing the
   change below. reveal.js resolves these against the page, so a relative value

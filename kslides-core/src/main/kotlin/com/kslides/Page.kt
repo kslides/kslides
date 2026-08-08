@@ -264,14 +264,14 @@ internal object Page {
       val favicon = config.favicon
       if (favicon.isNotBlank()) {
         rawHtml("\n")
-        val faviconHref = favicon.resolveAgainst(rootPrefix)
         val faviconType = ContentType.fromFilePath(favicon).firstOrNull()?.toString()
-        listOf("shortcut icon", "icon").forEach { iconRel ->
-          link(rel = iconRel) {
-            href = faviconHref
-            if (faviconType != null)
-              type = faviconType
-          }
+        // Only rel="icon". The rel="shortcut icon" that used to accompany it was an IE ≤10 alias:
+        // "shortcut" is not a registered link relation, so every other browser tokenizes it to
+        // plain "icon" and the two elements were the same link twice.
+        link(rel = "icon") {
+          href = favicon.resolveAgainst(rootPrefix)
+          if (faviconType != null)
+            type = faviconType
         }
       }
 
