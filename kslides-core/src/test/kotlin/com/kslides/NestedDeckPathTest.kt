@@ -31,6 +31,11 @@ class NestedDeckPathTest : StringSpec() {
           customTheme { logo("images/logo.png") }
         }
         dslSlide {
+          slideConfig {
+            backgroundImage = "images/bg.png"
+            // data-background takes a color too, and a color must survive untouched.
+            background = "#ffffff"
+          }
           content {
             h2 { +"Deck" }
             playground("does-not-exist.kt")
@@ -71,11 +76,13 @@ class NestedDeckPathTest : StringSpec() {
           withClue(page) {
             src!! shouldStartWith "${walk}playground/"
             html shouldContain """href="${walk}favicon.ico""""
-            // Author-supplied asset paths resolve the same way...
+            // Author-supplied asset paths resolve the same way, including slide backgrounds...
             html shouldContain """src="${walk}images/gh.svg""""
             html shouldContain """src="${walk}images/logo.png""""
-            // ...while an already-anchored src, and corner links of any kind, are left alone.
+            html shouldContain """data-background-image="${walk}images/bg.png""""
+            // ...while an already-anchored src, a color, and corner links of any kind, are not.
             html shouldContain """src="https://example.com/home.svg""""
+            html shouldContain """data-background="#ffffff""""
             html shouldContain """href="./""""
             // The browser resolves the src against the page's own directory, so that resolution has
             // to land on a file that exists — this is the 404 the fix is about.

@@ -1,5 +1,6 @@
 package com.kslides.config
 
+import com.kslides.InternalUtils.fromOutputRoot
 import com.kslides.KSlidesDslMarker
 import com.kslides.Speed
 import com.kslides.Transition
@@ -33,10 +34,22 @@ class SlideConfig : AbstractConfig() {
   /** Transition speed. [Speed.UNASSIGNED] inherits. */
   var transitionSpeed by ConfigProperty<Speed>(revealjsManagedValues)
 
-  /** reveal.js `data-background` — any valid color or image reference. */
+  /**
+   * reveal.js `data-background` — any valid color or image reference.
+   *
+   * A value that reads as an image path (one ending in a known image extension) resolves against
+   * the output root, like [backgroundImage]; anything else — a color name, `#hex`, `rgb()` — is
+   * emitted as written. Use [backgroundImage] when you mean an image, and this shorthand for
+   * colors.
+   */
   var background by ConfigProperty<String>(revealjsManagedValues)
 
-  /** URL for a full-slide background image (`data-background-image`). */
+  /**
+   * URL for a full-slide background image (`data-background-image`).
+   *
+   * A relative value resolves against the output root, so the same path works from a deck at any
+   * depth. Absolute (`/img/x.png`), external (`https://...`), and `data:` values pass through.
+   */
   var backgroundImage by ConfigProperty<String>(revealjsManagedValues)
 
   /** Solid background color (`data-background-color`). */
@@ -57,13 +70,16 @@ class SlideConfig : AbstractConfig() {
   /** Transition style for full-page slide backgrounds. */
   var backgroundTransition by ConfigProperty<Transition>(revealjsManagedValues)
 
-  /** URL of an iframe shown as the slide background. */
+  /** URL of an iframe shown as the slide background. Resolves like [backgroundImage]. */
   var backgroundIframe by ConfigProperty<String>(revealjsManagedValues)
 
   /** When `true`, the background iframe receives user input instead of reveal.js. */
   var backgroundInteractive by ConfigProperty<Boolean>(revealjsManagedValues)
 
-  /** URL of a video shown as the slide background (`data-background-video`). */
+  /**
+   * URL of a video shown as the slide background (`data-background-video`), or a comma-separated
+   * list of sources. Each source resolves like [backgroundImage].
+   */
   var backgroundVideo by ConfigProperty<String>(revealjsManagedValues)
 
   /** Loop the background video. */
@@ -160,8 +176,17 @@ class SlideConfig : AbstractConfig() {
     codeWrap = false
   }
 
+  // data-background takes either a color or an image, so only a value that reads as an image path
+  // is resolved against the output root; a color name, #hex, or rgb()/hsl() is left as written.
+  // An allowlist, so an unrecognized value keeps today's behavior rather than being mangled.
+  private val imagePathRegex =
+    Regex("""\.(png|jpe?g|gif|svg|webp|avif|bmp|ico)$""", RegexOption.IGNORE_CASE)
+
   @Suppress("CyclomaticComplexMethod")
-  internal fun applyConfig(section: SECTION) {
+  internal fun applyConfig(
+    section: SECTION,
+    rootPrefix: String,
+  ) {
     if (transition != Transition.UNASSIGNED)
       section.attributes["data-transition"] = transition.asInOut()
     else
@@ -183,13 +208,14 @@ class SlideConfig : AbstractConfig() {
       section.attributes["data-transition-speed"] = transitionSpeed.name.lowercase()
 
     if (background.isNotBlank())
-      section.attributes["data-background"] = background
+      section.attributes["data-background"] =
+        if (imagePathRegex.containsMatchIn(background)) background.fromOutputRoot(rootPrefix) else background
 
     if (backgroundColor.isNotBlank())
       section.attributes["data-background-color"] = backgroundColor
 
     if (backgroundImage.isNotBlank())
-      section.attributes["data-background-image"] = backgroundImage
+      section.attributes["data-background-image"] = backgroundImage.fromOutputRoot(rootPrefix)
 
     if (backgroundSize.isNotBlank())
       section.attributes["data-background-size"] = backgroundSize
@@ -209,14 +235,16 @@ class SlideConfig : AbstractConfig() {
       section.attributes["data-background-transition"] = backgroundTransition.asInOut()
 
     if (backgroundIframe.isNotBlank()) {
-      section.attributes["data-background-iframe"] = backgroundIframe
+      section.attributes["data-background-iframe"] = backgroundIframe.fromOutputRoot(rootPrefix)
 
       if (backgroundInteractive)
         section.attributes["data-background-interactive"] = ""
     }
 
     if (backgroundVideo.isNotBlank()) {
-      section.attributes["data-background-video"] = backgroundVideo
+      // reveal.js accepts a comma-separated list of sources here, so resolve each one.
+      section.attributes["data-background-video"] =
+        backgroundVideo.split(",").joinToString(",") { it.trim().fromOutputRoot(rootPrefix) }
       if (backgroundVideoLoop)
         section.attributes["data-background-video-loop"] = ""
       if (backgroundVideoMuted)
