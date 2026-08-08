@@ -9,6 +9,20 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+### Added
+
+- `playgroundConfig { fontSize = "20px" }` sizes the code inside a Kotlin
+  Playground iframe — globally, per presentation, or per `playground()` call,
+  cascading like every other config value. Previously this meant hand-writing
+  rules against Playground's internal selectors. One knob now sizes both the
+  editor and the run-output pane; line spacing follows on its own, because
+  CodeMirror's `line-height` is a unitless ratio. A `lineHeight` companion
+  property changes that ratio when you want tighter or looser lines. Prefer
+  absolute units — the Playground renders in its own iframe document, so `em`
+  resolves against that document's root font size rather than the surrounding
+  slide's. The generated rules are written to the iframe head ahead of any
+  `css { }`, which remains the escape hatch and still wins at equal specificity.
+
 ### Fixed
 
 - Decks whose `path` is a `.html` file inside a subdirectory now emit correct
@@ -45,6 +59,13 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 - `./gradlew build` now compiles the `export` source set in `kslides-examples`.
   Custom source sets are not wired into `check`, so a broken `Export.kt` stayed
   invisible until someone ran `make pdf` — CI never compiled it.
+- Config properties whose values are interpolated verbatim into generated CSS —
+  `slideConfig`'s `fontSize` and `codeFontSize`, plus the new playground
+  properties — now reject malformed values at the assignment site instead of
+  silently corrupting the rendered page. A value like `codeFontSize = "0.6em;}"`
+  used to close the generated rule early and break every rule after it; it now
+  throws `IllegalArgumentException` naming the property. Valid CSS lengths,
+  including `calc()`/`var()` expressions and a blank "unset", are unaffected.
 
 ## [1.3.0] — 2026-08-02
 

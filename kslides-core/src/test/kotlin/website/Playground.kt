@@ -40,6 +40,27 @@ fun playgroundConfigured() {
 }
 // --8<-- [end:configured]
 
+// --8<-- [start:fontsize]
+fun playgroundFontSize() {
+  kslides {
+    presentationConfig {
+      // Every playground in every deck, unless overridden below.
+      playgroundConfig { fontSize = "20px" }
+    }
+    presentation {
+      dslSlide {
+        content {
+          playground("src/main/kotlin/playground/HelloWorld.kt") {
+            // Just this one.
+            fontSize = "15px"
+          }
+        }
+      }
+    }
+  }
+}
+// --8<-- [end:fontsize]
+
 // --8<-- [start:url]
 fun playgroundFromUrl() {
   kslides {

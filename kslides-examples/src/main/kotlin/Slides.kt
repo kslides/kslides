@@ -42,10 +42,7 @@ import kotlinx.css.color
 import kotlinx.css.content
 import kotlinx.css.display
 import kotlinx.css.float
-import kotlinx.css.fontSize
-import kotlinx.css.lineHeight
 import kotlinx.css.marginBottom
-import kotlinx.css.properties.LineHeight
 import kotlinx.css.px
 import kotlinx.css.width
 import kotlinx.html.Dir
@@ -170,20 +167,7 @@ fun exampleSlides(): KSlides.() -> Unit =
         height = "350px"
 
         // Increase the default playground font size
-        css += """
-          .CodeMirror pre {
-            line-height: 25px;
-          }
-
-          .CodeMirror {
-            font-size: 20px;
-          }
-
-          .code-output {
-            line-height: 25px;
-            font-size: 20px;
-          }
-        """
+        fontSize = "20px"
       }
 
       slideConfig {
@@ -493,20 +477,7 @@ fun exampleSlides(): KSlides.() -> Unit =
               theme = PlaygroundTheme.DARCULA
               mode = PlaygroundMode.XML
               // Decrease the font size for just this playground
-              css {
-                rule(".CodeMirror pre") {
-                  lineHeight = LineHeight("20px")
-                }
-
-                rule(".CodeMirror") {
-                  fontSize = LinearDimension("15px")
-                }
-
-                rule(".code-output") {
-                  lineHeight = LineHeight("20px")
-                  fontSize = LinearDimension("15px")
-                }
-              }
+              fontSize = "15px"
             }
             +"Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C"
           }
