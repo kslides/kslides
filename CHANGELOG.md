@@ -41,6 +41,12 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Changed
 
+- Viewers can pinch-zoom a deck. The viewport meta no longer sets
+  `maximum-scale=1.0, user-scalable=no`, which blocked zoom and fails WCAG 2.1
+  SC 1.4.4 — a deliberate divergence from reveal.js's template, which still
+  ships it. The two `apple-mobile-web-app-*` metas go with it: reveal.js 3-era
+  carry-over that upstream itself dropped, and inert without the web-app
+  manifest kslides does not emit.
 - Pages emit one favicon `<link>` instead of two. The `rel="shortcut icon"` that
   accompanied `rel="icon"` was an IE ≤10 alias — `shortcut` is not a registered
   link relation, so every browser since tokenizes it to plain `icon`, making the

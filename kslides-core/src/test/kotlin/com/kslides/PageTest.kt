@@ -20,6 +20,19 @@ class PageTest : StringSpec() {
       out shouldNotContain "<pre><code"
     }
 
+    // The head is the same whatever the deck holds, so one slide serves both head assertions.
+    val deck = kslidesTest { presentation { markdownSlide { content { "# Hi" } } } }.presentation("/")
+
+    "the viewport lets a viewer zoom" {
+      // Pinning the whole content attribute — a re-added maximum-scale or user-scalable fails here.
+      Page.generatePage(deck) shouldContain
+        """<meta content="width=device-width, initial-scale=1.0" name="viewport">"""
+    }
+
+    "the reveal.js 3-era Apple web-app metas are gone" {
+      Page.generatePage(deck) shouldNotContain "apple-mobile-web-app"
+    }
+
     "author styles are not scoped to screen media, so they also apply when printing" {
       // Regression for PDF export: media="screen" styles vanish in ?print-pdf / kslides-export
       // output, which un-positioned the corner links and produced a blank leading PDF page.

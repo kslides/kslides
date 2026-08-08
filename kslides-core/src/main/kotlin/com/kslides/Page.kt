@@ -208,17 +208,11 @@ internal object Page {
       meta {
         charset = "utf-8"
       }
-      meta {
-        name = "apple-mobile-web-app-capable"
-        content = "yes"
-      }
-      meta {
-        name = "apple-mobile-web-app-status-bar-style"
-        content = "black-translucent"
-      }
+      // Deliberate divergence from reveal.js's own template, which still ships
+      // maximum-scale/user-scalable=no: blocking pinch-zoom fails WCAG 2.1 SC 1.4.4.
       meta {
         name = "viewport"
-        content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        content = "width=device-width, initial-scale=1.0"
       }
 
       if (config.title.isNotBlank())
