@@ -5,6 +5,7 @@ import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.html.h2
 import java.io.File
@@ -12,7 +13,7 @@ import kotlin.io.path.createTempDirectory
 
 /**
  * A generated page addresses the output root for iframe/image `src` attributes (`playground/`,
- * `letsPlot/`, `kroki/` content) and for the `favicon.ico` link, so both have to reach it from
+ * `letsPlot/`, `kroki/` content) and for the favicon link, so both have to reach it from
  * wherever the deck sits — the same depth problem [KSlides.outputTarget] solves for reveal.js
  * assets.
  */
@@ -163,6 +164,22 @@ class NestedDeckPathTest : StringSpec() {
       html shouldContain """src="../revealjs/plugin/mine/mine.js""""
       html shouldContain """href="../css/site.css""""
       html shouldContain """src="../js/site.js""""
+    }
+
+    "the favicon link is configurable, and blank emits nothing" {
+      // Default: unchanged markup, and the path resolves like any other author asset.
+      nestedDeckHtml { } shouldContain """<link href="../favicon.ico" rel="icon" type="image/x-icon">"""
+
+      // The type hint is derived from the filename, not special-cased to .ico.
+      nestedDeckHtml { presentationConfig { favicon = "images/icon.png" } } shouldContain
+        """<link href="../images/icon.png" rel="icon" type="image/png">"""
+
+      // Nothing to derive it from, so the hint is omitted and the browser infers from the response.
+      nestedDeckHtml { presentationConfig { favicon = "icon" } } shouldContain
+        """<link href="../icon" rel="icon">"""
+
+      // Blank opts out entirely — kslides ships no icon, so this is how you stop asking for one.
+      nestedDeckHtml { presentationConfig { favicon = "" } } shouldNotContain """rel="icon""""
     }
 
     "HTTP mode addresses the output root absolutely, from any deck depth" {

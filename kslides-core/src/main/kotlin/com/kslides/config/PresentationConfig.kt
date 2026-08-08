@@ -259,6 +259,22 @@ class PresentationConfig : AbstractConfig() {
   /** Browser tab title. Blank omits the `<title>` element. */
   var title by ConfigProperty<String>(kslidesManagedValues)
 
+  /**
+   * Browser tab icon, defaulting to `favicon.ico`.
+   *
+   * The `<link>` is what makes an icon at the output root reachable at all: a browser's implicit
+   * favicon request always goes to the *origin* root, which on a project site published under a
+   * path prefix is not where your decks are. A relative value resolves against the output root, so
+   * one path works from a deck at any depth; absolute (`/img/icon.png`), external
+   * (`https://...`), and `data:` values pass through. Supply the file at the output root for
+   * filesystem output, or on the classpath under
+   * [com.kslides.config.OutputConfig.defaultHttpRoot] for HTTP.
+   *
+   * **Blank omits the `<link>` elements.** kslides ships no icon, so set this blank if your site
+   * has none rather than asking every page for a file that is not there.
+   */
+  var favicon by ConfigProperty<String>(kslidesManagedValues)
+
   /** reveal.js theme. */
   var theme by ConfigProperty<PresentationTheme>(kslidesManagedValues)
 
@@ -411,6 +427,7 @@ class PresentationConfig : AbstractConfig() {
   // Only the global default config is initialized with default values
   internal fun assignDefaults() {
     title = ""
+    favicon = "favicon.ico"
     theme = PresentationTheme.BLACK
     highlight = Highlight.MONOKAI
     enableSpeakerNotes = false

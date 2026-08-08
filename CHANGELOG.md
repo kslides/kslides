@@ -23,6 +23,14 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   slide's. The generated rules are written to the iframe head ahead of any
   `css { }`, which remains the escape hatch and still wins at equal specificity.
 
+- `presentationConfig { favicon = "images/icon.png" }` sets the browser tab icon,
+  and **`favicon = ""` omits the `<link>` elements entirely**. kslides ships no
+  icon of its own, so every page previously asked for a `favicon.ico` that may
+  not exist, with no way to point elsewhere or opt out. A relative value resolves
+  against the output root like any other author asset, so one path works from a
+  deck at any depth; the `type` hint is derived from the filename rather than
+  hardcoded to `image/x-icon`, and omitted when the name gives nothing to derive
+  it from. The default, `"favicon.ico"`, emits exactly what it did before.
 - `cssFiles += CssFile("css/site.css", origin = AssetOrigin.OUTPUT_ROOT)` puts a
   stylesheet or script of your own at the output root rather than inside the
   reveal.js asset directory. It resolves from whatever depth the deck sits at, so
@@ -75,10 +83,10 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   a path prefix (a GitHub Pages project site resolves it against the domain root)
   — the same class of bug as the iframe paths below. It now reaches the output
   root from wherever the deck sits: unchanged under HTTP, relative for filesystem
-  output. Note that kslides ships no icon of its own — supply a `favicon.ico` at
-  the output root, or on the classpath under `defaultHttpRoot` for HTTP mode.
-  (HTTP decks have been picking up an icon incidentally, from a transitive
-  dependency that happens to ship `public/favicon.ico`.)
+  output. Supply the file at the output root, or on the classpath under
+  `defaultHttpRoot` for HTTP mode — or set `favicon = ""` (see Added) to stop
+  asking for one. (HTTP decks have been picking up an icon incidentally, from a
+  transitive dependency that happens to ship `public/favicon.ico`.)
 - `playground { }`, `letsPlot { }`, and `diagram { }` content now loads on decks
   that are not at the output root. The iframe/image `src` was emitted relative to
   the output root (`playground/slide-1-1.html`) while the page referencing it
