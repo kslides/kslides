@@ -25,6 +25,14 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Changed
 
+- Slide background assets — `slideConfig`'s `backgroundImage`, `backgroundIframe`,
+  and `backgroundVideo` — now resolve against the output root, completing the
+  change below. reveal.js resolves these against the page, so a relative value
+  only found its file on a deck at the output root. `backgroundVideo` accepts a
+  comma-separated list of sources and each one resolves. The `background`
+  shorthand takes a color *or* an image, so only values ending in a known image
+  extension (`.png`, `.jpg`, `.svg`, …) resolve — a color name, `#hex`, or
+  `rgb()` is emitted untouched. Prefer `backgroundImage` when you mean an image.
 - Author-supplied asset paths — `customTheme { logo(...) }`, `topLeftSvgSrc`,
   and `topRightSvgSrc` — now resolve against the output root rather than against
   the page. A relative value such as `logo("images/logo.png")` was emitted
@@ -36,10 +44,9 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   compensation.** Decks at the output root are unaffected — their generated
   output is byte-identical. Still emitted verbatim, so a nested deck must walk up
   itself: corner *links* (`topLeftHref`, `topRightHref`) and `logo(href = )`,
-  which are navigation targets and deliberately left alone; `slideConfig`'s
-  `background`, `backgroundImage`, `backgroundIframe`, and `backgroundVideo`,
-  which are not yet covered; and image paths written inside Markdown or HTML
-  slide content, which kslides hands to reveal.js unparsed.
+  which are navigation targets and deliberately left alone; and image paths
+  written inside Markdown or HTML slide content, which kslides hands to reveal.js
+  unparsed.
 
 ### Fixed
 

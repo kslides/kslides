@@ -153,7 +153,7 @@ class Presentation(
               vcontext.style.also { if (it.isNotBlank()) style = it }
 
               // Apply config items for all the slides in the vertical slide
-              vcontext.slideConfig.applyConfig(this)
+              vcontext.slideConfig.applyConfig(this, renderRootPrefix)
               vcontext.slideConfig.applyMarkdownItems(this)
               vcontext.verticalSlides
                 .forEach { verticalSlide ->

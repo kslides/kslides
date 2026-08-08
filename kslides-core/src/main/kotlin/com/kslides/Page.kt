@@ -22,6 +22,7 @@ import kotlinx.html.style
 import kotlinx.html.title
 import org.w3c.dom.Document
 import java.io.FileNotFoundException
+import com.kslides.InternalUtils.fromOutputRoot as resolveFromOutputRoot
 
 internal object Page {
   private val preRegex = Regex("\\s*<pre.*>\\s*")
@@ -31,10 +32,8 @@ internal object Page {
    * What one page render needs: the deck, the output mode, and the two prefixes that follow from
    * where the page will sit.
    *
-   * Private because `Page`'s builders are its only consumers today. [fromOutputRoot] is the rule
-   * for author-supplied paths generally, so a consumer outside `Page` — slide backgrounds, say,
-   * which are applied from [com.kslides.slide.Slide.processSlide] and cannot reach here — wants
-   * that rule hoisted next to [Presentation.renderRootPrefix] rather than retyped.
+   * Private because `Page`'s builders are its only consumers; the rule they bind,
+   * [InternalUtils.fromOutputRoot], is shared with consumers that cannot reach here.
    *
    * @param rootPrefix the walk from this page back to the output root — `"/"` under HTTP, `"../"`
    *   per directory level for a filesystem deck, empty at the root.
@@ -53,18 +52,8 @@ internal object Page {
     /** Where the reveal.js assets sit, relative to this page. */
     val srcPrefix = "$rootPrefix$assetDir".ensureSuffix("/")
 
-    /**
-     * Resolve an author-supplied asset path against the output root, the way a bare path reads
-     * everywhere else in kslides, so one value works from a deck at any depth. A path the author
-     * already anchored — absolute or protocol-relative (`/`, `//`), external, or a `data:` URI —
-     * is their own business and passes through untouched.
-     *
-     * This is the canonical rule for author-supplied paths.
-     */
-    fun String.fromOutputRoot(): String {
-      val anchored = startsWith("/") || startsWith("http") || startsWith("data:")
-      return if (anchored) this else "$rootPrefix$this"
-    }
+    /** Bind [InternalUtils.fromOutputRoot], the canonical rule, to this render's walk. */
+    fun String.fromOutputRoot(): String = resolveFromOutputRoot(rootPrefix)
 
     /**
      * Resolve a reveal.js asset filename against [srcPrefix] rather than the output root — the

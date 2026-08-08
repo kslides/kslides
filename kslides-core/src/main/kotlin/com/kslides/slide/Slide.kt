@@ -124,7 +124,7 @@ abstract class Slide(
     if (autoAnimateRestart)
       section.attributes["data-auto-animate-restart"] = ""
 
-    mergedSlideConfig.applyConfig(section)
+    mergedSlideConfig.applyConfig(section, presentation.renderRootPrefix)
 
     // reveal.js renders Markdown client-side, so kslides never sees the resulting <pre>/<code>
     // tags — codeFontSize/codeWrap can't be inline styles. Instead, register a generated CSS
