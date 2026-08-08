@@ -31,8 +31,8 @@ internal object Page {
   /**
    * @param rootPrefix the walk from this page back to the output root — `"/"` under HTTP, `"../"`
    *   per directory level for a filesystem deck, empty at the root. Everything root-relative the
-   *   page emits is built from it: reveal.js asset links here, iframe/image srcs via
-   *   [Presentation.renderRootPrefix].
+   *   page emits is built from it: reveal.js asset links and the favicon here, iframe/image srcs
+   *   via [Presentation.renderRootPrefix].
    */
   internal fun generatePage(
     p: Presentation,
@@ -230,9 +230,8 @@ internal object Page {
     writeStyleToHead(p.indentedCustomThemeCss, styleId = "custom-theme")
 
     rawHtml("\n")
-    // A favicon.ico the author drops at the output root (or on the classpath under
-    // OutputConfig.defaultHttpRoot, which HTTP serves at "/"). Reached from wherever this page
-    // sits, so it survives both a nested deck and a site published under a path prefix.
+    // Author-supplied: a favicon.ico at the output root, or on the classpath under
+    // OutputConfig.defaultHttpRoot, which HTTP serves at "/".
     val faviconHref = "${rootPrefix}favicon.ico"
     link {
       rel = "shortcut icon"
