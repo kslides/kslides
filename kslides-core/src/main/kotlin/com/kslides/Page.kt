@@ -3,6 +3,7 @@ package com.kslides
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.CssValue.Companion.writeStyleToHead
 import com.kslides.InternalUtils.fromOutputRoot
+import com.kslides.InternalUtils.isAnchoredPath
 import com.pambrose.common.util.ensureSuffix
 import kotlinx.html.BODY
 import kotlinx.html.HTML
@@ -53,16 +54,15 @@ internal object Page {
     val srcPrefix = "$rootPrefix$assetDir".ensureSuffix("/")
 
     /**
-     * Resolve a reveal.js asset filename against [srcPrefix] rather than the output root — the
-     * intended difference from [InternalUtils.fromOutputRoot].
+     * Resolve a reveal.js asset filename against [srcPrefix] rather than the output root — the only
+     * difference from [InternalUtils.fromOutputRoot], which the two now share
+     * [InternalUtils.isAnchoredPath] with.
      *
-     * It also recognizes fewer anchored forms, which is not intended: an absolute value lands under
-     * the asset directory (`cssFiles += CssFile("/css/mine.css")` emits `…/revealjs//css/mine.css`)
-     * and there is no way to reference a file at the output root through [Presentation.cssFiles] or
-     * [Presentation.jsFiles]. Inherited from the guards this replaced; fixing it changes output, so
-     * it wants its own change.
+     * A relative filename names a file inside the reveal.js assets, which is what
+     * [Presentation.cssFiles] and [Presentation.jsFiles] hold. To point somewhere else, anchor the
+     * value yourself.
      */
-    fun String.fromAssetDir(): String = if (startsWith("http")) this else "$srcPrefix$this"
+    fun String.fromAssetDir(): String = if (isAnchoredPath()) this else "$srcPrefix$this"
   }
 
   /**

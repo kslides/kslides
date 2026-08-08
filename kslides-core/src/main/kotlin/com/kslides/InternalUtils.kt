@@ -216,21 +216,29 @@ internal object InternalUtils {
   internal fun String.isUrl() = lowercase().matches(httpRegex)
 
   /**
+   * Whether the author already anchored this path themselves: absolute or protocol-relative
+   * (`/foo`, `//cdn/foo`), an `http(s)` URL, or a `data:` URI. Such a value is emitted as written;
+   * anything else is relative to something and gets a prefix.
+   *
+   * Shared by every path resolver so they agree on what "anchored" means, differing only in which
+   * prefix they apply — [fromOutputRoot] uses the walk back to the output root, and `Page`'s
+   * `fromAssetDir` the reveal.js asset directory.
+   */
+  internal fun String.isAnchoredPath() = startsWith("/") || startsWith("data:") || isUrl()
+
+  /**
    * Resolve an author-supplied asset path against the output root, the way a bare path reads
    * everywhere else in kslides, so one value works from a deck at any depth. [rootPrefix] is the
    * render's walk back to that root (see [com.kslides.Presentation.renderRootPrefix]).
    *
-   * A path the author already anchored — absolute or protocol-relative (`/`, `//`), external, or a
-   * `data:` URI — is their own business and passes through untouched.
+   * A path the author already anchored ([isAnchoredPath]) is their own business and passes through
+   * untouched.
    *
    * This is the canonical rule for author-supplied paths, shared by the page builders in
    * [com.kslides.Page] and the slide-background attributes in
    * [com.kslides.config.SlideConfig.applyConfig].
    */
-  internal fun String.fromOutputRoot(rootPrefix: String): String {
-    val anchored = startsWith("/") || startsWith("http") || startsWith("data:")
-    return if (anchored) this else "$rootPrefix$this"
-  }
+  internal fun String.fromOutputRoot(rootPrefix: String): String = if (isAnchoredPath()) this else "$rootPrefix$this"
 
   /**
    * [fromOutputRoot] for an attribute that takes a comma-separated list of sources, resolving each
