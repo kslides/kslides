@@ -21,6 +21,15 @@ class NestedDeckPathTest : StringSpec() {
     fun deckWithPlayground(deckPath: String): Presentation.() -> Unit =
       {
         path = deckPath
+        presentationConfig {
+          // Two corner-image srcs (one relative, one external) plus a relative logo src. The hrefs
+          // are required scaffolding — a corner <img> is only emitted inside a non-blank href.
+          topLeftHref = "https://example.com"
+          topLeftSvgSrc = "images/gh.svg"
+          topRightHref = "./"
+          topRightSvgSrc = "https://example.com/home.svg"
+          customTheme { logo("images/logo.png") }
+        }
         dslSlide {
           content {
             h2 { +"Deck" }
@@ -62,6 +71,12 @@ class NestedDeckPathTest : StringSpec() {
           withClue(page) {
             src!! shouldStartWith "${walk}playground/"
             html shouldContain """href="${walk}favicon.ico""""
+            // Author-supplied asset paths resolve the same way...
+            html shouldContain """src="${walk}images/gh.svg""""
+            html shouldContain """src="${walk}images/logo.png""""
+            // ...while an already-anchored src, and corner links of any kind, are left alone.
+            html shouldContain """src="https://example.com/home.svg""""
+            html shouldContain """href="./""""
             // The browser resolves the src against the page's own directory, so that resolution has
             // to land on a file that exists — this is the 404 the fix is about.
             File(outDir, page)
@@ -83,6 +98,10 @@ class NestedDeckPathTest : StringSpec() {
       val html = generatePage(kslides.presentation("/greattalk1/other.html"))
       iframeSrc(html) shouldBe "/playground/slide-1-1.html"
       html shouldContain """href="/favicon.ico""""
+      // Author-supplied paths too: the classpath root that backs them is served at "/".
+      html shouldContain """src="/images/gh.svg""""
+      html shouldContain """src="/images/logo.png""""
+      html shouldContain """src="https://example.com/home.svg""""
     }
   }
 }

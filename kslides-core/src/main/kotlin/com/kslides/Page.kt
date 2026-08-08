@@ -31,8 +31,8 @@ internal object Page {
   /**
    * @param rootPrefix the walk from this page back to the output root — `"/"` under HTTP, `"../"`
    *   per directory level for a filesystem deck, empty at the root. Everything root-relative the
-   *   page emits is built from it: reveal.js asset links and the favicon here, iframe/image srcs
-   *   via [Presentation.renderRootPrefix].
+   *   page emits is built from it: reveal.js asset links, the favicon, and author-supplied
+   *   corner/logo images here; iframe/image srcs via [Presentation.renderRootPrefix].
    */
   internal fun generatePage(
     p: Presentation,
@@ -58,7 +58,7 @@ internal object Page {
           val config = p.finalConfig
           append.html {
             generateHead(p, config, srcPrefix, rootPrefix)
-            generateBody(p, config, srcPrefix, useHttp)
+            generateBody(p, config, srcPrefix, rootPrefix, useHttp)
           }
         }
 
@@ -264,11 +264,27 @@ internal object Page {
     writeCssToHead(p.css)
   }
 
+  /**
+   * Resolve an author-supplied asset path against the output root, the way a bare path reads
+   * everywhere else in kslides, so one value works from a deck at any depth. A path the author
+   * already anchored — absolute or protocol-relative (`/`, `//`), external, or a `data:` URI — is
+   * their own business and passes through untouched.
+   *
+   * This is the canonical rule for author-supplied paths. The narrower `startsWith("http")` guards
+   * on the css/js/plugin links below predate it and anchor to the reveal.js asset directory rather
+   * than the output root.
+   */
+  private fun String.fromOutputRoot(rootPrefix: String): String {
+    val anchored = startsWith("/") || startsWith("http") || startsWith("data:")
+    return if (anchored) this else "$rootPrefix$this"
+  }
+
   @Suppress("CyclomaticComplexMethod", "LongMethod")
   private fun HTML.generateBody(
     p: Presentation,
     config: PresentationConfig,
     srcPrefix: String,
+    rootPrefix: String,
     useHttp: Boolean,
   ) = body {
     div("reveal") {
@@ -280,7 +296,7 @@ internal object Page {
             rawHtml(config.topLeftSvg)
           if (config.topLeftSvgSrc.isNotBlank())
             img(classes = config.topLeftSvgClass) {
-              src = config.topLeftSvgSrc
+              src = config.topLeftSvgSrc.fromOutputRoot(rootPrefix)
               if (config.topLeftSvgStyle.isNotBlank())
                 style = config.topLeftSvgStyle
             }
@@ -298,7 +314,7 @@ internal object Page {
             rawHtml(config.topRightSvg)
           if (config.topRightSvgSrc.isNotBlank())
             img(classes = config.topRightSvgClass) {
-              src = config.topRightSvgSrc
+              src = config.topRightSvgSrc.fromOutputRoot(rootPrefix)
               if (config.topRightSvgStyle.isNotBlank())
                 style = config.topRightSvgStyle
             }
@@ -309,11 +325,13 @@ internal object Page {
 
       config.customThemeConfig.logoValue?.let { logo ->
         rawHtml("\n\t\t\t")
+        // The image is ours to resolve; the link target, like the corner hrefs, is not.
+        val logoSrc = logo.src.fromOutputRoot(rootPrefix)
         if (logo.href.isBlank())
-          img(classes = "kslides-logo") { src = logo.src }
+          img(classes = "kslides-logo") { src = logoSrc }
         else
           a(href = logo.href, classes = "kslides-logo") {
-            img { src = logo.src }
+            img { src = logoSrc }
           }
       }
 

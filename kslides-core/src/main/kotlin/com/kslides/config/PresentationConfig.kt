@@ -295,7 +295,12 @@ class PresentationConfig : AbstractConfig() {
   /** Load the reveal.js-menu plugin. See [MenuConfig]. */
   var enableMenu by ConfigProperty<Boolean>(kslidesManagedValues)
 
-  /** URL for the top-left corner link. Blank hides the corner element. */
+  /**
+   * URL for the top-left corner link. Blank hides the corner element.
+   *
+   * Emitted as written — unlike [topLeftSvgSrc], a navigation target is left alone, since a
+   * deck-relative one may be what you meant. From a deck below the output root, walk up yourself.
+   */
   var topLeftHref by ConfigProperty<String>(kslidesManagedValues)
 
   /** `<a target>` value for the top-left corner link. */
@@ -307,7 +312,12 @@ class PresentationConfig : AbstractConfig() {
   /** Inline SVG rendered inside the top-left corner link. Mutually useful with [topLeftSvgSrc]. */
   var topLeftSvg by ConfigProperty<String>(kslidesManagedValues)
 
-  /** URL of an image to display in the top-left corner link (alternative to [topLeftSvg]). */
+  /**
+   * URL of an image to display in the top-left corner link (alternative to [topLeftSvg]).
+   *
+   * A relative value resolves against the output root, so the same path works from a deck at any
+   * depth. Absolute (`/img/x.svg`), external (`https://...`), and `data:` values pass through.
+   */
   var topLeftSvgSrc by ConfigProperty<String>(kslidesManagedValues)
 
   /** CSS class on the top-left corner `<img>`/SVG. */
@@ -319,7 +329,7 @@ class PresentationConfig : AbstractConfig() {
   /** Text rendered inside the top-left corner link (after any SVG). */
   var topLeftText by ConfigProperty<String>(kslidesManagedValues)
 
-  /** URL for the top-right corner link. Blank hides the corner element. */
+  /** URL for the top-right corner link. Blank hides the corner element. Emitted as written, like [topLeftHref]. */
   var topRightHref by ConfigProperty<String>(kslidesManagedValues)
 
   /** `<a target>` value for the top-right corner link. */
@@ -331,7 +341,7 @@ class PresentationConfig : AbstractConfig() {
   /** Inline SVG rendered inside the top-right corner link. */
   var topRightSvg by ConfigProperty<String>(kslidesManagedValues)
 
-  /** URL of an image for the top-right corner link. */
+  /** URL of an image for the top-right corner link. Resolves like [topLeftSvgSrc]. */
   var topRightSvgSrc by ConfigProperty<String>(kslidesManagedValues)
 
   /** CSS class on the top-right corner `<img>`/SVG. */
