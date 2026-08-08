@@ -119,6 +119,7 @@ class LetsPlotDslTest : StringSpec() {
         }
 
         val page = File(tmpDir, "talks/nested.html")
+        // Attributes are serialized alphabetically, so src is not necessarily first in the tag.
         val src =
           Regex("""<iframe[^>]*\ssrc="([^"]+)"""")
             .find(page.readText())

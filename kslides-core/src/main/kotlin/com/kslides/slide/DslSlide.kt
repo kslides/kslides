@@ -93,31 +93,29 @@ interface DslSlide {
    */
   fun newFilename(suffix: String = "html") = "slide-$private_slideId-${private_iframeCount++}.$suffix"
 
-  /** Resolve [filename] as an src reachable from this slide's page. See [iframeSrc]. */
+  /** Resolve [filename] in the Playground output directory, reachable from this slide's page. */
   fun playgroundFilename(filename: String) = iframeSrc(presentation.kslides.outputConfig.playgroundDir, filename)
 
-  /** Resolve [filename] as an src reachable from this slide's page. See [iframeSrc]. */
+  /** Resolve [filename] in the Lets-Plot output directory, reachable from this slide's page. */
   fun letsPlotFilename(filename: String) = iframeSrc(presentation.kslides.outputConfig.letsPlotDir, filename)
 
-  /** Resolve [filename] as an src reachable from this slide's page. See [iframeSrc]. */
+  /** Resolve [filename] in the Kroki output directory, reachable from this slide's page. */
   fun krokiFilename(filename: String) = iframeSrc(presentation.kslides.outputConfig.krokiDir, filename)
-}
 
-/**
- * Address [filename] inside output directory [dir] from the page this slide is rendered into.
- *
- * The content always lives at the output root, but the page referencing it may not, so the src has
- * to account for the deck's own depth. HTTP mode registers these as root-level routes
- * ([com.kslides.KSlides.iframeRoutes]) and addresses them absolutely; filesystem output walks back
- * up with [com.kslides.Presentation.dotDotPrefix], which keeps the link relative so a site
- * published under a path prefix still resolves.
- */
-private fun DslSlide.iframeSrc(
-  dir: String,
-  filename: String,
-): String {
-  val prefix = if (private_useHttp) "/" else presentation.dotDotPrefix
-  return prefix + listOf(dir, filename).toPath(addPrefix = false, addTrailing = false)
+  /**
+   * Address [filename] inside output directory [dir] from the page this slide is rendered into.
+   *
+   * The content always lives at the output root, but the page referencing it may not, so the src
+   * has to account for the deck's own depth. HTTP mode registers these as root-level routes and
+   * addresses them absolutely; filesystem output walks back up with
+   * [com.kslides.Presentation.dotDotPrefix], keeping the link relative so a site published under a
+   * path prefix still resolves.
+   */
+  private fun iframeSrc(
+    dir: String,
+    filename: String,
+  ) = (if (private_useHttp) "/" else presentation.dotDotPrefix) +
+    listOf(dir, filename).toPath(addPrefix = false, addTrailing = false)
 }
 
 /**

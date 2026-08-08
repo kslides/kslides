@@ -330,9 +330,7 @@ class KSlides : AutoCloseable {
      * assets at `<outputDir>/<rootPrefix>`, so a multi-segment [outputDir] such as `build/docs`
      * adds no distance between the two.
      *
-     * Keys arrive with a leading slash from [Presentation.validatePath], so blank segments are
-     * dropped — the root key `/` thereby yields no segments at all: `<outputDir>/index.html`, with
-     * an unprefixed link.
+     * The key's own shape decides the depth — see [deckLocation].
      */
     internal fun outputTarget(
       outputDir: String,
@@ -341,7 +339,7 @@ class KSlides : AutoCloseable {
     ): Pair<File, String> {
       val (dirElems, fileName) = deckLocation(key)
       return File((listOf(outputDir) + dirElems + fileName).toPath(addPrefix = false, addTrailing = false)) to
-        "${dotDotPrefix(dirElems.size)}$rootPrefix"
+        "${"../".repeat(dirElems.size)}$rootPrefix"
     }
 
     /**
@@ -351,8 +349,7 @@ class KSlides : AutoCloseable {
      * key names a directory holding an `index.html`, so all of its segments do. Blank segments are
      * dropped, so the root key `/` yields no directories at all.
      *
-     * This is the one place a deck's depth is derived — [outputTarget] uses it for reveal.js asset
-     * links and [Presentation.dotDotPrefix] for iframe/image srcs, and the two must agree.
+     * Every consumer of "how deep is this deck" derives it here, so they cannot disagree.
      */
     internal fun deckLocation(key: String): Pair<List<String>, String> {
       val keyElems = key.split("/").filter { it.isNotBlank() }
@@ -361,9 +358,6 @@ class KSlides : AutoCloseable {
       else
         keyElems to "index.html"
     }
-
-    /** The `../` walk that gets from a page [levels] directories deep back to the output root. */
-    internal fun dotDotPrefix(levels: Int) = "../".repeat(levels)
 
     internal fun writeSlidesToFileSystem(config: OutputConfig) {
       require(config.outputDir.isNotBlank()) { "outputDir value must not be empty" }
