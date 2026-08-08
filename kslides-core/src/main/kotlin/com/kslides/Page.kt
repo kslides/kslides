@@ -264,14 +264,11 @@ internal object Page {
       val favicon = config.favicon
       if (favicon.isNotBlank()) {
         rawHtml("\n")
-        val faviconType = ContentType.fromFilePath(favicon).firstOrNull()?.toString()
-        // Only rel="icon". The rel="shortcut icon" that used to accompany it was an IE ≤10 alias:
-        // "shortcut" is not a registered link relation, so every other browser tokenizes it to
-        // plain "icon" and the two elements were the same link twice.
+        // One link: reveal.js's own template pairs this with rel="shortcut icon", an IE ≤10 alias
+        // every other browser tokenizes to plain "icon".
         link(rel = "icon") {
           href = favicon.resolveAgainst(rootPrefix)
-          if (faviconType != null)
-            type = faviconType
+          ContentType.fromFilePath(favicon).firstOrNull()?.let { type = it.toString() }
         }
       }
 

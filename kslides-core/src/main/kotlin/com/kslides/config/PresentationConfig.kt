@@ -270,7 +270,7 @@ class PresentationConfig : AbstractConfig() {
    * filesystem output, or on the classpath under
    * [com.kslides.config.OutputConfig.defaultHttpRoot] for HTTP.
    *
-   * **Blank omits the `<link>` elements.** kslides ships no icon, so set this blank if your site
+   * **Blank omits the `<link>` element.** kslides ships no icon, so set this blank if your site
    * has none rather than asking every page for a file that is not there.
    */
   var favicon by ConfigProperty<String>(kslidesManagedValues)
