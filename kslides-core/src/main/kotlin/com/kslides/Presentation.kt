@@ -382,6 +382,16 @@ class Presentation(
     )
   }
 
+  /**
+   * The `../` walk from this deck's generated page back to [OutputConfig.outputDir], where the
+   * playground/letsPlot/kroki content is written. Empty for a deck at the output root.
+   *
+   * Filesystem output only — HTTP mode serves those routes from the root of the routing tree, so
+   * it addresses them absolutely instead. Derived from the same [KSlides.deckLocation] split that
+   * places the page itself, so a page and the srcs it emits can never disagree about their depth.
+   */
+  internal val dotDotPrefix: String get() = KSlides.dotDotPrefix(KSlides.deckLocation(path).first.size)
+
   internal fun validatePath() {
     require(path.removePrefix("/") !in kslides.kslidesConfig.httpStaticRoots.map { it.dirname }) {
       "Invalid presentation path: \"${"/${path.removePrefix("/")}"}\""

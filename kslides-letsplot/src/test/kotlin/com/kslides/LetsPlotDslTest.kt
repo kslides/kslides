@@ -91,6 +91,48 @@ class LetsPlotDslTest : StringSpec() {
       }
     }
 
+    // The plot iframe is written to <outputDir>/letsPlot/ regardless of where the deck sits, so a
+    // nested deck's src has to walk back up to reach it.
+    "letsPlot{} iframe src reaches the plot directory from a nested deck" {
+      val tmpDir = Files.createTempDirectory("kslides-letsplot-nested-test").toFile()
+      try {
+        kslides {
+          output {
+            enableFileSystem = true
+            enableHttp = false
+            outputDir = tmpDir.absolutePath
+          }
+          presentation {
+            path = "talks/nested.html"
+            dslSlide {
+              content {
+                letsPlot {
+                  val data = mapOf("x" to listOf(1, 2), "y" to listOf(3, 4))
+                  letsPlot(data) + geomPoint {
+                    x = "x"
+                    y = "y"
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        val page = File(tmpDir, "talks/nested.html")
+        val src =
+          Regex("""<iframe[^>]*\ssrc="([^"]+)"""")
+            .find(page.readText())
+            ?.groupValues
+            ?.get(1)
+        src shouldBe "../letsPlot/slide-1-1.html"
+        page.parentFile
+          .resolve(src!!)
+          .canonicalFile.isFile shouldBe true
+      } finally {
+        tmpDir.deleteRecursively()
+      }
+    }
+
     "letsPlot{} iframeConfig width/height overrides appear on the iframe" {
       val tmpDir = Files.createTempDirectory("kslides-letsplot-wh-test").toFile()
       try {

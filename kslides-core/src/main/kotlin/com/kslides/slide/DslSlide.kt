@@ -93,20 +93,31 @@ interface DslSlide {
    */
   fun newFilename(suffix: String = "html") = "slide-$private_slideId-${private_iframeCount++}.$suffix"
 
-  /** Resolve [filename] relative to the configured Playground output directory. */
-  fun playgroundFilename(
-    filename: String,
-  ) = listOf(presentation.kslides.outputConfig.playgroundDir, filename).toPath(addPrefix = false, addTrailing = false)
+  /** Resolve [filename] as an src reachable from this slide's page. See [iframeSrc]. */
+  fun playgroundFilename(filename: String) = iframeSrc(presentation.kslides.outputConfig.playgroundDir, filename)
 
-  /** Resolve [filename] relative to the configured Lets-Plot output directory. */
-  fun letsPlotFilename(
-    filename: String,
-  ) = listOf(presentation.kslides.outputConfig.letsPlotDir, filename).toPath(addPrefix = false, addTrailing = false)
+  /** Resolve [filename] as an src reachable from this slide's page. See [iframeSrc]. */
+  fun letsPlotFilename(filename: String) = iframeSrc(presentation.kslides.outputConfig.letsPlotDir, filename)
 
-  /** Resolve [filename] relative to the configured Kroki output directory. */
-  fun krokiFilename(
-    filename: String,
-  ) = listOf(presentation.kslides.outputConfig.krokiDir, filename).toPath(addPrefix = false, addTrailing = false)
+  /** Resolve [filename] as an src reachable from this slide's page. See [iframeSrc]. */
+  fun krokiFilename(filename: String) = iframeSrc(presentation.kslides.outputConfig.krokiDir, filename)
+}
+
+/**
+ * Address [filename] inside output directory [dir] from the page this slide is rendered into.
+ *
+ * The content always lives at the output root, but the page referencing it may not, so the src has
+ * to account for the deck's own depth. HTTP mode registers these as root-level routes
+ * ([com.kslides.KSlides.iframeRoutes]) and addresses them absolutely; filesystem output walks back
+ * up with [com.kslides.Presentation.dotDotPrefix], which keeps the link relative so a site
+ * published under a path prefix still resolves.
+ */
+private fun DslSlide.iframeSrc(
+  dir: String,
+  filename: String,
+): String {
+  val prefix = if (private_useHttp) "/" else presentation.dotDotPrefix
+  return prefix + listOf(dir, filename).toPath(addPrefix = false, addTrailing = false)
 }
 
 /**

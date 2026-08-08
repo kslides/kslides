@@ -25,6 +25,17 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Fixed
 
+- `playground { }`, `letsPlot { }`, and `diagram { }` content now loads on decks
+  that are not at the output root. The iframe/image `src` was emitted relative to
+  the output root (`playground/slide-1-1.html`) while the page referencing it
+  could be nested, so a deck at `talks/` or `talks/deck.html` requested
+  `<site>/talks/playground/…` and got a 404 — an empty iframe or a broken image.
+  Filesystem output now walks back up from the deck's own depth, keeping the link
+  relative so a site published under a path prefix still resolves; HTTP mode
+  addresses the routes absolutely, which is where they are registered. This is the
+  same depth bug fixed for reveal.js assets in 1.3.0's asset-prefix change — the
+  example decks all sit at the output root, which is why neither surfaced there.
+  Decks at the output root are unaffected: their generated output is byte-identical.
 - Decks whose `path` is a `.html` file inside a subdirectory now emit correct
   reveal.js asset links. The filesystem writer derived the `../` prefix only for
   directory-style paths, so a deck at `greattalk1/other.html` linked

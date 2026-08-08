@@ -339,18 +339,31 @@ class KSlides : AutoCloseable {
       key: String,
       rootPrefix: String,
     ): Pair<File, String> {
-      val keyElems = key.split("/").filter { it.isNotBlank() }
-      // A ".html" key names the file itself, so its last segment contributes no depth. Every other
-      // key names a directory holding an index.html, so all of its segments do.
-      val (dirElems, fileName) =
-        if (key.endsWith(".html"))
-          keyElems.dropLast(1) to keyElems.last()
-        else
-          keyElems to "index.html"
-
+      val (dirElems, fileName) = deckLocation(key)
       return File((listOf(outputDir) + dirElems + fileName).toPath(addPrefix = false, addTrailing = false)) to
-        "${"../".repeat(dirElems.size)}$rootPrefix"
+        "${dotDotPrefix(dirElems.size)}$rootPrefix"
     }
+
+    /**
+     * Split presentation [key] into the directory segments it nests under and the file it names.
+     *
+     * A `".html"` key names the file itself, so its last segment contributes no depth. Every other
+     * key names a directory holding an `index.html`, so all of its segments do. Blank segments are
+     * dropped, so the root key `/` yields no directories at all.
+     *
+     * This is the one place a deck's depth is derived — [outputTarget] uses it for reveal.js asset
+     * links and [Presentation.dotDotPrefix] for iframe/image srcs, and the two must agree.
+     */
+    internal fun deckLocation(key: String): Pair<List<String>, String> {
+      val keyElems = key.split("/").filter { it.isNotBlank() }
+      return if (key.endsWith(".html"))
+        keyElems.dropLast(1) to keyElems.last()
+      else
+        keyElems to "index.html"
+    }
+
+    /** The `../` walk that gets from a page [levels] directories deep back to the output root. */
+    internal fun dotDotPrefix(levels: Int) = "../".repeat(levels)
 
     internal fun writeSlidesToFileSystem(config: OutputConfig) {
       require(config.outputDir.isNotBlank()) { "outputDir value must not be empty" }
