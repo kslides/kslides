@@ -6,6 +6,113 @@ structured, category-grouped log.
 
 ---
 
+## 1.4.0 — 2026-08-08
+
+Mostly a path-resolution release. If every deck you publish sits at the output
+root, this changes nothing for you — that output is byte-identical. If any deck
+sits below it, this is the release where its assets stop 404'ing.
+
+Upgrading is a recompile, not a drop-in: `CssFile` and `JsFile` gained an
+`origin` parameter, and because they are data classes that moves their
+constructor, `copy()`, and `componentN()` signatures. Your source does not
+change — the parameter is defaulted — but anything built against 1.3.0 needs
+rebuilding. That is why this is a minor bump rather than a patch.
+
+### Decks below the output root now work
+
+kslides emits a lot of URLs on your behalf: reveal.js assets, playground and
+Lets-Plot and Kroki iframes, the favicon, corner-link images, the theme logo,
+slide backgrounds. Each was built by whichever bit of code happened to need it,
+and they disagreed about what "relative" meant. A deck at `talks/deck.html`
+requested `talks/playground/slide-1-1.html` and got a 404 — an empty iframe, a
+broken image, or an unstyled page reporting `Can't find variable: Reveal`.
+
+They now go through one rule: a relative path resolves against the walk from the
+page back to the output root, and a path you already anchored — absolute,
+external, or a `data:` URI — is emitted as written. Filesystem output keeps the
+link relative, so a site published under a path prefix still resolves; HTTP mode
+addresses the routes absolutely, which is where they are registered.
+
+Three anchoring cases were outright wrong and are fixed: `CssFile("/css/mine.css")`
+emitted `revealjs//css/mine.css`, an uppercase `HTTPS://…` got a prefix pasted in
+front of it, and a relative path merely *starting* with the letters `http` — say
+`http-icons/gh.svg` — was mistaken for a URL and left alone.
+
+**If you hand-compensated for any of this with a `../` on a nested deck, drop the
+compensation.** A few things are still emitted verbatim, deliberately: corner
+links and `logo(href = )` are navigation targets; image paths inside Markdown or
+HTML slide content go to reveal.js unparsed; and `menuConfig { themesPath }` is
+handed to the menu plugin, which resolves it itself.
+
+### Sizing the code in a Playground slide
+
+`playgroundConfig { fontSize = "20px" }` sizes the code in the editor and the
+run-output pane together, cascading globally, per presentation, or per
+`playground()` call like every other config value. Previously this meant
+hand-writing CSS against Kotlin Playground's internal selectors.
+
+Line spacing follows on its own, because CodeMirror's `line-height` is a unitless
+ratio — a `lineHeight` companion property changes the ratio when you want tighter
+or looser lines. Prefer absolute units: the Playground renders in its own iframe
+document, so `em` resolves against that document's root font size, not the
+surrounding slide's. `css { }` remains the escape hatch and still wins.
+
+Worth knowing if you copied the old approach: rules written against
+`.CodeMirror pre` never applied. The editor's own
+`.CodeMirror pre.CodeMirror-line { line-height: inherit }` outranks them, so the
+generated rules target `.CodeMirror` itself.
+
+### A configurable favicon, and a way to turn it off
+
+`presentationConfig { favicon = "images/icon.png" }` sets the browser tab icon,
+and `favicon = ""` omits the `<link>` entirely. kslides ships no icon of its own,
+so every page used to ask for a `favicon.ico` that may not exist, with no way to
+point elsewhere or opt out. The `type` hint is now derived from the filename
+rather than hardcoded to `image/x-icon`.
+
+Pages also emit one favicon link instead of two — the `rel="shortcut icon"` that
+accompanied it was an IE ≤10 alias that every browser since reads as plain
+`icon`, making the pair the same link twice.
+
+### Viewers can pinch-zoom
+
+The viewport meta no longer sets `maximum-scale=1.0, user-scalable=no`. Blocking
+zoom fails WCAG 2.1 SC 1.4.4, and it only ever bound on Android — iOS has ignored
+the directive since iOS 10 — so the cost fell entirely on low-vision Android
+viewers. reveal.js already scales slides to the viewport, so nothing needed zoom
+disabled. This is a deliberate divergence from reveal.js' own template.
+
+The two `apple-mobile-web-app-*` metas go with it: reveal.js 3-era carry-over that
+upstream itself dropped, and inert without a web-app manifest kslides doesn't emit.
+
+### Stylesheets and scripts of your own
+
+`cssFiles += CssFile("css/site.css", origin = AssetOrigin.OUTPUT_ROOT)` publishes
+a stylesheet or script alongside your decks rather than inside the reveal.js asset
+directory, resolving from whatever depth the deck sits at. Previously the only way
+out of the asset directory was a site-root-absolute `/…`, which breaks under a
+path prefix. The default, `AssetOrigin.REVEAL_ASSETS`, is what every existing
+entry already does.
+
+### Malformed CSS lengths fail where you wrote them
+
+`slideConfig`'s `fontSize` and `codeFontSize`, plus the new playground properties,
+are interpolated verbatim into generated CSS. A value like `codeFontSize = "0.6em;}"`
+used to close the rule early and break every rule after it, silently. It now
+throws `IllegalArgumentException` naming the property. Valid lengths — including
+`calc()`/`var()`/`clamp()` expressions and a blank "unset" — are unaffected.
+
+### Also
+
+The follow-along presenter no longer loses their role by clicking a link: the
+injected client carries the presenter token across same-origin navigation, while
+skipping external links so it cannot leak and `#` navigation because it never
+reloads. A `.html` deck nested in a subdirectory creates its own parent directory
+rather than depending on a directory deck declared earlier. And a multi-segment
+`outputDir` such as `build/docs` no longer inflates the `../` walk.
+
+---
+
 ## 1.3.0 — 2026-08-02
 
 Three features, all aimed at what happens *after* a deck is written: getting it
