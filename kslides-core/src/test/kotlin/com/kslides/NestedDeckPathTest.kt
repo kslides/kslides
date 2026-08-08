@@ -5,6 +5,7 @@ import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.html.h2
 import java.io.File
@@ -163,6 +164,18 @@ class NestedDeckPathTest : StringSpec() {
       html shouldContain """src="../revealjs/plugin/mine/mine.js""""
       html shouldContain """href="../css/site.css""""
       html shouldContain """src="../js/site.js""""
+    }
+
+    "the favicon link is configurable, and blank emits nothing" {
+      // Default: the .ico type hint stands, and the path resolves like any other author asset.
+      nestedDeckHtml { } shouldContain """<link href="../favicon.ico" rel="icon" type="image/x-icon">"""
+
+      // A non-.ico icon drops the hint rather than claiming the wrong type.
+      nestedDeckHtml { presentationConfig { favicon = "images/icon.png" } } shouldContain
+        """<link href="../images/icon.png" rel="icon">"""
+
+      // Blank opts out entirely — kslides ships no icon, so this is how you stop asking for one.
+      nestedDeckHtml { presentationConfig { favicon = "" } } shouldNotContain "rel=\"icon\""
     }
 
     "HTTP mode addresses the output root absolutely, from any deck depth" {

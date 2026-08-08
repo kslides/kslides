@@ -256,19 +256,20 @@ internal object Page {
       // base theme while slides.css and css{} rules (emitted below) can still override them.
       writeStyleToHead(p.indentedCustomThemeCss, styleId = "custom-theme")
 
-      rawHtml("\n")
-      // Author-supplied: a favicon.ico at the output root, or on the classpath under
-      // OutputConfig.defaultHttpRoot, which HTTP serves at "/".
-      val faviconHref = "favicon.ico".resolveAgainst(rootPrefix)
-      link {
-        rel = "shortcut icon"
-        href = faviconHref
-        type = "image/x-icon"
-      }
-      link {
-        rel = "icon"
-        href = faviconHref
-        type = "image/x-icon"
+      // Author-supplied (see PresentationConfig.favicon), so blank emits nothing rather than
+      // pointing every page at a file kslides does not ship. The type attribute is a hint and is
+      // only stated when it is knowable: browsers otherwise infer it from the response.
+      if (config.favicon.isNotBlank()) {
+        rawHtml("\n")
+        val faviconHref = config.favicon.resolveAgainst(rootPrefix)
+        listOf("shortcut icon", "icon").forEach { iconRel ->
+          link {
+            rel = iconRel
+            href = faviconHref
+            if (config.favicon.endsWith(".ico", ignoreCase = true))
+              type = "image/x-icon"
+          }
+        }
       }
 
       rawHtml("\n")
