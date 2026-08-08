@@ -1175,7 +1175,7 @@ fun exampleSlides(): KSlides.() -> Unit =
         // video1 begin
         dslSlide {
           slideConfig {
-            backgroundVideo = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"
+            backgroundVideo = "https://static.slid.es/site/homepage/v1/homepage-video-editor.mp4"
           }
 
           content {
