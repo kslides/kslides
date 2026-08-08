@@ -14,7 +14,7 @@ class OutputTargetTest : StringSpec() {
       outputDir: String = "docs",
     ) = KSlides
       .outputTarget(outputDir, if (key.startsWith("/")) key else "/$key", "revealjs/")
-        .let { (file, srcPrefix) -> file.path to srcPrefix }
+      .let { (file, srcPrefix) -> file.path to srcPrefix }
 
     "The root presentation writes an index.html with an unprefixed asset path" {
       target("/") shouldBe ("docs/index.html" to "revealjs/")
@@ -73,7 +73,8 @@ class OutputTargetTest : StringSpec() {
           }
         KSlides.writeSlidesToFileSystem(kslides.outputConfig)
 
-        fun page(path: String) = File(outDir, path).also { it.exists() shouldBe true }.readText()
+        // readText() throws FileNotFoundException naming the path, so a missing file self-reports.
+        fun page(path: String) = File(outDir, path).readText()
 
         page("index.html") shouldContain """href="revealjs/dist/reveal.css""""
         page("greattalk2.html") shouldContain """href="revealjs/dist/reveal.css""""
@@ -99,9 +100,8 @@ class OutputTargetTest : StringSpec() {
           }
         KSlides.writeSlidesToFileSystem(kslides.outputConfig)
 
-        val page = File(outDir, "solo/deep/only.html")
-        page.exists() shouldBe true
-        page.readText() shouldContain """href="../../revealjs/dist/reveal.css""""
+        File(outDir, "solo/deep/only.html").readText() shouldContain
+          """href="../../revealjs/dist/reveal.css""""
       } finally {
         outDir.deleteRecursively()
       }

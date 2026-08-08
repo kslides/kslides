@@ -13,6 +13,7 @@ import com.kslides.config.OutputConfig
 import com.kslides.config.PresentationConfig
 import com.pambrose.common.response.respondWith
 import com.pambrose.common.util.ensureSuffix
+import com.pambrose.common.util.toPath
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
@@ -329,7 +330,9 @@ class KSlides : AutoCloseable {
      * assets at `<outputDir>/<rootPrefix>`, so a multi-segment [outputDir] such as `build/docs`
      * adds no distance between the two.
      *
-     * Keys arrive with a leading slash from [Presentation.validatePath]; the blank filter drops it.
+     * Keys arrive with a leading slash from [Presentation.validatePath], so blank segments are
+     * dropped — the root key `/` thereby yields no segments at all: `<outputDir>/index.html`, with
+     * an unprefixed link.
      */
     internal fun outputTarget(
       outputDir: String,
@@ -339,11 +342,14 @@ class KSlides : AutoCloseable {
       val keyElems = key.split("/").filter { it.isNotBlank() }
       // A ".html" key names the file itself, so its last segment contributes no depth. Every other
       // key names a directory holding an index.html, so all of its segments do.
-      val isHtmlFile = key.endsWith(".html")
-      val dirElems = if (isHtmlFile) keyElems.dropLast(1) else keyElems
-      val fileName = if (isHtmlFile) keyElems.last() else "index.html"
-      val dir = (listOf(outputDir) + dirElems).joinToString("/")
-      return File("$dir/$fileName") to "${"../".repeat(dirElems.size)}$rootPrefix"
+      val (dirElems, fileName) =
+        if (key.endsWith(".html"))
+          keyElems.dropLast(1) to keyElems.last()
+        else
+          keyElems to "index.html"
+
+      return File((listOf(outputDir) + dirElems + fileName).toPath(addPrefix = false, addTrailing = false)) to
+        "${"../".repeat(dirElems.size)}$rootPrefix"
     }
 
     internal fun writeSlidesToFileSystem(config: OutputConfig) {
@@ -361,9 +367,7 @@ class KSlides : AutoCloseable {
           // Create the containing directory (including any missing parents) if absent. Nested
           // ".html" decks need this too — they cannot rely on a sibling directory deck having
           // been declared first to create it for them.
-          file.parentFile?.also { dir ->
-            if (!mkdir(dir.path)) logger.warn { "Unable to create directory: $dir" }
-          }
+          if (!mkdir(file.parent)) logger.warn { "Unable to create directory: ${file.parent}" }
           logger.info { "Writing presentation $key to $file" }
           file.writeText(generatePage(p, false, srcPrefix))
         }
