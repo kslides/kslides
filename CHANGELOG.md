@@ -34,8 +34,12 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   (`https://...`), and `data:` values pass through untouched, as before.
   **If you hand-compensated for this with a `../` path on a nested deck, drop the
   compensation.** Decks at the output root are unaffected — their generated
-  output is byte-identical. Corner *links* (`topLeftHref`, `topRightHref`) are
-  navigation targets and are deliberately left verbatim.
+  output is byte-identical. Still emitted verbatim, so a nested deck must walk up
+  itself: corner *links* (`topLeftHref`, `topRightHref`) and `logo(href = )`,
+  which are navigation targets and deliberately left alone; `slideConfig`'s
+  `background`, `backgroundImage`, `backgroundIframe`, and `backgroundVideo`,
+  which are not yet covered; and image paths written inside Markdown or HTML
+  slide content, which kslides hands to reveal.js unparsed.
 
 ### Fixed
 

@@ -22,7 +22,8 @@ class NestedDeckPathTest : StringSpec() {
       {
         path = deckPath
         presentationConfig {
-          // Author-supplied asset paths: one relative (resolved), one external (passed through).
+          // Two corner-image srcs (one relative, one external) plus a relative logo src. The hrefs
+          // are required scaffolding — a corner <img> is only emitted inside a non-blank href.
           topLeftHref = "https://example.com"
           topLeftSvgSrc = "images/gh.svg"
           topRightHref = "./"
@@ -73,9 +74,9 @@ class NestedDeckPathTest : StringSpec() {
             // Author-supplied asset paths resolve the same way...
             html shouldContain """src="${walk}images/gh.svg""""
             html shouldContain """src="${walk}images/logo.png""""
-            // ...while anything already anchored is left alone.
+            // ...while an already-anchored src, and corner links of any kind, are left alone.
             html shouldContain """src="https://example.com/home.svg""""
-            html shouldContain """href="https://example.com""""
+            html shouldContain """href="./""""
             // The browser resolves the src against the page's own directory, so that resolution has
             // to land on a file that exists — this is the 404 the fix is about.
             File(outDir, page)

@@ -164,7 +164,8 @@ class ThemeConfig : AbstractConfig() {
    * @param size rendered width; height follows the image's aspect ratio.
    * @param margin distance from the two adjacent viewport edges.
    * @param opacity 0.0–1.0; useful for watermark-style logos.
-   * @param href optional link target; when blank the logo ignores pointer events entirely.
+   * @param href optional link target; when blank the logo ignores pointer events entirely. Unlike
+   *   [src], it is emitted as written — a navigation target is left alone.
    */
   fun logo(
     src: String,

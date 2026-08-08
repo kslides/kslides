@@ -31,8 +31,8 @@ internal object Page {
   /**
    * @param rootPrefix the walk from this page back to the output root — `"/"` under HTTP, `"../"`
    *   per directory level for a filesystem deck, empty at the root. Everything root-relative the
-   *   page emits is built from it: reveal.js asset links and the favicon here, iframe/image srcs
-   *   via [Presentation.renderRootPrefix].
+   *   page emits is built from it: reveal.js asset links, the favicon, and author-supplied
+   *   corner/logo images here; iframe/image srcs via [Presentation.renderRootPrefix].
    */
   internal fun generatePage(
     p: Presentation,
@@ -264,18 +264,18 @@ internal object Page {
     writeCssToHead(p.css)
   }
 
-  @Suppress("CyclomaticComplexMethod", "LongMethod")
-  // Prefixes an author-supplied path already anchored by the author: absolute and protocol-
-  // relative ("/", "//"), external, and data: URIs.
-  private val anchoredSrcPrefixes = listOf("/", "http", "data:")
-
   /**
    * Resolve an author-supplied asset path against the output root, the way a bare path reads
-   * everywhere else in kslides, so one value works from a deck at any depth. Anything the author
-   * has already anchored is their own business and passes through untouched.
+   * everywhere else in kslides, so one value works from a deck at any depth. A path the author
+   * already anchored — absolute or protocol-relative (`/`, `//`), external, or a `data:` URI — is
+   * their own business and passes through untouched.
+   *
+   * This is the canonical rule for author-supplied paths. The narrower `startsWith("http")` guards
+   * on the css/js/plugin links below predate it and anchor to the reveal.js asset directory rather
+   * than the output root.
    */
   private fun String.fromOutputRoot(rootPrefix: String): String {
-    val anchored = isBlank() || anchoredSrcPrefixes.any { startsWith(it) }
+    val anchored = startsWith("/") || startsWith("http") || startsWith("data:")
     return if (anchored) this else "$rootPrefix$this"
   }
 
@@ -325,11 +325,13 @@ internal object Page {
 
       config.customThemeConfig.logoValue?.let { logo ->
         rawHtml("\n\t\t\t")
+        // The image is ours to resolve; the link target, like the corner hrefs, is not.
+        val logoSrc = logo.src.fromOutputRoot(rootPrefix)
         if (logo.href.isBlank())
-          img(classes = "kslides-logo") { src = logo.src.fromOutputRoot(rootPrefix) }
+          img(classes = "kslides-logo") { src = logoSrc }
         else
           a(href = logo.href, classes = "kslides-logo") {
-            img { src = logo.src.fromOutputRoot(rootPrefix) }
+            img { src = logoSrc }
           }
       }
 
