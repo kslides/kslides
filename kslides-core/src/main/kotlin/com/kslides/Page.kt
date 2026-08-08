@@ -2,7 +2,6 @@ package com.kslides
 
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.CssValue.Companion.writeStyleToHead
-import com.kslides.config.PresentationConfig
 import com.pambrose.common.util.ensureSuffix
 import kotlinx.html.BODY
 import kotlinx.html.HTML
@@ -30,8 +29,12 @@ internal object Page {
 
   /**
    * What one page render needs: the deck, the output mode, and the two prefixes that follow from
-   * where the page will sit. Built once per [generatePage] and handed to the builders, so both
-   * prefixes and both resolution rules are declared next to the code that uses them.
+   * where the page will sit.
+   *
+   * Private because `Page`'s builders are its only consumers today. [fromOutputRoot] is the rule
+   * for author-supplied paths generally, so a consumer outside `Page` — slide backgrounds, say,
+   * which are applied from [com.kslides.slide.Slide.processSlide] and cannot reach here — wants
+   * that rule hoisted next to [Presentation.renderRootPrefix] rather than retyped.
    *
    * @param rootPrefix the walk from this page back to the output root — `"/"` under HTTP, `"../"`
    *   per directory level for a filesystem deck, empty at the root.
@@ -41,7 +44,7 @@ internal object Page {
     val useHttp: Boolean,
     val rootPrefix: String,
   ) {
-    val config: PresentationConfig = p.finalConfig
+    val config = p.finalConfig
 
     // reveal.js assets are served from the classpath under a fixed directory in HTTP mode, and
     // copied to the configurable staticRootDir on disk.
@@ -64,18 +67,22 @@ internal object Page {
     }
 
     /**
-     * Resolve a reveal.js asset filename against [srcPrefix]. Narrower than [fromOutputRoot] — it
-     * anchors to the asset directory rather than the output root, and treats only an `http` value
-     * as already anchored, so an absolute path lands under the asset directory.
+     * Resolve a reveal.js asset filename against [srcPrefix] rather than the output root — the
+     * intended difference from [fromOutputRoot].
+     *
+     * It also recognizes fewer anchored forms, which is not intended: an absolute value lands under
+     * the asset directory (`cssFiles += CssFile("/css/mine.css")` emits `…/revealjs//css/mine.css`)
+     * and there is no way to reference a file at the output root through [Presentation.cssFiles] or
+     * [Presentation.jsFiles]. Inherited from the guards this replaced; fixing it changes output, so
+     * it wants its own change.
      */
     fun String.fromAssetDir(): String = if (startsWith("http")) this else "$srcPrefix$this"
   }
 
   /**
-   * @param rootPrefix the walk from this page back to the output root (see [RenderContext]).
-   *   Everything root-relative the page emits is built from it: reveal.js asset links, the
-   *   favicon, and author-supplied corner/logo images here; iframe/image srcs via
-   *   [Presentation.renderRootPrefix].
+   * @param rootPrefix see [RenderContext]. Everything root-relative the page emits is built from
+   *   it: reveal.js asset links, the favicon, and author-supplied corner/logo images here;
+   *   iframe/image srcs via [Presentation.renderRootPrefix].
    */
   internal fun generatePage(
     p: Presentation,
@@ -90,9 +97,9 @@ internal object Page {
       p.codeStyleClasses.clear()
       p.mermaidUsed = false
 
-      // Hand the bare walk to slide content, which has no parameter channel to receive it.
-      p.renderRootPrefix = rootPrefix
       val ctx = RenderContext(p, useHttp, rootPrefix)
+      // Publish the same walk to slide content, which has no parameter channel to receive it.
+      p.renderRootPrefix = ctx.rootPrefix
       val htmldoc =
         document {
           append.html {
@@ -267,7 +274,7 @@ internal object Page {
       rawHtml("\n")
       // Author-supplied: a favicon.ico at the output root, or on the classpath under
       // OutputConfig.defaultHttpRoot, which HTTP serves at "/".
-      val faviconHref = "${rootPrefix}favicon.ico"
+      val faviconHref = "favicon.ico".fromOutputRoot()
       link {
         rel = "shortcut icon"
         href = faviconHref
@@ -372,7 +379,7 @@ internal object Page {
       // is set while the slides render above, which happens before this point in the body builder.
       if (p.mermaidUsed) {
         rawHtml("\n\t")
-        script { src = "$srcPrefix${Mermaid.MERMAID_JS_PATH}" }
+        script { src = Mermaid.MERMAID_JS_PATH.fromAssetDir() }
         rawHtml("\n\t")
         script {
           rawHtml("\n${Mermaid.initScript(config.effectiveTheme).prependIndent("\t\t")}\n\t")
