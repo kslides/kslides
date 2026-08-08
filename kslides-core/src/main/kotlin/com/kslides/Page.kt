@@ -2,6 +2,7 @@ package com.kslides
 
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.CssValue.Companion.writeStyleToHead
+import com.kslides.InternalUtils.fromOutputRoot
 import com.pambrose.common.util.ensureSuffix
 import kotlinx.html.BODY
 import kotlinx.html.HTML
@@ -22,7 +23,6 @@ import kotlinx.html.style
 import kotlinx.html.title
 import org.w3c.dom.Document
 import java.io.FileNotFoundException
-import com.kslides.InternalUtils.fromOutputRoot as resolveFromOutputRoot
 
 internal object Page {
   private val preRegex = Regex("\\s*<pre.*>\\s*")
@@ -32,8 +32,8 @@ internal object Page {
    * What one page render needs: the deck, the output mode, and the two prefixes that follow from
    * where the page will sit.
    *
-   * Private because `Page`'s builders are its only consumers; the rule they bind,
-   * [InternalUtils.fromOutputRoot], is shared with consumers that cannot reach here.
+   * Private because `Page`'s builders are its only consumers. The rule they apply,
+   * [InternalUtils.fromOutputRoot], lives there so consumers that cannot reach here share it.
    *
    * @param rootPrefix the walk from this page back to the output root — `"/"` under HTTP, `"../"`
    *   per directory level for a filesystem deck, empty at the root.
@@ -52,12 +52,9 @@ internal object Page {
     /** Where the reveal.js assets sit, relative to this page. */
     val srcPrefix = "$rootPrefix$assetDir".ensureSuffix("/")
 
-    /** Bind [InternalUtils.fromOutputRoot], the canonical rule, to this render's walk. */
-    fun String.fromOutputRoot(): String = resolveFromOutputRoot(rootPrefix)
-
     /**
      * Resolve a reveal.js asset filename against [srcPrefix] rather than the output root — the
-     * intended difference from [fromOutputRoot].
+     * intended difference from [InternalUtils.fromOutputRoot].
      *
      * It also recognizes fewer anchored forms, which is not intended: an absolute value lands under
      * the asset directory (`cssFiles += CssFile("/css/mine.css")` emits `…/revealjs//css/mine.css`)
@@ -263,7 +260,7 @@ internal object Page {
       rawHtml("\n")
       // Author-supplied: a favicon.ico at the output root, or on the classpath under
       // OutputConfig.defaultHttpRoot, which HTTP serves at "/".
-      val faviconHref = "favicon.ico".fromOutputRoot()
+      val faviconHref = "favicon.ico".fromOutputRoot(rootPrefix)
       link {
         rel = "shortcut icon"
         href = faviconHref
@@ -307,7 +304,7 @@ internal object Page {
               rawHtml(config.topLeftSvg)
             if (config.topLeftSvgSrc.isNotBlank())
               img(classes = config.topLeftSvgClass) {
-                src = config.topLeftSvgSrc.fromOutputRoot()
+                src = config.topLeftSvgSrc.fromOutputRoot(rootPrefix)
                 if (config.topLeftSvgStyle.isNotBlank())
                   style = config.topLeftSvgStyle
               }
@@ -325,7 +322,7 @@ internal object Page {
               rawHtml(config.topRightSvg)
             if (config.topRightSvgSrc.isNotBlank())
               img(classes = config.topRightSvgClass) {
-                src = config.topRightSvgSrc.fromOutputRoot()
+                src = config.topRightSvgSrc.fromOutputRoot(rootPrefix)
                 if (config.topRightSvgStyle.isNotBlank())
                   style = config.topRightSvgStyle
               }
@@ -337,7 +334,7 @@ internal object Page {
         config.customThemeConfig.logoValue?.let { logo ->
           rawHtml("\n\t\t\t")
           // The image is ours to resolve; the link target, like the corner hrefs, is not.
-          val logoSrc = logo.src.fromOutputRoot()
+          val logoSrc = logo.src.fromOutputRoot(rootPrefix)
           if (logo.href.isBlank())
             img(classes = "kslides-logo") { src = logoSrc }
           else

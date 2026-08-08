@@ -232,6 +232,20 @@ internal object InternalUtils {
     return if (anchored) this else "$rootPrefix$this"
   }
 
+  /**
+   * [fromOutputRoot] for an attribute that takes a comma-separated list of sources, resolving each
+   * one. Sources are trimmed, since a leading space would otherwise land between the prefix and the
+   * path.
+   *
+   * A `data:` URI carries a comma by construction, so such a value is passed through whole rather
+   * than split — splitting it would strip the anchoring [fromOutputRoot] promises to honor.
+   */
+  internal fun String.fromOutputRootList(rootPrefix: String): String =
+    if (startsWith("data:"))
+      this
+    else
+      split(",").joinToString(",") { it.trim().fromOutputRoot(rootPrefix) }
+
   internal fun String.stripBraces() = trimStart().trimEnd().trimStart('[', '(').trimEnd(']', ')')
 
   internal fun String.pad() = "\n$this\n"

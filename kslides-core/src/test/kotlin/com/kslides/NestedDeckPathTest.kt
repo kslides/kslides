@@ -97,6 +97,27 @@ class NestedDeckPathTest : StringSpec() {
       }
     }
 
+    "background values follow reveal.js's own color-vs-image test, and data: URIs survive whole" {
+      val kslides =
+        kslidesTest {
+          presentation {
+            path = "talks/deck.html"
+            dslSlide {
+              slideConfig {
+                // reveal.js treats a cache-busted path as an image, so it has to resolve too.
+                background = "images/bg.png?v=2"
+                // A data: URI carries its own comma; splitting the video list must not cut it up.
+                backgroundVideo = "data:video/mp4;base64,AAAA"
+              }
+              content { h2 { +"Deck" } }
+            }
+          }
+        }
+      val html = generatePage(kslides.presentation("/talks/deck.html"), useHttp = false, rootPrefix = "../")
+      html shouldContain """data-background="../images/bg.png?v=2""""
+      html shouldContain """data-background-video="data:video/mp4;base64,AAAA""""
+    }
+
     "HTTP mode addresses the output root absolutely, from any deck depth" {
       // The iframe routes and the classpath root that supplies the favicon are both registered at
       // the root of the routing tree, so a relative URL would resolve against the deck's own path
@@ -108,6 +129,7 @@ class NestedDeckPathTest : StringSpec() {
       // Author-supplied paths too: the classpath root that backs them is served at "/".
       html shouldContain """src="/images/gh.svg""""
       html shouldContain """src="/images/logo.png""""
+      html shouldContain """data-background-image="/images/bg.png""""
       html shouldContain """src="https://example.com/home.svg""""
     }
   }

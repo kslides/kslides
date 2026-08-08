@@ -1,12 +1,19 @@
 package com.kslides.config
 
 import com.kslides.InternalUtils.fromOutputRoot
+import com.kslides.InternalUtils.fromOutputRootList
 import com.kslides.KSlidesDslMarker
 import com.kslides.Speed
 import com.kslides.Transition
 import com.kslides.Transition.SLIDE
 import com.kslides.Utils.INDENT_TOKEN
 import kotlinx.html.SECTION
+
+// Whether data-background names an image rather than a color. Copied from reveal.js's own test
+// (dist/reveal.js, background handling), so kslides resolves exactly the values reveal.js will
+// treat as an image — keep in sync when the bundled reveal.js is upgraded.
+private val imagePathRegex =
+  Regex("""\.(svg|png|jpg|jpeg|gif|bmp|webp)([?#\s]|$)""", RegexOption.IGNORE_CASE)
 
 /**
  * Per-slide configuration that can also be set at the global or presentation level and
@@ -37,10 +44,10 @@ class SlideConfig : AbstractConfig() {
   /**
    * reveal.js `data-background` — any valid color or image reference.
    *
-   * A value that reads as an image path (one ending in a known image extension) resolves against
-   * the output root, like [backgroundImage]; anything else — a color name, `#hex`, `rgb()` — is
-   * emitted as written. Use [backgroundImage] when you mean an image, and this shorthand for
-   * colors.
+   * Resolved against the output root, like [backgroundImage], when the value names an image —
+   * decided by the same test reveal.js itself uses, so kslides resolves exactly what reveal.js
+   * treats as an image. Anything else — a color name, `#hex`, `rgb()` — is emitted as written.
+   * Prefer [backgroundImage] when you mean an image.
    */
   var background by ConfigProperty<String>(revealjsManagedValues)
 
@@ -78,7 +85,8 @@ class SlideConfig : AbstractConfig() {
 
   /**
    * URL of a video shown as the slide background (`data-background-video`), or a comma-separated
-   * list of sources. Each source resolves like [backgroundImage].
+   * list of sources. Each source is trimmed and resolves like [backgroundImage]; a `data:` URI is
+   * passed through whole, since it carries a comma of its own.
    */
   var backgroundVideo by ConfigProperty<String>(revealjsManagedValues)
 
@@ -176,12 +184,6 @@ class SlideConfig : AbstractConfig() {
     codeWrap = false
   }
 
-  // data-background takes either a color or an image, so only a value that reads as an image path
-  // is resolved against the output root; a color name, #hex, or rgb()/hsl() is left as written.
-  // An allowlist, so an unrecognized value keeps today's behavior rather than being mangled.
-  private val imagePathRegex =
-    Regex("""\.(png|jpe?g|gif|svg|webp|avif|bmp|ico)$""", RegexOption.IGNORE_CASE)
-
   @Suppress("CyclomaticComplexMethod")
   internal fun applyConfig(
     section: SECTION,
@@ -242,9 +244,7 @@ class SlideConfig : AbstractConfig() {
     }
 
     if (backgroundVideo.isNotBlank()) {
-      // reveal.js accepts a comma-separated list of sources here, so resolve each one.
-      section.attributes["data-background-video"] =
-        backgroundVideo.split(",").joinToString(",") { it.trim().fromOutputRoot(rootPrefix) }
+      section.attributes["data-background-video"] = backgroundVideo.fromOutputRootList(rootPrefix)
       if (backgroundVideoLoop)
         section.attributes["data-background-video-loop"] = ""
       if (backgroundVideoMuted)

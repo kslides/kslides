@@ -30,9 +30,10 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   change below. reveal.js resolves these against the page, so a relative value
   only found its file on a deck at the output root. `backgroundVideo` accepts a
   comma-separated list of sources and each one resolves. The `background`
-  shorthand takes a color *or* an image, so only values ending in a known image
-  extension (`.png`, `.jpg`, `.svg`, …) resolve — a color name, `#hex`, or
-  `rgb()` is emitted untouched. Prefer `backgroundImage` when you mean an image.
+  shorthand takes a color *or* an image, so it resolves only when the value names
+  an image — decided by the same test reveal.js itself uses, so kslides resolves
+  exactly what reveal.js treats as an image. A color name, `#hex`, or `rgb()` is
+  emitted untouched. Prefer `backgroundImage` when you mean an image.
 - Author-supplied asset paths — `customTheme { logo(...) }`, `topLeftSvgSrc`,
   and `topRightSvgSrc` — now resolve against the output root rather than against
   the page. A relative value such as `logo("images/logo.png")` was emitted
@@ -44,9 +45,10 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   compensation.** Decks at the output root are unaffected — their generated
   output is byte-identical. Still emitted verbatim, so a nested deck must walk up
   itself: corner *links* (`topLeftHref`, `topRightHref`) and `logo(href = )`,
-  which are navigation targets and deliberately left alone; and image paths
-  written inside Markdown or HTML slide content, which kslides hands to reveal.js
-  unparsed.
+  which are navigation targets and deliberately left alone; image paths written
+  inside Markdown or HTML slide content, which kslides hands to reveal.js
+  unparsed; and `cssFiles`, `jsFiles`, and `menuConfig { themesPath }`, which name
+  locations inside the reveal.js asset directory rather than at the output root.
 
 ### Fixed
 

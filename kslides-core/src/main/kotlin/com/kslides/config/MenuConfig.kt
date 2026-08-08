@@ -51,6 +51,10 @@ class MenuConfig : AbstractConfig() {
   /**
    * Base directory for the default theme CSS files. Only used when [themes] is `true` and no
    * custom list is provided.
+   *
+   * Emitted as written, and the menu plugin resolves it against the page — so a deck below the
+   * output root has to walk up itself. It names a directory inside the reveal.js assets rather
+   * than one at the output root, which is why it is not resolved for you.
    */
   var themesPath by ConfigProperty<String>(revealjsManagedValues)
 
