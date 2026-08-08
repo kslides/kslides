@@ -25,6 +25,15 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Fixed
 
+- The `favicon.ico` link is no longer hardcoded to the site root. It was emitted
+  as `href="/favicon.ico"` on every page, which misses on a site published under
+  a path prefix (a GitHub Pages project site resolves it against the domain root)
+  — the same class of bug as the iframe paths below. It now reaches the output
+  root from wherever the deck sits: unchanged under HTTP, relative for filesystem
+  output. Note that kslides ships no icon of its own — supply a `favicon.ico` at
+  the output root, or on the classpath under `defaultHttpRoot` for HTTP mode.
+  (HTTP decks have been picking up an icon incidentally, from a transitive
+  dependency that happens to ship `public/favicon.ico`.)
 - `playground { }`, `letsPlot { }`, and `diagram { }` content now loads on decks
   that are not at the output root. The iframe/image `src` was emitted relative to
   the output root (`playground/slide-1-1.html`) while the page referencing it
