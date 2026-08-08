@@ -22,7 +22,7 @@ class FollowAlongTest : StringSpec() {
 
   init {
     "followAlong over HTTP injects the follow-along client" {
-      val html = generatePage(deck(follow = true), useHttp = true, rootPrefix = "/")
+      val html = generatePage(deck(follow = true), useHttp = true)
       html shouldContain FollowAlong.FOLLOW_PATH
       html shouldContain "kslides-follow-badge"
     }
@@ -33,12 +33,12 @@ class FollowAlongTest : StringSpec() {
     }
 
     "the follow-along client is absent when followAlong is off" {
-      val html = generatePage(deck(follow = false), useHttp = true, rootPrefix = "/")
+      val html = generatePage(deck(follow = false), useHttp = true)
       html shouldNotContain FollowAlong.FOLLOW_PATH
     }
 
     "the shared injection point carries both client scripts when devMode and followAlong are on" {
-      val html = generatePage(deck(follow = true, dev = true), useHttp = true, rootPrefix = "/")
+      val html = generatePage(deck(follow = true, dev = true), useHttp = true)
       html shouldContain LiveReload.RELOAD_PATH
       html shouldContain FollowAlong.FOLLOW_PATH
     }

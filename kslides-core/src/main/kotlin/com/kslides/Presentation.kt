@@ -60,11 +60,10 @@ class Presentation(
   // Cleared at the start of every render (renders are serialized on KSlides.renderLock).
   internal var mermaidUsed = false
 
-  // Per-render walk from this deck's page back to the output root: "/" under HTTP, "../" per
-  // directory level for filesystem output, empty for a deck at the root. Set by Page.generatePage
-  // from the value its caller derived when placing the page, and read while slide content renders
-  // by anything emitting a root-relative URL (see DslSlide's iframe srcs). Deriving it once, where
-  // the page's own location is known, is what keeps a page and the srcs it emits in agreement.
+  // Per-render walk from this deck's page back to the output root; set by Page.generatePage (see
+  // its rootPrefix param for the values). This is the carrier for the one hop the DSL's content{}
+  // shape leaves no room to pass a parameter through — slide content emitting a root-relative URL,
+  // i.e. DslSlide's iframe srcs. Code inside Page should take the prefix as a parameter instead.
   // Renders are serialized on KSlides.renderLock.
   internal var renderRootPrefix = "/"
   internal lateinit var finalConfig: PresentationConfig

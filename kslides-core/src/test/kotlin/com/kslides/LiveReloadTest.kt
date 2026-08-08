@@ -15,7 +15,7 @@ class LiveReloadTest : StringSpec() {
 
   init {
     "dev mode over HTTP injects the live-reload client" {
-      val html = generatePage(deck(dev = true), useHttp = true, rootPrefix = "/")
+      val html = generatePage(deck(dev = true), useHttp = true)
       html shouldContain LiveReload.RELOAD_PATH
       html shouldContain "kslides-devmode-state"
     }
@@ -26,7 +26,7 @@ class LiveReloadTest : StringSpec() {
     }
 
     "the live-reload client is absent when dev mode is off" {
-      val html = generatePage(deck(dev = false), useHttp = true, rootPrefix = "/")
+      val html = generatePage(deck(dev = false), useHttp = true)
       html shouldNotContain LiveReload.RELOAD_PATH
     }
   }

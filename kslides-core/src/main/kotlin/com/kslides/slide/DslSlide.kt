@@ -106,9 +106,7 @@ interface DslSlide {
    * Address [filename] inside output directory [dir] from the page this slide is rendered into.
    *
    * The content always lives at the output root, but the page referencing it may not, so the src
-   * is built from the render's own walk back to that root
-   * ([com.kslides.Presentation.renderRootPrefix]) — absolute under HTTP, relative for filesystem
-   * output so a site published under a path prefix still resolves.
+   * carries the render's walk back to that root ([com.kslides.Presentation.renderRootPrefix]).
    */
   private fun iframeSrc(
     dir: String,

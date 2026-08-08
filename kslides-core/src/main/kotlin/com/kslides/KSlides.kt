@@ -12,7 +12,6 @@ import com.kslides.config.KSlidesConfig
 import com.kslides.config.OutputConfig
 import com.kslides.config.PresentationConfig
 import com.pambrose.common.response.respondWith
-import com.pambrose.common.util.ensureSuffix
 import com.pambrose.common.util.toPath
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
@@ -321,14 +320,13 @@ class KSlides : AutoCloseable {
     internal val logger = KotlinLogging.logger {}
 
     /**
-     * Resolve the file presentation [key] is written to under [outputDir], together with the walk
-     * back up to [outputDir] that everything root-relative on that page is built from.
+     * Resolve the file presentation [key] is written to under [outputDir], together with the `../`
+     * walk from that file back up to [outputDir] that everything root-relative on the page is
+     * built from.
      *
-     * The number of levels comes from the deck's own key and never from [outputDir] — the page
-     * lives at `<outputDir>/<key>` and the content it references at `<outputDir>/...`, so a
-     * multi-segment [outputDir] such as `build/docs` adds no distance between the two.
-     *
-     * The key's own shape decides the depth — see [deckLocation].
+     * The depth comes from the deck's own key (see [deckLocation]) and never from [outputDir],
+     * which sits above both the page and everything the page references — so a multi-segment
+     * [outputDir] such as `build/docs` adds no distance between the two.
      */
     internal fun outputTarget(
       outputDir: String,

@@ -424,7 +424,8 @@ class PresentationTest : StringSpec() {
 
       // Vertical-stack children are reconstructed on each render and draw ids from a shared counter
       // that generatePage resets; rendering must therefore be a pure function of the built deck.
-      generatePage(p, false) shouldBe generatePage(p, false)
+      // rootPrefix travels with the mode: filesystem output walks back up, HTTP addresses the root.
+      generatePage(p, false, "") shouldBe generatePage(p, false, "")
       generatePage(p, true) shouldBe generatePage(p, true)
     }
   }

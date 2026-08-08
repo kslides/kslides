@@ -121,7 +121,7 @@ class ThemeConfigTest : StringSpec() {
           }
         }.presentation("/")
 
-      val html = generatePage(presentation, useHttp = true, rootPrefix = "/")
+      val html = generatePage(presentation, useHttp = true)
 
       html shouldContain PresentationTheme.WHITE.cssSrc
       html shouldNotContain PresentationTheme.BLACK.cssSrc
@@ -141,7 +141,7 @@ class ThemeConfigTest : StringSpec() {
           }
         }.presentation("/")
 
-      val html = generatePage(presentation, useHttp = true, rootPrefix = "/")
+      val html = generatePage(presentation, useHttp = true)
       html shouldNotContain "custom-theme"
       html shouldNotContain "kslides-logo"
     }

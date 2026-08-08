@@ -24,9 +24,9 @@ class OutputConfig(
   var outputDir = "docs"
 
   /**
-   * Path prefix prepended to asset links in **filesystem mode only** (it becomes the `srcPrefix`
-   * for generated pages, pointing at the bundled reveal.js assets). HTTP mode ignores this and
-   * serves assets from the classpath via [defaultHttpRoot] instead.
+   * Directory holding the bundled reveal.js assets, in **filesystem mode only**. A generated page
+   * links to them through this directory, reached from wherever the page itself sits. HTTP mode
+   * ignores this and serves the assets from the classpath via [defaultHttpRoot] instead.
    */
   var staticRootDir = "revealjs"
 

@@ -46,12 +46,13 @@ internal object Page {
       p.kslides.slideCount = 0
       p.codeStyleClasses.clear()
       p.mermaidUsed = false
-      p.renderRootPrefix = rootPrefix
 
       // reveal.js assets are served from the classpath under a fixed directory in HTTP mode, and
       // copied to the configurable staticRootDir on disk.
       val assetDir = if (useHttp) KSlides.REVEAL_ROOT_DIR else p.kslides.outputConfig.staticRootDir
       val srcPrefix = "$rootPrefix$assetDir".ensureSuffix("/")
+      // Hand the bare walk to slide content, which has no parameter channel to receive it.
+      p.renderRootPrefix = rootPrefix
       val htmldoc =
         document {
           val config = p.finalConfig

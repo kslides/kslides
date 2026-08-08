@@ -28,8 +28,8 @@ class OutputTargetTest : StringSpec() {
       target("greattalk1") shouldBe ("docs/greattalk1/index.html" to "../")
     }
 
-    // Regression: the .html branch used to ignore the key's depth entirely, so this deck emitted
-    // "revealjs/..." and 404'd against <site>/greattalk1/revealjs/... once published.
+    // Regression: the .html branch used to ignore the key's depth entirely, so a nested deck walked
+    // back up zero levels and every root-relative link 404'd once published.
     "A nested .html deck walks up out of its directory" {
       target("greattalk1/other.html") shouldBe ("docs/greattalk1/other.html" to "../")
     }
@@ -39,8 +39,8 @@ class OutputTargetTest : StringSpec() {
       target("a/b/c") shouldBe ("docs/a/b/c/index.html" to "../../../")
     }
 
-    // The page sits at <outputDir>/<key> and what it references at <outputDir>/..., so extra
-    // segments in outputDir add no distance between the two.
+    // outputDir sits above both the page and everything the page references, so extra segments in
+    // it add no distance between the two.
     "A multi-segment outputDir does not add depth" {
       target("greattalk1", outputDir = "build/docs") shouldBe
         ("build/docs/greattalk1/index.html" to "../")
