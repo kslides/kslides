@@ -9,6 +9,18 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+## [1.4.0] — 2026-08-08
+
+A path-resolution release. Every URL a generated page emits now reaches the
+output root from wherever the deck sits, so decks below the root stop 404'ing
+on their own assets. Along the way: a font-size knob for Kotlin Playground
+slides, a configurable favicon, and a deck viewers can finally pinch-zoom.
+
+Source-compatible, but **not binary-compatible**: `CssFile` and `JsFile` are
+data classes that gained an `origin` parameter, which moves their constructor,
+`copy()`, and `componentN()` signatures. Recompile against 1.4.0 rather than
+dropping the jar in.
+
 ### Added
 
 - `playgroundConfig { fontSize = "20px" }` sizes the code inside a Kotlin
@@ -77,6 +89,16 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   plugin verbatim rather than emitting as a URL itself. `cssFiles` and `jsFiles`
   are relative to the reveal.js asset directory unless given
   `origin = AssetOrigin.OUTPUT_ROOT`.
+- Config properties whose values are interpolated verbatim into generated CSS —
+  `slideConfig`'s `fontSize` and `codeFontSize`, plus the new playground
+  properties — now reject malformed values at the assignment site instead of
+  silently corrupting the rendered page. A value like `codeFontSize = "0.6em;}"`
+  used to close the generated rule early and break every rule after it; it now
+  throws `IllegalArgumentException` naming the property. Valid CSS lengths,
+  including `calc()`/`var()` expressions and a blank "unset", are unaffected.
+- `./gradlew build` now compiles the `export` source set in `kslides-examples`.
+  Custom source sets are not wired into `check`, so a broken `Export.kt` stayed
+  invisible until someone ran `make pdf` — CI never compiled it.
 
 ### Fixed
 
@@ -139,19 +161,10 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   site root rather than the deck. Note this is a fix to the bundled examples, not
   a library change: `topRightHref` is still emitted verbatim, so decks published
   under a subpath should use relative hrefs.
-
-### Changed
-
-- `./gradlew build` now compiles the `export` source set in `kslides-examples`.
-  Custom source sets are not wired into `check`, so a broken `Export.kt` stayed
-  invisible until someone ran `make pdf` — CI never compiled it.
-- Config properties whose values are interpolated verbatim into generated CSS —
-  `slideConfig`'s `fontSize` and `codeFontSize`, plus the new playground
-  properties — now reject malformed values at the assignment site instead of
-  silently corrupting the rendered page. A value like `codeFontSize = "0.6em;}"`
-  used to close the generated rule early and break every rule after it; it now
-  throws `IllegalArgumentException` naming the property. Valid CSS lengths,
-  including `calc()`/`var()` expressions and a blank "unset", are unaffected.
+- The video-background example in the bundled deck points at a host that still
+  exists. `clips.vorwaerts-gmbh.de`, an old reveal.js demo URL, stopped answering,
+  so the slide rendered blank. It was also plain `http://`, which a deck published
+  over https blocks as mixed content. Another fix to the examples, not the library.
 
 ## [1.3.0] — 2026-08-02
 
@@ -1108,7 +1121,8 @@ chart-embedding integration, and the test/CI story
   filesystem and Ktor-server output modes, and configurable
   per-slide / per-presentation overrides.
 
-[Unreleased]: https://github.com/kslides/kslides/compare/1.3.0...HEAD
+[Unreleased]: https://github.com/kslides/kslides/compare/1.4.0...HEAD
+[1.4.0]: https://github.com/kslides/kslides/releases/tag/1.4.0
 [1.3.0]: https://github.com/kslides/kslides/releases/tag/1.3.0
 [1.2.0]: https://github.com/kslides/kslides/releases/tag/1.2.0
 [1.1.1]: https://github.com/kslides/kslides/releases/tag/1.1.1
