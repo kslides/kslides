@@ -21,6 +21,14 @@ class NestedDeckPathTest : StringSpec() {
     fun deckWithPlayground(deckPath: String): Presentation.() -> Unit =
       {
         path = deckPath
+        presentationConfig {
+          // Author-supplied asset paths: one relative (resolved), one external (passed through).
+          topLeftHref = "https://example.com"
+          topLeftSvgSrc = "images/gh.svg"
+          topRightHref = "./"
+          topRightSvgSrc = "https://example.com/home.svg"
+          customTheme { logo("images/logo.png") }
+        }
         dslSlide {
           content {
             h2 { +"Deck" }
@@ -62,6 +70,12 @@ class NestedDeckPathTest : StringSpec() {
           withClue(page) {
             src!! shouldStartWith "${walk}playground/"
             html shouldContain """href="${walk}favicon.ico""""
+            // Author-supplied asset paths resolve the same way...
+            html shouldContain """src="${walk}images/gh.svg""""
+            html shouldContain """src="${walk}images/logo.png""""
+            // ...while anything already anchored is left alone.
+            html shouldContain """src="https://example.com/home.svg""""
+            html shouldContain """href="https://example.com""""
             // The browser resolves the src against the page's own directory, so that resolution has
             // to land on a file that exists — this is the 404 the fix is about.
             File(outDir, page)
@@ -83,6 +97,10 @@ class NestedDeckPathTest : StringSpec() {
       val html = generatePage(kslides.presentation("/greattalk1/other.html"))
       iframeSrc(html) shouldBe "/playground/slide-1-1.html"
       html shouldContain """href="/favicon.ico""""
+      // Author-supplied paths too: the classpath root that backs them is served at "/".
+      html shouldContain """src="/images/gh.svg""""
+      html shouldContain """src="/images/logo.png""""
+      html shouldContain """src="https://example.com/home.svg""""
     }
   }
 }

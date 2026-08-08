@@ -58,7 +58,7 @@ internal object Page {
           val config = p.finalConfig
           append.html {
             generateHead(p, config, srcPrefix, rootPrefix)
-            generateBody(p, config, srcPrefix, useHttp)
+            generateBody(p, config, srcPrefix, rootPrefix, useHttp)
           }
         }
 
@@ -265,10 +265,26 @@ internal object Page {
   }
 
   @Suppress("CyclomaticComplexMethod", "LongMethod")
+  // Prefixes an author-supplied path already anchored by the author: absolute and protocol-
+  // relative ("/", "//"), external, and data: URIs.
+  private val anchoredSrcPrefixes = listOf("/", "http", "data:")
+
+  /**
+   * Resolve an author-supplied asset path against the output root, the way a bare path reads
+   * everywhere else in kslides, so one value works from a deck at any depth. Anything the author
+   * has already anchored is their own business and passes through untouched.
+   */
+  private fun String.fromOutputRoot(rootPrefix: String): String {
+    val anchored = isBlank() || anchoredSrcPrefixes.any { startsWith(it) }
+    return if (anchored) this else "$rootPrefix$this"
+  }
+
+  @Suppress("CyclomaticComplexMethod", "LongMethod")
   private fun HTML.generateBody(
     p: Presentation,
     config: PresentationConfig,
     srcPrefix: String,
+    rootPrefix: String,
     useHttp: Boolean,
   ) = body {
     div("reveal") {
@@ -280,7 +296,7 @@ internal object Page {
             rawHtml(config.topLeftSvg)
           if (config.topLeftSvgSrc.isNotBlank())
             img(classes = config.topLeftSvgClass) {
-              src = config.topLeftSvgSrc
+              src = config.topLeftSvgSrc.fromOutputRoot(rootPrefix)
               if (config.topLeftSvgStyle.isNotBlank())
                 style = config.topLeftSvgStyle
             }
@@ -298,7 +314,7 @@ internal object Page {
             rawHtml(config.topRightSvg)
           if (config.topRightSvgSrc.isNotBlank())
             img(classes = config.topRightSvgClass) {
-              src = config.topRightSvgSrc
+              src = config.topRightSvgSrc.fromOutputRoot(rootPrefix)
               if (config.topRightSvgStyle.isNotBlank())
                 style = config.topRightSvgStyle
             }
@@ -310,10 +326,10 @@ internal object Page {
       config.customThemeConfig.logoValue?.let { logo ->
         rawHtml("\n\t\t\t")
         if (logo.href.isBlank())
-          img(classes = "kslides-logo") { src = logo.src }
+          img(classes = "kslides-logo") { src = logo.src.fromOutputRoot(rootPrefix) }
         else
           a(href = logo.href, classes = "kslides-logo") {
-            img { src = logo.src }
+            img { src = logo.src.fromOutputRoot(rootPrefix) }
           }
       }
 

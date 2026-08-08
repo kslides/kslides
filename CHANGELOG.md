@@ -23,6 +23,20 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   slide's. The generated rules are written to the iframe head ahead of any
   `css { }`, which remains the escape hatch and still wins at equal specificity.
 
+### Changed
+
+- Author-supplied asset paths — `customTheme { logo(...) }`, `topLeftSvgSrc`,
+  and `topRightSvgSrc` — now resolve against the output root rather than against
+  the page. A relative value such as `logo("images/logo.png")` was emitted
+  verbatim, so it only found the file on a deck sitting at the output root; from
+  `talks/deck.html` it resolved to `talks/images/logo.png` and 404'd. The same
+  path now works from a deck at any depth. Absolute (`/img/x.png`), external
+  (`https://...`), and `data:` values pass through untouched, as before.
+  **If you hand-compensated for this with a `../` path on a nested deck, drop the
+  compensation.** Decks at the output root are unaffected — their generated
+  output is byte-identical. Corner *links* (`topLeftHref`, `topRightHref`) are
+  navigation targets and are deliberately left verbatim.
+
 ### Fixed
 
 - The `favicon.ico` link is no longer hardcoded to the site root. It was emitted

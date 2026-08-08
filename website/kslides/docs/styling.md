@@ -19,7 +19,7 @@ Each property maps to one of the CSS custom properties (`--r-*`) that reveal.js 
 A few details worth knowing:
 
 - `baseTheme` picks the stock theme to start from and takes precedence over `theme` — it also drives theme-derived behavior like [Mermaid's](extensions/mermaid.md) dark/light selection.
-- `logo()` pins a brand image to a corner of every slide (and every exported PDF page). Without an `href` it ignores pointer events, so it never blocks slide interaction.
+- `logo()` pins a brand image to a corner of every slide (and every exported PDF page). Without an `href` it ignores pointer events, so it never blocks slide interaction. A relative `src` resolves against the output root, so the same path works from a deck at any depth; absolute, external, and `data:` values are used as written.
 - `customProperty("--r-…", …)` passes through any reveal.js theme variable the DSL doesn't model.
 
 The [theme example deck](https://kslides.github.io/kslides/docs/theme.html) shows the result, with its own `customTheme {}` source on the second slide.

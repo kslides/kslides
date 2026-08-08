@@ -307,7 +307,12 @@ class PresentationConfig : AbstractConfig() {
   /** Inline SVG rendered inside the top-left corner link. Mutually useful with [topLeftSvgSrc]. */
   var topLeftSvg by ConfigProperty<String>(kslidesManagedValues)
 
-  /** URL of an image to display in the top-left corner link (alternative to [topLeftSvg]). */
+  /**
+   * URL of an image to display in the top-left corner link (alternative to [topLeftSvg]).
+   *
+   * A relative value resolves against the output root, so the same path works from a deck at any
+   * depth. Absolute (`/img/x.svg`), external (`https://...`), and `data:` values pass through.
+   */
   var topLeftSvgSrc by ConfigProperty<String>(kslidesManagedValues)
 
   /** CSS class on the top-left corner `<img>`/SVG. */
@@ -331,7 +336,12 @@ class PresentationConfig : AbstractConfig() {
   /** Inline SVG rendered inside the top-right corner link. */
   var topRightSvg by ConfigProperty<String>(kslidesManagedValues)
 
-  /** URL of an image for the top-right corner link. */
+  /**
+   * URL of an image for the top-right corner link.
+   *
+   * A relative value resolves against the output root, so the same path works from a deck at any
+   * depth. Absolute (`/img/x.svg`), external (`https://...`), and `data:` values pass through.
+   */
   var topRightSvgSrc by ConfigProperty<String>(kslidesManagedValues)
 
   /** CSS class on the top-right corner `<img>`/SVG. */

@@ -157,7 +157,9 @@ class ThemeConfig : AbstractConfig() {
   /**
    * Pin a brand logo to a corner of every slide.
    *
-   * @param src image URL, resolved by the browser like any other slide asset.
+   * @param src image URL. A relative value resolves against the output root, so the same path
+   *   works from a deck at any depth; absolute (`/img/logo.png`), external (`https://...`), and
+   *   `data:` values pass through untouched.
    * @param position which corner ([LogoPosition.TOP_RIGHT] by default).
    * @param size rendered width; height follows the image's aspect ratio.
    * @param margin distance from the two adjacent viewport edges.
