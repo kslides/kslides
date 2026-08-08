@@ -106,16 +106,12 @@ interface DslSlide {
    * Address [filename] inside output directory [dir] from the page this slide is rendered into.
    *
    * The content always lives at the output root, but the page referencing it may not, so the src
-   * has to account for the deck's own depth. HTTP mode registers these as root-level routes and
-   * addresses them absolutely; filesystem output walks back up with
-   * [com.kslides.Presentation.dotDotPrefix], keeping the link relative so a site published under a
-   * path prefix still resolves.
+   * carries the render's walk back to that root ([com.kslides.Presentation.renderRootPrefix]).
    */
   private fun iframeSrc(
     dir: String,
     filename: String,
-  ) = (if (private_useHttp) "/" else presentation.dotDotPrefix) +
-    listOf(dir, filename).toPath(addPrefix = false, addTrailing = false)
+  ) = presentation.renderRootPrefix + listOf(dir, filename).toPath(addPrefix = false, addTrailing = false)
 }
 
 /**

@@ -34,7 +34,7 @@ class PageTest : StringSpec() {
           }
         }.presentation("/")
 
-      val html = Page.generatePage(presentation, useHttp = true, srcPrefix = "/revealjs")
+      val html = Page.generatePage(presentation, useHttp = true)
       html shouldNotContain "media=\"screen\""
     }
   }

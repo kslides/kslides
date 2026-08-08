@@ -28,10 +28,16 @@ internal object Page {
   private val preRegex = Regex("\\s*<pre.*>\\s*")
   private val codeRegex = Regex("\\s*<code.*>\\s*")
 
+  /**
+   * @param rootPrefix the walk from this page back to the output root — `"/"` under HTTP, `"../"`
+   *   per directory level for a filesystem deck, empty at the root. Everything root-relative the
+   *   page emits is built from it: reveal.js asset links here, iframe/image srcs via
+   *   [Presentation.renderRootPrefix].
+   */
   internal fun generatePage(
     p: Presentation,
     useHttp: Boolean = true,
-    srcPrefix: String = "/",
+    rootPrefix: String = "/",
   ): String =
   // Serialize concurrent Ktor renders on renderLock: rendering mutates shared per-render state
   // (p.kslides.slideCount, reconstructed verticalSlides{} child lists, per-slide iframe counters).
@@ -40,12 +46,19 @@ internal object Page {
       p.kslides.slideCount = 0
       p.codeStyleClasses.clear()
       p.mermaidUsed = false
+
+      // reveal.js assets are served from the classpath under a fixed directory in HTTP mode, and
+      // copied to the configurable staticRootDir on disk.
+      val assetDir = if (useHttp) KSlides.REVEAL_ROOT_DIR else p.kslides.outputConfig.staticRootDir
+      val srcPrefix = "$rootPrefix$assetDir".ensureSuffix("/")
+      // Hand the bare walk to slide content, which has no parameter channel to receive it.
+      p.renderRootPrefix = rootPrefix
       val htmldoc =
         document {
           val config = p.finalConfig
           append.html {
-            generateHead(p, config, srcPrefix.ensureSuffix("/"))
-            generateBody(p, config, srcPrefix.ensureSuffix("/"), useHttp)
+            generateHead(p, config, srcPrefix)
+            generateBody(p, config, srcPrefix, useHttp)
           }
         }
 

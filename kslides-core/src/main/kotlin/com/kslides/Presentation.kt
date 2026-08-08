@@ -59,6 +59,13 @@ class Presentation(
   // content) to conditionally include the bundled Mermaid runtime, init snippet, and head CSS.
   // Cleared at the start of every render (renders are serialized on KSlides.renderLock).
   internal var mermaidUsed = false
+
+  // Per-render walk from this deck's page back to the output root; set by Page.generatePage (see
+  // its rootPrefix param for the values). This is the carrier for the one hop the DSL's content{}
+  // shape leaves no room to pass a parameter through — slide content emitting a root-relative URL,
+  // i.e. DslSlide's iframe srcs. Code inside Page should take the prefix as a parameter instead.
+  // Renders are serialized on KSlides.renderLock.
+  internal var renderRootPrefix = "/"
   internal lateinit var finalConfig: PresentationConfig
 
   /**
@@ -381,13 +388,6 @@ class Presentation(
       ),
     )
   }
-
-  /**
-   * The `../` walk from this deck's generated page back to [OutputConfig.outputDir]; empty for a
-   * deck at the output root. Shares [KSlides.deckLocation] with the writer that places the page, so
-   * a page and the srcs it emits cannot disagree about their depth.
-   */
-  internal val dotDotPrefix: String get() = "../".repeat(KSlides.deckLocation(path).first.size)
 
   internal fun validatePath() {
     require(path.removePrefix("/") !in kslides.kslidesConfig.httpStaticRoots.map { it.dirname }) {
