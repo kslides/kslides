@@ -4,18 +4,20 @@ import com.kslides.Page.generatePage
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldStartWith
 import kotlinx.html.h2
 import java.io.File
 import kotlin.io.path.createTempDirectory
 
 /**
- * Iframe and image `src` attributes have to reach `<outputDir>/playground/` (and `letsPlot/`,
- * `kroki/`) from wherever the deck that references them sits. The content is always written at the
- * output root, so a nested deck has to walk back up — the same depth problem [KSlides.outputTarget]
- * solves for reveal.js assets.
+ * Everything a generated page addresses relative to the output root — iframe/image `src`
+ * attributes for `playground/`, `letsPlot/` and `kroki/` content, and the `favicon.ico` link — has
+ * to reach it from wherever the deck sits. That content is always written at the output root, so a
+ * nested deck walks back up; the same depth problem [KSlides.outputTarget] solves for reveal.js
+ * assets, and all of it now rides the one prefix [Page.generatePage] threads through the render.
  */
-class NestedDeckIframePathTest : StringSpec() {
+class NestedDeckPathTest : StringSpec() {
   init {
     fun deckWithPlayground(deckPath: String): Presentation.() -> Unit =
       {
@@ -70,6 +72,33 @@ class NestedDeckIframePathTest : StringSpec() {
       } finally {
         outDir.deleteRecursively()
       }
+    }
+
+    "the favicon link reaches the output root from every deck depth" {
+      val outDir = createTempDirectory("kslides-nested-favicon").toFile()
+      try {
+        val kslides =
+          kslidesTest {
+            output { outputDir = outDir.path }
+            listOf("/", "greattalk1", "a/b/deep.html").forEach { presentation(deckWithPlayground(it)) }
+          }
+        KSlides.writeSlidesToFileSystem(kslides.outputConfig)
+
+        mapOf(
+          "index.html" to "favicon.ico",
+          "greattalk1/index.html" to "../favicon.ico",
+          "a/b/deep.html" to "../../favicon.ico",
+        ).forEach { (page, href) ->
+          withClue(page) { File(outDir, page).readText() shouldContain """href="$href"""" }
+        }
+      } finally {
+        outDir.deleteRecursively()
+      }
+    }
+
+    "HTTP serves the favicon from the routing root, so the link stays absolute" {
+      val kslides = kslidesTest { presentation(deckWithPlayground("greattalk1/other.html")) }
+      generatePage(kslides.presentation("/greattalk1/other.html")) shouldContain """href="/favicon.ico""""
     }
 
     "HTTP mode addresses the iframe routes absolutely, from any deck depth" {
