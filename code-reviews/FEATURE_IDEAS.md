@@ -1,7 +1,7 @@
 # kslides Feature Ideas
 
 Product proposals for kslides, ranked by expected impact. Each idea has a number
-(referenced as F1–F6), a problem statement, a proposed design grounded in the current
+(referenced as F1–F7), a problem statement, a proposed design grounded in the current
 architecture, an effort estimate, and open questions.
 
 Proposals are kept as originally written. Shipped features carry a **Status** block
@@ -17,6 +17,7 @@ describes the plan, not the code.
 | F4 | Native Mermaid diagrams    | Deck authors   | S      | Content              | ✅ Shipped in 1.2.0 |
 | F5 | Follow-along presenting    | Presenters     | L      | Platform             | ✅ Shipped in 1.3.0 |
 | F6 | Scaffolding command        | New users      | S      | Adoption             | ✅ Shipped in 1.2.0 |
+| F7 | Arbitrary `<head>` content | Deck sharers   | S      | Distribution         | Proposed            |
 
 ---
 
@@ -531,6 +532,72 @@ legitimate v1.
 
 - Where does the generator live — this repo, or `kslides-template` itself?
 - Is a `kslides.dev`-style short domain available/desired for the curl entry point?
+
+---
+
+## F7. Arbitrary `<head>` content
+
+### Problem
+
+kslides emits the `<head>` and nothing an author writes can add to it. `css {}` emits a
+`<style>`, `cssFiles` emits `<link rel="stylesheet">`, and `jsFiles` emits `<script>` into
+the *body* — so there is no way to reach a `<meta>`, or a `<link>` that is not a
+stylesheet. Out of reach today: OpenGraph/Twitter-card tags, `apple-touch-icon`, a web
+app manifest, `rel=canonical`, and font preloads.
+
+Every head need so far has been met by growing `PresentationConfig` one special case at a
+time — `gaPropertyId`, `favicon`, `topLeft*`/`topRight*`, the `AssetOrigin` on
+`CssFile`/`JsFile`. That ladder has no top, and the properties are permanent public API on
+a published artifact.
+
+Two things already lean on this gap. F2's Status block proposes capturing a first-slide
+PNG "for use as a social preview / Open Graph image" — inert without an `og:image` meta
+that nothing can emit. And the viewport is deliberately hardcoded (WCAG 2.1 SC 1.4.4, see
+`Page.generateHead`), which is right as a default but leaves a kiosk or touchscreen deck
+that genuinely wants zoom disabled with no way to say so.
+
+### Proposal
+
+A `head { }` block on `PresentationConfig`, taking a kotlinx.html `HEAD.() -> Unit` and
+appended after everything kslides generates, so an author's tag wins where later-wins
+applies:
+
+```kotlin
+presentationConfig {
+  head {
+    meta(name = "og:title", content = "My Talk")
+    link(rel = "apple-touch-icon", href = "icons/touch.png")
+  }
+}
+```
+
+Author paths would resolve through `resolveAgainst(rootPrefix)` like every other asset, so
+a nested deck reaches the output root — which is the argument for a typed block over a raw
+HTML string.
+
+### User value
+
+Closes the head entirely, and stops the special-case ladder: the next head request becomes
+documentation rather than a new config property and a minor version bump. Social previews
+in particular are the difference between a shared deck link rendering as a card or as bare
+text.
+
+### Effort: S
+
+One config property, one call site in `Page.generateHead`, path resolution reusing
+`InternalUtils`. The design work is precedence and whether the block can *remove* or
+override a generated tag (see below), not the plumbing.
+
+### Open questions
+
+- Does `head {}` compose with the existing properties or supersede them? Emitting both a
+  `favicon` property and a hand-written `<link rel="icon">` yields two, and precedence
+  between them has to be either documented or enforced.
+- Should it be able to override kslides-generated tags — specifically the viewport — or is
+  append-only the whole contract? Append-only means a duplicate `<meta name="viewport">`,
+  which browsers resolve last-wins, so it may work by accident rather than by design.
+- Does the same hook belong on the generated Playground/Kroki/letsPlot iframe pages, which
+  have their own `<head>` and their own `css {}` escape hatch?
 
 ---
 

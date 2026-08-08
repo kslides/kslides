@@ -208,10 +208,8 @@ internal object Page {
       meta {
         charset = "utf-8"
       }
-      // No maximum-scale/user-scalable=no. reveal.js's own template still ships them, but blocking
-      // pinch-zoom fails WCAG 2.1 SC 1.4.4, and iOS has ignored the directive since iOS 10 — so it
-      // only ever bound on Android, where it cost low-vision viewers the ability to zoom. reveal.js
-      // already scales slides to the viewport, so there is nothing here that needs zoom disabled.
+      // Deliberate divergence from reveal.js's own template, which still ships
+      // maximum-scale/user-scalable=no: blocking pinch-zoom fails WCAG 2.1 SC 1.4.4.
       meta {
         name = "viewport"
         content = "width=device-width, initial-scale=1.0"

@@ -66,7 +66,7 @@ Two POSIX-ish bash scripts live at the repo root (both target macOS's default ba
 - `kslides-init.sh` — scaffolds a new presentation project by cloning `kslides-template`, stripping its git history, renaming the project name and presentation title, and initializing a fresh repo. Renames are guarded so a drifted template warns instead of silently no-op'ing.
 - `kslides-dev.sh` — the live-reload supervisor: recompiles and restarts the app on source changes. Takes `--task` / `--watch` / `--port` (or positionals, with env vars as fallback) and defaults to the root `run` task watching `src`, matching a single-module kslides-template project.
 
-`code-reviews/FEATURE_IDEAS.md` holds ranked product proposals (F1–F6, all now shipped or merged). Shipped ones carry a Status block recording what actually landed and how the open questions resolved; check it before designing a feature that might already have a written design.
+`code-reviews/FEATURE_IDEAS.md` holds ranked product proposals (F1–F7; F1–F6 are shipped or merged, F7 — arbitrary `<head>` content — is proposed). Shipped ones carry a Status block recording what actually landed and how the open questions resolved; check it before designing a feature that might already have a written design.
 
 ### CI
 

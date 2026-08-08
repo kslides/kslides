@@ -20,15 +20,17 @@ class PageTest : StringSpec() {
       out shouldNotContain "<pre><code"
     }
 
+    // The head is the same whatever the deck holds, so one slide serves both head assertions.
+    val deck = kslidesTest { presentation { markdownSlide { content { "# Hi" } } } }.presentation("/")
+
     "the viewport lets a viewer zoom" {
-      // Blocking pinch-zoom fails WCAG 2.1 SC 1.4.4. reveal.js's own template still ships
-      // maximum-scale/user-scalable=no; kslides deliberately does not.
-      val html = Page.generatePage(kslidesTest { presentation { markdownSlide { content { "# Hi" } } } }.presentation("/"))
-      html shouldContain """<meta content="width=device-width, initial-scale=1.0" name="viewport">"""
-      html shouldNotContain "user-scalable"
-      html shouldNotContain "maximum-scale"
-      // reveal.js 3-era carry-over: upstream dropped these, and Apple deprecated the first.
-      html shouldNotContain "apple-mobile-web-app"
+      // Pinning the whole content attribute — a re-added maximum-scale or user-scalable fails here.
+      Page.generatePage(deck) shouldContain
+        """<meta content="width=device-width, initial-scale=1.0" name="viewport">"""
+    }
+
+    "the reveal.js 3-era Apple web-app metas are gone" {
+      Page.generatePage(deck) shouldNotContain "apple-mobile-web-app"
     }
 
     "author styles are not scoped to screen media, so they also apply when printing" {
