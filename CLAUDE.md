@@ -158,12 +158,12 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 ## Tech Stack
 
 - Kotlin 2.4.10, JVM 17 toolchain
-- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.6.1
-- Ktor 3.5.1 (server + client)
+- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.7.0
+- Ktor 3.5.2 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
 - Lets-Plot Kotlin 4.15.0 for the `letsPlot{}` DSL (JS runtime version configurable via `KSlidesConfig.letsPlotJsVersion`, default `4.10.1`)
 - Playwright Java (kslides-export only) for driving headless Chromium during PDF export
-- Kotlinter for linting (ktlint-based) and Detekt 2.0.0-alpha.5 for static analysis (`dev.detekt`), fatal on findings by default (`-Pdetekt.ignoreFailures=true` to downgrade)
+- Kotlinter for linting (ktlint-based) and Detekt 2.0.0-alpha.6 for static analysis (`dev.detekt`), fatal on findings by default (`-Pdetekt.ignoreFailures=true` to downgrade)
 - reveal.js assets live at the repo root in `docs/revealjs/` (single source of truth, committed for GitHub Pages). `kslides-core/build.gradle.kts` grafts them onto the published JAR's classpath at `revealjs/**` via `processResources` so the Ktor static handler can serve them at runtime — there is no checked-in `kslides-core/src/main/resources/revealjs/` directory.
 - All versions — including the JVM toolchain (`jvm`) and the Gradle wrapper distribution (`gradle-wrapper`) — are centralized in `gradle/libs.versions.toml`. The convention plugin reads `jvm` via `VersionCatalogsExtension`, and the `Makefile`'s `upgrade-wrapper` target reads `gradle-wrapper` from the same file.
 
