@@ -128,6 +128,57 @@ class NestedDeckPathTest : StringSpec() {
       html shouldContain """data-background-video="data:video/mp4;base64,AAAA""""
     }
 
+    "a background iframe resolves like the other background assets" {
+      // The only background asset the suite did not pin. reveal.js resolves data-background-iframe
+      // against the page exactly as it does the image and video forms, so it walks up too.
+      val html =
+        nestedDeckHtml {
+          presentationConfig {
+            slideConfig {
+              backgroundIframe = "embeds/demo.html"
+              backgroundInteractive = true
+            }
+          }
+        }
+      html shouldContain """data-background-iframe="../embeds/demo.html""""
+      html shouldContain "data-background-interactive"
+
+      // An external embed is somebody else's URL — emitted as written.
+      nestedDeckHtml {
+        presentationConfig { slideConfig { backgroundIframe = "https://example.com/embed" } }
+      } shouldContain """data-background-iframe="https://example.com/embed""""
+    }
+
+    "a Kroki diagram reaches the kroki directory from a nested deck" {
+      // The third of the three iframe/image sources — playground and letsPlot are covered above and
+      // in LetsPlotDslTest, and all three route through DslSlide.iframeSrc. Seeding the content
+      // cache keyed by the generated filename keeps computeIfAbsent from ever calling Kroki, so
+      // this stays a path test with no network and no server.
+      val outDir = createTempDirectory("kslides-kroki").toFile()
+      try {
+        val kslides =
+          kslidesTest {
+            // Filesystem mode writes the fetched image next to the decks, so keep it out of docs/.
+            output { outputDir = outDir.path }
+            presentation {
+              path = "talks/deck.html"
+              dslSlide { content { diagram("graphviz") { source = "digraph { a -> b }" } } }
+            }
+          }
+        // content{} runs at render time, so seeding here still beats the diagram to the cache.
+        kslides.staticKrokiContent["slide-1-1.svg"] = "<svg/>".toByteArray()
+
+        val html = generatePage(kslides.presentation("/talks/deck.html"), useHttp = false, rootPrefix = "../")
+        html shouldContain """src="../kroki/slide-1-1.svg""""
+        // And the walk has to land on the file the render just wrote.
+        File(outDir, "talks")
+          .resolve("../kroki/slide-1-1.svg")
+          .canonicalFile.isFile shouldBe true
+      } finally {
+        outDir.deleteRecursively()
+      }
+    }
+
     "an anchored value is emitted as written; one that merely starts with http is not" {
       val html =
         nestedDeckHtml {
@@ -164,6 +215,22 @@ class NestedDeckPathTest : StringSpec() {
       html shouldContain """src="../revealjs/plugin/mine/mine.js""""
       html shouldContain """href="../css/site.css""""
       html shouldContain """src="../js/site.js""""
+    }
+
+    "the menu plugin's themesPath is handed over verbatim, unlike everything kslides emits itself" {
+      // The deliberate exception to this whole file. themesPath goes inside the opaque reveal.js
+      // options object, so kslides never sees it as a URL and the menu plugin resolves it against
+      // the page itself. Adding a walk here would double up on whatever the author already wrote.
+      // Pinned so a later sweep through the path resolvers does not "fix" it into a bug.
+      val html =
+        nestedDeckHtml {
+          presentationConfig {
+            enableMenu = true
+            menuConfig { themesPath = "css/theme/" }
+          }
+        }
+      html shouldContain "css/theme/"
+      html shouldNotContain "../css/theme/"
     }
 
     "the favicon link is configurable, and blank emits nothing" {

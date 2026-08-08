@@ -43,6 +43,36 @@ class FollowAlongTest : StringSpec() {
       html shouldContain FollowAlong.FOLLOW_PATH
     }
 
+    "the presenter client carries its token across in-deck links" {
+      // A corner link to another deck is a full page load, and the new page reads its role from the
+      // query string — so without this the presenter silently lands as a viewer. The rules it
+      // encodes are asserted here because they are all easy to lose in an edit: skip in-page '#'
+      // navigation (never reloads), skip cross-origin (must not leak the token), and skip a link
+      // that already carries it (no double-append).
+      val html = generatePage(deck(follow = true), useHttp = true)
+      html shouldContain "carryTokenAcrossLinks"
+      html shouldContain "a[href]"
+      html shouldContain "location.origin"
+      html shouldContain FollowAlong.PRESENT_PARAM
+
+      // Injected as page source rather than executed here, so this is a wiring check — the
+      // navigation itself was verified in a browser across two decks.
+      html shouldContain "DOMContentLoaded"
+    }
+
+    "the injected client survives the XML serializer that writes it into the page" {
+      // Inline scripts pass through an XML parser during DOM serialization, so a bare '&' or '<'
+      // in the source corrupts the page. Both are spelled around (hence AMP, and forEach instead
+      // of an indexed loop) — this catches a reintroduction, which would otherwise only show up
+      // as a deck that silently stops navigating.
+      val script =
+        generatePage(deck(follow = true, dev = true), useHttp = true)
+          .substringAfter("carryTokenAcrossLinks")
+          .substringBefore("</script>")
+      script shouldNotContain "&&"
+      script shouldNotContain " < "
+    }
+
     "a configured presenterToken is used verbatim" {
       deckKSlides(token = "my-token").outputConfig.followAlongToken shouldBe "my-token"
     }
