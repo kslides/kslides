@@ -29,10 +29,53 @@ internal object Page {
   private val codeRegex = Regex("\\s*<code.*>\\s*")
 
   /**
+   * What one page render needs: the deck, the output mode, and the two prefixes that follow from
+   * where the page will sit. Built once per [generatePage] and handed to the builders, so both
+   * prefixes and both resolution rules are declared next to the code that uses them.
+   *
    * @param rootPrefix the walk from this page back to the output root — `"/"` under HTTP, `"../"`
-   *   per directory level for a filesystem deck, empty at the root. Everything root-relative the
-   *   page emits is built from it: reveal.js asset links, the favicon, and author-supplied
-   *   corner/logo images here; iframe/image srcs via [Presentation.renderRootPrefix].
+   *   per directory level for a filesystem deck, empty at the root.
+   */
+  private class RenderContext(
+    val p: Presentation,
+    val useHttp: Boolean,
+    val rootPrefix: String,
+  ) {
+    val config: PresentationConfig = p.finalConfig
+
+    // reveal.js assets are served from the classpath under a fixed directory in HTTP mode, and
+    // copied to the configurable staticRootDir on disk.
+    private val assetDir = if (useHttp) KSlides.REVEAL_ROOT_DIR else p.kslides.outputConfig.staticRootDir
+
+    /** Where the reveal.js assets sit, relative to this page. */
+    val srcPrefix = "$rootPrefix$assetDir".ensureSuffix("/")
+
+    /**
+     * Resolve an author-supplied asset path against the output root, the way a bare path reads
+     * everywhere else in kslides, so one value works from a deck at any depth. A path the author
+     * already anchored — absolute or protocol-relative (`/`, `//`), external, or a `data:` URI —
+     * is their own business and passes through untouched.
+     *
+     * This is the canonical rule for author-supplied paths.
+     */
+    fun String.fromOutputRoot(): String {
+      val anchored = startsWith("/") || startsWith("http") || startsWith("data:")
+      return if (anchored) this else "$rootPrefix$this"
+    }
+
+    /**
+     * Resolve a reveal.js asset filename against [srcPrefix]. Narrower than [fromOutputRoot] — it
+     * anchors to the asset directory rather than the output root, and treats only an `http` value
+     * as already anchored, so an absolute path lands under the asset directory.
+     */
+    fun String.fromAssetDir(): String = if (startsWith("http")) this else "$srcPrefix$this"
+  }
+
+  /**
+   * @param rootPrefix the walk from this page back to the output root (see [RenderContext]).
+   *   Everything root-relative the page emits is built from it: reveal.js asset links, the
+   *   favicon, and author-supplied corner/logo images here; iframe/image srcs via
+   *   [Presentation.renderRootPrefix].
    */
   internal fun generatePage(
     p: Presentation,
@@ -47,18 +90,14 @@ internal object Page {
       p.codeStyleClasses.clear()
       p.mermaidUsed = false
 
-      // reveal.js assets are served from the classpath under a fixed directory in HTTP mode, and
-      // copied to the configurable staticRootDir on disk.
-      val assetDir = if (useHttp) KSlides.REVEAL_ROOT_DIR else p.kslides.outputConfig.staticRootDir
-      val srcPrefix = "$rootPrefix$assetDir".ensureSuffix("/")
       // Hand the bare walk to slide content, which has no parameter channel to receive it.
       p.renderRootPrefix = rootPrefix
+      val ctx = RenderContext(p, useHttp, rootPrefix)
       val htmldoc =
         document {
-          val config = p.finalConfig
           append.html {
-            generateHead(p, config, srcPrefix, rootPrefix)
-            generateBody(p, config, srcPrefix, rootPrefix, useHttp)
+            ctx.generateHead(this)
+            ctx.generateBody(this)
           }
         }
 
@@ -170,205 +209,181 @@ internal object Page {
     }
 
   @Suppress("LongMethod")
-  private fun HTML.generateHead(
-    p: Presentation,
-    config: PresentationConfig,
-    srcPrefix: String,
-    rootPrefix: String,
-  ) = head {
-    meta {
-      charset = "utf-8"
-    }
-    meta {
-      name = "apple-mobile-web-app-capable"
-      content = "yes"
-    }
-    meta {
-      name = "apple-mobile-web-app-status-bar-style"
-      content = "black-translucent"
-    }
-    meta {
-      name = "viewport"
-      content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    }
-
-    if (config.title.isNotBlank())
-      title { +config.title }
-
-    if (config.gaPropertyId.isNotBlank()) {
-      rawHtml("\n")
-      script {
-        async = true
-        src = "https://www.googletagmanager.com/gtag/js?id=${config.gaPropertyId}"
+  private fun RenderContext.generateHead(html: HTML) =
+    html.head {
+      meta {
+        charset = "utf-8"
       }
-      rawHtml("\n\n\t\t")
-      script {
+      meta {
+        name = "apple-mobile-web-app-capable"
+        content = "yes"
+      }
+      meta {
+        name = "apple-mobile-web-app-status-bar-style"
+        content = "black-translucent"
+      }
+      meta {
+        name = "viewport"
+        content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      }
+
+      if (config.title.isNotBlank())
+        title { +config.title }
+
+      if (config.gaPropertyId.isNotBlank()) {
+        rawHtml("\n")
+        script {
+          async = true
+          src = "https://www.googletagmanager.com/gtag/js?id=${config.gaPropertyId}"
+        }
+        rawHtml("\n\n\t\t")
+        script {
+          rawHtml("\n")
+          rawHtml(
+            """
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${config.gaPropertyId}');
+            """.trimIndent().prependIndent("\t\t\t"),
+          )
+          rawHtml("\n\t\t")
+        }
+      }
+
+      rawHtml("\n")
+      p.cssFiles.forEach {
+        link(rel = "stylesheet") {
+          href = it.filename.fromAssetDir()
+          if (it.id.isNotBlank())
+            id = it.id
+        }
+      }
+
+      // customTheme{} overrides, layered directly after the stylesheet links so they win over the
+      // base theme while slides.css and css{} rules (emitted below) can still override them.
+      writeStyleToHead(p.indentedCustomThemeCss, styleId = "custom-theme")
+
+      rawHtml("\n")
+      // Author-supplied: a favicon.ico at the output root, or on the classpath under
+      // OutputConfig.defaultHttpRoot, which HTTP serves at "/".
+      val faviconHref = "${rootPrefix}favicon.ico"
+      link {
+        rel = "shortcut icon"
+        href = faviconHref
+        type = "image/x-icon"
+      }
+      link {
+        rel = "icon"
+        href = faviconHref
+        type = "image/x-icon"
+      }
+
+      rawHtml("\n")
+      // No media="screen" scoping: author styles must also apply when printing (?print-pdf /
+      // kslides-export), where screen-only styles would silently vanish from the PDF.
+      style {
         rawHtml("\n")
         rawHtml(
-          """
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${config.gaPropertyId}');
-          """.trimIndent().prependIndent("\t\t\t"),
+          Page::class.java.classLoader
+            .getResource("slides.css")
+            ?.readText()
+            ?.lines()
+            ?.joinToString("\n") { "\t\t$it" }
+            ?.prependIndent("\t")
+            ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"),
         )
         rawHtml("\n\t\t")
       }
+
+      writeCssToHead(p.css)
     }
-
-    rawHtml("\n")
-    p.cssFiles.forEach {
-      link(rel = "stylesheet") {
-        href = if (it.filename.startsWith("http")) it.filename else "$srcPrefix${it.filename}"
-        if (it.id.isNotBlank())
-          id = it.id
-      }
-    }
-
-    // customTheme{} overrides, layered directly after the stylesheet links so they win over the
-    // base theme while slides.css and css{} rules (emitted below) can still override them.
-    writeStyleToHead(p.indentedCustomThemeCss, styleId = "custom-theme")
-
-    rawHtml("\n")
-    // Author-supplied: a favicon.ico at the output root, or on the classpath under
-    // OutputConfig.defaultHttpRoot, which HTTP serves at "/".
-    val faviconHref = "${rootPrefix}favicon.ico"
-    link {
-      rel = "shortcut icon"
-      href = faviconHref
-      type = "image/x-icon"
-    }
-    link {
-      rel = "icon"
-      href = faviconHref
-      type = "image/x-icon"
-    }
-
-    rawHtml("\n")
-    // No media="screen" scoping: author styles must also apply when printing (?print-pdf /
-    // kslides-export), where screen-only styles would silently vanish from the PDF.
-    style {
-      rawHtml("\n")
-      rawHtml(
-        Page::class.java.classLoader
-          .getResource("slides.css")
-          ?.readText()
-          ?.lines()
-          ?.joinToString("\n") { "\t\t$it" }
-          ?.prependIndent("\t")
-          ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"),
-      )
-      rawHtml("\n\t\t")
-    }
-
-    writeCssToHead(p.css)
-  }
-
-  /**
-   * Resolve an author-supplied asset path against the output root, the way a bare path reads
-   * everywhere else in kslides, so one value works from a deck at any depth. A path the author
-   * already anchored — absolute or protocol-relative (`/`, `//`), external, or a `data:` URI — is
-   * their own business and passes through untouched.
-   *
-   * This is the canonical rule for author-supplied paths. The narrower `startsWith("http")` guards
-   * on the css/js/plugin links below predate it and anchor to the reveal.js asset directory rather
-   * than the output root.
-   */
-  private fun String.fromOutputRoot(rootPrefix: String): String {
-    val anchored = startsWith("/") || startsWith("http") || startsWith("data:")
-    return if (anchored) this else "$rootPrefix$this"
-  }
 
   @Suppress("CyclomaticComplexMethod", "LongMethod")
-  private fun HTML.generateBody(
-    p: Presentation,
-    config: PresentationConfig,
-    srcPrefix: String,
-    rootPrefix: String,
-    useHttp: Boolean,
-  ) = body {
-    div("reveal") {
-      if (config.topLeftHref.isNotBlank()) {
-        a(href = config.topLeftHref, target = config.topLeftTarget.htmlVal, classes = "top-left") {
-          if (config.topLeftTitle.isNotBlank())
-            title = config.topLeftTitle
-          if (config.topLeftSvg.isNotBlank())
-            rawHtml(config.topLeftSvg)
-          if (config.topLeftSvgSrc.isNotBlank())
-            img(classes = config.topLeftSvgClass) {
-              src = config.topLeftSvgSrc.fromOutputRoot(rootPrefix)
-              if (config.topLeftSvgStyle.isNotBlank())
-                style = config.topLeftSvgStyle
-            }
-          if (config.topLeftText.isNotBlank())
-            +config.topLeftText
-        }
-      }
-
-      if (config.topRightHref.isNotBlank()) {
-        rawHtml("\n\t\t\t")
-        a(href = config.topRightHref, target = config.topRightTarget.htmlVal, classes = "top-right") {
-          if (config.topRightTitle.isNotBlank())
-            title = config.topRightTitle
-          if (config.topRightSvg.isNotBlank())
-            rawHtml(config.topRightSvg)
-          if (config.topRightSvgSrc.isNotBlank())
-            img(classes = config.topRightSvgClass) {
-              src = config.topRightSvgSrc.fromOutputRoot(rootPrefix)
-              if (config.topRightSvgStyle.isNotBlank())
-                style = config.topRightSvgStyle
-            }
-          if (config.topRightText.isNotBlank())
-            +config.topRightText
-        }
-      }
-
-      config.customThemeConfig.logoValue?.let { logo ->
-        rawHtml("\n\t\t\t")
-        // The image is ours to resolve; the link target, like the corner hrefs, is not.
-        val logoSrc = logo.src.fromOutputRoot(rootPrefix)
-        if (logo.href.isBlank())
-          img(classes = "kslides-logo") { src = logoSrc }
-        else
-          a(href = logo.href, classes = "kslides-logo") {
-            img { src = logoSrc }
+  private fun RenderContext.generateBody(html: HTML) =
+    html.body {
+      div("reveal") {
+        if (config.topLeftHref.isNotBlank()) {
+          a(href = config.topLeftHref, target = config.topLeftTarget.htmlVal, classes = "top-left") {
+            if (config.topLeftTitle.isNotBlank())
+              title = config.topLeftTitle
+            if (config.topLeftSvg.isNotBlank())
+              rawHtml(config.topLeftSvg)
+            if (config.topLeftSvgSrc.isNotBlank())
+              img(classes = config.topLeftSvgClass) {
+                src = config.topLeftSvgSrc.fromOutputRoot()
+                if (config.topLeftSvgStyle.isNotBlank())
+                  style = config.topLeftSvgStyle
+              }
+            if (config.topLeftText.isNotBlank())
+              +config.topLeftText
           }
+        }
+
+        if (config.topRightHref.isNotBlank()) {
+          rawHtml("\n\t\t\t")
+          a(href = config.topRightHref, target = config.topRightTarget.htmlVal, classes = "top-right") {
+            if (config.topRightTitle.isNotBlank())
+              title = config.topRightTitle
+            if (config.topRightSvg.isNotBlank())
+              rawHtml(config.topRightSvg)
+            if (config.topRightSvgSrc.isNotBlank())
+              img(classes = config.topRightSvgClass) {
+                src = config.topRightSvgSrc.fromOutputRoot()
+                if (config.topRightSvgStyle.isNotBlank())
+                  style = config.topRightSvgStyle
+              }
+            if (config.topRightText.isNotBlank())
+              +config.topRightText
+          }
+        }
+
+        config.customThemeConfig.logoValue?.let { logo ->
+          rawHtml("\n\t\t\t")
+          // The image is ours to resolve; the link target, like the corner hrefs, is not.
+          val logoSrc = logo.src.fromOutputRoot()
+          if (logo.href.isBlank())
+            img(classes = "kslides-logo") { src = logoSrc }
+          else
+            a(href = logo.href, classes = "kslides-logo") {
+              img { src = logoSrc }
+            }
+        }
+
+        rawHtml("\n")
+        div("slides") {
+          p.slides.forEach { slide -> slide.content(this, slide, useHttp) }
+        }
       }
 
-      rawHtml("\n")
-      div("slides") {
-        p.slides.forEach { slide -> slide.content(this, slide, useHttp) }
+      rawHtml("\n\t\n")
+      p.jsFiles.forEach { jsFile ->
+        rawHtml("\t")
+        script { src = jsFile.filename.fromAssetDir() }
+        rawHtml("\n")
       }
-    }
 
-    rawHtml("\n\t\n")
-    p.jsFiles.forEach { jsFile ->
-      rawHtml("\t")
-      script { src = if (jsFile.filename.startsWith("http")) jsFile.filename else "$srcPrefix${jsFile.filename}" }
-      rawHtml("\n")
-    }
-
-    rawHtml("\n\t")
-    script {
-      rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config, srcPrefix)}\t\t});\n\n")
-    }
-
-    // Only decks that actually contain a mermaid{} block pay for the Mermaid runtime. The flag
-    // is set while the slides render above, which happens before this point in the body builder.
-    if (p.mermaidUsed) {
-      rawHtml("\n\t")
-      script { src = "$srcPrefix${Mermaid.MERMAID_JS_PATH}" }
       rawHtml("\n\t")
       script {
-        rawHtml("\n${Mermaid.initScript(config.effectiveTheme).prependIndent("\t\t")}\n\t")
+        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config, srcPrefix)}\t\t});\n\n")
       }
-      rawHtml("\n")
-    }
 
-    // Shared injection point for HTTP-only client scripts (live reload, follow-along). Never
-    // emitted for filesystem output; each script is gated by its own output{} flag.
-    injectClientScripts(p, useHttp)
-  }
+      // Only decks that actually contain a mermaid{} block pay for the Mermaid runtime. The flag
+      // is set while the slides render above, which happens before this point in the body builder.
+      if (p.mermaidUsed) {
+        rawHtml("\n\t")
+        script { src = "$srcPrefix${Mermaid.MERMAID_JS_PATH}" }
+        rawHtml("\n\t")
+        script {
+          rawHtml("\n${Mermaid.initScript(config.effectiveTheme).prependIndent("\t\t")}\n\t")
+        }
+        rawHtml("\n")
+      }
+
+      // Shared injection point for HTTP-only client scripts (live reload, follow-along). Never
+      // emitted for filesystem output; each script is gated by its own output{} flag.
+      injectClientScripts(p, useHttp)
+    }
 
   /** Emits the HTTP-only client scripts whose output{} flags are enabled. */
   private fun BODY.injectClientScripts(
