@@ -59,6 +59,14 @@ class Presentation(
   // content) to conditionally include the bundled Mermaid runtime, init snippet, and head CSS.
   // Cleared at the start of every render (renders are serialized on KSlides.renderLock).
   internal var mermaidUsed = false
+
+  // Per-render walk from this deck's page back to the output root: "/" under HTTP, "../" per
+  // directory level for filesystem output, empty for a deck at the root. Set by Page.generatePage
+  // from the value its caller derived when placing the page, and read while slide content renders
+  // by anything emitting a root-relative URL (see DslSlide's iframe srcs). Deriving it once, where
+  // the page's own location is known, is what keeps a page and the srcs it emits in agreement.
+  // Renders are serialized on KSlides.renderLock.
+  internal var renderRootPrefix = "/"
   internal lateinit var finalConfig: PresentationConfig
 
   /**
@@ -381,13 +389,6 @@ class Presentation(
       ),
     )
   }
-
-  /**
-   * The `../` walk from this deck's generated page back to [OutputConfig.outputDir]; empty for a
-   * deck at the output root. Shares [KSlides.deckLocation] with the writer that places the page, so
-   * a page and the srcs it emits cannot disagree about their depth.
-   */
-  internal val dotDotPrefix: String get() = "../".repeat(KSlides.deckLocation(path).first.size)
 
   internal fun validatePath() {
     require(path.removePrefix("/") !in kslides.kslidesConfig.httpStaticRoots.map { it.dirname }) {

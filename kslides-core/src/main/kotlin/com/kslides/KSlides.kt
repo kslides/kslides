@@ -321,25 +321,22 @@ class KSlides : AutoCloseable {
     internal val logger = KotlinLogging.logger {}
 
     /**
-     * Resolve the file presentation [key] is written to under [outputDir], together with the
-     * prefix its asset links need in order to reach [rootPrefix].
+     * Resolve the file presentation [key] is written to under [outputDir], together with the walk
+     * back up to [outputDir] that everything root-relative on that page is built from.
      *
-     * Asset links are relative to the generated page, so a deck nested in a subdirectory has to
-     * walk back up to [outputDir] before naming an asset. The number of levels comes from the
-     * deck's own key and never from [outputDir] — the page lives at `<outputDir>/<key>` and the
-     * assets at `<outputDir>/<rootPrefix>`, so a multi-segment [outputDir] such as `build/docs`
-     * adds no distance between the two.
+     * The number of levels comes from the deck's own key and never from [outputDir] — the page
+     * lives at `<outputDir>/<key>` and the content it references at `<outputDir>/...`, so a
+     * multi-segment [outputDir] such as `build/docs` adds no distance between the two.
      *
      * The key's own shape decides the depth — see [deckLocation].
      */
     internal fun outputTarget(
       outputDir: String,
       key: String,
-      rootPrefix: String,
     ): Pair<File, String> {
       val (dirElems, fileName) = deckLocation(key)
       return File((listOf(outputDir) + dirElems + fileName).toPath(addPrefix = false, addTrailing = false)) to
-        "${"../".repeat(dirElems.size)}$rootPrefix"
+        "../".repeat(dirElems.size)
     }
 
     /**
@@ -363,25 +360,24 @@ class KSlides : AutoCloseable {
       require(config.outputDir.isNotBlank()) { "outputDir value must not be empty" }
 
       val outputDir = config.outputDir
-      val rootPrefix = config.staticRootDir.ensureSuffix("/")
 
       // Create directory (including any missing parents) if absent
       if (!mkdir(outputDir)) logger.warn { "Unable to create output directory: $outputDir" }
 
       config.kslides.presentationMap
         .forEach { (key, p) ->
-          val (file, srcPrefix) = outputTarget(outputDir, key, rootPrefix)
+          val (file, rootPrefix) = outputTarget(outputDir, key)
           // Create the containing directory (including any missing parents) if absent. Nested
           // ".html" decks need this too — they cannot rely on a sibling directory deck having
           // been declared first to create it for them.
           if (!mkdir(file.parent)) logger.warn { "Unable to create directory: ${file.parent}" }
           logger.info { "Writing presentation $key to $file" }
-          file.writeText(generatePage(p, false, srcPrefix))
+          file.writeText(generatePage(p, false, rootPrefix))
         }
     }
 
     // Hardcoded for HTTP since the reveal.js assets are shipped on the classpath in the jar.
-    private const val REVEAL_ROOT_DIR = "revealjs"
+    internal const val REVEAL_ROOT_DIR = "revealjs"
 
     private fun appModule(config: OutputConfig): Application.() -> Unit =
       {
@@ -490,7 +486,9 @@ class KSlides : AutoCloseable {
         .forEach { (key, p) ->
           get(key) {
             respondWith {
-              generatePage(p, true, "/$REVEAL_ROOT_DIR")
+              // Every route is registered at the root of the routing tree, so pages address
+              // assets and iframe content absolutely regardless of how deep the deck's path is.
+              generatePage(p, true, "/")
             }
           }
         }
