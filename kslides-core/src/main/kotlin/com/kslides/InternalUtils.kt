@@ -5,7 +5,8 @@ import java.io.File
 
 /**
  * Module-private utility helpers used across kslides-core: indentation handling for `include()`,
- * line-range parsing for code-snippet highlighting, file output, and small string predicates.
+ * line-range parsing for code-snippet highlighting, file output, small string predicates, and the
+ * path-resolution rule every emitted URL goes through ([resolveAgainst]).
  * Implementation detail — not part of the public API.
  */
 @Suppress("TooManyFunctions")
@@ -215,44 +216,35 @@ internal object InternalUtils {
 
   internal fun String.isUrl() = lowercase().matches(httpRegex)
 
-  /**
-   * Whether the author already anchored this path themselves: absolute or protocol-relative
-   * (`/foo`, `//cdn/foo`), an `http(s)` URL, or a `data:` URI. Such a value is emitted as written;
-   * anything else is relative to something and gets a prefix.
-   *
-   * Shared by every path resolver so they agree on what "anchored" means, differing only in which
-   * prefix they apply — [fromOutputRoot] uses the walk back to the output root, and `Page`'s
-   * `fromAssetDir` the reveal.js asset directory.
-   */
-  internal fun String.isAnchoredPath() = startsWith("/") || startsWith("data:") || isUrl()
+  // Whether the author already anchored this path themselves: absolute or protocol-relative
+  // ("/foo", "//cdn/foo"), an http(s) URL, or a data: URI.
+  private fun String.isAnchoredPath() = startsWith("/") || startsWith("data:") || isUrl()
 
   /**
-   * Resolve an author-supplied asset path against the output root, the way a bare path reads
-   * everywhere else in kslides, so one value works from a deck at any depth. [rootPrefix] is the
-   * render's walk back to that root (see [com.kslides.Presentation.renderRootPrefix]).
+   * kslides' one path-resolution rule: a relative path is resolved against [prefix], and a path the
+   * author already anchored is emitted as written.
    *
-   * A path the author already anchored ([isAnchoredPath]) is their own business and passes through
-   * untouched.
-   *
-   * This is the canonical rule for author-supplied paths, shared by the page builders in
-   * [com.kslides.Page] and the slide-background attributes in
-   * [com.kslides.config.SlideConfig.applyConfig].
+   * Every URL the renderer emits goes through this, differing only in which prefix is passed —
+   * the render's walk back to the output root for author-supplied paths (see
+   * [com.kslides.Presentation.renderRootPrefix]), or the reveal.js asset directory for the
+   * stylesheet and script filenames in [com.kslides.Presentation.cssFiles] /
+   * [com.kslides.Presentation.jsFiles].
    */
-  internal fun String.fromOutputRoot(rootPrefix: String): String = if (isAnchoredPath()) this else "$rootPrefix$this"
+  internal fun String.resolveAgainst(prefix: String): String = if (isAnchoredPath()) this else "$prefix$this"
 
   /**
-   * [fromOutputRoot] for an attribute that takes a comma-separated list of sources, resolving each
+   * [resolveAgainst] for an attribute that takes a comma-separated list of sources, resolving each
    * one. Sources are trimmed, since a leading space would otherwise land between the prefix and the
    * path.
    *
    * A `data:` URI carries a comma by construction, so such a value is passed through whole rather
-   * than split — splitting it would strip the anchoring [fromOutputRoot] promises to honor.
+   * than split — splitting it would strip the anchoring [resolveAgainst] promises to honor.
    */
-  internal fun String.fromOutputRootList(rootPrefix: String): String =
+  internal fun String.resolveListAgainst(prefix: String): String =
     if (startsWith("data:"))
       this
     else
-      split(",").joinToString(",") { it.trim().fromOutputRoot(rootPrefix) }
+      split(",").joinToString(",") { it.trim().resolveAgainst(prefix) }
 
   internal fun String.stripBraces() = trimStart().trimEnd().trimStart('[', '(').trimEnd(']', ')')
 

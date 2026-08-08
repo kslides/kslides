@@ -1,7 +1,7 @@
 package com.kslides.config
 
-import com.kslides.InternalUtils.fromOutputRoot
-import com.kslides.InternalUtils.fromOutputRootList
+import com.kslides.InternalUtils.resolveAgainst
+import com.kslides.InternalUtils.resolveListAgainst
 import com.kslides.KSlidesDslMarker
 import com.kslides.Speed
 import com.kslides.Transition
@@ -211,13 +211,13 @@ class SlideConfig : AbstractConfig() {
 
     if (background.isNotBlank())
       section.attributes["data-background"] =
-        if (imagePathRegex.containsMatchIn(background)) background.fromOutputRoot(rootPrefix) else background
+        if (imagePathRegex.containsMatchIn(background)) background.resolveAgainst(rootPrefix) else background
 
     if (backgroundColor.isNotBlank())
       section.attributes["data-background-color"] = backgroundColor
 
     if (backgroundImage.isNotBlank())
-      section.attributes["data-background-image"] = backgroundImage.fromOutputRoot(rootPrefix)
+      section.attributes["data-background-image"] = backgroundImage.resolveAgainst(rootPrefix)
 
     if (backgroundSize.isNotBlank())
       section.attributes["data-background-size"] = backgroundSize
@@ -237,14 +237,14 @@ class SlideConfig : AbstractConfig() {
       section.attributes["data-background-transition"] = backgroundTransition.asInOut()
 
     if (backgroundIframe.isNotBlank()) {
-      section.attributes["data-background-iframe"] = backgroundIframe.fromOutputRoot(rootPrefix)
+      section.attributes["data-background-iframe"] = backgroundIframe.resolveAgainst(rootPrefix)
 
       if (backgroundInteractive)
         section.attributes["data-background-interactive"] = ""
     }
 
     if (backgroundVideo.isNotBlank()) {
-      section.attributes["data-background-video"] = backgroundVideo.fromOutputRootList(rootPrefix)
+      section.attributes["data-background-video"] = backgroundVideo.resolveListAgainst(rootPrefix)
       if (backgroundVideoLoop)
         section.attributes["data-background-video-loop"] = ""
       if (backgroundVideoMuted)

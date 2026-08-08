@@ -49,7 +49,9 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   inside Markdown or HTML slide content, which kslides hands to reveal.js
   unparsed; and `menuConfig { themesPath }`, which names a directory inside the
   reveal.js assets. `cssFiles` and `jsFiles` are likewise relative to the
-  reveal.js asset directory — anchor the value yourself to point elsewhere.
+  reveal.js asset directory; anchoring a value yourself points it elsewhere, but
+  note that the only non-URL anchor is a site-root-absolute `/…`, which does not
+  survive publishing under a path prefix.
 
 ### Fixed
 

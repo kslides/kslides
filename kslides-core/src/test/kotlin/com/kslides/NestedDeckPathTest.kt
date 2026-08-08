@@ -118,7 +118,7 @@ class NestedDeckPathTest : StringSpec() {
       html shouldContain """data-background-video="data:video/mp4;base64,AAAA""""
     }
 
-    "an anchored value is emitted as written, wherever it is used" {
+    "an anchored value is emitted as written; one that merely starts with http is not" {
       val kslides =
         kslidesTest {
           presentation {
@@ -127,6 +127,10 @@ class NestedDeckPathTest : StringSpec() {
               // Uppercase scheme: anchored, and must not collect a "../" walk.
               topLeftHref = "https://example.com"
               topLeftSvgSrc = "HTTPS://cdn.example.com/gh.svg"
+              // "http" is a prefix of this filename, not a scheme — the old guard called it
+              // anchored and left it bare, so it 404'd from a nested deck.
+              topRightHref = "./"
+              topRightSvgSrc = "http-icons/gh.svg"
             }
             // Site-absolute, through the asset-directory resolver rather than the output root.
             cssFiles += CssFile("/css/mine.css")
@@ -136,26 +140,9 @@ class NestedDeckPathTest : StringSpec() {
         }
       val html = generatePage(kslides.presentation("/talks/deck.html"), useHttp = false, rootPrefix = "../")
       html shouldContain """src="HTTPS://cdn.example.com/gh.svg""""
+      html shouldContain """src="../http-icons/gh.svg""""
       html shouldContain """href="/css/mine.css""""
       html shouldContain """src="/js/mine.js""""
-    }
-
-    "a relative path that merely starts with http is still relative" {
-      // "http" is a prefix of this filename, not a scheme — the old guard called it anchored and
-      // left it bare, so it 404'd from a nested deck.
-      val kslides =
-        kslidesTest {
-          presentation {
-            path = "talks/deck.html"
-            presentationConfig {
-              topLeftHref = "./"
-              topLeftSvgSrc = "http-icons/gh.svg"
-            }
-            dslSlide { content { h2 { +"Deck" } } }
-          }
-        }
-      val html = generatePage(kslides.presentation("/talks/deck.html"), useHttp = false, rootPrefix = "../")
-      html shouldContain """src="../http-icons/gh.svg""""
     }
 
     "HTTP mode addresses the output root absolutely, from any deck depth" {
