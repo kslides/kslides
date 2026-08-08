@@ -167,8 +167,11 @@ class NestedDeckPathTest : StringSpec() {
     }
 
     "the favicon link is configurable, and blank emits nothing" {
-      // Default: unchanged markup, and the path resolves like any other author asset.
-      nestedDeckHtml { } shouldContain """<link href="../favicon.ico" rel="icon" type="image/x-icon">"""
+      // Default: one link, and the path resolves like any other author asset.
+      val default = nestedDeckHtml { }
+      default shouldContain """<link href="../favicon.ico" rel="icon" type="image/x-icon">"""
+      // Not two — "shortcut icon" was an IE alias every other browser reads as plain "icon".
+      default shouldNotContain "shortcut icon"
 
       // The type hint is derived from the filename, not special-cased to .ico.
       nestedDeckHtml { presentationConfig { favicon = "images/icon.png" } } shouldContain

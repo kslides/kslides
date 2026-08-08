@@ -264,14 +264,11 @@ internal object Page {
       val favicon = config.favicon
       if (favicon.isNotBlank()) {
         rawHtml("\n")
-        val faviconHref = favicon.resolveAgainst(rootPrefix)
-        val faviconType = ContentType.fromFilePath(favicon).firstOrNull()?.toString()
-        listOf("shortcut icon", "icon").forEach { iconRel ->
-          link(rel = iconRel) {
-            href = faviconHref
-            if (faviconType != null)
-              type = faviconType
-          }
+        // One link: reveal.js's own template pairs this with rel="shortcut icon", an IE ≤10 alias
+        // every other browser tokenizes to plain "icon".
+        link(rel = "icon") {
+          href = favicon.resolveAgainst(rootPrefix)
+          ContentType.fromFilePath(favicon).firstOrNull()?.let { type = it.toString() }
         }
       }
 

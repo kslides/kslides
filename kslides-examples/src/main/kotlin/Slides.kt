@@ -1150,7 +1150,7 @@ fun exampleSlides(): KSlides.() -> Unit =
             p {
               +"reveal.js comes with some built-in themes:"
               br {}
-              // The Theme enum includes all the built in themes
+              // The Theme enum includes all the built-in themes
               PresentationTheme.entries
                 .forEachIndexed { index, theme ->
                   a {

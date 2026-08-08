@@ -24,9 +24,9 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   `css { }`, which remains the escape hatch and still wins at equal specificity.
 
 - `presentationConfig { favicon = "images/icon.png" }` sets the browser tab icon,
-  and **`favicon = ""` omits the `<link>` elements entirely**. kslides ships no
-  icon of its own, so every page previously asked for a `favicon.ico` that may
-  not exist, with no way to point elsewhere or opt out. A relative value resolves
+  and **`favicon = ""` omits the `<link>` entirely**. kslides ships no icon of its
+  own, so every page previously asked for a `favicon.ico` that may not exist, with
+  no way to point elsewhere or opt out. A relative value resolves
   against the output root like any other author asset, so one path works from a
   deck at any depth; the `type` hint is derived from the filename rather than
   hardcoded to `image/x-icon`, and omitted when the name gives nothing to derive
@@ -41,6 +41,10 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Changed
 
+- Pages emit one favicon `<link>` instead of two. The `rel="shortcut icon"` that
+  accompanied `rel="icon"` was an IE ≤10 alias — `shortcut` is not a registered
+  link relation, so every browser since tokenizes it to plain `icon`, making the
+  two elements the same link twice.
 - Slide background assets — `slideConfig`'s `backgroundImage`, `backgroundIframe`,
   and `backgroundVideo` — now resolve against the output root, completing the
   change below. reveal.js resolves these against the page, so a relative value
