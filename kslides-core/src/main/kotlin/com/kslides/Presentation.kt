@@ -1,6 +1,7 @@
 package com.kslides
 
 import com.kslides.InternalUtils.indentInclude
+import com.kslides.InternalUtils.toXmlSafeEntities
 import com.kslides.config.CopyCodeValues
 import com.kslides.config.PresentationConfig
 import com.kslides.config.SlideConfig
@@ -722,6 +723,7 @@ private fun SECTION.processMarkdown(
             markdown
               .indentInclude(config.indentToken)
               .let { if (!config.disableTrimIndent) it.trimIndent() else it }
+              .toXmlSafeEntities()
               .also { rawHtml("\n$it\n") }
           }
       }
@@ -747,6 +749,7 @@ private fun DIV.processHtml(
       .private_htmlBlock()
       .indentInclude(config.indentToken)
       .let { if (!config.disableTrimIndent) it.trimIndent() else it }
+      .toXmlSafeEntities()
       .also { rawHtml("\n$it") }
   }.also { rawHtml("\n") }
 }
