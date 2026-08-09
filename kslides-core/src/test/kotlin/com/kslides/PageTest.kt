@@ -44,10 +44,11 @@ class PageTest : StringSpec() {
             presentation { markdownSlide { content { "# Tom & Jerry\n\na&nbsp;b &mdash; c" } } }
           }.presentation("/"),
         )
-      // reveal.js reads the template as raw text, so markdown must see exactly what was typed.
+      // reveal.js reads the template as raw text, so Markdown must see exactly what was typed --
+      // entities included. The browser decodes them when reveal hands the rendered HTML to
+      // innerHTML, so the author still gets the space and the dash they asked for.
       md shouldContain "# Tom & Jerry"
-      md shouldContain "\u00A0"    // &nbsp; arrives as the character it names
-      md shouldContain "—"          // &mdash; likewise
+      md shouldContain "a&nbsp;b &mdash; c"
 
       val html =
         Page.generatePage(
@@ -58,6 +59,39 @@ class PageTest : StringSpec() {
       // Here the content really is DOM, so the ampersand stays escaped -- and the tag stays a tag,
       // which escaping wholesale would have destroyed.
       html shouldContain """<p class="x">Tom &amp; Jerry</p>"""
+    }
+
+    "a bare < in Markdown is no longer fatal, which is what a Kotlin deck writes" {
+      // The template is a text node now, so nothing parses it as XML. Both of these aborted the
+      // whole render before -- and fencing never rescued the generics either.
+      val md =
+        Page.generatePage(
+          kslidesTest {
+            presentation {
+              markdownSlide {
+                content { "# T\n\nval x: List<String> = listOf()\n\n```kotlin\nmapOf<String, List<Int>>()\n```" }
+              }
+            }
+          }.presentation("/"),
+        )
+      md shouldContain "val x: List<String> = listOf()"
+      md shouldContain "mapOf<String, List<Int>>()"
+    }
+
+    "a slide can write about </script> without truncating its own template" {
+      // The one sequence a raw-text element still forbids is its own end tag -- the browser's
+      // tokenizer would close the template early and spill the rest of the slide into the page.
+      // reveal.js swaps the placeholder back before parsing, so this costs the author nothing.
+      val template =
+        Page
+          .generatePage(
+          kslidesTest {
+            presentation { markdownSlide { content { "# T\n\nClose it with `</script>` when done." } } }
+          }.presentation("/"),
+        ).substringAfter("text/template\">")
+          .substringBefore("</script>")
+      template shouldContain "__SCRIPT_END__"
+      template shouldContain "when done."
     }
 
     "element content survives an ampersand wherever it reaches the page" {

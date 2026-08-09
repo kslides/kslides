@@ -83,14 +83,20 @@ class IncludeTest : StringSpec() {
       // Regression, and the only level that catches it: escapeHtml4 named every entity it knew, so
       // an em dash became "&mdash;" and the XML parse on the way into the DOM threw
       // SAXParseException — taking down every deck rather than the one slide, since rendering is a
-      // single pass. Asserting on include()'s return value cannot reach that; the escaping contract
-      // itself is pinned at the function, in UtilsTest's fixIndents cases.
+      // single pass. Asserting on include()'s return value cannot reach that.
+      //
+      // Deliberately an htmlSlide: that is the last sink whose content is still parsed, so it is
+      // the only one that still exercises the escaping default. A markdownSlide would resolve to
+      // MarkdownSlide.include and quietly test nothing.
       withTempFile("val x = 1 // an — dash") { name ->
         generatePage(
           kslidesTest {
-            presentation { markdownSlide { content { "# T\n\n```\n${include(name)}\n```" } } }
+            presentation { htmlSlide { content { "<pre><code>${include(name)}</code></pre>" } } }
           }.presentation("/"),
-        ) shouldContain "—"
+          // Element content, so the serializer writes the dash back as an entity itself. The
+          // regression this guards is upstream of that: escapeHtml4 would put "&mdash;" into
+          // include()'s own output, and the parse would throw before reaching here.
+        ) shouldContain "an &mdash; dash"
       }
     }
   }

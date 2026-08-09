@@ -709,6 +709,10 @@ private fun DIV.renderDslSlide(
   processDsl(slide)
 }
 
+// reveal.js's Markdown plugin swaps this back to a literal end tag before parsing the template
+// (SCRIPT_END_PLACEHOLDER in plugin/markdown). Emitting it keeps the tag from closing the element.
+private const val SCRIPT_END_PLACEHOLDER = "__SCRIPT_END__"
+
 private fun SECTION.processMarkdown(
   s: MarkdownSlide,
   config: SlideConfig,
@@ -719,10 +723,19 @@ private fun SECTION.processMarkdown(
       .also { markdown ->
         if (markdown.isNotBlank())
           script("text/template") {
+            // A text node, not rawHtml: reveal.js reads this template with .textContent, so the
+            // Markdown must arrive exactly as typed -- not pre-escaped (see MarkdownSlide.include),
+            // and not filtered by the XML parse, which vetoes the bare '<' in "List<String>".
+            //
+            // The one sequence a raw-text element still forbids is its own end tag: the browser's
+            // tokenizer would close the template early and spill the rest of the slide into the
+            // page. reveal.js's Markdown plugin substitutes this placeholder back before parsing,
+            // so writing about </script> in a slide costs nothing.
             markdown
               .indentInclude(config.indentToken)
               .let { if (!config.disableTrimIndent) it.trimIndent() else it }
-              .also { rawHtml("\n$it\n") }
+              .replace("</script>", SCRIPT_END_PLACEHOLDER)
+              .also { +"\n$it\n" }
           }
       }
   }

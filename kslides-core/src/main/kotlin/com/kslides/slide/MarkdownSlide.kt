@@ -49,6 +49,10 @@ interface MarkdownSlide {
   /**
    * Supply inline Markdown content. Mutually exclusive with [filename]: exactly one of the two
    * must be set before rendering.
+   *
+   * [com.kslides.include] called inside the block resolves to the Markdown-aware overload, since
+   * this slide is still the enclosing receiver — reveal.js escapes Markdown itself, so content
+   * included here must not arrive pre-escaped.
    */
   fun content(block: () -> String) {
     private_markdownBlock = block

@@ -1691,10 +1691,10 @@ fun exampleSlides(): KSlides.() -> Unit =
             """
             ## From a Markdown Slide
 
+            ${slideBackground("#7fbf7f")}
+
             A markdown slide has no `slideConfig { background }`, so `slideBackground()` emits the
-            reveal.js comment that sets one. Append it to a line of body text, the way `fragment()`
-            is used: on its own line or after a heading it becomes an indented code block and is
-            ignored. ${slideBackground("#7fbf7f")}
+            reveal.js comment that sets one. Put it anywhere in the content.
 
             <span class="site-note">styled by css/site.css, published at the output root</span>
             """

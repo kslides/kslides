@@ -3,13 +3,11 @@ package com.kslides
 import com.kslides.InternalUtils.fixIndents
 import com.kslides.InternalUtils.fromTo
 import com.kslides.InternalUtils.isUrl
-import com.kslides.InternalUtils.pad
 import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
 import com.kslides.InternalUtils.xmlSafeAsMarkup
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
-import kotlinx.html.CODE
 import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
 import java.io.File
@@ -23,8 +21,7 @@ object Utils {
 
 /**
  * Emit the reveal.js HTML comment that sets a slide's background color. Interpolate the result
- * into a Markdown slide's `content{}` block, **appended to a line of body text** the way
- * [fragment] is:
+ * anywhere in a Markdown slide's `content{}` block — its own line reads best:
  *
  * ```
  * markdownSlide {
@@ -32,17 +29,18 @@ object Utils {
  *     """
  *     ## Title
  *
- *     Some body text. ${'$'}{slideBackground("#7fbf7f")}
+ *     ${'$'}{slideBackground("#7fbf7f")}
+ *
+ *     Some body text.
  *     """
  *   }
  * }
  * ```
  *
- * Placement matters, and not for a Markdown reason. Serializing the page moves the comment onto
- * its own line and indents it, which after a heading or a blank line makes it an indented code
- * block — so it renders as visible text and reveal.js never applies it. Trailing a paragraph, the
- * indented line is a lazy continuation of that paragraph instead, and survives. A `dslSlide` has
- * no such problem: use `slideConfig { background }` there.
+ * Placement used to matter: serialization moved the comment onto its own line and indented it,
+ * which after a heading made it an indented code block that reveal.js never read. Markdown is now
+ * emitted as a text node, so it arrives exactly as written. A `dslSlide` has no equivalent need:
+ * use `slideConfig { background }` there.
  *
  * @param color any valid CSS color value (hex, rgb, named color).
  */
@@ -129,10 +127,11 @@ fun githubRawUrl(
  * because it avoids whitespace-sensitivity issues and lets you keep the source of truth in one
  * place.
  *
- * Intended for use inside `markdownSlide { content { ... } }` and `htmlSlide { content { ... } }`
- * blocks. For [com.kslides.slide.DslSlide] use the [include] variant defined on [DslSlide] or
- * [kotlinx.html.CODE]; those variants disable HTML escaping and the indentation token since the
- * enclosing `<code>` tag handles both.
+ * Escapes markup so the content renders as text. That is what `htmlSlide { content { ... } }`
+ * needs, and this overload is the one that resolves there. Elsewhere a destination-aware variant
+ * wins instead — see `IncludeVariants.kt` — because a `<code>` block, a `dslSlide`, and a
+ * `markdownSlide` each escape their own output, so content escaped here would reach the browser as
+ * a visible `&quot;`. Resolution is by the enclosing receiver, so the choice is not yours to make.
  *
  * @param src local path (relative to the process working directory) or `http(s)://` URL. Paths
  *   containing `../` are rejected.
@@ -187,33 +186,6 @@ fun include(
     .toLineRanges(linePattern)
     .fixIndents(indentToken, trimIndent, escapeHtml)
 }
-
-/**
- * [include] variant for use inside a `<code>` block. Disables the HTML escape + indent-token
- * behavior (the `<code>` tag already controls both) and pads the result for reveal.js's
- * line-number display.
- */
-fun CODE.include(
-  src: String,
-  linePattern: String = "",
-  beginToken: String = "",
-  endToken: String = "",
-  exclusive: Boolean = true,
-  trimIndent: Boolean = true,
-) = include(src, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
-
-/**
- * [include] variant for use inside a [com.kslides.slide.DslSlide] `content{}` block. Same
- * semantics as [CODE.include] — HTML escaping and the indent token are turned off.
- */
-fun DslSlide.include(
-  src: String,
-  linePattern: String = "",
-  beginToken: String = "",
-  endToken: String = "",
-  exclusive: Boolean = true,
-  trimIndent: Boolean = true,
-) = include(src, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 /**
  * A width × height pair. Used primarily for sizing the `letsPlot{}` render area; construct via
