@@ -129,6 +129,10 @@ class SlideConfig : AbstractConfig() {
    * Rendered as an inline `font-size` on the slide's `<section>`; reveal.js themes size
    * headings/text in `em`, so everything scales. Blank inherits the theme default.
    *
+   * "Everything" includes code blocks: `<pre>` lives inside the `<section>`, so an `em`
+   * [codeFontSize] — and reveal.js's own `0.55em` default — resolves against this value
+   * rather than the theme base, and the two multiply. See [codeFontSize].
+   *
    * @throws IllegalArgumentException on assignment of a value that is not a CSS length.
    */
   var fontSize by ConfigProperty<String>(kslidesManagedValues, ::requireCssLength)
@@ -137,6 +141,13 @@ class SlideConfig : AbstractConfig() {
    * Font size for code blocks (`<pre>`) on the slide (e.g. `"0.60em"`). Rendered as a
    * generated CSS class + head rule because reveal.js renders Markdown client-side. Blank
    * inherits reveal.js's default (`0.55em`).
+   *
+   * An `em` value is relative to the enclosing `<section>`, so it compounds with [fontSize]
+   * when both are set: `fontSize = "0.65em"` with `codeFontSize = "0.60em"` renders code at
+   * `0.60 × 0.65` of the theme base, not `0.60`. To size code independently of [fontSize],
+   * use an absolute unit — `"23px"` matches reveal.js's default rendered size on a 42px theme
+   * and still scales with the deck, which reveal.js zooms with a transform — or divide the
+   * factor out (`"0.85em"` under `fontSize = "0.65em"` ≈ the `0.55em` default).
    *
    * @throws IllegalArgumentException on assignment of a value that is not a CSS length.
    */

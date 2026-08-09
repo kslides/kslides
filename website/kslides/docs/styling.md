@@ -111,9 +111,30 @@ These values are interpolated into generated CSS, so they are checked where you 
 
 The generated `codeFontSize`/`codeWrap` rules (`fontSize` renders as an inline style, not a head rule) are emitted into the document head after any presentation `css` additions, so on an equal-specificity tie the config-driven value wins over legacy hand-written rules.
 
+### `fontSize` and `codeFontSize` compound
+
+Code blocks are content, so `fontSize` scales them too — and it does so *before* `codeFontSize` applies. `fontSize` renders as an inline `font-size` on the slide's `<section>`; `<pre>` sits inside that section, so an `em` code size resolves against the scaled section rather than the theme base, and the two multiply. On a 42px theme:
+
+| Config | `<section>` | rendered `<pre>` |
+|--------|-------------|------------------|
+| neither set | 42px | 0.55 × 42 = **23.1px** |
+| `fontSize = "0.65em"` | 27.3px | 0.55 × 27.3 = **15.0px** |
+| `fontSize = "0.65em"` + `codeFontSize = "0.60em"` | 27.3px | 0.60 × 27.3 = **16.4px** |
+
+Setting `codeFontSize = "0.55em"` to "restore the default" is therefore a no-op — it is already the default, in the same relative units. To size code independently of `fontSize`, give it an absolute unit; px is immune to the section's `em` and still scales with the deck, since reveal.js zooms the whole canvas with a CSS transform:
+
+```kotlin
+slideConfig {
+  fontSize = "0.65em"
+  codeFontSize = "23px"   // reveal.js's default rendered size, unaffected by fontSize
+}
+```
+
+Or divide the factor out and stay in `em`: under `fontSize = "0.65em"`, `codeFontSize = "0.85em"` lands back at roughly the `0.55em` default.
+
 ## Code font size
 
-reveal.js renders code blocks — Markdown fences, [code snippets](extensions/code-snippets.md), and `htmlSlide` `<pre>` blocks — at `0.55em` relative to the slide. Because the slide canvas is a fixed size, long lines overflow with a scrollbar instead of shrinking to fit. For most cases, [`codeFontSize`](#font-sizes) above is simpler; override `.reveal pre` directly when you need a selector the config API doesn't expose.
+reveal.js renders code blocks — Markdown fences, [code snippets](extensions/code-snippets.md), and `htmlSlide` `<pre>` blocks — at `0.55em` relative to the slide's `<section>`, which [`fontSize`](#fontsize-and-codefontsize-compound) scales. Because the slide canvas is a fixed size, long lines overflow with a scrollbar instead of shrinking to fit. For most cases, [`codeFontSize`](#font-sizes) above is simpler; override `.reveal pre` directly when you need a selector the config API doesn't expose.
 
 ### Every code block
 

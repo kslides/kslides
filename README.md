@@ -362,6 +362,12 @@ trailing config block for the same purpose:
 slideDefinition(source = slides, token = "mermaid1") { codeFontSize = "0.40em" }
 ```
 
+`fontSize` scales code blocks too, before `codeFontSize` applies: it becomes an inline
+`font-size` on the `<section>`, and a `<pre>` inside resolves an `em` size against that, so
+`fontSize = "0.65em"` with `codeFontSize = "0.60em"` renders code at `0.60 × 0.65` of the theme
+base. Use an absolute unit (`codeFontSize = "23px"`) to size code independently — see
+[Font sizes](https://kslides.github.io/kslides/styling/#font-sizes).
+
 Note that the three font properties resolve per-slide (global → presentation → slide), so
 setting them in a `verticalSlides{ slideConfig{ } }` block has no effect — a stack-level
 `slideConfig{}` only carries the reveal.js `data-*` options. Set them on each child slide, or
