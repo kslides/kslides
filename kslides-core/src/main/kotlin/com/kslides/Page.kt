@@ -2,7 +2,6 @@ package com.kslides
 
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.CssValue.Companion.writeStyleToHead
-import com.kslides.InternalUtils.rawSource
 import com.kslides.InternalUtils.resolveAgainst
 import com.pambrose.common.util.ensureSuffix
 import io.ktor.http.ContentType
@@ -227,16 +226,14 @@ internal object Page {
         }
         rawHtml("\n\n\t\t")
         script {
-          rawHtml("\n")
-          rawSource(
-            """
+          +"\n"
+          +"""
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', '${config.gaPropertyId}');
-            """.trimIndent().prependIndent("\t\t\t"),
-          )
-          rawHtml("\n\t\t")
+            """.trimIndent().prependIndent("\t\t\t")
+          +"\n\t\t"
         }
       }
 
@@ -271,17 +268,15 @@ internal object Page {
       // No media="screen" scoping: author styles must also apply when printing (?print-pdf /
       // kslides-export), where screen-only styles would silently vanish from the PDF.
       style {
-        rawHtml("\n")
-        rawSource(
+        val slidesCss =
           Page::class.java.classLoader
             .getResource("slides.css")
             ?.readText()
             ?.lines()
             ?.joinToString("\n") { "\t\t$it" }
             ?.prependIndent("\t")
-            ?: throw FileNotFoundException("File not found: src/main/resources/slides.css"),
-        )
-        rawHtml("\n\t\t")
+            ?: throw FileNotFoundException("File not found: src/main/resources/slides.css")
+        +"\n$slidesCss\n\t\t"
       }
 
       writeCssToHead(p.css)
@@ -353,7 +348,7 @@ internal object Page {
 
       rawHtml("\n\t")
       script {
-        rawSource("\n\t\tReveal.initialize({\n${p.toJs(config)}\t\t});\n\n")
+        +"\n\t\tReveal.initialize({\n${p.toJs(config)}\t\t});\n\n"
       }
 
       // Only decks that actually contain a mermaid{} block pay for the Mermaid runtime. The flag
@@ -363,7 +358,7 @@ internal object Page {
         script { src = Mermaid.MERMAID_JS_PATH.resolveAgainst(srcPrefix) }
         rawHtml("\n\t")
         script {
-          rawSource("\n${Mermaid.initScript(config.effectiveTheme).prependIndent("\t\t")}\n\t")
+          +"\n${Mermaid.initScript(config.effectiveTheme).prependIndent("\t\t")}\n\t"
         }
         rawHtml("\n")
       }
@@ -384,7 +379,7 @@ internal object Page {
     // Pre-indented once per JVM: this runs per HTTP request under the render lock.
     fun emit(indentedClientScript: String) {
       rawHtml("\n\t")
-      script { rawSource("\n$indentedClientScript\n\t") }
+      script { +"\n$indentedClientScript\n\t" }
       rawHtml("\n")
     }
 

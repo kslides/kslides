@@ -15,19 +15,17 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   parsed as XML on its way into the DOM, which rejects both a bare `&` — "Tom &
   Jerry" — and a name only HTML declares, such as `&nbsp;` or `&mdash;`. Either
   took down *every* deck in the render rather than its own slide, since rendering
-  is a single pass. The repair sits at the two raw sinks, so it covers slide
-  bodies, `css {}`, `customTheme`'s `customProperty` passthrough, the corner
-  `topLeftSvg`/`topRightSvg` blocks, author strings interpolated into
-  `Reveal.initialize`, and `rawHtml` itself. A `]]>` run, which XML also forbids,
-  is repaired the same way.
-  Content cannot simply be escaped wholesale — that would turn an author's
-  `<span>` into visible text — so the repair follows the destination. In element
-  content (`rawHtml`, slide bodies, inline SVG) a named entity becomes the
-  character it stands for; inside `<script>` and `<style>`, where HTML does not
-  decode entities and a decoded `&&` would rewrite your JavaScript, it is escaped
-  instead, which serialization undoes on the way out. Numeric references and the
-  five names XML declares were always legal and are untouched. Decoding is
-  unconditional, so content *about* HTML entities needs `&amp;nbsp;` to show one.
+  is a single pass. Element content — slide bodies, `css {}`, `customTheme`'s
+  `customProperty` passthrough, the corner `topLeftSvg`/`topRightSvg` blocks, and
+  `rawHtml` itself — is repaired on the way in: a named entity becomes the
+  character it stands for, and anything naming no entity is escaped, exactly as a
+  browser renders it. A `]]>` run, which XML also forbids, is repaired the same
+  way. Content cannot simply be escaped wholesale — that would turn an author's
+  `<span>` into visible text. Numeric references and the five names XML declares
+  were always legal and are untouched. Decoding is unconditional, so content
+  *about* HTML entities needs `&amp;nbsp;` to show one. Script and style bodies
+  need no repair at all: they are emitted as text nodes, which the parser never
+  sees, so any character is fine there.
   **A bare `<` remains fatal** and is not repairable this way, since slide content
   legitimately carries tags: write `&lt;` or fence it as code.
 

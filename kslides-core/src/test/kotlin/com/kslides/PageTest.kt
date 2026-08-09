@@ -60,10 +60,10 @@ class PageTest : StringSpec() {
       html shouldContain """<p class="x">Tom &amp; Jerry</p>"""
     }
 
-    "every raw sink survives an ampersand, not just slide bodies" {
-      // rawHtml is where the XML parse happens, so repairing there covers every raw sink at once:
-      // css{}, customTheme's passthrough, the corner SVGs, author strings interpolated into
-      // Reveal.initialize, and rawHtml itself. Each of these aborted the whole render before.
+    "element content survives an ampersand wherever it reaches the page" {
+      // rawHtml is where the XML parse happens, so repairing there covers every markup sink at
+      // once: css{}, customTheme's passthrough, the corner SVGs, and rawHtml itself. Each of these
+      // aborted the whole render before.
       val page =
         Page.generatePage(
           kslidesTest {
@@ -82,7 +82,7 @@ class PageTest : StringSpec() {
         )
       page shouldContain "P &amp; Q"
       // Set up above but previously unasserted, so a reader could not tell they were load-bearing.
-      // Both are raw sinks that used to abort; both come back bare from their raw-text elements.
+      // Both used to abort the render; both come back bare from their raw-text elements.
       page shouldContain "A & B"
       page shouldContain "h1 & h2"
       // Inside <style> the serializer hands the ampersand back bare, so the CSS is what was written.
