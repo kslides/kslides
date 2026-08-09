@@ -16,6 +16,7 @@
 
     <link href="revealjs/dist/reveal.css" rel="stylesheet">
     <link href="revealjs/dist/reset.css" rel="stylesheet">
+    <link href="css/site.css" rel="stylesheet">
     <link href="revealjs/dist/theme/solarized.css" id="theme" rel="stylesheet">
     <link href="revealjs/plugin/highlight/monokai.css" id="highlight-theme" rel="stylesheet">
     <link href="revealjs/plugin/copycode/copycode.css" rel="stylesheet">
@@ -1593,6 +1594,28 @@ dslSlide {
       }
 
       verticalSlides {
+        // uncounted begin
+        markdownSlide {
+          uncounted = true
+          content {
+            """
+            ## An Uncounted Slide 🔢
+
+            This deck numbers slides with `slideNumber = "c/t"`, and this one is marked
+            `uncounted = true`, so the counter in the corner skips it. Arrow back and forth to
+            watch the number stay put while the slide changes.
+
+            Its sibling `hidden = true` goes further and drops the slide from navigation too,
+            which is why this deck demonstrates the one you can actually see.
+            """
+          }
+        }
+        // uncounted end
+
+        smallSlideDefinition(source = slides, token = "uncounted")
+      }
+
+      verticalSlides {
         // other begin
         markdownSlide {
           id = "features"
@@ -1993,6 +2016,27 @@ dslSlide {
       }
 
       verticalSlides {
+        // background-markdown begin
+        markdownSlide {
+          content {
+            """
+            ## From a Markdown Slide
+
+            A markdown slide has no `slideConfig { background }`, so `slideBackground()` emits the
+            reveal.js comment that sets one. Append it to a line of body text, the way `fragment()`
+            is used: on its own line or after a heading it becomes an indented code block and is
+            ignored. ${slideBackground("#7fbf7f")}
+
+            <span class="site-note">styled by css/site.css, published at the output root</span>
+            """
+          }
+        }
+        // background-markdown end
+
+        smallSlideDefinition(source = slides, token = "background-markdown")
+      }
+
+      verticalSlides {
         // background3 begin
         dslSlide {
           slideConfig {
@@ -2351,6 +2395,46 @@ markdownSlide {
 }
 ```
 <a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*fontsize%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*fontsize%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section class="kslides-code-1" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" data-visibility="uncounted">
+            <script type="text/template">
+## An Uncounted Slide 🔢
+
+This deck numbers slides with `slideNumber = "c/t"`, and this one is marked
+`uncounted = true`, so the counter in the corner skips it. Arrow back and forth to
+watch the number stay put while the slide changes.
+
+Its sibling `hidden = true` goes further and drops the slide from navigation too,
+which is why this deck demonstrates the one you can actually see.
+</script>
+          </section>
+          
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition
+```kotlin []
+markdownSlide {
+  uncounted = true
+  content {
+    """
+    ## An Uncounted Slide 🔢
+
+    This deck numbers slides with `slideNumber = "c/t"`, and this one is marked
+    `uncounted = true`, so the counter in the corner skips it. Arrow back and forth to
+    watch the number stay put while the slide changes.
+
+    Its sibling `hidden = true` goes further and drops the slide from navigation too,
+    which is why this deck demonstrates the one you can actually see.
+    """
+  }
+}
+```
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*uncounted%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*uncounted%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
 </script>
           </section>
           

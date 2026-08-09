@@ -21,8 +21,27 @@ object Utils {
 }
 
 /**
- * Emit the reveal.js HTML comment that sets a slide's background color. Embed the result
- * verbatim in a Markdown slide's `content{}` block.
+ * Emit the reveal.js HTML comment that sets a slide's background color. Interpolate the result
+ * into a Markdown slide's `content{}` block, **appended to a line of body text** the way
+ * [fragment] is:
+ *
+ * ```
+ * markdownSlide {
+ *   content {
+ *     """
+ *     ## Title
+ *
+ *     Some body text. ${'$'}{slideBackground("#7fbf7f")}
+ *     """
+ *   }
+ * }
+ * ```
+ *
+ * Placement matters, and not for a Markdown reason. Serializing the page moves the comment onto
+ * its own line and indents it, which after a heading or a blank line makes it an indented code
+ * block — so it renders as visible text and reveal.js never applies it. Trailing a paragraph, the
+ * indented line is a lazy continuation of that paragraph instead, and survives. A `dslSlide` has
+ * no such problem: use `slideConfig { background }` there.
  *
  * @param color any valid CSS color value (hex, rgb, named color).
  */
