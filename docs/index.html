@@ -1554,6 +1554,35 @@ dslSlide {
       }
 
       verticalSlides {
+        // fontsize begin
+        markdownSlide {
+          slideConfig {
+            // Sizes every bit of content on this slide. Themes size headings in em, so the
+            // heading scales along with the body text rather than staying put.
+            fontSize = "28px"
+          }
+          content {
+            """
+            ## Slide Font Size 🔍
+
+            `slideConfig { fontSize }` sizes a slide's content without writing any CSS.
+
+            This slide is set to `28px`; the surrounding slides use the theme default.
+
+            It cascades like every other config value: set it once in `presentationConfig` for a
+            deck-wide default, or here for a single slide. `codeFontSize` does the same for code
+            blocks, and this deck sets that globally to `0.60em`.
+
+            Notes: fontSize is emitted as an inline style on the slide's section 📝
+            """
+          }
+        }
+        // fontsize end
+
+        smallSlideDefinition(source = slides, token = "fontsize")
+      }
+
+      verticalSlides {
         // other begin
         markdownSlide {
           id = "features"
@@ -2254,6 +2283,56 @@ dslSlide {
 }
 ```
 <a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*webcontent%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*webcontent%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+</script>
+          </section>
+          
+        </section>
+        
+        <section>
+          <section class="kslides-code-1" data-markdown="" data-separator="" data-separator-notes="^Notes?:" data-separator-vertical="" style="font-size: 28px;">
+            <script type="text/template">
+## Slide Font Size 🔍
+
+`slideConfig { fontSize }` sizes a slide's content without writing any CSS.
+
+This slide is set to `28px`; the surrounding slides use the theme default.
+
+It cascades like every other config value: set it once in `presentationConfig` for a
+deck-wide default, or here for a single slide. `codeFontSize` does the same for code
+blocks, and this deck sets that globally to `0.60em`.
+
+Notes: fontSize is emitted as an inline style on the slide's section 📝
+</script>
+          </section>
+          
+          <section class="kslides-code-2" data-markdown="" data-separator="" data-separator-notes="^^" data-separator-vertical="">
+            <script type="text/template">
+## Slide Definition
+```kotlin []
+markdownSlide {
+  slideConfig {
+    // Sizes every bit of content on this slide. Themes size headings in em, so the
+    // heading scales along with the body text rather than staying put.
+    fontSize = "28px"
+  }
+  content {
+    """
+    ## Slide Font Size 🔍
+
+    `slideConfig { fontSize }` sizes a slide's content without writing any CSS.
+
+    This slide is set to `28px`; the surrounding slides use the theme default.
+
+    It cascades like every other config value: set it once in `presentationConfig` for a
+    deck-wide default, or here for a single slide. `codeFontSize` does the same for code
+    blocks, and this deck sets that globally to `0.60em`.
+
+    Notes: fontSize is emitted as an inline style on the slide's section 📝
+    """
+  }
+}
+```
+<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*fontsize%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*fontsize%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
 </script>
           </section>
           

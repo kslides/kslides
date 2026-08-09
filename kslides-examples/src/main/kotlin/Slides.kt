@@ -35,6 +35,7 @@ import kotlinx.css.Color
 import kotlinx.css.Display
 import kotlinx.css.Float
 import kotlinx.css.LinearDimension
+import kotlinx.css.ListStyleType
 import kotlinx.css.QuotedString
 import kotlinx.css.TextTransform
 import kotlinx.css.clear
@@ -42,7 +43,10 @@ import kotlinx.css.color
 import kotlinx.css.content
 import kotlinx.css.display
 import kotlinx.css.float
+import kotlinx.css.fontSize
+import kotlinx.css.listStyleType
 import kotlinx.css.marginBottom
+import kotlinx.css.paddingTop
 import kotlinx.css.px
 import kotlinx.css.width
 import kotlinx.html.Dir
@@ -1206,6 +1210,35 @@ fun exampleSlides(): KSlides.() -> Unit =
       }
 
       verticalSlides {
+        // fontsize begin
+        markdownSlide {
+          slideConfig {
+            // Sizes every bit of content on this slide. Themes size headings in em, so the
+            // heading scales along with the body text rather than staying put.
+            fontSize = "28px"
+          }
+          content {
+            """
+            ## Slide Font Size 🔍
+
+            `slideConfig { fontSize }` sizes a slide's content without writing any CSS.
+
+            This slide is set to `28px`; the surrounding slides use the theme default.
+
+            It cascades like every other config value: set it once in `presentationConfig` for a
+            deck-wide default, or here for a single slide. `codeFontSize` does the same for code
+            blocks, and this deck sets that globally to `0.60em`.
+
+            Notes: fontSize is emitted as an inline style on the slide's section 📝
+            """
+          }
+        }
+        // fontsize end
+
+        smallSlideDefinition(source = slides, token = "fontsize")
+      }
+
+      verticalSlides {
         // other begin
         markdownSlide {
           id = "features"
@@ -1776,6 +1809,17 @@ fun exampleSlides(): KSlides.() -> Unit =
         rule(".column2 li") {
           marginBottom = LinearDimension("10px")
         }
+
+        // Sized here rather than with an inline style on each list, matching the .column3 rules
+        // used by the three-column slide below.
+        rule(".column2 ul, .column2 ol") {
+          fontSize = LinearDimension("30px")
+          paddingTop = LinearDimension("10px")
+        }
+
+        rule(".column2 ul") {
+          listStyleType = ListStyleType.circle
+        }
       }
 
       /*
@@ -1795,6 +1839,15 @@ fun exampleSlides(): KSlides.() -> Unit =
           margin-bottom:10px;
         }
 
+        .column2 ul, .column2 ol {
+          font-size: 30px;
+          padding-top: 10px;
+        }
+
+        .column2 ul {
+          list-style-type: circle;
+        }
+
        */
       verticalSlides {
         // 2col begin
@@ -1802,14 +1855,13 @@ fun exampleSlides(): KSlides.() -> Unit =
           content {
             h2 { +"Two Column Slide"; style = "margin-bottom:20px;" }
             div("multiColumn2") {
-              val fmt = "font-size:30px; padding-top:10px;"
               div("column2") {
                 p { +"Header 1"; style = "color: red;" }
-                unorderedList("Item 1", "Item 2", "Item 3", "Item 4") { style = "$fmt list-style-type:circle;" }
+                unorderedList("Item 1", "Item 2", "Item 3", "Item 4")
               }
               div("column2") {
                 p { +"Header 2"; style = "color: red;" }
-                orderedList("Item 5", "Item 6", "Item 7", "Item 8") { style = fmt }
+                orderedList("Item 5", "Item 6", "Item 7", "Item 8")
               }
             }
           }
