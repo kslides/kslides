@@ -130,8 +130,8 @@ fun githubRawUrl(
  * @param trimIndent remove the common leading indentation from all returned lines.
  * @param indentToken marker string the renderer uses to re-indent included lines to match the
  *   surrounding Markdown/HTML; set to `""` in code contexts.
- * @param escapeHtml HTML-escape the returned content; disable for [kotlinx.html.CODE] blocks
- *   that already own their escaping.
+ * @param escapeHtml escape markup in the returned content so it renders as text rather than being
+ *   interpreted; disable for [kotlinx.html.CODE] blocks that already own their escaping.
  * @return the resolved content, or an empty string if the file/URL cannot be read (an I/O failure,
  *   missing file, or failed HTTP fetch — a warning is logged). Authoring errors such as an absent
  *   [beginToken]/[endToken] or a malformed [linePattern] are not swallowed; they propagate.

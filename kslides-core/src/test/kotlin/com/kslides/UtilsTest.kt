@@ -366,9 +366,13 @@ val y = 1              // NO TAB
       listOf("    a", "    b").fixIndents(indentToken = "", trimIndent = true, escapeHtml = false) shouldBe "a\nb"
     }
 
-    "fixIndents HTML-escapes each line when escapeHtml is true" {
-      listOf("<b>x</b>").fixIndents(indentToken = "", trimIndent = false, escapeHtml = true) shouldBe
-        "&lt;b&gt;x&lt;/b&gt;"
+    "fixIndents escapes each line with the five entities XML defines when escapeHtml is true" {
+      // XML, not HTML4: the escaped text is parsed as XML on its way into the DOM, so a named
+      // entity XML does not define — "&mdash;" for the em dash below — aborts the whole render.
+      // Markup is still neutralized, which is what the flag is for.
+      listOf("""<b>x</b> & "y" — z""")
+        .fixIndents(indentToken = "", trimIndent = false, escapeHtml = true) shouldBe
+        """&lt;b&gt;x&lt;/b&gt; &amp; &quot;y&quot; — z"""
     }
 
     "indentInclude replaces the indent token, re-indenting to the marker column" {

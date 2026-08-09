@@ -180,7 +180,10 @@ internal object InternalUtils {
   ) = (
     if (trimIndent) joinToString("\n").trimIndent().lines() else this
     ).map { "$indentToken$it" }
-    .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeHtml4(it) else it }
+    // escapeXml10, not escapeHtml4: this text is parsed as XML on its way into the DOM, where
+    // HTML4's named entities are undefined — an em dash escaped to "&mdash;" aborts the render
+    // with `The entity "mdash" was referenced, but not declared`.
+    .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeXml10(it) else it }
 
   internal fun writeString(
     path: String,

@@ -1,16 +1,18 @@
 package com.kslides
 
+import com.kslides.Page.generatePage
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import java.io.File
 
 /**
  * Exercises the public [include] function directly — its `../` traversal guard, the
- * recoverable-vs-propagated failure contract, and the begin/end-token + line-pattern slicing.
- * Local fixtures are created under the process working directory (`user.dir`) because that is the
- * root [include] resolves relative paths against.
+ * recoverable-vs-propagated failure contract, the begin/end-token + line-pattern slicing, and that
+ * included content survives the render. Local fixtures are created under the process working
+ * directory (`user.dir`) because that is the root [include] resolves relative paths against.
  */
 class IncludeTest : StringSpec() {
   init {
@@ -74,6 +76,21 @@ class IncludeTest : StringSpec() {
         shouldThrowExactly<IllegalArgumentException> {
           include(name, beginToken = "NOT-PRESENT")
         }
+      }
+    }
+
+    "a page renders an included em dash instead of dying on the entity" {
+      // Regression, and the only level that catches it: escapeHtml4 named every entity it knew, so
+      // an em dash became "&mdash;" and the XML parse on the way into the DOM threw
+      // SAXParseException — taking down every deck rather than the one slide, since rendering is a
+      // single pass. Asserting on include()'s return value cannot reach that; the escaping contract
+      // itself is pinned at the function, in UtilsTest's fixIndents cases.
+      withTempFile("val x = 1 // an — dash") { name ->
+        generatePage(
+          kslidesTest {
+            presentation { markdownSlide { content { "# T\n\n```\n${include(name)}\n```" } } }
+          }.presentation("/"),
+        ) shouldContain "—"
       }
     }
   }
