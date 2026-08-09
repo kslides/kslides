@@ -93,7 +93,7 @@ class ThemeConfig : AbstractConfig() {
   var mainColor by ConfigProperty<Color>(kslidesManagedValues)
 
   /** Body font stack (`--r-main-font`), e.g. `"Inter, sans-serif"`. */
-  var mainFont by ConfigProperty<String>(kslidesManagedValues)
+  var mainFont by ConfigProperty<String>(kslidesManagedValues, ::requireCssValue)
 
   /** Base font size (`--r-main-font-size`); reveal.js stock themes use `42.px`. */
   var mainFontSize by ConfigProperty<LinearDimension>(kslidesManagedValues)
@@ -102,7 +102,7 @@ class ThemeConfig : AbstractConfig() {
   var headingColor by ConfigProperty<Color>(kslidesManagedValues)
 
   /** Heading font stack (`--r-heading-font`). */
-  var headingFont by ConfigProperty<String>(kslidesManagedValues)
+  var headingFont by ConfigProperty<String>(kslidesManagedValues, ::requireCssValue)
 
   /**
    * Heading text transform (`--r-heading-text-transform`). Most stock themes default to
@@ -126,7 +126,7 @@ class ThemeConfig : AbstractConfig() {
   var heading4Size by ConfigProperty<LinearDimension>(kslidesManagedValues)
 
   /** Code font stack (`--r-code-font`), e.g. `"JetBrains Mono, monospace"`. */
-  var codeFont by ConfigProperty<String>(kslidesManagedValues)
+  var codeFont by ConfigProperty<String>(kslidesManagedValues, ::requireCssValue)
 
   /** Link color (`--r-link-color`). */
   var linkColor by ConfigProperty<Color>(kslidesManagedValues)
@@ -184,12 +184,18 @@ class ThemeConfig : AbstractConfig() {
    * Set a raw reveal.js theme variable the DSL does not model, e.g.
    * `customProperty("--r-heading-letter-spacing", "0.05em")`. Values are emitted verbatim into
    * the override block and cascade per property name like the typed ones.
+   *
+   * @throws IllegalArgumentException if [name] does not start with `--`, or if either argument
+   *   contains a character that would end the CSS declaration they are written into.
    */
   fun customProperty(
     name: String,
     value: String,
   ) {
     require(name.startsWith("--")) { "customProperty() name must start with \"--\": $name" }
+    // Both halves are emitted verbatim as "$name: $value;", so either can end the declaration.
+    requireCssValue(name, "customProperty() name")
+    requireCssValue(value, "customProperty() value")
     customProperties[name] = value
   }
 

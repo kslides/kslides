@@ -6,6 +6,109 @@ structured, category-grouped log.
 
 ---
 
+## 1.5.0 — 2026-08-09
+
+One theme: text you write reaches the browser as you wrote it.
+
+Generated pages pass through an XML parser on their way into the DOM, and that
+parser is stricter than HTML. An ampersand in "Tom & Jerry", an em dash in an
+included file, an `&nbsp;`, a `]]>`, or a bare `<` in Markdown would abort the
+render — and because rendering is a single pass, one character in one slide took
+down *every* deck in the build, with an error citing a line and column in a
+document you never see.
+
+That is fixed from both directions: most page text no longer meets the parser at
+all, and what still does gets repaired where it can be and diagnosed where it
+cannot.
+
+### `List<String>` in a Markdown slide
+
+The headline case, because it is the likeliest thing to write in a Kotlin deck:
+
+```kotlin
+markdownSlide { content { "val x: List<String> = listOf()" } }
+```
+
+That used to kill the build, and fencing it as code did not help. Markdown
+content is now emitted as a text node, which skips the parse entirely, so it
+reaches reveal.js exactly as typed. Script and style bodies moved the same way.
+
+Two knock-on improvements. `slideBackground()` can go anywhere in the content —
+it was previously ignored unless appended to a line of body text, because
+serialization re-indented the comment into a code block. And `&nbsp;` / `&mdash;`
+written in Markdown now arrive as written for the browser to decode, rather than
+being decoded at build time.
+
+### Ampersands, everywhere
+
+`css {}`, `customTheme`'s `customProperty`, the corner SVGs, author strings
+interpolated into `Reveal.initialize`, `htmlSlide` bodies, and `rawHtml()` all
+used to abort on a bare `&` or on a name only HTML declares. They are repaired
+now, by treatment appropriate to where the text lands: in element content a
+named entity becomes the character it names, while in `<script>`/`<style>` — where
+HTML decodes nothing and a decoded `&&` would rewrite your JavaScript — it is
+escaped instead, which serialization undoes on the way out. A `]]>` run, which
+XML also forbids, is repaired the same way.
+
+`include()` was part of the same problem: it escaped its content with HTML4
+entity names, so a single em dash in an included file became `&mdash;` — undefined
+in XML — and aborted the whole render.
+
+### Escaping now follows the destination
+
+Escaping is not a property of the file you include; it depends on where the text
+lands, and only the sink knows. So `include()` has one overload per sink,
+resolved by the block you call it from rather than by you remembering:
+
+| Called inside | Escaping |
+|---|---|
+| `markdownSlide { content { } }` | off — reveal.js escapes its own output |
+| `dslSlide { content { } }`, a `<code>` block | off — the tag escapes its own output |
+| `htmlSlide { content { } }` | on — this content really is parsed as markup |
+
+One caveat worth knowing: that resolution is lexical. If you factor a
+`content{}` body out into a helper function, the call leaves the receiver and
+reverts to the escaping form.
+
+### When it does still fail
+
+`htmlSlide` bodies, inline SVG and `rawHtml()` are still parsed as markup, and a
+bare `<` there is genuinely unrepairable — telling a real tag from a stray one is
+the judgement those sinks exist to avoid making. So the failure is diagnosed
+instead:
+
+```
+Deck "talks/deck.html": htmlSlide content is not well-formed XML:
+The element type "br" must be terminated by the matching end-tag "</br>".
+
+  <p>one<br>two</p>
+                 ^
+
+This content is parsed as XML, so every tag must close — write '<br/>' rather
+than '<br>'. If the '<' was not meant as a tag, escape it as '&lt;'.
+```
+
+It names the deck and the sink, quotes the line, and picks the advice that fits
+the actual error — an unclosed tag is told to close, a stray `<` is told to
+escape.
+
+### Faster, as a side effect
+
+Skipping the parse is not free to skip — it was costing real time on every
+render. On byte-identical output, a 60-slide Markdown deck renders **41% faster**,
+and **3.1× faster** when each slide carries an included code fence (6.7 ms → 2.1 ms).
+HTTP mode re-renders per request under a global lock, so that is lock-held time.
+
+### Also
+
+The bundled example deck gained demonstrations of `slideConfig { fontSize }`,
+`playgroundConfig { lineHeight }`, `backgroundInteractive`, `slideBackground()`,
+`uncounted`, a favicon, and a stylesheet published at the output root — and its
+two video-background slides now actually play, having been unmuted (and therefore
+blocked by browser autoplay policy) since they were written.
+
+---
+
 ## 1.4.0 — 2026-08-08
 
 Mostly a path-resolution release. If every deck you publish sits at the output

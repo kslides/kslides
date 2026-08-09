@@ -53,6 +53,52 @@ Because slide content is compiled Kotlin, picking up an edit requires restarting
 
 Each `presentation { }` becomes a separate page; nested directories under `path` map to nested directories on disk.
 
+## Driving kslides from your own code
+
+Tooling that renders presentations on its own terms — the way `exportPdf()` does — can evaluate a
+deck without producing any output, then serve it:
+
+```kotlin
+--8<-- "Output.kt:programmatic"
+```
+
+`buildKSlides()` applies every configuration block, including `output { }`, but writes no files and
+starts no server. `startHttpServer()` then runs the same Ktor server `enableHttp = true` would, and
+`presentationPaths` lists what it serves, in declaration order.
+
+## Asset paths
+
+Write asset paths relative to the **output root** — the directory your decks are written to, not the
+deck's own location. kslides resolves them from wherever the deck sits, so one path works for a deck
+at the root and a deck nested several levels down:
+
+```kotlin
+presentation {
+  path = "talks/deep/deck.html"          // three levels down
+  presentationConfig {
+    favicon = "favicon.ico"              // resolves to ../../favicon.ico
+    customTheme { logo("images/logo.png") }
+    topLeftSvgSrc = "images/gh.svg"
+  }
+  dslSlide {
+    slideConfig { backgroundImage = "images/bg.png" }
+    content { playground("src/Hello.kt") }   // iframe content resolves too
+  }
+}
+```
+
+Absolute (`/img/x.png`), external (`https://…`) and `data:` values are used exactly as written.
+
+A few things are **deliberately** left alone, because kslides hands them to something else rather
+than emitting them as URLs itself — write these relative to the deck:
+
+- corner links (`topLeftHref`, `topRightHref`) and `logo(href = )`, which are navigation targets
+- image paths written inside Markdown or HTML slide content, which reveal.js receives unparsed
+- `menuConfig { themesPath }`, which the menu plugin resolves itself
+
+Filesystem output keeps these links relative, so a site published under a path prefix still resolves;
+HTTP mode addresses them absolutely, which is where the routes are registered.
+
 ## When to use which
 
 | You want…                                            | Use                              |

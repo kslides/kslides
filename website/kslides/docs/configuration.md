@@ -66,6 +66,21 @@ Some settings are grouped into their own blocks rather than sitting flat on `pre
 
 `output { }` has one of its own: `pdf { }`, covering [PDF export](pdf-export.md) — output directory, page size, per-deck `exclude()`, and browser selection.
 
+## Favicon
+
+kslides ships no icon of its own, so every page asks for `favicon.ico` at the [output root](output.md#asset-paths)
+unless you say otherwise:
+
+```kotlin
+presentationConfig {
+  favicon = "images/icon.png"   // any path; the type hint follows the extension
+  // favicon = ""               // emit no <link> at all
+}
+```
+
+Supply the file at the output root for static output, or under `src/main/resources/public/` for the
+HTTP server.
+
 ## What can I configure?
 
 The same DSL exposes every reveal.js setting (history, controls, progress bar, autoslide, …) and a number of kslides-managed extras (menu, copy-code button, code highlighting). Browse the source in `com.kslides.config` for the full list — every property is documented in-place.

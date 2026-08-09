@@ -5,9 +5,10 @@ package com.kslides.config
 // closes the generated rule early and silently corrupts everything after it. These run from
 // ConfigProperty.setValue, so a bad value fails at the assignment site, named.
 //
-// Not covered: ThemeConfig's font properties and customProperty() values also land raw inside a
-// <style> body, but they are colors/font stacks/arbitrary values that no shape regex fits — they
-// need a containment check (reject ; { } <) rather than these. Still an open gap.
+// ThemeConfig's font properties and customProperty() values land raw inside a <style> body too,
+// but they are font stacks and arbitrary theme values that no shape regex fits, so they get a
+// containment check instead — see requireCssValue.
+//
 // Properties that render into HTML *attributes* (style=, data-background-*) are a different case
 // and deliberately unvalidated: kotlinx.html escapes them, and the blast radius is one element.
 
@@ -48,4 +49,35 @@ internal fun requireCssLineHeight(
   propertyName: String,
 ) = require(value.isBlank() || cssLineHeightRegex.matches(value.trim())) {
   "$propertyName is not a valid CSS line-height: \"$value\""
+}
+
+// What a value cannot contain without escaping the declaration it sits in: ";" starts another,
+// "{"/"}" open or close a rule, "<" can spell "</style>" and leave the element altogether, and a
+// comment delimiter can swallow every rule that follows.
+private val cssValueBreakouts = listOf(";", "{", "}", "<", "/*", "*/")
+
+/**
+ * Require [value] to stay inside the CSS declaration kslides builds around it. Where
+ * [requireCssLength] can describe the whole shape of what it accepts, this cannot — a font stack or
+ * an arbitrary `--r-*` value has no fixed form — so it checks only that the value cannot break out.
+ *
+ * A value like `"red; } .reveal h1 { color: lime"` would otherwise close the generated rule and
+ * inject its own, silently, changing a page the author never edited. Blank is allowed: it is how
+ * the config cascade spells "unset".
+ *
+ * The cost is that a value legitimately containing one of these characters — a quoted `content`
+ * string with a semicolon, say — is rejected too. Reveal's `--r-*` variables are colors, fonts and
+ * lengths, so that trade is one-sided in practice.
+ *
+ * @throws IllegalArgumentException if [value] contains a character that would end the declaration.
+ */
+internal fun requireCssValue(
+  value: String,
+  propertyName: String,
+) {
+  val found = cssValueBreakouts.firstOrNull { it in value }
+  require(found == null) {
+    "$propertyName may not contain \"$found\", which would end the CSS declaration it is written " +
+      "into: \"$value\""
+  }
 }
