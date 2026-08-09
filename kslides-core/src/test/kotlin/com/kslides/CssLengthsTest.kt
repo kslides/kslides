@@ -2,6 +2,7 @@ package com.kslides
 
 import com.kslides.config.PlaygroundConfig
 import com.kslides.config.SlideConfig
+import com.kslides.config.ThemeConfig
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.assertions.withClue
@@ -119,6 +120,39 @@ class CssLengthsTest : StringSpec() {
 
       val lh = shouldThrowExactly<IllegalArgumentException> { PlaygroundConfig().lineHeight = "junk" }
       lh.message!! shouldContain "lineHeight"
+    }
+
+    "a theme value cannot break out of the declaration it is written into" {
+      // The generated block is ":root { --r-x: VALUE; }", so a value carrying its own ";}" used to
+      // close the rule and inject another -- silently changing a page the author never edited.
+      shouldThrowExactly<IllegalArgumentException> {
+        ThemeConfig().customProperty("--r-x", "red; } .reveal h1 { color: lime")
+      }
+      // The name is emitted verbatim too, so it needs the same check.
+      shouldThrowExactly<IllegalArgumentException> { ThemeConfig().customProperty("--x; } h1 { color: red", "1") }
+      // "</style>" would leave the element altogether; a comment delimiter would swallow the rest.
+      shouldThrowExactly<IllegalArgumentException> { ThemeConfig().mainFont = "Menlo</style>" }
+      shouldThrowExactly<IllegalArgumentException> { ThemeConfig().codeFont = "Menlo /* x" }
+    }
+
+    "ordinary theme values are untouched" {
+      shouldNotThrowAny {
+        ThemeConfig().apply {
+          mainFont = "Menlo, Consolas, 'Courier New', monospace"
+          headingFont = ""
+          customProperty("--r-heading-letter-spacing", "0.05em")
+          customProperty("--r-block-margin", "calc(1rem + 2px)")
+          customProperty("--r-link-color", "rgba(0, 0, 0, 0.5)")
+        }
+      }
+    }
+
+    // The message has to name which property and show the value: the author is looking at a
+    // customTheme block, not a stack trace.
+    "the failure names the property and the character that would have escaped" {
+      val e = shouldThrowExactly<IllegalArgumentException> { ThemeConfig().mainFont = "Menlo;}" }
+      e.message!! shouldContain "mainFont"
+      e.message!! shouldContain "\";\""
     }
 
     "a rejected value never reaches the config, so the cascade still sees it as unset" {
