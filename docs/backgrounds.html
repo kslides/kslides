@@ -112,7 +112,7 @@ dslSlide {
   }
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background1%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background1%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a id="ghsrc" href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background1%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background1%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" target="_blank">GitHub Source</a>
 </script>
           </section>
           
@@ -136,7 +136,7 @@ dslSlide {
   }
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background2%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background2%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a id="ghsrc" href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background2%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background2%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" target="_blank">GitHub Source</a>
 </script>
           </section>
           
@@ -147,11 +147,10 @@ dslSlide {
             <script type="text/template">
 ## From a Markdown Slide
 
+<!-- .slide: data-background="#7fbf7f" -->
+
 A markdown slide has no `slideConfig { background }`, so `slideBackground()` emits the
-reveal.js comment that sets one. Append it to a line of body text, the way `fragment()`
-is used: on its own line or after a heading it becomes an indented code block and is
-ignored. 
-              <!-- .slide: data-background="#7fbf7f" -->
+reveal.js comment that sets one. Put it anywhere in the content.
 
 <span class="site-note">styled by css/site.css, published at the output root</span>
 </script>
@@ -166,17 +165,17 @@ markdownSlide {
     """
     ## From a Markdown Slide
 
+    ${slideBackground("#7fbf7f")}
+
     A markdown slide has no `slideConfig { background }`, so `slideBackground()` emits the
-    reveal.js comment that sets one. Append it to a line of body text, the way `fragment()`
-    is used: on its own line or after a heading it becomes an indented code block and is
-    ignored. ${slideBackground("#7fbf7f")}
+    reveal.js comment that sets one. Put it anywhere in the content.
 
     <span class="site-note">styled by css/site.css, published at the output root</span>
     """
   }
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background-markdown%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background-markdown%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a id="ghsrc" href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background-markdown%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background-markdown%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" target="_blank">GitHub Source</a>
 </script>
           </section>
           
@@ -200,7 +199,7 @@ dslSlide {
   }
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background3%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background3%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a id="ghsrc" href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background3%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background3%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" target="_blank">GitHub Source</a>
 </script>
           </section>
           
@@ -250,7 +249,7 @@ dslSlide {
   }
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background4%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background4%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a id="ghsrc" href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background4%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background4%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" target="_blank">GitHub Source</a>
 </script>
           </section>
           
@@ -302,7 +301,7 @@ verticalSlides {
   smallSlideDefinition(source = slides, token = "vertical-config")
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*vertical-config%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*vertical-config%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a id="ghsrc" href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*vertical-config%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*vertical-config%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" target="_blank">GitHub Source</a>
 </script>
           </section>
           
@@ -327,7 +326,7 @@ dslSlide {
   }
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background-image%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background-image%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a id="ghsrc" href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background-image%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background-image%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" target="_blank">GitHub Source</a>
 </script>
           </section>
           
@@ -354,7 +353,7 @@ dslSlide {
   }
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*repeat%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*repeat%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a id="ghsrc" href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*repeat%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*repeat%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" target="_blank">GitHub Source</a>
 </script>
           </section>
           
@@ -382,7 +381,7 @@ dslSlide {
   }
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background-video%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background-video%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a id="ghsrc" href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background-video%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background-video%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" target="_blank">GitHub Source</a>
 </script>
           </section>
           
@@ -407,7 +406,7 @@ dslSlide {
   }
 }
 ```
-<a href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background-iframe%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background-iframe%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" id="ghsrc" target="_blank">GitHub Source</a>
+<a id="ghsrc" href="https://www.srcref.com/github?account=kslides&amp;repo=kslides&amp;branch=master&amp;path=kslides-examples%2Fsrc%2Fmain%2Fkotlin%2FSlides.kt&amp;bregex=%2F%2F%5Cs*background-iframe%5Cs%2Bbegin&amp;boccur=1&amp;boffset=1&amp;btopd=true&amp;eregex=%2F%2F%5Cs*background-iframe%5Cs%2Bend&amp;eoccur=1&amp;eoffset=-1&amp;etopd=true" target="_blank">GitHub Source</a>
 </script>
           </section>
           

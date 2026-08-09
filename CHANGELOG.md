@@ -11,6 +11,23 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Fixed
 
+- A bare `<` in Markdown slide content no longer aborts the render.
+  `markdownSlide { content { "val x: List<String>" } }` used to take down every
+  deck in the build with `The element type "String" must be terminated`, and
+  fencing it as code did not help — likely the commonest thing to write in a
+  Kotlin deck. Markdown is now emitted as a text node rather than parsed markup,
+  so it reaches reveal.js exactly as typed. Two knock-on improvements:
+  `slideBackground()` may be placed anywhere in the content, having previously
+  been silently ignored unless appended to a line of body text; and `&nbsp;` /
+  `&mdash;` written in Markdown now arrive as written, for the browser to decode,
+  rather than being decoded at build time.
+- `include()` gained destination-aware overloads, resolved by the receiver of the
+  block it is called in rather than by the author remembering. Escaping is not a
+  property of the file being included — it depends on where the text lands, and a
+  `<code>` block, a `dslSlide`, and a Markdown `content{}` block each escape their
+  own output. The bare `include()` keeps escaping on for `htmlSlide` content,
+  which really is parsed as markup.
+
 - An ampersand no longer aborts the render, wherever it appears. Page text is
   parsed as XML on its way into the DOM, which rejects both a bare `&` — "Tom &
   Jerry" — and a name only HTML declares, such as `&nbsp;` or `&mdash;`. Either

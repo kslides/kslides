@@ -49,12 +49,26 @@ interface MarkdownSlide {
   /**
    * Supply inline Markdown content. Mutually exclusive with [filename]: exactly one of the two
    * must be set before rendering.
+   *
+   * The block runs on [MarkdownContent], which exists so [com.kslides.include] can resolve to the
+   * variant that knows its destination — reveal.js escapes Markdown itself, so content included
+   * here must not arrive pre-escaped.
    */
-  fun content(block: () -> String) {
-    private_markdownBlock = block
+  fun content(block: MarkdownContent.() -> String) {
+    private_markdownBlock = { MarkdownContent.block() }
     private_markdownAssigned = true
   }
 }
+
+/**
+ * Receiver for a Markdown slide's `content{}` block. Carries no state — it exists so that
+ * [com.kslides.include] called inside the block resolves to the Markdown-aware overload, the same
+ * way [kotlinx.html.CODE] does for code blocks.
+ *
+ * Deliberately not a `@KSlidesDslMarker` receiver: marking it would hide the enclosing slide's
+ * members from the block, which authors reach for when composing content.
+ */
+object MarkdownContent
 
 /**
  * A top-level Markdown slide. Add via [com.kslides.Presentation.markdownSlide]; define content

@@ -9,6 +9,7 @@ import com.kslides.slide.HorizontalDslSlide
 import com.kslides.slide.HorizontalHtmlSlide
 import com.kslides.slide.HorizontalMarkdownSlide
 import com.kslides.slide.HtmlSlide
+import com.kslides.slide.MarkdownContent
 import com.kslides.slide.MarkdownSlide
 import com.kslides.slide.Slide
 import com.kslides.slide.VerticalDslSlide
@@ -288,7 +289,7 @@ class Presentation(
         """
         ## $title
         ```$language $highlightPattern
-        ${include(source, beginToken = "$token begin", endToken = "$token end")}
+        ${MarkdownContent.include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
         $githubSource
         """
@@ -719,10 +720,15 @@ private fun SECTION.processMarkdown(
       .also { markdown ->
         if (markdown.isNotBlank())
           script("text/template") {
+            // A text node, not parsed markup. reveal.js reads this template with .textContent and
+            // raw-text elements decode nothing, so the Markdown has to arrive exactly as written.
+            // That also lifts the XML parser's veto on a bare '<': "val x: List<String>" is
+            // likelier in a Kotlin deck than anything the parse was guarding against. Content
+            // reaching here must not be pre-escaped -- see MarkdownContent.include.
             markdown
               .indentInclude(config.indentToken)
               .let { if (!config.disableTrimIndent) it.trimIndent() else it }
-              .also { rawHtml("\n$it\n") }
+              .also { +"\n$it\n" }
           }
       }
   }
