@@ -82,6 +82,13 @@
 			.column2 li {
 			margin-bottom: 10px;
 			}
+			.column2 ul, .column2 ol {
+			font-size: 30px;
+			padding-top: 10px;
+			}
+			.column2 ul {
+			list-style-type: circle;
+			}
 			/* Clear floats after the columns */
 			.multiColumn3:after {
 			  content: "";
@@ -132,7 +139,7 @@
             <div class="multiColumn2">
               <div class="column2">
                 <p style="color: red;">Header 1</p>
-                <ul style="font-size:30px; padding-top:10px; list-style-type:circle;">
+                <ul>
                   <li>Item 1</li>
                   <li>Item 2</li>
                   <li>Item 3</li>
@@ -141,7 +148,7 @@
               </div>
               <div class="column2">
                 <p style="color: red;">Header 2</p>
-                <ol style="font-size:30px; padding-top:10px;">
+                <ol>
                   <li>Item 5</li>
                   <li>Item 6</li>
                   <li>Item 7</li>
@@ -159,14 +166,13 @@ dslSlide {
   content {
     h2 { +"Two Column Slide"; style = "margin-bottom:20px;" }
     div("multiColumn2") {
-      val fmt = "font-size:30px; padding-top:10px;"
       div("column2") {
         p { +"Header 1"; style = "color: red;" }
-        unorderedList("Item 1", "Item 2", "Item 3", "Item 4") { style = "$fmt list-style-type:circle;" }
+        unorderedList("Item 1", "Item 2", "Item 3", "Item 4")
       }
       div("column2") {
         p { +"Header 2"; style = "color: red;" }
-        orderedList("Item 5", "Item 6", "Item 7", "Item 8") { style = fmt }
+        orderedList("Item 5", "Item 6", "Item 7", "Item 8")
       }
     }
   }
