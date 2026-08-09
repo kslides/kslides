@@ -151,6 +151,12 @@ fun exampleSlides(): KSlides.() -> Unit =
       theme = PresentationTheme.SOLARIZED
       center = true
 
+      // The browser tab icon. This is the default value, stated here because kslides ships no
+      // icon of its own — supply the file at the output root (docs/ here) for filesystem output,
+      // and under resources/public for the HTTP server. Set it to "" to emit no <link> at all.
+      // A relative path resolves against the output root, so it works from a deck at any depth.
+      favicon = "favicon.ico"
+
       menuConfig {
         numbers = true
       }
@@ -480,8 +486,10 @@ fun exampleSlides(): KSlides.() -> Unit =
               height = "375px"
               theme = PlaygroundTheme.DARCULA
               mode = PlaygroundMode.XML
-              // Decrease the font size for just this playground
+              // Decrease the font size for just this playground. Line spacing follows fontSize on
+              // its own; lineHeight overrides that ratio, tightening these lines to 1.2x.
               fontSize = "15px"
+              lineHeight = "1.2"
             }
             +"Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C"
           }
@@ -1092,6 +1100,9 @@ fun exampleSlides(): KSlides.() -> Unit =
         dslSlide {
           slideConfig {
             backgroundIframe = "https://revealjs.com/backgrounds/#iframe-backgrounds"
+            // The slide text invites you to interact with the page behind it, which needs this:
+            // background iframes ignore pointer events until it is set.
+            backgroundInteractive = true
           }
           content {
             div {
@@ -1180,6 +1191,11 @@ fun exampleSlides(): KSlides.() -> Unit =
         dslSlide {
           slideConfig {
             backgroundVideo = "https://static.slid.es/site/homepage/v1/homepage-video-editor.mp4"
+            // Required, not decorative: reveal.js only mutes when this is set, and browsers refuse
+            // to autoplay an unmuted video without a user gesture, so without it the background
+            // just sits on a black frame. Loop keeps it going instead of freezing on the last one.
+            backgroundVideoMuted = true
+            backgroundVideoLoop = true
           }
 
           content {
@@ -1757,6 +1773,9 @@ fun exampleSlides(): KSlides.() -> Unit =
           slideConfig {
             val aws = "https://s3.amazonaws.com/static.slid.es/site/homepage/v1"
             backgroundVideo = "$aws/homepage-video-editor.mp4,$aws/homepage-video-editor.webm"
+            // Browsers block autoplay for unmuted video, and reveal.js only mutes when asked.
+            backgroundVideoMuted = true
+            backgroundVideoLoop = true
           }
           content {
             h2 { +"Video background" }
