@@ -70,8 +70,9 @@ fun fragment(
  * `&nbsp;` as the space it names. **A bare `<` is still fatal** and cannot be repaired here, since
  * telling a real tag from a stray `<` is exactly what this function declines to do — write `&lt;`.
  *
- * Use [rawSource] instead for the body of a `<script>` or `<style>`, where entities must not be
- * decoded.
+ * Intended for element content. Inside a `<script>` or `<style>` a named entity is decoded the
+ * same way, which would rewrite `'&copy;'` in your JavaScript into a symbol — kslides emits its
+ * own script and style bodies through an internal variant that escapes instead.
  */
 fun HTMLTag.rawHtml(html: String) = unsafe { raw(html.xmlSafeAsMarkup()) }
 

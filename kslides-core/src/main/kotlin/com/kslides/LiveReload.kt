@@ -30,17 +30,13 @@ internal object LiveReload {
 
       function persist() {
         try {
-          if (window.Reveal) {
-            if (Reveal.isReady()) sessionStorage.setItem(stateKey, JSON.stringify(Reveal.getState()));
-          }
+          if (window.Reveal && Reveal.isReady()) sessionStorage.setItem(stateKey, JSON.stringify(Reveal.getState()));
         } catch (e) { /* ignore */ }
       }
       function restore() {
         try {
           var saved = sessionStorage.getItem(stateKey);
-          if (saved) {
-            if (window.Reveal) Reveal.setState(JSON.parse(saved));
-          }
+          if (saved && window.Reveal) Reveal.setState(JSON.parse(saved));
         } catch (e) { /* ignore */ }
       }
       if (window.Reveal) {

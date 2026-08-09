@@ -61,16 +61,16 @@ class FollowAlongTest : StringSpec() {
     }
 
     "the injected client survives the XML serializer that writes it into the page" {
-      // Inline scripts pass through an XML parser during DOM serialization, so a bare '&' or '<'
-      // in the source corrupts the page. Both are spelled around (hence AMP, and forEach instead
-      // of an indexed loop) — this catches a reintroduction, which would otherwise only show up
-      // as a deck that silently stops navigating.
-      val script =
-        generatePage(deck(follow = true, dev = true), useHttp = true)
-          .substringAfter("carryTokenAcrossLinks")
-          .substringBefore("</script>")
-      script shouldNotContain "&&"
-      script shouldNotContain " < "
+      // rawSource escapes the script's ampersands on the way in and the serializer hands them back
+      // bare, so the client can write them plainly. Asserting each site verbatim rather than
+      // slicing the script: an escaped arrival fails these, and the token regex in particular
+      // would then match nothing and silently demote the presenter to a viewer.
+      val html = generatePage(deck(follow = true, dev = true), useHttp = true)
+      html shouldContain "[?&]${FollowAlong.PRESENT_PARAM}=([^&]+)"
+      html shouldContain "&role=presenter&token="
+      html shouldContain "? '&' : '?'"
+      // The live-reload client shares the sink and the same freedom.
+      html shouldContain "window.Reveal && Reveal.isReady()"
     }
 
     "a configured presenterToken is used verbatim" {
