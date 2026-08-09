@@ -24,7 +24,6 @@ import kotlinx.html.script
 import kotlinx.html.style
 import kotlinx.html.title
 import org.w3c.dom.Document
-import org.xml.sax.SAXParseException
 import java.io.FileNotFoundException
 
 internal object Page {
@@ -96,8 +95,12 @@ internal object Page {
               ctx.generateBody(this)
             }
           }
-        } catch (e: IllegalArgumentException) {
-          throw e.namingDeck(p.path)
+        } catch (e: XmlParseFailure) {
+          // rawHtml describes the offending text, but only here do we know whose deck it was --
+          // and one bad character fails the whole render, so without the path the author has
+          // every deck to search. Chained rather than unwrapped: rawHtml's frame is the one that
+          // says where in the render it blew up.
+          throw IllegalArgumentException("Deck \"${p.path}\": ${e.message}", e)
         }
 
       // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
@@ -152,11 +155,6 @@ internal object Page {
 
       mergePreAndCode(htmldoc.serialize())
     }
-
-  // rawHtml describes the offending text, but only the caller knows whose deck it was -- and one
-  // bad character fails the whole render, so without the path the author has every deck to search.
-  // Anything not from the parser is somebody else's problem and passes through untouched.
-  private fun IllegalArgumentException.namingDeck(path: String): IllegalArgumentException = cause.let { if (it is SAXParseException) IllegalArgumentException("Deck \"$path\": $message", it) else this }
 
   // Appends a <style> node to the already-built <head> for rules discovered during body
   // rendering.
@@ -301,7 +299,7 @@ internal object Page {
             if (config.topLeftTitle.isNotBlank())
               title = config.topLeftTitle
             if (config.topLeftSvg.isNotBlank())
-              rawHtml(config.topLeftSvg)
+              rawHtml("topLeftSvg", config.topLeftSvg)
             if (config.topLeftSvgSrc.isNotBlank())
               img(classes = config.topLeftSvgClass) {
                 src = config.topLeftSvgSrc.resolveAgainst(rootPrefix)
@@ -319,7 +317,7 @@ internal object Page {
             if (config.topRightTitle.isNotBlank())
               title = config.topRightTitle
             if (config.topRightSvg.isNotBlank())
-              rawHtml(config.topRightSvg)
+              rawHtml("topRightSvg", config.topRightSvg)
             if (config.topRightSvgSrc.isNotBlank())
               img(classes = config.topRightSvgClass) {
                 src = config.topRightSvgSrc.resolveAgainst(rootPrefix)

@@ -760,6 +760,6 @@ private fun DIV.processHtml(
       .private_htmlBlock()
       .indentInclude(config.indentToken)
       .let { if (!config.disableTrimIndent) it.trimIndent() else it }
-      .also { rawHtml("\n$it") }
+      .also { rawHtml("htmlSlide content", "\n$it") }
   }.also { rawHtml("\n") }
 }

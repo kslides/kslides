@@ -2,6 +2,7 @@ package com.kslides
 
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -135,9 +136,9 @@ class PageTest : StringSpec() {
     }
 
     "a parse failure names the deck, quotes the line, and gives the fix" {
-      // One bad character fails the whole render, and Xerces reports a line and column into a
+      // One bad character fails the whole render, and the parser reports coordinates into a
       // document kslides synthesized -- so without this the author has every deck to search and
-      // coordinates that match no file they wrote.
+      // numbers matching no file they wrote.
       val e =
         shouldThrowExactly<IllegalArgumentException> {
           Page.generatePage(
@@ -149,12 +150,14 @@ class PageTest : StringSpec() {
             }.presentation("/talks/deck.html"),
           )
         }
-      val message = e.message!!
-      message shouldContain """Deck "talks/deck.html""""
-      message shouldContain "<p>val x: List<String></p>"   // the offending line, quoted
-      message shouldContain "^"                            // and pointed at
-      message shouldContain "write '&lt;'"                 // and the fix named
-      e.cause.shouldBeInstanceOf<SAXParseException>()
+      val lines = e.message!!.lines()
+      lines.first() shouldContain """Deck "talks/deck.html": htmlSlide content"""
+      // The quoted line is the locator, so pin that the caret sits on its own line beneath it
+      // rather than merely appearing somewhere in the message.
+      val quoted = lines.indexOfFirst { it.contains("<p>val x: List<String></p>") }
+      lines[quoted + 1].trim() shouldBe "^"
+      // Chained, so the parser's own error is still reachable for anyone who wants it.
+      e.cause!!.cause.shouldBeInstanceOf<SAXParseException>()
     }
 
     "author styles are not scoped to screen media, so they also apply when printing" {

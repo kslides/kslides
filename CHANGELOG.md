@@ -11,14 +11,17 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Fixed
 
-- A parse failure now names the deck, quotes the offending line and points at
-  it. The remaining sinks that are parsed as markup — `htmlSlide` bodies, inline
-  SVG, and `rawHtml()` — abort the *entire* render on one bad character, and the
-  underlying error reports a line and column into a document kslides synthesized
-  and nobody has seen. The message now leads with the deck path, shows the line
-  with a caret under the column, and names the fix (write `&lt;`). The parser
-  also logs its own terse `[Fatal Error]` line to stderr first; that comes from
-  inside the XML library and cannot be suppressed from here.
+- A parse failure now says where it happened and what to do about it. The sinks
+  still parsed as markup — `htmlSlide` bodies, `topLeftSvg`/`topRightSvg`, and
+  `rawHtml()` — abort the *entire* render on one bad character, and the
+  underlying error reported only a line and column into a document kslides
+  synthesized and nobody has seen. The message now names the deck and the sink,
+  quotes the offending line with a caret beneath it, and names the fix that
+  actually applies: an unclosed `<br>` is told to close, a stray `<` in prose is
+  told to escape. The raw coordinates are deliberately not printed — they index
+  the synthesized document, which is the whole reason the message exists. The
+  parser also logs its own terse `[Fatal Error]` line to stderr first; that comes
+  from inside the XML library and cannot be suppressed from here.
 
 - A bare `<` in Markdown slide content no longer aborts the render.
   `markdownSlide { content { "val x: List<String>" } }` used to take down every

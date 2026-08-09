@@ -5,6 +5,16 @@ import org.xml.sax.SAXParseException
 import java.io.File
 
 /**
+ * A raw-markup sink was handed content the XML parser rejected. An [IllegalArgumentException] so
+ * callers need not know it exists, but a named type so [com.kslides.Page] can relabel exactly
+ * these — rather than inferring intent from whatever happens to be in an exception's cause chain.
+ */
+internal class XmlParseFailure(
+  message: String,
+  override val cause: SAXParseException,
+) : IllegalArgumentException(message, cause)
+
+/**
  * Module-private utility helpers used across kslides-core: indentation handling for `include()`,
  * line-range parsing for code-snippet highlighting, file output, small string predicates, and the
  * path-resolution rule every emitted URL goes through ([resolveAgainst]).
@@ -13,10 +23,6 @@ import java.io.File
 @Suppress("TooManyFunctions")
 internal object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
-
-  private const val SNIPPET_MARGIN = 40
-
-  private const val SNIPPET_FULL_LINE = 160
 
   internal fun String.indentInclude(indentToken: String): String {
     var firstLineFound = false
@@ -223,50 +229,81 @@ internal object InternalUtils {
     }
   }
 
-  // kotlinx.html parses raw content as "<unsafeRoot>$content</unsafeRoot>", so a reported column
-  // on line 1 counts the wrapper too.
-  private const val UNSAFE_ROOT_PREFIX = "<unsafeRoot>"
+  // kotlinx.html parses raw content as "<unsafeRoot>$content</unsafeRoot>". It adds no newline, so
+  // line numbers map straight through and only a column on line 1 counts the wrapper.
+  private const val UNSAFE_ROOT_WIDTH = "<unsafeRoot>".length
+
+  // Widest line quoted in full. Past this the window slides to keep the caret in view.
+  private const val SNIPPET_WIDTH = 160
 
   /**
    * Turn a parser failure into something an author can act on.
    *
-   * Xerces reports a line and column into a document kslides synthesized and nobody has seen, and
-   * the failure takes down every deck in the render rather than the slide that caused it. So
-   * quote the offending line, point at the column, and name the fix — [parsed] is the text as the
-   * parser saw it, which is what those coordinates index.
+   * The parser reports a line and column into a document kslides synthesized and nobody has seen,
+   * and the failure takes down every deck in the render rather than the slide that caused it. So
+   * quote the offending line and name the fix that actually applies — an unclosed tag and a stray
+   * `<` are both "not well-formed" and want opposite advice.
+   *
+   * The coordinates themselves are deliberately not printed: they index the synthesized document,
+   * and for [sink]s that prepend a newline they are a line out. [parsed] is the content kslides
+   * handed the parser, already repaired, so the quoted line may differ from what the author typed
+   * where an ampersand was involved.
+   *
+   * @param sink what the content is, in the author's terms — "htmlSlide content", "topLeftSvg".
    */
   internal fun xmlParseFailure(
+    sink: String,
     parsed: String,
     e: SAXParseException,
   ): String {
     val lines = parsed.lines()
     val index = (e.lineNumber - 1).coerceIn(0, lines.lastIndex)
-    val onFirstLine = index == 0
-    val line = lines[index].let { if (onFirstLine) it.removePrefix(UNSAFE_ROOT_PREFIX) else it }
-    val column = (if (onFirstLine) e.columnNumber - UNSAFE_ROOT_PREFIX.length else e.columnNumber).coerceIn(1, line.length + 1)
+    val line = lines[index]
+    // SAX columns are 1-based and may point one past the last character; index the line 0-based.
+    val reported = if (index == 0) e.columnNumber - UNSAFE_ROOT_WIDTH else e.columnNumber
+    val caretAt = (reported - 1).coerceIn(0, line.length)
 
-    // Show the whole line when it is readable: the reported column is where the parser gave up,
-    // which on a long line can be well past the character the author actually got wrong, so a
-    // window centred there would crop the mistake out. Only genuinely long lines get windowed.
-    val windowed = line.length > SNIPPET_FULL_LINE
-    val from = if (windowed) (column - 1 - SNIPPET_MARGIN).coerceAtLeast(0) else 0
-    val to = if (windowed) (column - 1 + SNIPPET_MARGIN).coerceAtMost(line.length) else line.length
-    val snippet = (if (from > 0) "..." else "") + line.substring(from, to) + (if (to < line.length) "..." else "")
-    val caret = " ".repeat((if (from > 0) 3 else 0) + (column - 1 - from)) + "^"
+    // The window slides rather than centring, so a line just over the limit keeps as much context
+    // as one just under it. Lines within the limit are quoted whole, which matters because the
+    // reported column is where the parser gave up -- on a long line that sits well past the
+    // character the author actually got wrong, and a centred window would crop the mistake out.
+    val from = (caretAt - SNIPPET_WIDTH / 2).coerceIn(0, (line.length - SNIPPET_WIDTH).coerceAtLeast(0))
+    val to = (from + SNIPPET_WIDTH).coerceAtMost(line.length)
+    val ellipsis = if (from > 0) "..." else ""
+    val snippet = ellipsis + line.substring(from, to) + (if (to < line.length) "..." else "")
 
     return buildString {
-      appendLine("slide content is not well-formed XML (line ${e.lineNumber}, column ${e.columnNumber}): ${e.message}")
+      appendLine("$sink is not well-formed XML: ${e.message}")
       appendLine()
-      appendLine("  $snippet")
-      appendLine("  $caret")
+      appendLine(snippet.prependIndent("  "))
+      appendLine((" ".repeat(ellipsis.length + caretAt - from) + "^").prependIndent("  "))
       appendLine()
-      append(
-        "This content is parsed as markup, so a bare '<' reads as a tag — write '&lt;'. Only " +
-          "htmlSlide bodies, inline SVG and rawHtml() take that path; Markdown, script and style " +
-          "content does not.",
-      )
+      append(fixHint(e.message.orEmpty()))
     }
   }
+
+  /**
+   * Name the fix the *reported* failure calls for. "Not well-formed" covers opposite mistakes: a
+   * void element written `<br>` needs closing, while a stray `<` in prose needs escaping — and
+   * telling an author to escape a tag they meant as a tag sends them the wrong way.
+   */
+  private fun fixHint(parserMessage: String): String =
+    when {
+      "must be terminated by the matching end-tag" in parserMessage -> {
+        "This content is parsed as XML, so every tag must close — write '<br/>' rather than " +
+          "'<br>'. If the '<' was not meant as a tag, escape it as '&lt;'."
+      }
+
+      "must be followed by either attribute specifications" in parserMessage -> {
+        "This content is parsed as XML. If the '<' was meant to start a tag, close the tag " +
+          "properly; if it was prose, escape it as '&lt;'."
+      }
+
+      else -> {
+        "This content is parsed as markup, so a bare '<' reads as the start of a tag — write " +
+          "'&lt;' where you mean the character."
+      }
+    }
 
   internal fun writeString(
     path: String,
