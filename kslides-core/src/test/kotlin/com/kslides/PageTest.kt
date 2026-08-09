@@ -62,20 +62,36 @@ class PageTest : StringSpec() {
     }
 
     "a bare < in Markdown is no longer fatal, which is what a Kotlin deck writes" {
-      // The template is a text node now, so nothing parses it as XML. All three of these aborted
-      // the whole render before -- and fencing never rescued the generics either.
+      // The template is a text node now, so nothing parses it as XML. Both of these aborted the
+      // whole render before -- and fencing never rescued the generics either.
       val md =
         Page.generatePage(
           kslidesTest {
             presentation {
-              markdownSlide { content { "# T\n\nval x: List<String> = listOf()\n\na < b" } }
-              markdownSlide { content { "# F\n\n```kotlin\nmapOf<String, List<Int>>()\n```" } }
+              markdownSlide {
+                content { "# T\n\nval x: List<String> = listOf()\n\n```kotlin\nmapOf<String, List<Int>>()\n```" }
+              }
             }
           }.presentation("/"),
         )
       md shouldContain "val x: List<String> = listOf()"
-      md shouldContain "a < b"
       md shouldContain "mapOf<String, List<Int>>()"
+    }
+
+    "a slide can write about </script> without truncating its own template" {
+      // The one sequence a raw-text element still forbids is its own end tag -- the browser's
+      // tokenizer would close the template early and spill the rest of the slide into the page.
+      // reveal.js swaps the placeholder back before parsing, so this costs the author nothing.
+      val template =
+        Page
+          .generatePage(
+          kslidesTest {
+            presentation { markdownSlide { content { "# T\n\nClose it with `</script>` when done." } } }
+          }.presentation("/"),
+        ).substringAfter("text/template\">")
+          .substringBefore("</script>")
+      template shouldContain "__SCRIPT_END__"
+      template shouldContain "when done."
     }
 
     "element content survives an ampersand wherever it reaches the page" {

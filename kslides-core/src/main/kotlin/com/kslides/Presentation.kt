@@ -9,7 +9,6 @@ import com.kslides.slide.HorizontalDslSlide
 import com.kslides.slide.HorizontalHtmlSlide
 import com.kslides.slide.HorizontalMarkdownSlide
 import com.kslides.slide.HtmlSlide
-import com.kslides.slide.MarkdownContent
 import com.kslides.slide.MarkdownSlide
 import com.kslides.slide.Slide
 import com.kslides.slide.VerticalDslSlide
@@ -289,7 +288,7 @@ class Presentation(
         """
         ## $title
         ```$language $highlightPattern
-        ${MarkdownContent.include(source, beginToken = "$token begin", endToken = "$token end")}
+        ${include(source, beginToken = "$token begin", endToken = "$token end")}
         ```
         $githubSource
         """
@@ -710,6 +709,10 @@ private fun DIV.renderDslSlide(
   processDsl(slide)
 }
 
+// reveal.js's Markdown plugin swaps this back to a literal end tag before parsing the template
+// (SCRIPT_END_PLACEHOLDER in plugin/markdown). Emitting it keeps the tag from closing the element.
+private const val SCRIPT_END_PLACEHOLDER = "__SCRIPT_END__"
+
 private fun SECTION.processMarkdown(
   s: MarkdownSlide,
   config: SlideConfig,
@@ -720,14 +723,18 @@ private fun SECTION.processMarkdown(
       .also { markdown ->
         if (markdown.isNotBlank())
           script("text/template") {
-            // A text node, not parsed markup. reveal.js reads this template with .textContent and
-            // raw-text elements decode nothing, so the Markdown has to arrive exactly as written.
-            // That also lifts the XML parser's veto on a bare '<': "val x: List<String>" is
-            // likelier in a Kotlin deck than anything the parse was guarding against. Content
-            // reaching here must not be pre-escaped -- see MarkdownContent.include.
+            // A text node, not rawHtml: reveal.js reads this template with .textContent, so the
+            // Markdown must arrive exactly as typed -- not pre-escaped (see MarkdownSlide.include),
+            // and not filtered by the XML parse, which vetoes the bare '<' in "List<String>".
+            //
+            // The one sequence a raw-text element still forbids is its own end tag: the browser's
+            // tokenizer would close the template early and spill the rest of the slide into the
+            // page. reveal.js's Markdown plugin substitutes this placeholder back before parsing,
+            // so writing about </script> in a slide costs nothing.
             markdown
               .indentInclude(config.indentToken)
               .let { if (!config.disableTrimIndent) it.trimIndent() else it }
+              .replace("</script>", SCRIPT_END_PLACEHOLDER)
               .also { +"\n$it\n" }
           }
       }

@@ -3,14 +3,11 @@ package com.kslides
 import com.kslides.InternalUtils.fixIndents
 import com.kslides.InternalUtils.fromTo
 import com.kslides.InternalUtils.isUrl
-import com.kslides.InternalUtils.pad
 import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
 import com.kslides.InternalUtils.xmlSafeAsMarkup
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
-import com.kslides.slide.MarkdownContent
-import kotlinx.html.CODE
 import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
 import java.io.File
@@ -130,10 +127,11 @@ fun githubRawUrl(
  * because it avoids whitespace-sensitivity issues and lets you keep the source of truth in one
  * place.
  *
- * Intended for use inside `markdownSlide { content { ... } }` and `htmlSlide { content { ... } }`
- * blocks. For [com.kslides.slide.DslSlide] use the [include] variant defined on [DslSlide] or
- * [kotlinx.html.CODE]; those variants disable HTML escaping and the indentation token since the
- * enclosing `<code>` tag handles both.
+ * Escapes markup so the content renders as text. That is what `htmlSlide { content { ... } }`
+ * needs, and this overload is the one that resolves there. Elsewhere a destination-aware variant
+ * wins instead — see `IncludeVariants.kt` — because a `<code>` block, a `dslSlide`, and a
+ * `markdownSlide` each escape their own output, so content escaped here would reach the browser as
+ * a visible `&quot;`. Resolution is by the enclosing receiver, so the choice is not yours to make.
  *
  * @param src local path (relative to the process working directory) or `http(s)://` URL. Paths
  *   containing `../` are rejected.

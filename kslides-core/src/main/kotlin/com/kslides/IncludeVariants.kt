@@ -3,15 +3,17 @@ package com.kslides
 import com.kslides.InternalUtils.pad
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
-import com.kslides.slide.MarkdownContent
+import com.kslides.slide.HtmlSlide
+import com.kslides.slide.MarkdownSlide
 import kotlinx.html.CODE
 
-// Destination-aware include() overloads. Escaping is not a property of the file being included —
-// it depends on where the text lands. A <code> block, a DSL slide, and a Markdown content{} block
-// each escape their own output, so content arriving pre-escaped would show &quot; and &lt; as
-// visible characters. Each overload is resolved by its block's receiver, so the author never has
-// to remember which case they are in. The bare include() keeps escaping on, for htmlSlide content,
-// which really is parsed as markup.
+// Destination-aware include() overloads, one per sink, each resolved by the receiver of the block
+// it is called in. Escaping is not a property of the file being included -- it depends on where
+// the text lands, and only the sink knows.
+//
+// Resolution is lexical, so factoring a content{} body out into a helper function moves the call
+// outside the receiver and silently reselects the escaping overload. Keep interpolated include()
+// calls inside the block.
 
 /**
  * [include] variant for use inside a `<code>` block. Disables the HTML escape + indent-token
@@ -41,15 +43,11 @@ fun DslSlide.include(
 ) = include(src, linePattern, beginToken, endToken, exclusive, trimIndent, "", false).pad()
 
 /**
- * [include] variant for a Markdown slide's `content{}` block. Escaping is turned off: reveal.js's
- * Markdown renderer escapes what it emits, so content escaped here would arrive at the browser as
- * visible `&quot;` and `&lt;` rather than the characters they name.
- *
- * Same reasoning as [CODE.include] and [DslSlide.include], and resolved the same way — by the
- * block's receiver rather than by the author remembering. The indent token is kept, since Markdown
- * content is re-indented to match the surrounding block.
+ * [include] variant for a Markdown slide's `content{}` block, where reveal.js's Markdown renderer
+ * escapes its own output. Unlike [CODE.include] and [DslSlide.include] the indent token is kept,
+ * since Markdown content is re-indented to match the surrounding block.
  */
-fun MarkdownContent.include(
+fun MarkdownSlide.include(
   src: String,
   linePattern: String = "",
   beginToken: String = "",
@@ -58,3 +56,19 @@ fun MarkdownContent.include(
   trimIndent: Boolean = true,
   indentToken: String = INDENT_TOKEN,
 ) = include(src, linePattern, beginToken, endToken, exclusive, trimIndent, indentToken, false)
+
+/**
+ * [include] variant for an `htmlSlide` `content{}` block — the one sink whose content is still
+ * parsed as markup, so escaping stays on. Identical to the bare [include]; it exists so every sink
+ * is receiver-resolved, rather than `htmlSlide` being the one whose behavior comes from the
+ * *absence* of an overload.
+ */
+fun HtmlSlide.include(
+  src: String,
+  linePattern: String = "",
+  beginToken: String = "",
+  endToken: String = "",
+  exclusive: Boolean = true,
+  trimIndent: Boolean = true,
+  indentToken: String = INDENT_TOKEN,
+) = include(src, linePattern, beginToken, endToken, exclusive, trimIndent, indentToken, true)
