@@ -11,16 +11,25 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Fixed
 
-- An ampersand in slide content no longer aborts the render. `markdownSlide` and
-  `htmlSlide` content is handed to an XML parser on its way into the DOM, which
-  rejects both a bare `&` — "Tom & Jerry" — and a named entity XML does not
-  predeclare, such as `&nbsp;` or `&mdash;`. Either one took down *every* deck in
-  the render rather than its own slide, since rendering is a single pass. Slide
-  content carries markup, so it cannot be escaped wholesale without turning an
-  author's `<span>` into visible text; instead a bare ampersand is repaired and a
-  named entity becomes the character it stands for. Numeric references and the
-  five names XML declares were always legal and are untouched. The decoding is
-  unconditional, so a slide *about* HTML entities needs `&amp;nbsp;` to show one.
+- An ampersand no longer aborts the render, wherever it appears. Page text is
+  parsed as XML on its way into the DOM, which rejects both a bare `&` — "Tom &
+  Jerry" — and a name only HTML declares, such as `&nbsp;` or `&mdash;`. Either
+  took down *every* deck in the render rather than its own slide, since rendering
+  is a single pass. The repair sits at the two raw sinks, so it covers slide
+  bodies, `css {}`, `customTheme`'s `customProperty` passthrough, the corner
+  `topLeftSvg`/`topRightSvg` blocks, author strings interpolated into
+  `Reveal.initialize`, and `rawHtml` itself. A `]]>` run, which XML also forbids,
+  is repaired the same way.
+  Content cannot simply be escaped wholesale — that would turn an author's
+  `<span>` into visible text — so the repair follows the destination. In element
+  content (`rawHtml`, slide bodies, inline SVG) a named entity becomes the
+  character it stands for; inside `<script>` and `<style>`, where HTML does not
+  decode entities and a decoded `&&` would rewrite your JavaScript, it is escaped
+  instead, which serialization undoes on the way out. Numeric references and the
+  five names XML declares were always legal and are untouched. Decoding is
+  unconditional, so content *about* HTML entities needs `&amp;nbsp;` to show one.
+  **A bare `<` remains fatal** and is not repairable this way, since slide content
+  legitimately carries tags: write `&lt;` or fence it as code.
 
 - `include()` no longer breaks on non-ASCII characters. It escaped its content
   with HTML4 named entities, so an em dash became `&mdash;` — undefined in XML,

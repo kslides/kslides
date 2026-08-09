@@ -6,6 +6,7 @@ import com.kslides.InternalUtils.isUrl
 import com.kslides.InternalUtils.pad
 import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
+import com.kslides.InternalUtils.xmlSafeAsMarkup
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
 import kotlinx.html.CODE
@@ -60,10 +61,19 @@ fun fragment(
 ) = "<!-- .element: ${effect.toOutput()}${if (index > 0) " data-fragment-index=\"$index\"" else ""} -->"
 
 /**
- * Write [html] into the current kotlinx.html tag without escaping. Intended for embedding
- * Markdown or third-party HTML snippets inside a DSL slide.
+ * Write [html] into the current kotlinx.html tag without escaping its markup. Intended for
+ * embedding Markdown or third-party HTML snippets inside a DSL slide.
+ *
+ * Tags are left alone — that is the point. What is repaired is the text around them: kotlinx.html
+ * parses this as XML on its way into the DOM, where a bare `&` in "Tom & Jerry" or a name only
+ * HTML knows like `&nbsp;` would otherwise abort the render for every deck at once. Both survive,
+ * `&nbsp;` as the space it names. **A bare `<` is still fatal** and cannot be repaired here, since
+ * telling a real tag from a stray `<` is exactly what this function declines to do — write `&lt;`.
+ *
+ * Use [rawSource] instead for the body of a `<script>` or `<style>`, where entities must not be
+ * decoded.
  */
-fun HTMLTag.rawHtml(html: String) = unsafe { raw(html) }
+fun HTMLTag.rawHtml(html: String) = unsafe { raw(html.xmlSafeAsMarkup()) }
 
 /**
  * Generate a sequence of list permutations by picking indices from the receiver according to
