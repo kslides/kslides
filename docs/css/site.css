@@ -1,0 +1,19 @@
+/*
+ * A stylesheet published alongside the decks rather than inside the reveal.js asset directory,
+ * wired up with CssFile("css/site.css", origin = AssetOrigin.OUTPUT_ROOT) in Slides.kt.
+ *
+ * Loaded by every deck, so the rules are opt-in by class: nothing here applies until a slide
+ * asks for it. That keeps a site-wide stylesheet from quietly restyling decks that predate it.
+ *
+ * Filesystem output reads this from docs/css/; the HTTP server reads the copy under
+ * src/main/resources/public/css/. Keep the two in sync.
+ */
+
+.reveal .site-note {
+  display: inline-block;
+  padding: 0.25em 0.75em;
+  border: 2px solid currentColor;
+  border-radius: 0.4em;
+  font-size: 0.6em;
+  opacity: 0.85;
+}

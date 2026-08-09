@@ -1,3 +1,5 @@
+import com.kslides.AssetOrigin
+import com.kslides.CssFile
 import com.kslides.DiagramOutputType
 import com.kslides.Effect
 import com.kslides.KSlides
@@ -28,6 +30,7 @@ import com.kslides.orderedList
 import com.kslides.permuteBy
 import com.kslides.playground
 import com.kslides.rawHtml
+import com.kslides.slideBackground
 import com.kslides.toLinePatterns
 import com.kslides.unorderedList
 import kotlinx.css.Clear
@@ -103,6 +106,11 @@ fun exampleSlides(): KSlides.() -> Unit =
       // kslides configuration options
       // Use the local kroki server running with docker-compose
       krokiUrl = "http://localhost:8000"
+
+      // A stylesheet of our own, published next to the decks rather than inside the reveal.js
+      // asset directory. OUTPUT_ROOT is what makes the relative path reach it from a deck at any
+      // depth; the default, REVEAL_ASSETS, would look for it under revealjs/.
+      cssFiles += CssFile("css/site.css", origin = AssetOrigin.OUTPUT_ROOT)
     }
 
     // Optional
@@ -1255,6 +1263,28 @@ fun exampleSlides(): KSlides.() -> Unit =
       }
 
       verticalSlides {
+        // uncounted begin
+        markdownSlide {
+          uncounted = true
+          content {
+            """
+            ## An Uncounted Slide 🔢
+
+            This deck numbers slides with `slideNumber = "c/t"`, and this one is marked
+            `uncounted = true`, so the counter in the corner skips it. Arrow back and
+            forth to watch the number stay put while the slide changes.
+
+            Its sibling `hidden = true` goes further and drops the slide from navigation too,
+            which is why this deck demonstrates the one you can actually see.
+            """
+          }
+        }
+        // uncounted end
+
+        smallSlideDefinition(source = slides, token = "uncounted")
+      }
+
+      verticalSlides {
         // other begin
         markdownSlide {
           id = "features"
@@ -1652,6 +1682,27 @@ fun exampleSlides(): KSlides.() -> Unit =
         // background2 end
 
         smallSlideDefinition(source = slides, token = "background2")
+      }
+
+      verticalSlides {
+        // background-markdown begin
+        markdownSlide {
+          content {
+            """
+            ## From a Markdown Slide
+
+            A markdown slide has no `slideConfig { background }`, so `slideBackground()` emits the
+            reveal.js comment that sets one. Append it to a line of body text, the way `fragment()`
+            is used: on its own line or after a heading it becomes an indented code block and is
+            ignored. ${slideBackground("#7fbf7f")}
+
+            <span class="site-note">styled by css/site.css, published at the output root</span>
+            """
+          }
+        }
+        // background-markdown end
+
+        smallSlideDefinition(source = slides, token = "background-markdown")
       }
 
       verticalSlides {
