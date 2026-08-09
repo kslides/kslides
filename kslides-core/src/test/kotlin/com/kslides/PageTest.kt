@@ -60,6 +60,43 @@ class PageTest : StringSpec() {
       html shouldContain """<p class="x">Tom &amp; Jerry</p>"""
     }
 
+    "every raw sink survives an ampersand, not just slide bodies" {
+      // rawHtml is where the XML parse happens, so repairing there covers every raw sink at once:
+      // css{}, customTheme's passthrough, the corner SVGs, author strings interpolated into
+      // Reveal.initialize, and rawHtml itself. Each of these aborted the whole render before.
+      val page =
+        Page.generatePage(
+          kslidesTest {
+            presentation {
+              css += """.x { content: "Tom & Jerry"; }"""
+              presentationConfig {
+                customTheme { customProperty("--r-x", "\"A & B\"") }
+                topLeftHref = "https://example.com"
+                topLeftSvg = "<svg><title>P & Q</title></svg>"
+                enableMenu = true
+                menuConfig { titleSelector = "h1 & h2" }
+              }
+              dslSlide { content { rawHtml("<p>Tom & Jerry</p><p>caf&eacute;</p>") } }
+            }
+          }.presentation("/"),
+        )
+      page shouldContain "P &amp; Q"
+      // Set up above but previously unasserted, so a reader could not tell they were load-bearing.
+      // Both are raw sinks that used to abort; both come back bare from their raw-text elements.
+      page shouldContain "A & B"
+      page shouldContain "h1 & h2"
+      // Inside <style> the serializer hands the ampersand back bare, so the CSS is what was written.
+      page shouldContain """content: "Tom & Jerry""""
+      // And the tag it was wrapped in is still a tag.
+      page shouldContain "<p>Tom &amp; Jerry</p>"
+      // rawHtml is element content, so a named entity is decoded rather than shown literally, and
+      // the serializer re-emits it as an entity the browser will decode. Escaping it instead would
+      // give "&amp;eacute;", which renders as the six visible characters -- the whole reason
+      // rawHtml does not share the script/style treatment.
+      page shouldContain "caf&eacute;"
+      page shouldNotContain "&amp;eacute;"
+    }
+
     "author styles are not scoped to screen media, so they also apply when printing" {
       // Regression for PDF export: media="screen" styles vanish in ?print-pdf / kslides-export
       // output, which un-positioned the corner links and produced a blank leading PDF page.

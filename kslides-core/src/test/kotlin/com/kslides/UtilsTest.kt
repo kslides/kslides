@@ -7,8 +7,9 @@ import com.kslides.InternalUtils.isUrl
 import com.kslides.InternalUtils.stripBraces
 import com.kslides.InternalUtils.toIntList
 import com.kslides.InternalUtils.toLineRanges
-import com.kslides.InternalUtils.toXmlSafeEntities
 import com.kslides.InternalUtils.trimIndentWithInclude
+import com.kslides.InternalUtils.xmlSafeAsMarkup
+import com.kslides.InternalUtils.xmlSafeAsRawText
 import com.kslides.config.PresentationConfig
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
@@ -376,28 +377,48 @@ val y = 1              // NO TAB
         """&lt;b&gt;x&lt;/b&gt; &amp; &quot;y&quot; — z"""
     }
 
-    "toXmlSafeEntities repairs a bare ampersand without touching a legal reference" {
+    "xmlSafeAsMarkup repairs a bare ampersand without touching a legal reference" {
       // "Tom & Jerry" is the case that used to abort every deck in the render.
-      "Tom & Jerry".toXmlSafeEntities() shouldBe "Tom &amp; Jerry"
-      "a & b & c".toXmlSafeEntities() shouldBe "a &amp; b &amp; c"
+      "Tom & Jerry".xmlSafeAsMarkup() shouldBe "Tom &amp; Jerry"
+      "a & b & c".xmlSafeAsMarkup() shouldBe "a &amp; b &amp; c"
       // Already legal, so untouched — which is what makes this safe to run over content that
       // fixIndents has already escaped.
-      "a &amp; b".toXmlSafeEntities() shouldBe "a &amp; b"
-      "&lt;b&gt; &quot;x&quot; &apos;y&apos;".toXmlSafeEntities() shouldBe "&lt;b&gt; &quot;x&quot; &apos;y&apos;"
-      "&#8212; and &#x2014;".toXmlSafeEntities() shouldBe "&#8212; and &#x2014;"
+      "a &amp; b".xmlSafeAsMarkup() shouldBe "a &amp; b"
+      "&lt;b&gt; &quot;x&quot; &apos;y&apos;".xmlSafeAsMarkup() shouldBe "&lt;b&gt; &quot;x&quot; &apos;y&apos;"
+      "&#8212; and &#x2014;".xmlSafeAsMarkup() shouldBe "&#8212; and &#x2014;"
     }
 
-    "toXmlSafeEntities turns an HTML name XML does not declare into the character it stands for" {
-      "a&nbsp;b".toXmlSafeEntities() shouldBe "a b"
-      "x &mdash; y".toXmlSafeEntities() shouldBe "x — y"
-      "&copy; &laquo;q&raquo;".toXmlSafeEntities() shouldBe "© «q»"
+    "xmlSafeAsMarkup turns an HTML name XML does not declare into the character it stands for" {
+      "a&nbsp;b".xmlSafeAsMarkup() shouldBe "a b"
+      "x &mdash; y".xmlSafeAsMarkup() shouldBe "x — y"
+      "&copy; &laquo;q&raquo;".xmlSafeAsMarkup() shouldBe "© «q»"
     }
 
-    "toXmlSafeEntities leaves an unrecognized name as visible text, the way a browser would" {
-      "R&D;".toXmlSafeEntities() shouldBe "R&amp;D;"
-      "a &notanentity; b".toXmlSafeEntities() shouldBe "a &amp;notanentity; b"
+    "xmlSafeAsMarkup leaves an unrecognized name as visible text, the way a browser would" {
+      "R&D;".xmlSafeAsMarkup() shouldBe "R&amp;D;"
+      "a &notanentity; b".xmlSafeAsMarkup() shouldBe "a &amp;notanentity; b"
       // Tags are never inspected, which is the whole reason this exists rather than an escaper.
-      """<span class="x">a & b</span>""".toXmlSafeEntities() shouldBe """<span class="x">a &amp; b</span>"""
+      """<span class="x">a & b</span>""".xmlSafeAsMarkup() shouldBe """<span class="x">a &amp; b</span>"""
+    }
+
+    "xmlSafeAsRawText escapes rather than decodes, because script and style do not decode" {
+      // Decoding here would rewrite the author's JavaScript: '&copy;' is a two-character string in
+      // JS, not a symbol. Escaping is lossless, since serialization hands it back bare in those
+      // two elements.
+      "if (a && b)".xmlSafeAsRawText() shouldBe "if (a &amp;&amp; b)"
+      "'&copy;'".xmlSafeAsRawText() shouldBe "'&amp;copy;'"
+      // Same input, the other treatment: element content wants the character.
+      "'&copy;'".xmlSafeAsMarkup() shouldBe "'©'"
+      // Legal references are left alone by both.
+      "a &amp; b &#8212; c".xmlSafeAsRawText() shouldBe "a &amp; b &#8212; c"
+    }
+
+    "both repairs neutralize a ]]> run, which XML forbids in content" {
+      // Losslessly reversible like the ampersand, and fatal in exactly the same way.
+      "a ]]> b".xmlSafeAsMarkup() shouldBe "a ]]&gt; b"
+      "a ]]> b".xmlSafeAsRawText() shouldBe "a ]]&gt; b"
+      // Already-escaped input is left alone rather than double-escaped.
+      "a ]]&gt; b".xmlSafeAsMarkup() shouldBe "a ]]&gt; b"
     }
 
     "indentInclude replaces the indent token, re-indenting to the marker column" {

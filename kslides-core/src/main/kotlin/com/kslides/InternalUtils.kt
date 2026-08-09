@@ -1,5 +1,7 @@
 package com.kslides
 
+import kotlinx.html.HTMLTag
+import kotlinx.html.unsafe
 import org.apache.commons.text.StringEscapeUtils
 import java.io.File
 
@@ -191,31 +193,58 @@ internal object InternalUtils {
     Regex("&(?!#\\d+;|#x[0-9a-fA-F]+;|(?:amp|lt|gt|quot|apos);)([a-zA-Z][a-zA-Z0-9]*;)?")
 
   /**
-   * Make author-written slide markup well-formed for the XML parse it faces on the way into the
-   * DOM (see [fixIndents]), without escaping it wholesale — that would turn an author's `<span>`
-   * into visible text.
+   * The two things kslides can repair before handing text to the XML parser: an ampersand opening
+   * no reference XML declares, and a `]]>` run, which XML forbids in content even outside CDATA.
+   * Both are losslessly reversible — serialization puts them back the way they were written.
    *
-   * A bare `&` becomes `&amp;`; a named entity XML does not predeclare (`&nbsp;`, `&mdash;`)
-   * becomes the character it stands for, which the UTF-8 document carries directly. Numeric
-   * references and XML's own five names are already legal and pass through, so running this over
-   * content [fixIndents] escaped is a no-op.
+   * A bare `<` is the one that gets away, and deliberately: distinguishing a real tag from a stray
+   * `<` is exactly the judgement the raw sinks exist to avoid making.
+   */
+  private fun String.repairForXml(repair: (MatchResult) -> CharSequence): String {
+    // Most text holds no ampersand at all, and the regex scan costs ~1ns/char on a render path
+    // that is serialized on the render lock and re-run per HTTP request; indexOf settles it in
+    // ~50ns.
+    val cdataSafe = if (contains("]]>")) replace("]]>", "]]&gt;") else this
+    return if (cdataSafe.indexOf('&') < 0) cdataSafe else illegalAmpersandRegex.replace(cdataSafe, repair)
+  }
+
+  /**
+   * Make text safe for the XML parse on the way into the DOM, treating it as the body of a
+   * `<script>` or `<style>` — raw-text elements, where HTML does not decode entities. So an
+   * illegal ampersand is escaped rather than decoded: a decoded `&&` or `&copy;` would silently
+   * rewrite the author's JavaScript. Lossless regardless, since serialization hands `&amp;&amp;`
+   * back as `&&` inside those elements.
    *
-   * The decoding is unconditional, so a slide *about* HTML entities has to write `&amp;nbsp;` to
+   * Numeric references and XML's own five names are already legal and pass through, so this is a
+   * no-op over content [fixIndents] has already escaped.
+   */
+  internal fun String.xmlSafeAsRawText(): String = repairForXml { match -> "&amp;${match.groupValues[1]}" }
+
+  /**
+   * [xmlSafeAsRawText] for element content — slide bodies, inline SVG, third-party snippets. Here
+   * a named entity XML does not predeclare (`&nbsp;`, `&mdash;`) becomes the character it stands
+   * for, which is what the author meant and what the browser would have shown. Anything naming no
+   * entity at all is escaped instead, exactly as a browser renders it.
+   *
+   * The decoding is unconditional, so content *about* HTML entities has to write `&amp;nbsp;` to
    * show one.
    */
-  internal fun String.toXmlSafeEntities(): String =
-    // Most slide content has no ampersand at all, and the scan costs ~1ns/char on a render path
-    // that is serialized on the render lock and re-run per HTTP request.
-    if (indexOf('&') < 0)
-      this
-    else
-      illegalAmpersandRegex.replace(this) { match ->
-        val name = match.groupValues[1]
-        val decoded = StringEscapeUtils.unescapeHtml4(match.value)
-        // A lone "&", or a name HTML does not know either, opens no reference and stands for
-        // itself — which is what a browser shows.
-        if (decoded == match.value) "&amp;$name" else decoded
-      }
+  internal fun String.xmlSafeAsMarkup(): String =
+    repairForXml { match ->
+      val decoded = StringEscapeUtils.unescapeHtml4(match.value)
+      // A lone "&", or a name HTML does not know either, opens no reference and stands for
+      // itself — which is what a browser shows.
+      if (decoded == match.value) "&amp;${match.groupValues[1]}" else decoded
+    }
+
+  /**
+   * [com.kslides.rawHtml] for the body of a `<script>` or `<style>` — raw-text elements, where
+   * HTML does not decode entities, so a decoded `&&` or `&copy;` would silently rewrite an
+   * author's JavaScript or CSS. Illegal ampersands are escaped rather than decoded, which is
+   * lossless here: serialization hands them back bare inside those two elements, so the browser
+   * sees what was written.
+   */
+  internal fun HTMLTag.rawSource(source: String) = unsafe { raw(source.xmlSafeAsRawText()) }
 
   internal fun writeString(
     path: String,

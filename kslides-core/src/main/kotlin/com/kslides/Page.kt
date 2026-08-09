@@ -2,6 +2,7 @@ package com.kslides
 
 import com.kslides.CssValue.Companion.writeCssToHead
 import com.kslides.CssValue.Companion.writeStyleToHead
+import com.kslides.InternalUtils.rawSource
 import com.kslides.InternalUtils.resolveAgainst
 import com.pambrose.common.util.ensureSuffix
 import io.ktor.http.ContentType
@@ -227,7 +228,7 @@ internal object Page {
         rawHtml("\n\n\t\t")
         script {
           rawHtml("\n")
-          rawHtml(
+          rawSource(
             """
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -271,7 +272,7 @@ internal object Page {
       // kslides-export), where screen-only styles would silently vanish from the PDF.
       style {
         rawHtml("\n")
-        rawHtml(
+        rawSource(
           Page::class.java.classLoader
             .getResource("slides.css")
             ?.readText()
@@ -352,7 +353,7 @@ internal object Page {
 
       rawHtml("\n\t")
       script {
-        rawHtml("\n\t\tReveal.initialize({\n${p.toJs(config)}\t\t});\n\n")
+        rawSource("\n\t\tReveal.initialize({\n${p.toJs(config)}\t\t});\n\n")
       }
 
       // Only decks that actually contain a mermaid{} block pay for the Mermaid runtime. The flag
@@ -362,7 +363,7 @@ internal object Page {
         script { src = Mermaid.MERMAID_JS_PATH.resolveAgainst(srcPrefix) }
         rawHtml("\n\t")
         script {
-          rawHtml("\n${Mermaid.initScript(config.effectiveTheme).prependIndent("\t\t")}\n\t")
+          rawSource("\n${Mermaid.initScript(config.effectiveTheme).prependIndent("\t\t")}\n\t")
         }
         rawHtml("\n")
       }
@@ -383,7 +384,7 @@ internal object Page {
     // Pre-indented once per JVM: this runs per HTTP request under the render lock.
     fun emit(indentedClientScript: String) {
       rawHtml("\n\t")
-      script { rawHtml("\n$indentedClientScript\n\t") }
+      script { rawSource("\n$indentedClientScript\n\t") }
       rawHtml("\n")
     }
 
