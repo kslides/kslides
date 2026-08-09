@@ -170,6 +170,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 ## Important Notes
 
 - CSS in presentation content is space-sensitive — do not auto-reformat generated HTML files.
+- Rendered pages are serialized through an XML parser, which only knows the five XML entities. Anything reaching the page as raw text must survive that, and there are two distinct cases. **Injected scripts** must contain no bare `&` or `<` (see `AMP` in `FollowAlong.kt`). **Kotlin source echoed into a slide** by `slideDefinition`/`smallSlideDefinition` must contain no character with a named HTML entity — an em dash anywhere between the `// token begin` / `// token end` markers, comments included, is escaped to `&mdash;` and kills the build with `The entity "mdash" was referenced, but not declared`. The same character is fine in ordinary slide content that is not echoed (the theme deck has one), which is what makes it easy to hit twice.
 - Static content: HTTP mode serves from `src/main/resources/public/`; filesystem mode uses `/docs`.
 - Run `./gradlew clean build` after changing `slides.css` or files in `src/main/resources/public/`.
 - Slide functions (`dslSlide{}`, `markdownSlide{}`, `htmlSlide{}`) have two variants depending on whether they're inside a `VerticalSlidesContext` — see `ExtensionExample.kt`.

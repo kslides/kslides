@@ -320,7 +320,7 @@ dslSlide {
         </section>
         
         <section>
-          <section class="kslides-code-1" data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm">
+          <section class="kslides-code-1" data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm" data-background-video-loop="" data-background-video-muted="">
             <h2>Video background</h2>
           </section>
           
@@ -332,6 +332,9 @@ dslSlide {
   slideConfig {
     val aws = "https://s3.amazonaws.com/static.slid.es/site/homepage/v1"
     backgroundVideo = "$aws/homepage-video-editor.mp4,$aws/homepage-video-editor.webm"
+    // Browsers block autoplay for unmuted video, and reveal.js only mutes when asked.
+    backgroundVideoMuted = true
+    backgroundVideoLoop = true
   }
   content {
     h2 { +"Video background" }

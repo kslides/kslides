@@ -667,8 +667,10 @@ dslSlide {
       height = "375px"
       theme = PlaygroundTheme.DARCULA
       mode = PlaygroundMode.XML
-      // Decrease the font size for just this playground
+      // Decrease the font size for just this playground. Line spacing follows fontSize on
+      // its own; lineHeight overrides that ratio, tightening these lines to 1.2x.
       fontSize = "15px"
+      lineHeight = "1.2"
     }
     +"Read-only languages include: JS, Java, Groovy, XML/HTML, C, Shell, Swift, Obj-C"
   }
@@ -1413,7 +1415,7 @@ dslSlide {
         </section>
         
         <section>
-          <section class="kslides-code-1" data-background-iframe="https://revealjs.com/backgrounds/#iframe-backgrounds">
+          <section class="kslides-code-1" data-background-iframe="https://revealjs.com/backgrounds/#iframe-backgrounds" data-background-interactive="">
             <div style="
                   position: absolute; width: 40%; right: 0;
                   box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2);
@@ -1436,6 +1438,9 @@ dslSlide {
         dslSlide {
           slideConfig {
             backgroundIframe = "https://revealjs.com/backgrounds/#iframe-backgrounds"
+            // The slide text invites you to interact with the page behind it, which needs this:
+            // background iframes ignore pointer events until it is set.
+            backgroundInteractive = true
           }
           content {
             div {
@@ -1524,6 +1529,11 @@ dslSlide {
         dslSlide {
           slideConfig {
             backgroundVideo = "https://static.slid.es/site/homepage/v1/homepage-video-editor.mp4"
+            // Required, not decorative: reveal.js only mutes when this is set, and browsers refuse
+            // to autoplay an unmuted video without a user gesture, so without it the background
+            // just sits on a black frame. Loop keeps it going instead of freezing on the last one.
+            backgroundVideoMuted = true
+            backgroundVideoLoop = true
           }
 
           content {
@@ -2101,6 +2111,9 @@ dslSlide {
           slideConfig {
             val aws = "https://s3.amazonaws.com/static.slid.es/site/homepage/v1"
             backgroundVideo = "$aws/homepage-video-editor.mp4,$aws/homepage-video-editor.webm"
+            // Browsers block autoplay for unmuted video, and reveal.js only mutes when asked.
+            backgroundVideoMuted = true
+            backgroundVideoLoop = true
           }
           content {
             h2 { +"Video background" }
@@ -2236,7 +2249,7 @@ dslSlide {
         </section>
         
         <section>
-          <section class="kslides-code-1" data-background-video="https://static.slid.es/site/homepage/v1/homepage-video-editor.mp4">
+          <section class="kslides-code-1" data-background-video="https://static.slid.es/site/homepage/v1/homepage-video-editor.mp4" data-background-video-loop="" data-background-video-muted="">
             <h1 style="color: red;">Video Backgrounds</h1>
           </section>
           
@@ -2247,6 +2260,11 @@ dslSlide {
 dslSlide {
   slideConfig {
     backgroundVideo = "https://static.slid.es/site/homepage/v1/homepage-video-editor.mp4"
+    // Required, not decorative: reveal.js only mutes when this is set, and browsers refuse
+    // to autoplay an unmuted video without a user gesture, so without it the background
+    // just sits on a black frame. Loop keeps it going instead of freezing on the last one.
+    backgroundVideoMuted = true
+    backgroundVideoLoop = true
   }
 
   content {
