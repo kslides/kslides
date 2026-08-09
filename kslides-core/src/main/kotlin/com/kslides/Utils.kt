@@ -5,11 +5,13 @@ import com.kslides.InternalUtils.fromTo
 import com.kslides.InternalUtils.isUrl
 import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
+import com.kslides.InternalUtils.xmlParseFailure
 import com.kslides.InternalUtils.xmlSafeAsMarkup
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
 import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
+import org.xml.sax.SAXParseException
 import java.io.File
 import java.io.IOException
 import java.net.URI
@@ -71,12 +73,36 @@ fun fragment(
  * Intended for element content. Inside a `<script>` or `<style>` a named entity is decoded the
  * same way, which would rewrite `'&copy;'` in your JavaScript into a symbol — use kotlinx.html's
  * `+text` there instead, which emits a text node the parser never sees.
+ *
+ * @throws IllegalArgumentException if [html] is not well-formed once repaired — most often a bare
+ *   `<`. The message names the offending line and the fix.
  */
-fun HTMLTag.rawHtml(html: String) =
+fun HTMLTag.rawHtml(html: String) = rawHtml("rawHtml() content", html)
+
+/**
+ * [rawHtml], told what it is writing so a parse failure can name it. kslides' own sinks pass a
+ * label the author would recognise — the difference between hunting through eighty slides and
+ * looking at one `presentationConfig` line.
+ */
+internal fun HTMLTag.rawHtml(
+  sink: String,
+  html: String,
+) {
   // Most calls are layout whitespace, and blank text has no markup to preserve — so skip the
   // parse, which costs ~1.5us a call against ~40ns for the text node. Provably identity:
   // "<unsafeRoot>\n</unsafeRoot>" parses to exactly the one text node +text builds.
-  if (html.isBlank()) +html else unsafe { raw(html.xmlSafeAsMarkup()) }
+  if (html.isBlank()) {
+    +html
+    return
+  }
+  val repaired = html.xmlSafeAsMarkup()
+  try {
+    unsafe { raw(repaired) }
+  } catch (e: SAXParseException) {
+    // The parser only knows about a document kslides synthesized. Say what the author wrote.
+    throw XmlParseFailure(xmlParseFailure(sink, repaired, e), e)
+  }
+}
 
 /**
  * Generate a sequence of list permutations by picking indices from the receiver according to
