@@ -76,5 +76,37 @@ class IncludeTest : StringSpec() {
         }
       }
     }
+
+    "escaping emits only entities XML defines, so a non-ASCII character survives as itself" {
+      // Regression: escapeHtml4 named every entity it knew, so an em dash became "&mdash;" and the
+      // XML parse on the way into the DOM aborted the whole render. Every character here has an
+      // HTML4 name and none has an XML one.
+      withTempFile("a — b … c © d « e » f g") { name ->
+        val out = include(name, trimIndent = false, indentToken = "")
+        out shouldBe "a — b … c © d « e » f g"
+      }
+    }
+
+    "escaping still neutralizes markup, which is what the flag is for" {
+      withTempFile("""if (a < b && c > d) x("&")""") { name ->
+        include(name, trimIndent = false, indentToken = "") shouldBe
+          "if (a &lt; b &amp;&amp; c &gt; d) x(&quot;&amp;&quot;)"
+      }
+    }
+
+    "a page renders an included em dash instead of dying on the entity" {
+      // The end-to-end version: this threw SAXParseException before the fix, taking down the whole
+      // deck rather than the one slide, since rendering is a single pass.
+      withTempFile("val x = 1 // an — dash") { name ->
+        val html =
+          Page.generatePage(
+            kslidesTest {
+              presentation { markdownSlide { content { "# T\n\n```\n${include(name)}\n```" } } }
+            }.presentation("/"),
+          )
+        html.contains("&mdash;") shouldBe false
+        html.contains("—") shouldBe true
+      }
+    }
   }
 }

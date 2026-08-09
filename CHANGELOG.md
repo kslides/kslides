@@ -9,6 +9,19 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+### Fixed
+
+- `include()` no longer breaks on non-ASCII characters. It escaped its content
+  with HTML4 named entities, so an em dash became `&mdash;` — undefined in XML,
+  and the page is parsed as XML on its way into the DOM. One em dash in one
+  included file aborted the entire render with `The entity "mdash" was
+  referenced, but not declared`, taking down every deck rather than the one
+  slide. Escaping now emits only the five entities XML defines and carries every
+  other character literally, which the UTF-8 document handles. Markup characters
+  are still escaped, so included source still renders as text. This also covers
+  `slideDefinition`/`smallSlideDefinition`, which read through `include()`.
+  Generated output for existing decks is byte-identical.
+
 ## [1.4.0] — 2026-08-08
 
 A path-resolution release. Every URL a generated page emits now reaches the
