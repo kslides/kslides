@@ -396,9 +396,7 @@ val y = 1              // NO TAB
     "toXmlSafeEntities leaves an unrecognized name as visible text, the way a browser would" {
       "R&D;".toXmlSafeEntities() shouldBe "R&amp;D;"
       "a &notanentity; b".toXmlSafeEntities() shouldBe "a &amp;notanentity; b"
-    }
-
-    "toXmlSafeEntities does not disturb markup, since slide content carries tags" {
+      // Tags are never inspected, which is the whole reason this exists rather than an escaper.
       """<span class="x">a & b</span>""".toXmlSafeEntities() shouldBe """<span class="x">a &amp; b</span>"""
     }
 

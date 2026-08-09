@@ -19,7 +19,8 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   content carries markup, so it cannot be escaped wholesale without turning an
   author's `<span>` into visible text; instead a bare ampersand is repaired and a
   named entity becomes the character it stands for. Numeric references and the
-  five names XML declares were always legal and are untouched.
+  five names XML declares were always legal and are untouched. The decoding is
+  unconditional, so a slide *about* HTML entities needs `&amp;nbsp;` to show one.
 
 - `include()` no longer breaks on non-ASCII characters. It escaped its content
   with HTML4 named entities, so an em dash became `&mdash;` — undefined in XML,

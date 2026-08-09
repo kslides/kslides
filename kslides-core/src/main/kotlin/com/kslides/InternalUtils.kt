@@ -185,49 +185,37 @@ internal object InternalUtils {
     // with `The entity "mdash" was referenced, but not declared`.
     .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeXml10(it) else it }
 
-  // An ampersand, optionally followed by the reference it opens: numeric, or a name.
-  private val ampersandRegex = Regex("&(#\\d+;|#x[0-9a-fA-F]+;|[a-zA-Z][a-zA-Z0-9]*;)?")
-
-  // The only names XML predeclares. Everything else HTML knows is undefined there.
-  private val xmlEntityNames = setOf("amp;", "lt;", "gt;", "quot;", "apos;")
+  // An ampersand XML would reject: one opening neither a numeric reference nor one of the five
+  // names XML predeclares. It may still open a name HTML knows, which the group captures.
+  private val illegalAmpersandRegex =
+    Regex("&(?!#\\d+;|#x[0-9a-fA-F]+;|(?:amp|lt|gt|quot|apos);)([a-zA-Z][a-zA-Z0-9]*;)?")
 
   /**
    * Make author-written slide markup well-formed for the XML parse it faces on the way into the
-   * DOM, without changing what it means or touching its tags.
+   * DOM (see [fixIndents]), without escaping it wholesale — that would turn an author's `<span>`
+   * into visible text.
    *
-   * Slide content is handed to the parser as markup, so kslides cannot escape it wholesale — that
-   * would turn an author's `<span>` into visible text. But the same parser rejects two things
-   * authors write constantly. A bare `&`, as in "Tom & Jerry", is a malformed reference. And a
-   * named entity XML does not predeclare, `&nbsp;` or `&mdash;`, is an undefined one. Either
-   * aborts the whole render, every deck at once, since rendering is a single pass.
+   * A bare `&` becomes `&amp;`; a named entity XML does not predeclare (`&nbsp;`, `&mdash;`)
+   * becomes the character it stands for, which the UTF-8 document carries directly. Numeric
+   * references and XML's own five names are already legal and pass through, so running this over
+   * content [fixIndents] escaped is a no-op.
    *
-   * So a bare ampersand becomes `&amp;`, and a named entity becomes the character it stands for,
-   * which the UTF-8 document carries directly. Numeric references and the five names XML does
-   * declare are already legal and pass through untouched, which also makes this safe to apply to
-   * content [fixIndents] has already escaped.
+   * The decoding is unconditional, so a slide *about* HTML entities has to write `&amp;nbsp;` to
+   * show one.
    */
   internal fun String.toXmlSafeEntities(): String =
-    ampersandRegex.replace(this) { match ->
-      val ref = match.groupValues[1]
-      when {
-        // A lone "&" opens nothing, so it has to stand for itself.
-        ref.isEmpty() -> {
-          "&amp;"
-        }
-
-        // Numeric references and XML's own names are legal as written.
-        ref.startsWith("#") || ref in xmlEntityNames -> {
-          match.value
-        }
-
-        else -> {
-          StringEscapeUtils.unescapeHtml4(match.value).let { decoded ->
-            // An unrecognized name is not a reference at all; HTML would show it as text.
-            if (decoded == match.value) "&amp;$ref" else decoded
-          }
-        }
+    // Most slide content has no ampersand at all, and the scan costs ~1ns/char on a render path
+    // that is serialized on the render lock and re-run per HTTP request.
+    if (indexOf('&') < 0)
+      this
+    else
+      illegalAmpersandRegex.replace(this) { match ->
+        val name = match.groupValues[1]
+        val decoded = StringEscapeUtils.unescapeHtml4(match.value)
+        // A lone "&", or a name HTML does not know either, opens no reference and stands for
+        // itself — which is what a browser shows.
+        if (decoded == match.value) "&amp;$name" else decoded
       }
-    }
 
   internal fun writeString(
     path: String,
