@@ -173,15 +173,14 @@ internal object FollowAlong {
   // Injected only for HTTP renders when followAlong is on (see Page.generateBody). Plain ES5 so
   // it runs in the browser without a build step. Skips print view entirely so exported PDFs and
   // ?print-pdf never carry the badge or a websocket connection. NOTE: page scripts pass through
-  // an XML parser during DOM serialization, so this source must contain no bare '&' (or '<') —
-  // AMP substitutes for '&' in strings/regexes, and conditionals avoid '&&'.
+  // an XML parser during DOM serialization, which a bare '<' aborts — ampersands are repaired by
+  // InternalUtils.rawSource, but '<' cannot be.
   val clientScript =
     """
     (function () {
       if (/print-pdf/.test(location.search)) return;
 
-      var AMP = String.fromCharCode(38);
-      var tokenMatch = location.search.match(new RegExp('[?' + AMP + ']$PRESENT_PARAM=([^' + AMP + ']+)'));
+      var tokenMatch = location.search.match(/[?&]$PRESENT_PARAM=([^&]+)/);
       var token = tokenMatch ? decodeURIComponent(tokenMatch[1]) : null;
       var isPresenter = !!token;
       var following = !isPresenter;
@@ -271,8 +270,8 @@ internal object FollowAlong {
       function connect() {
         var proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
         var qs = '?path=' + encodeURIComponent(location.pathname);
-        if (isPresenter) qs = qs + AMP + 'role=presenter' + AMP + 'token=' + encodeURIComponent(token);
-        else qs = qs + AMP + 'role=viewer';
+        if (isPresenter) qs = qs + '&role=presenter&token=' + encodeURIComponent(token);
+        else qs = qs + '&role=viewer';
         ws = new WebSocket(proto + '//' + location.host + '$FOLLOW_PATH' + qs);
         ws.onopen = function () {
           retryDelay = 1000;
@@ -313,16 +312,17 @@ internal object FollowAlong {
       // never reloads.
       function carryTokenAcrossLinks() {
         if (!isPresenter) return;
-        var carried = new RegExp('[?' + AMP + ']$PRESENT_PARAM=');
-        // forEach rather than an indexed loop, whose less-than comparison would break the XML
-        // parser that serializes this script into the page (see the note above).
+        var carried = /[?&]$PRESENT_PARAM=/;
+        // forEach, not an indexed loop: its less-than comparison would abort the XML
+        // serialization of this script. (Spelled out because the character cannot appear here
+        // either.)
         [].forEach.call(document.querySelectorAll('a[href]'), function (a) {
           var raw = a.getAttribute('href');
           if (!raw) return;
           if (raw.charAt(0) === '#') return;
           if (a.origin !== location.origin) return;
           if (carried.test(a.search)) return;
-          var sep = a.search ? AMP : '?';
+          var sep = a.search ? '&' : '?';
           a.href = a.origin + a.pathname + a.search + sep + '$PRESENT_PARAM=' + encodeURIComponent(token) + a.hash;
         });
       }
@@ -343,7 +343,7 @@ internal object FollowAlong {
     })();
     """.trimIndent()
 
-  // Precomputed once: generatePage runs per HTTP request under the render lock, so the ~4KB
+  // Precomputed once: generatePage runs per HTTP request under the render lock, so the ~6KB
   // re-indent must not happen there.
   internal val indentedClientScript by lazy { clientScript.prependIndent("\t\t") }
 }
