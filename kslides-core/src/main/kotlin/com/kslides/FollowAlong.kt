@@ -172,9 +172,9 @@ internal object FollowAlong {
 
   // Injected only for HTTP renders when followAlong is on (see Page.generateBody). Plain ES5 so
   // it runs in the browser without a build step. Skips print view entirely so exported PDFs and
-  // ?print-pdf never carry the badge or a websocket connection. NOTE: page scripts pass through
-  // an XML parser during DOM serialization, which a bare '<' aborts — ampersands are repaired by
-  // InternalUtils.rawSource, but '<' cannot be.
+  // ?print-pdf never carry the badge or a websocket connection. Page.injectClientScripts emits
+  // this as a text node rather than parsed markup, so it carries no character restrictions:
+  // '&', '&&', '<' and inline markup all reach the browser exactly as written.
   val clientScript =
     """
     (function () {
@@ -313,18 +313,17 @@ internal object FollowAlong {
       function carryTokenAcrossLinks() {
         if (!isPresenter) return;
         var carried = /[?&]$PRESENT_PARAM=/;
-        // forEach, not an indexed loop: its less-than comparison would abort the XML
-        // serialization of this script. (Spelled out because the character cannot appear here
-        // either.)
-        [].forEach.call(document.querySelectorAll('a[href]'), function (a) {
+        var links = document.querySelectorAll('a[href]');
+        for (var i = 0; i < links.length; i++) {
+          var a = links[i];
           var raw = a.getAttribute('href');
-          if (!raw) return;
-          if (raw.charAt(0) === '#') return;
-          if (a.origin !== location.origin) return;
-          if (carried.test(a.search)) return;
+          if (!raw) continue;
+          if (raw.charAt(0) === '#') continue;
+          if (a.origin !== location.origin) continue;
+          if (carried.test(a.search)) continue;
           var sep = a.search ? '&' : '?';
           a.href = a.origin + a.pathname + a.search + sep + '$PRESENT_PARAM=' + encodeURIComponent(token) + a.hash;
-        });
+        }
       }
       if (document.readyState === 'loading')
         document.addEventListener('DOMContentLoaded', carryTokenAcrossLinks);

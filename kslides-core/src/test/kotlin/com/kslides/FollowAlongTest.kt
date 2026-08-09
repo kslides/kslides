@@ -60,17 +60,18 @@ class FollowAlongTest : StringSpec() {
       html shouldContain "DOMContentLoaded"
     }
 
-    "the injected client survives the XML serializer that writes it into the page" {
-      // rawSource escapes the script's ampersands on the way in and the serializer hands them back
-      // bare, so the client can write them plainly. Asserting each site verbatim rather than
-      // slicing the script: an escaped arrival fails these, and the token regex in particular
-      // would then match nothing and silently demote the presenter to a viewer.
+    "the injected clients reach the page as written, character for character" {
+      // Emitted as text nodes, so they skip the XML parse entirely and no character is off limits.
+      // Each of these was once impossible: '&' needed a String.fromCharCode workaround, '&&' a
+      // nested if, and '<' an index-free loop. Asserted verbatim because the failure is silent --
+      // a token regex arriving as "&amp;" matches nothing and demotes the presenter to a viewer.
       val html = generatePage(deck(follow = true, dev = true), useHttp = true)
       html shouldContain "[?&]${FollowAlong.PRESENT_PARAM}=([^&]+)"
       html shouldContain "&role=presenter&token="
-      html shouldContain "? '&' : '?'"
+      html shouldContain "for (var i = 0; i < links.length; i++)"
       // The live-reload client shares the sink and the same freedom.
       html shouldContain "window.Reveal && Reveal.isReady()"
+      html shouldNotContain "&amp;role"
     }
 
     "a configured presenterToken is used verbatim" {

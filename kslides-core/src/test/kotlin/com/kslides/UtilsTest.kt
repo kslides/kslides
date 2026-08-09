@@ -9,7 +9,6 @@ import com.kslides.InternalUtils.toIntList
 import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.trimIndentWithInclude
 import com.kslides.InternalUtils.xmlSafeAsMarkup
-import com.kslides.InternalUtils.xmlSafeAsRawText
 import com.kslides.config.PresentationConfig
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
@@ -401,22 +400,9 @@ val y = 1              // NO TAB
       """<span class="x">a & b</span>""".xmlSafeAsMarkup() shouldBe """<span class="x">a &amp; b</span>"""
     }
 
-    "xmlSafeAsRawText escapes rather than decodes, because script and style do not decode" {
-      // Decoding here would rewrite the author's JavaScript: '&copy;' is a two-character string in
-      // JS, not a symbol. Escaping is lossless, since serialization hands it back bare in those
-      // two elements.
-      "if (a && b)".xmlSafeAsRawText() shouldBe "if (a &amp;&amp; b)"
-      "'&copy;'".xmlSafeAsRawText() shouldBe "'&amp;copy;'"
-      // Same input, the other treatment: element content wants the character.
-      "'&copy;'".xmlSafeAsMarkup() shouldBe "'©'"
-      // Legal references are left alone by both.
-      "a &amp; b &#8212; c".xmlSafeAsRawText() shouldBe "a &amp; b &#8212; c"
-    }
-
-    "both repairs neutralize a ]]> run, which XML forbids in content" {
+    "xmlSafeAsMarkup neutralizes a ]]> run, which XML forbids in content" {
       // Losslessly reversible like the ampersand, and fatal in exactly the same way.
       "a ]]> b".xmlSafeAsMarkup() shouldBe "a ]]&gt; b"
-      "a ]]> b".xmlSafeAsRawText() shouldBe "a ]]&gt; b"
       // Already-escaped input is left alone rather than double-escaped.
       "a ]]&gt; b".xmlSafeAsMarkup() shouldBe "a ]]&gt; b"
     }

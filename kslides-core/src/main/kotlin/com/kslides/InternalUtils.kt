@@ -1,7 +1,5 @@
 package com.kslides
 
-import kotlinx.html.HTMLTag
-import kotlinx.html.unsafe
 import org.apache.commons.text.StringEscapeUtils
 import java.io.File
 
@@ -209,22 +207,12 @@ internal object InternalUtils {
   }
 
   /**
-   * Make text safe for the XML parse on the way into the DOM, treating it as the body of a
-   * `<script>` or `<style>` — raw-text elements, where HTML does not decode entities. So an
-   * illegal ampersand is escaped rather than decoded: a decoded `&&` or `&copy;` would silently
-   * rewrite the author's JavaScript. Lossless regardless, since serialization hands `&amp;&amp;`
-   * back as `&&` inside those elements.
-   *
-   * Numeric references and XML's own five names are already legal and pass through, so this is a
-   * no-op over content [fixIndents] has already escaped.
-   */
-  internal fun String.xmlSafeAsRawText(): String = repairForXml { match -> "&amp;${match.groupValues[1]}" }
-
-  /**
-   * [xmlSafeAsRawText] for element content — slide bodies, inline SVG, third-party snippets. Here
-   * a named entity XML does not predeclare (`&nbsp;`, `&mdash;`) becomes the character it stands
-   * for, which is what the author meant and what the browser would have shown. Anything naming no
-   * entity at all is escaped instead, exactly as a browser renders it.
+   * Make element content safe for the XML parse on the way into the DOM — slide bodies, inline
+   * SVG, third-party snippets. A named entity XML does not predeclare (`&nbsp;`, `&mdash;`)
+   * becomes the character it stands for, which is what the author meant and what the browser
+   * would have shown. Anything naming no entity at all is escaped instead, exactly as a browser
+   * renders it. Script and style bodies need no repair at all: they are emitted as text nodes,
+   * which never reach the parser.
    *
    * The decoding is unconditional, so content *about* HTML entities has to write `&amp;nbsp;` to
    * show one.
@@ -236,15 +224,6 @@ internal object InternalUtils {
       // itself — which is what a browser shows.
       if (decoded == match.value) "&amp;${match.groupValues[1]}" else decoded
     }
-
-  /**
-   * [com.kslides.rawHtml] for the body of a `<script>` or `<style>` — raw-text elements, where
-   * HTML does not decode entities, so a decoded `&&` or `&copy;` would silently rewrite an
-   * author's JavaScript or CSS. Illegal ampersands are escaped rather than decoded, which is
-   * lossless here: serialization hands them back bare inside those two elements, so the browser
-   * sees what was written.
-   */
-  internal fun HTMLTag.rawSource(source: String) = unsafe { raw(source.xmlSafeAsRawText()) }
 
   internal fun writeString(
     path: String,

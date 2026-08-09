@@ -1,6 +1,5 @@
 package com.kslides
 
-import com.kslides.InternalUtils.rawSource
 import kotlinx.css.CssBuilder
 import kotlinx.html.HEAD
 import kotlinx.html.id
@@ -92,7 +91,7 @@ class CssValue(
           if (styleId.isNotBlank())
             id = styleId
           rawHtml("\n")
-          rawSource(indentedCss)
+          +indentedCss
           rawHtml("\n\t\t")
         }
       }
