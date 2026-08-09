@@ -1,8 +1,11 @@
 package com.kslides
 
+import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
+import io.kotest.matchers.types.shouldBeInstanceOf
+import org.xml.sax.SAXParseException
 
 class PageTest : StringSpec() {
   init {
@@ -129,6 +132,29 @@ class PageTest : StringSpec() {
       // rawHtml does not share the script/style treatment.
       page shouldContain "caf&eacute;"
       page shouldNotContain "&amp;eacute;"
+    }
+
+    "a parse failure names the deck, quotes the line, and gives the fix" {
+      // One bad character fails the whole render, and Xerces reports a line and column into a
+      // document kslides synthesized -- so without this the author has every deck to search and
+      // coordinates that match no file they wrote.
+      val e =
+        shouldThrowExactly<IllegalArgumentException> {
+          Page.generatePage(
+            kslidesTest {
+              presentation {
+                path = "talks/deck.html"
+                htmlSlide { content { "<h2>Title</h2>\n<p>val x: List<String></p>" } }
+              }
+            }.presentation("/talks/deck.html"),
+          )
+        }
+      val message = e.message!!
+      message shouldContain """Deck "talks/deck.html""""
+      message shouldContain "<p>val x: List<String></p>"   // the offending line, quoted
+      message shouldContain "^"                            // and pointed at
+      message shouldContain "write '&lt;'"                 // and the fix named
+      e.cause.shouldBeInstanceOf<SAXParseException>()
     }
 
     "author styles are not scoped to screen media, so they also apply when printing" {

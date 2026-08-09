@@ -1,6 +1,7 @@
 package com.kslides
 
 import org.apache.commons.text.StringEscapeUtils
+import org.xml.sax.SAXParseException
 import java.io.File
 
 /**
@@ -12,6 +13,10 @@ import java.io.File
 @Suppress("TooManyFunctions")
 internal object InternalUtils {
   internal val whiteSpace = "\\s".toRegex()
+
+  private const val SNIPPET_MARGIN = 40
+
+  private const val SNIPPET_FULL_LINE = 160
 
   internal fun String.indentInclude(indentToken: String): String {
     var firstLineFound = false
@@ -215,6 +220,51 @@ internal object InternalUtils {
       // A lone "&", or a name HTML does not know either, opens no reference and stands for
       // itself — which is what a browser shows.
       if (decoded == match.value) "&amp;${match.groupValues[1]}" else decoded
+    }
+  }
+
+  // kotlinx.html parses raw content as "<unsafeRoot>$content</unsafeRoot>", so a reported column
+  // on line 1 counts the wrapper too.
+  private const val UNSAFE_ROOT_PREFIX = "<unsafeRoot>"
+
+  /**
+   * Turn a parser failure into something an author can act on.
+   *
+   * Xerces reports a line and column into a document kslides synthesized and nobody has seen, and
+   * the failure takes down every deck in the render rather than the slide that caused it. So
+   * quote the offending line, point at the column, and name the fix — [parsed] is the text as the
+   * parser saw it, which is what those coordinates index.
+   */
+  internal fun xmlParseFailure(
+    parsed: String,
+    e: SAXParseException,
+  ): String {
+    val lines = parsed.lines()
+    val index = (e.lineNumber - 1).coerceIn(0, lines.lastIndex)
+    val onFirstLine = index == 0
+    val line = lines[index].let { if (onFirstLine) it.removePrefix(UNSAFE_ROOT_PREFIX) else it }
+    val column = (if (onFirstLine) e.columnNumber - UNSAFE_ROOT_PREFIX.length else e.columnNumber).coerceIn(1, line.length + 1)
+
+    // Show the whole line when it is readable: the reported column is where the parser gave up,
+    // which on a long line can be well past the character the author actually got wrong, so a
+    // window centred there would crop the mistake out. Only genuinely long lines get windowed.
+    val windowed = line.length > SNIPPET_FULL_LINE
+    val from = if (windowed) (column - 1 - SNIPPET_MARGIN).coerceAtLeast(0) else 0
+    val to = if (windowed) (column - 1 + SNIPPET_MARGIN).coerceAtMost(line.length) else line.length
+    val snippet = (if (from > 0) "..." else "") + line.substring(from, to) + (if (to < line.length) "..." else "")
+    val caret = " ".repeat((if (from > 0) 3 else 0) + (column - 1 - from)) + "^"
+
+    return buildString {
+      appendLine("slide content is not well-formed XML (line ${e.lineNumber}, column ${e.columnNumber}): ${e.message}")
+      appendLine()
+      appendLine("  $snippet")
+      appendLine("  $caret")
+      appendLine()
+      append(
+        "This content is parsed as markup, so a bare '<' reads as a tag — write '&lt;'. Only " +
+          "htmlSlide bodies, inline SVG and rawHtml() take that path; Markdown, script and style " +
+          "content does not.",
+      )
     }
   }
 

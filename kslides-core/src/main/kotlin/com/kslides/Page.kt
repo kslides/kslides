@@ -24,6 +24,7 @@ import kotlinx.html.script
 import kotlinx.html.style
 import kotlinx.html.title
 import org.w3c.dom.Document
+import org.xml.sax.SAXParseException
 import java.io.FileNotFoundException
 
 internal object Page {
@@ -88,11 +89,15 @@ internal object Page {
       // Publish the same walk to slide content, which has no parameter channel to receive it.
       p.renderRootPrefix = ctx.rootPrefix
       val htmldoc =
-        document {
-          append.html {
-            ctx.generateHead(this)
-            ctx.generateBody(this)
+        try {
+          document {
+            append.html {
+              ctx.generateHead(this)
+              ctx.generateBody(this)
+            }
           }
+        } catch (e: IllegalArgumentException) {
+          throw e.namingDeck(p.path)
         }
 
       // Protect characters inside markdown blocks that get escaped by HTMLStreamBuilder
@@ -147,6 +152,11 @@ internal object Page {
 
       mergePreAndCode(htmldoc.serialize())
     }
+
+  // rawHtml describes the offending text, but only the caller knows whose deck it was -- and one
+  // bad character fails the whole render, so without the path the author has every deck to search.
+  // Anything not from the parser is somebody else's problem and passes through untouched.
+  private fun IllegalArgumentException.namingDeck(path: String): IllegalArgumentException = cause.let { if (it is SAXParseException) IllegalArgumentException("Deck \"$path\": $message", it) else this }
 
   // Appends a <style> node to the already-built <head> for rules discovered during body
   // rendering.

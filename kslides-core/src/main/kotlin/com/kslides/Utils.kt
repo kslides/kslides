@@ -5,11 +5,13 @@ import com.kslides.InternalUtils.fromTo
 import com.kslides.InternalUtils.isUrl
 import com.kslides.InternalUtils.toLineRanges
 import com.kslides.InternalUtils.whiteSpace
+import com.kslides.InternalUtils.xmlParseFailure
 import com.kslides.InternalUtils.xmlSafeAsMarkup
 import com.kslides.Utils.INDENT_TOKEN
 import com.kslides.slide.DslSlide
 import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
+import org.xml.sax.SAXParseException
 import java.io.File
 import java.io.IOException
 import java.net.URI
@@ -72,11 +74,22 @@ fun fragment(
  * same way, which would rewrite `'&copy;'` in your JavaScript into a symbol — use kotlinx.html's
  * `+text` there instead, which emits a text node the parser never sees.
  */
-fun HTMLTag.rawHtml(html: String) =
+fun HTMLTag.rawHtml(html: String) {
   // Most calls are layout whitespace, and blank text has no markup to preserve — so skip the
   // parse, which costs ~1.5us a call against ~40ns for the text node. Provably identity:
   // "<unsafeRoot>\n</unsafeRoot>" parses to exactly the one text node +text builds.
-  if (html.isBlank()) +html else unsafe { raw(html.xmlSafeAsMarkup()) }
+  if (html.isBlank()) {
+    +html
+    return
+  }
+  val repaired = html.xmlSafeAsMarkup()
+  try {
+    unsafe { raw(repaired) }
+  } catch (e: SAXParseException) {
+    // The parser only knows about a document kslides synthesized. Say what the author wrote.
+    throw IllegalArgumentException(xmlParseFailure(repaired, e), e)
+  }
+}
 
 /**
  * Generate a sequence of list permutations by picking indices from the receiver according to
