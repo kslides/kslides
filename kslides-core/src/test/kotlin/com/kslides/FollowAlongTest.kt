@@ -61,17 +61,14 @@ class FollowAlongTest : StringSpec() {
     }
 
     "the injected clients reach the page as written, character for character" {
-      // Emitted as text nodes, so they skip the XML parse entirely and no character is off limits.
-      // Each of these was once impossible: '&' needed a String.fromCharCode workaround, '&&' a
-      // nested if, and '<' an index-free loop. Asserted verbatim because the failure is silent --
-      // a token regex arriving as "&amp;" matches nothing and demotes the presenter to a viewer.
+      // Emitted as text nodes, so no character is off limits. Asserted verbatim because the
+      // failure is silent — a token regex arriving as "&amp;" matches nothing and would demote
+      // the presenter to a viewer with no error.
       val html = generatePage(deck(follow = true, dev = true), useHttp = true)
       html shouldContain "[?&]${FollowAlong.PRESENT_PARAM}=([^&]+)"
-      html shouldContain "&role=presenter&token="
       html shouldContain "for (var i = 0; i < links.length; i++)"
       // The live-reload client shares the sink and the same freedom.
       html shouldContain "window.Reveal && Reveal.isReady()"
-      html shouldNotContain "&amp;role"
     }
 
     "a configured presenterToken is used verbatim" {

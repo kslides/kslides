@@ -672,9 +672,8 @@ as F7+; the follow-ups from shipped work are tracked in the next section.
   it lands in browser history and anything screen-shared; a POST handshake setting a
   short-lived cookie is the natural upgrade if it ever needs to be more than a talk
   convenience. The presenter has no view of how many viewers are connected, and viewers have
-  no indication of who is presenting. Note for anyone editing the injected client: inline
-  page scripts pass through an XML parser during DOM serialization, so the source must
-  contain no bare `<` (hence forEach rather than an indexed loop in `FollowAlong.kt`).
-  Ampersands need no such care — `InternalUtils.rawSource` repairs them.
+  no indication of who is presenting. Note for anyone editing the injected client: it is
+  emitted as a text node, so the XML parser that serializes the page never sees it and no
+  character needs special handling.
 - **F6**: no prompts means "add lets-plot / playground" is still a manual post-scaffold
   edit. If the template grows variants, revisit the guided-generator design above.

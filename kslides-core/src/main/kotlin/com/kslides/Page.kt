@@ -226,16 +226,14 @@ internal object Page {
         }
         rawHtml("\n\n\t\t")
         script {
-          rawHtml("\n")
-          +(
-            """
+          +"\n"
+          +"""
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', '${config.gaPropertyId}');
             """.trimIndent().prependIndent("\t\t\t")
-            )
-          rawHtml("\n\t\t")
+          +"\n\t\t"
         }
       }
 
@@ -270,8 +268,7 @@ internal object Page {
       // No media="screen" scoping: author styles must also apply when printing (?print-pdf /
       // kslides-export), where screen-only styles would silently vanish from the PDF.
       style {
-        rawHtml("\n")
-        +(
+        val slidesCss =
           Page::class.java.classLoader
             .getResource("slides.css")
             ?.readText()
@@ -279,8 +276,7 @@ internal object Page {
             ?.joinToString("\n") { "\t\t$it" }
             ?.prependIndent("\t")
             ?: throw FileNotFoundException("File not found: src/main/resources/slides.css")
-          )
-        rawHtml("\n\t\t")
+        +"\n$slidesCss\n\t\t"
       }
 
       writeCssToHead(p.css)

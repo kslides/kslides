@@ -71,10 +71,14 @@ fun fragment(
  * telling a real tag from a stray `<` is exactly what this function declines to do — write `&lt;`.
  *
  * Intended for element content. Inside a `<script>` or `<style>` a named entity is decoded the
- * same way, which would rewrite `'&copy;'` in your JavaScript into a symbol — kslides emits its
- * own script and style bodies through an internal variant that escapes instead.
+ * same way, which would rewrite `'&copy;'` in your JavaScript into a symbol — use kotlinx.html's
+ * `+text` there instead, which emits a text node the parser never sees.
  */
-fun HTMLTag.rawHtml(html: String) = unsafe { raw(html.xmlSafeAsMarkup()) }
+fun HTMLTag.rawHtml(html: String) =
+  // Most calls are layout whitespace, and blank text has no markup to preserve — so skip the
+  // parse, which costs ~1.5us a call against ~40ns for the text node. Provably identity:
+  // "<unsafeRoot>\n</unsafeRoot>" parses to exactly the one text node +text builds.
+  if (html.isBlank()) +html else unsafe { raw(html.xmlSafeAsMarkup()) }
 
 /**
  * Generate a sequence of list permutations by picking indices from the receiver according to

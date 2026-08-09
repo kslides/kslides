@@ -191,39 +191,32 @@ internal object InternalUtils {
     Regex("&(?!#\\d+;|#x[0-9a-fA-F]+;|(?:amp|lt|gt|quot|apos);)([a-zA-Z][a-zA-Z0-9]*;)?")
 
   /**
-   * The two things kslides can repair before handing text to the XML parser: an ampersand opening
-   * no reference XML declares, and a `]]>` run, which XML forbids in content even outside CDATA.
-   * Both are losslessly reversible — serialization puts them back the way they were written.
-   *
-   * A bare `<` is the one that gets away, and deliberately: distinguishing a real tag from a stray
-   * `<` is exactly the judgement the raw sinks exist to avoid making.
-   */
-  private fun String.repairForXml(repair: (MatchResult) -> CharSequence): String {
-    // Most text holds no ampersand at all, and the regex scan costs ~1ns/char on a render path
-    // that is serialized on the render lock and re-run per HTTP request; indexOf settles it in
-    // ~50ns.
-    val cdataSafe = if (contains("]]>")) replace("]]>", "]]&gt;") else this
-    return if (cdataSafe.indexOf('&') < 0) cdataSafe else illegalAmpersandRegex.replace(cdataSafe, repair)
-  }
-
-  /**
    * Make element content safe for the XML parse on the way into the DOM — slide bodies, inline
-   * SVG, third-party snippets. A named entity XML does not predeclare (`&nbsp;`, `&mdash;`)
-   * becomes the character it stands for, which is what the author meant and what the browser
-   * would have shown. Anything naming no entity at all is escaped instead, exactly as a browser
-   * renders it. Script and style bodies need no repair at all: they are emitted as text nodes,
-   * which never reach the parser.
+   * SVG, third-party snippets. Two things are repairable, and both losslessly: an ampersand
+   * opening no reference XML declares, and a `]]>` run, which XML forbids in content even outside
+   * CDATA. Serialization puts each back the way it was written.
    *
-   * The decoding is unconditional, so content *about* HTML entities has to write `&amp;nbsp;` to
-   * show one.
+   * A named entity XML does not predeclare (`&nbsp;`, `&mdash;`) becomes the character it stands
+   * for, which is what the author meant and what the browser would have shown; anything naming no
+   * entity at all is escaped instead, exactly as a browser renders it. The decoding is
+   * unconditional, so content *about* HTML entities has to write `&amp;nbsp;` to show one.
+   *
+   * A bare `<` is the one that gets away, and deliberately: telling a real tag from a stray `<` is
+   * the judgement a raw markup sink exists to avoid making. Script and style bodies face none of
+   * this — they are emitted as text nodes, which never reach the parser.
    */
-  internal fun String.xmlSafeAsMarkup(): String =
-    repairForXml { match ->
+  internal fun String.xmlSafeAsMarkup(): String {
+    val cdataSafe = if (contains("]]>")) replace("]]>", "]]&gt;") else this
+    // Most text holds no ampersand at all, so settle that with indexOf rather than the regex.
+    // Both are cheap next to the XML parse this feeds, which is the cost that actually matters.
+    if (cdataSafe.indexOf('&') < 0) return cdataSafe
+    return illegalAmpersandRegex.replace(cdataSafe) { match ->
       val decoded = StringEscapeUtils.unescapeHtml4(match.value)
       // A lone "&", or a name HTML does not know either, opens no reference and stands for
       // itself — which is what a browser shows.
       if (decoded == match.value) "&amp;${match.groupValues[1]}" else decoded
     }
+  }
 
   internal fun writeString(
     path: String,

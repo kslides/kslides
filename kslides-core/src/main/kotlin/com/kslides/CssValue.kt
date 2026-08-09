@@ -90,9 +90,7 @@ class CssValue(
         style {
           if (styleId.isNotBlank())
             id = styleId
-          rawHtml("\n")
-          +indentedCss
-          rawHtml("\n\t\t")
+          +"\n$indentedCss\n\t\t"
         }
       }
     }

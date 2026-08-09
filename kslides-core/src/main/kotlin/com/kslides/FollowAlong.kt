@@ -172,9 +172,8 @@ internal object FollowAlong {
 
   // Injected only for HTTP renders when followAlong is on (see Page.generateBody). Plain ES5 so
   // it runs in the browser without a build step. Skips print view entirely so exported PDFs and
-  // ?print-pdf never carry the badge or a websocket connection. Page.injectClientScripts emits
-  // this as a text node rather than parsed markup, so it carries no character restrictions:
-  // '&', '&&', '<' and inline markup all reach the browser exactly as written.
+  // ?print-pdf never carry the badge or a websocket connection. Emitted as a text node, so no
+  // character is off limits.
   val clientScript =
     """
     (function () {
