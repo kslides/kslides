@@ -20,7 +20,8 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   other character literally, which the UTF-8 document handles. Markup characters
   are still escaped, so included source still renders as text. This also covers
   `slideDefinition`/`smallSlideDefinition`, which read through `include()`.
-  Generated output for existing decks is byte-identical.
+  Generated pages are byte-identical for existing decks; `include()`'s own return
+  value now escapes `'` and `"` as well, which the page decodes back on render.
 
 ## [1.4.0] — 2026-08-08
 

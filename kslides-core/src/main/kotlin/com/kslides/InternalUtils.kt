@@ -180,12 +180,9 @@ internal object InternalUtils {
   ) = (
     if (trimIndent) joinToString("\n").trimIndent().lines() else this
     ).map { "$indentToken$it" }
-    // XML rather than HTML4, because the escaped text is handed to kotlinx.html's raw() and parsed
-    // as XML on its way into the DOM. escapeHtml4 names every entity it knows, so an em dash in an
-    // included file became "&mdash;" -- undefined in XML, and the parse aborts the whole render
-    // with `The entity "mdash" was referenced, but not declared`. escapeXml10 emits only the five
-    // entities XML defines and leaves every other character as itself, which the UTF-8 document
-    // carries fine. Markup characters are still escaped, which is the point of the flag.
+    // escapeXml10, not escapeHtml4: this text is parsed as XML on its way into the DOM, where
+    // HTML4's named entities are undefined — an em dash escaped to "&mdash;" aborts the render
+    // with `The entity "mdash" was referenced, but not declared`.
     .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeXml10(it) else it }
 
   internal fun writeString(
