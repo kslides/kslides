@@ -185,6 +185,38 @@ internal object InternalUtils {
     // with `The entity "mdash" was referenced, but not declared`.
     .joinToString("\n") { if (escapeHtml) StringEscapeUtils.escapeXml10(it) else it }
 
+  // An ampersand XML would reject: one opening neither a numeric reference nor one of the five
+  // names XML predeclares. It may still open a name HTML knows, which the group captures.
+  private val illegalAmpersandRegex =
+    Regex("&(?!#\\d+;|#x[0-9a-fA-F]+;|(?:amp|lt|gt|quot|apos);)([a-zA-Z][a-zA-Z0-9]*;)?")
+
+  /**
+   * Make author-written slide markup well-formed for the XML parse it faces on the way into the
+   * DOM (see [fixIndents]), without escaping it wholesale — that would turn an author's `<span>`
+   * into visible text.
+   *
+   * A bare `&` becomes `&amp;`; a named entity XML does not predeclare (`&nbsp;`, `&mdash;`)
+   * becomes the character it stands for, which the UTF-8 document carries directly. Numeric
+   * references and XML's own five names are already legal and pass through, so running this over
+   * content [fixIndents] escaped is a no-op.
+   *
+   * The decoding is unconditional, so a slide *about* HTML entities has to write `&amp;nbsp;` to
+   * show one.
+   */
+  internal fun String.toXmlSafeEntities(): String =
+    // Most slide content has no ampersand at all, and the scan costs ~1ns/char on a render path
+    // that is serialized on the render lock and re-run per HTTP request.
+    if (indexOf('&') < 0)
+      this
+    else
+      illegalAmpersandRegex.replace(this) { match ->
+        val name = match.groupValues[1]
+        val decoded = StringEscapeUtils.unescapeHtml4(match.value)
+        // A lone "&", or a name HTML does not know either, opens no reference and stands for
+        // itself — which is what a browser shows.
+        if (decoded == match.value) "&amp;$name" else decoded
+      }
+
   internal fun writeString(
     path: String,
     slideName: String,

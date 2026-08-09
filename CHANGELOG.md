@@ -11,6 +11,17 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ### Fixed
 
+- An ampersand in slide content no longer aborts the render. `markdownSlide` and
+  `htmlSlide` content is handed to an XML parser on its way into the DOM, which
+  rejects both a bare `&` — "Tom & Jerry" — and a named entity XML does not
+  predeclare, such as `&nbsp;` or `&mdash;`. Either one took down *every* deck in
+  the render rather than its own slide, since rendering is a single pass. Slide
+  content carries markup, so it cannot be escaped wholesale without turning an
+  author's `<span>` into visible text; instead a bare ampersand is repaired and a
+  named entity becomes the character it stands for. Numeric references and the
+  five names XML declares were always legal and are untouched. The decoding is
+  unconditional, so a slide *about* HTML entities needs `&amp;nbsp;` to show one.
+
 - `include()` no longer breaks on non-ASCII characters. It escaped its content
   with HTML4 named entities, so an em dash became `&mdash;` — undefined in XML,
   and the page is parsed as XML on its way into the DOM. One em dash in one

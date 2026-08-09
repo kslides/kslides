@@ -7,6 +7,7 @@ import com.kslides.InternalUtils.isUrl
 import com.kslides.InternalUtils.stripBraces
 import com.kslides.InternalUtils.toIntList
 import com.kslides.InternalUtils.toLineRanges
+import com.kslides.InternalUtils.toXmlSafeEntities
 import com.kslides.InternalUtils.trimIndentWithInclude
 import com.kslides.config.PresentationConfig
 import io.kotest.assertions.throwables.shouldThrowExactly
@@ -373,6 +374,30 @@ val y = 1              // NO TAB
       listOf("""<b>x</b> & "y" — z""")
         .fixIndents(indentToken = "", trimIndent = false, escapeHtml = true) shouldBe
         """&lt;b&gt;x&lt;/b&gt; &amp; &quot;y&quot; — z"""
+    }
+
+    "toXmlSafeEntities repairs a bare ampersand without touching a legal reference" {
+      // "Tom & Jerry" is the case that used to abort every deck in the render.
+      "Tom & Jerry".toXmlSafeEntities() shouldBe "Tom &amp; Jerry"
+      "a & b & c".toXmlSafeEntities() shouldBe "a &amp; b &amp; c"
+      // Already legal, so untouched — which is what makes this safe to run over content that
+      // fixIndents has already escaped.
+      "a &amp; b".toXmlSafeEntities() shouldBe "a &amp; b"
+      "&lt;b&gt; &quot;x&quot; &apos;y&apos;".toXmlSafeEntities() shouldBe "&lt;b&gt; &quot;x&quot; &apos;y&apos;"
+      "&#8212; and &#x2014;".toXmlSafeEntities() shouldBe "&#8212; and &#x2014;"
+    }
+
+    "toXmlSafeEntities turns an HTML name XML does not declare into the character it stands for" {
+      "a&nbsp;b".toXmlSafeEntities() shouldBe "a b"
+      "x &mdash; y".toXmlSafeEntities() shouldBe "x — y"
+      "&copy; &laquo;q&raquo;".toXmlSafeEntities() shouldBe "© «q»"
+    }
+
+    "toXmlSafeEntities leaves an unrecognized name as visible text, the way a browser would" {
+      "R&D;".toXmlSafeEntities() shouldBe "R&amp;D;"
+      "a &notanentity; b".toXmlSafeEntities() shouldBe "a &amp;notanentity; b"
+      // Tags are never inspected, which is the whole reason this exists rather than an escaper.
+      """<span class="x">a & b</span>""".toXmlSafeEntities() shouldBe """<span class="x">a &amp; b</span>"""
     }
 
     "indentInclude replaces the indent token, re-indenting to the marker column" {
