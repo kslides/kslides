@@ -30,6 +30,11 @@ PDF export is configured in the `pdf { }` block inside `output { }`:
 --8<-- "PdfExport.kt:config"
 ```
 
+Two of these are easy to miss. `outputDir` is where the PDFs land (`build/pdf` by default), and
+`previewPng` additionally captures a PNG of each deck's first slide — the image you want for a
+social-media / Open Graph preview. kslides does not yet write the `<meta property="og:image">` tag
+that would point at it, so for now reference the file from whatever publishes the deck.
+
 All settings are optional. By default the page size comes from the presentation's own print CSS (reveal.js sizes pages to match the slide dimensions); set `pageWidth` / `pageHeight` (e.g. `"11in"`, `"297mm"`) to force a paper size instead.
 
 Two timing knobs are available for decks that need them:

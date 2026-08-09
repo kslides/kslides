@@ -43,3 +43,11 @@ The slide is then reachable at `/index.html#/intro`.
 ## Loading from a file
 
 Prefer to keep long content out of your Kotlin source? See [Including content](../include.md).
+
+## Special characters
+
+Markdown content reaches reveal.js exactly as you type it, so nothing needs escaping — `<`, `&`,
+generics like `List<String>`, and entities like `&nbsp;` all work, in prose and in fenced code
+alike. The one sequence to avoid writing literally is `</script>`, which kslides rewrites for you.
+
+This is not true of [HTML slides](html.md), whose content is parsed as markup.

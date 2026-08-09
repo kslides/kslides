@@ -9,7 +9,48 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+## [1.5.0] — 2026-08-09
+
+A correctness release about one thing: text kslides emits on your behalf now
+reaches the browser as you wrote it. An ampersand, an em dash, an `&nbsp;`, a
+`]]>`, or a bare `<` in Markdown used to abort the render — every deck at once,
+not just the offending slide — because the page passes through an XML parser on
+its way into the DOM. Most of those no longer touch the parser at all, which
+also made rendering substantially faster.
+
+### Added
+
+- `include()` gained destination-aware overloads, resolved by the receiver of the
+  block it is called in rather than by the author remembering. Escaping is not a
+  property of the file being included — it depends on where the text lands, and a
+  `<code>` block, a `dslSlide`, and a Markdown `content{}` block each escape their
+  own output. The bare `include()` keeps escaping on for `htmlSlide` content,
+  which really is parsed as markup.
+- `MarkdownSlide.include` and `HtmlSlide.include` join the existing `CODE` and
+  `DslSlide` variants, so all four sinks are receiver-resolved. Resolution is
+  lexical: factoring a `content{}` body into a helper moves the call out of the
+  receiver and reselects the escaping form.
+
+### Changed
+
+- Decks render substantially faster, because most page text no longer passes
+  through the XML parser at all. Measured on byte-identical output: a 60-slide
+  Markdown deck renders 41% faster, and 3.1× faster when each slide carries an
+  `include()`d code fence (6.7 ms → 2.1 ms per render). Roughly half comes from
+  dropping the escape pass over included content and half from skipping the
+  parse. HTTP mode re-renders per request under a global lock, so this is time
+  the server was holding that lock.
+
 ### Fixed
+
+- `customTheme` values can no longer break out of the stylesheet kslides builds
+  around them. `customProperty("--r-x", "red; } .reveal h1 { color: lime")` used
+  to close the generated rule and inject its own, silently restyling a page the
+  author never edited — and `mainFont`/`headingFont`/`codeFont` had the same
+  exposure. They are checked at the assignment site now, the same way
+  `slideConfig`'s font sizes have been since 1.4.0. Colors, font stacks and
+  `calc()` values are unaffected; what is rejected is a value carrying `;`, `{`,
+  `}`, `<` or a comment delimiter, none of which a `--r-*` variable needs.
 
 - A parse failure now says where it happened and what to do about it. The sinks
   still parsed as markup — `htmlSlide` bodies, `topLeftSvg`/`topRightSvg`, and
@@ -33,13 +74,6 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   been silently ignored unless appended to a line of body text; and `&nbsp;` /
   `&mdash;` written in Markdown now arrive as written, for the browser to decode,
   rather than being decoded at build time.
-- `include()` gained destination-aware overloads, resolved by the receiver of the
-  block it is called in rather than by the author remembering. Escaping is not a
-  property of the file being included — it depends on where the text lands, and a
-  `<code>` block, a `dslSlide`, and a Markdown `content{}` block each escape their
-  own output. The bare `include()` keeps escaping on for `htmlSlide` content,
-  which really is parsed as markup.
-
 - An ampersand no longer aborts the render, wherever it appears. Page text is
   parsed as XML on its way into the DOM, which rejects both a bare `&` — "Tom &
   Jerry" — and a name only HTML declares, such as `&nbsp;` or `&mdash;`. Either
@@ -1182,7 +1216,8 @@ chart-embedding integration, and the test/CI story
   filesystem and Ktor-server output modes, and configurable
   per-slide / per-presentation overrides.
 
-[Unreleased]: https://github.com/kslides/kslides/compare/1.4.0...HEAD
+[Unreleased]: https://github.com/kslides/kslides/compare/1.5.0...HEAD
+[1.5.0]: https://github.com/kslides/kslides/releases/tag/1.5.0
 [1.4.0]: https://github.com/kslides/kslides/releases/tag/1.4.0
 [1.3.0]: https://github.com/kslides/kslides/releases/tag/1.3.0
 [1.2.0]: https://github.com/kslides/kslides/releases/tag/1.2.0

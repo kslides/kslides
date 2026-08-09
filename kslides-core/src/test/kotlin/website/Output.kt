@@ -2,6 +2,7 @@
 
 package website
 
+import com.kslides.buildKSlides
 import com.kslides.kslides
 
 // --8<-- [start:filesystem]
@@ -71,3 +72,21 @@ fun multiplePresentations() {
   }
 }
 // --8<-- [end:multi]
+
+// --8<-- [start:programmatic]
+fun driveKslidesFromCode() {
+  val deck =
+    buildKSlides {
+      presentation {
+        markdownSlide { content { "# Hello" } }
+      }
+    }
+
+  // port 0 picks a free one; the handle is AutoCloseable
+  deck.startHttpServer(port = 0).use { server ->
+    deck.presentationPaths.forEach { path ->
+      println("http://localhost:${server.port}$path")
+    }
+  }
+}
+// --8<-- [end:programmatic]

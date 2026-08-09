@@ -20,7 +20,11 @@ A few details worth knowing:
 
 - `baseTheme` picks the stock theme to start from and takes precedence over `theme` — it also drives theme-derived behavior like [Mermaid's](extensions/mermaid.md) dark/light selection.
 - `logo()` pins a brand image to a corner of every slide (and every exported PDF page). Without an `href` it ignores pointer events, so it never blocks slide interaction. A relative `src` resolves against the output root, so the same path works from a deck at any depth; absolute, external, and `data:` values are used as written.
-- `customProperty("--r-…", …)` passes through any reveal.js theme variable the DSL doesn't model.
+- `headingTextTransform` controls the stock themes' forced UPPERCASE headings. Eleven of the fourteen
+  bundled themes set `--r-heading-text-transform: uppercase` (all but `dracula`, `night`, and
+  `serif`), so headings render shouting no matter how you typed them — `TextTransform.none` gets back
+  exactly what you wrote.
+- `customProperty("--r-…", …)` passes through any reveal.js theme variable the DSL doesn't model. Values are emitted verbatim, so they are checked for characters that would end the declaration (`;`, `{`, `}`, `<`) and rejected at the assignment site rather than corrupting the stylesheet.
 
 The [theme example deck](https://kslides.github.io/kslides/docs/theme.html) shows the result, with its own `customTheme {}` source on the second slide.
 
@@ -43,6 +47,23 @@ Anything that's valid CSS works. The string is appended to the presentation's st
 ```
 
 The DSL is type-safe and refactor-friendly — handy when sharing styles across presentations.
+
+## Your own stylesheet file
+
+For CSS you'd rather keep in a file than inline, add it to `cssFiles`. Say where it lives with
+`origin` — the default looks inside the bundled reveal.js asset directory, which is rarely what you
+want for your own file:
+
+```kotlin
+kslidesConfig {
+  cssFiles += CssFile("css/site.css", origin = AssetOrigin.OUTPUT_ROOT)
+  jsFiles += JsFile("js/site.js", origin = AssetOrigin.OUTPUT_ROOT)
+}
+```
+
+`OUTPUT_ROOT` publishes the file alongside your decks and resolves it from whatever depth a deck
+sits at — see [asset paths](output.md#asset-paths). A site-root-absolute `/css/site.css` also works
+but breaks if you publish under a path prefix, which a GitHub Pages project site does.
 
 ## Targeting specific slides
 
@@ -85,6 +106,8 @@ markdownSlide {
 - `fontSize` — font size for all content on the slide (any CSS length). Themes size headings in `em`, so everything scales together.
 - `codeFontSize` — font size for code blocks (reveal.js's default is `0.55em`).
 - `codeWrap` — when `true`, long code lines wrap instead of overflowing horizontally. A slide can set `false` to override a presentation-wide `true`.
+
+These values are interpolated into generated CSS, so they are checked where you assign them: a malformed length like `"0.6em;}"` throws `IllegalArgumentException` naming the property rather than silently breaking every rule after it. Units, a bare `0`, `calc()`/`var()`/`clamp()` expressions, and a blank "unset" are all accepted.
 
 The generated `codeFontSize`/`codeWrap` rules (`fontSize` renders as an inline style, not a head rule) are emitted into the document head after any presentation `css` additions, so on an equal-specificity tie the config-driven value wins over legacy hand-written rules.
 
