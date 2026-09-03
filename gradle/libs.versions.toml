@@ -1,6 +1,6 @@
 [versions]
 # Build toolchain
-gradle-wrapper = "9.7.0"
+gradle-wrapper = "9.7.1"
 jvm = "17"
 kotlin = "2.4.10"
 
@@ -9,10 +9,10 @@ detekt = "2.0.0-alpha.6"
 dokka = "2.2.0"
 gradle-plugins = "1.0.14"
 maven-publish = "0.37.0"
-versions = "0.60.0"
+versions = "0.61.0"
 
 # Kotlin / kotlinx libraries
-css = "2026.8.0"
+css = "2026.9.0"
 kotlinx-html = "0.12.0"
 serialization = "1.11.0"
 
@@ -20,12 +20,12 @@ serialization = "1.11.0"
 ktor = "3.5.2"
 
 # Logging
-logback = "1.6.1"
+logback = "1.6.3"
 logging = "8.0.4"
 
 # Testing
 junit4 = "4.13.2"
-kotest = "6.2.3"
+kotest = "6.2.4"
 
 # Domain libraries
 common-utils = "3.2.2"
