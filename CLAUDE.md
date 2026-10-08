@@ -48,6 +48,7 @@ make kroki-start           # start the local Kroki diagram server (docker-compos
 make kroki-stop            # stop the local Kroki diagram server
 make pdf                   # export the example decks to build/pdf (DECK=<name> for one; kroki decks need kroki-start)
 make clean-pdf             # remove build/pdf
+make zizmor                # audit the GitHub Actions workflows with zizmor (fails on findings)
 make check-site            # uv lock --upgrade --dry-run for the docs site
 make upgrade-site          # uv lock --upgrade for the docs site
 make site                  # clean-site + serve the Zensical docs site
@@ -71,6 +72,10 @@ Two POSIX-ish bash scripts live at the repo root (both target macOS's default ba
 ### CI
 
 `.github/workflows/ci.yml` runs on PRs to `master` and on pushes to `master`. Expect green CI before merging.
+
+`.github/workflows/zizmor.yml` audits the workflows with [zizmor](https://docs.zizmor.sh) on the same triggers. It uploads SARIF to the repository's code-scanning tab rather than failing the job, so findings show up under Security, not as a red check. Pin new actions to a full commit SHA with a `# vX.Y.Z` comment, set `persist-credentials: false` on checkout, and give each workflow an explicit `permissions:` block.
+
+`.github/dependabot.yml` opens weekly grouped version-update PRs (7-day cooldown) for the GitHub Actions pins and the docs site's `website/uv.lock`. Gradle dependencies are deliberately not covered — they are bumped by hand via `make versions`.
 
 `.github/workflows/docs.yml` builds the Zensical docs site under `website/kslides/` plus the Dokka HTML and publishes them to GitHub Pages, split into a `build` job and a `deploy` job behind a `pages` concurrency group that queues rather than cancels an in-progress deployment. The published layout is: root → Zensical site, `/api-docs/` → Dokka HTML, `/docs/` → example slides.
 
@@ -157,9 +162,9 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 
 ## Tech Stack
 
-- Kotlin 2.4.10, JVM 17 toolchain
-- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.7.0
-- Ktor 3.5.2 (server + client)
+- Kotlin 2.4.20, JVM 17 toolchain
+- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.8.1
+- Ktor 3.6.0 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
 - Lets-Plot Kotlin 4.15.0 for the `letsPlot{}` DSL (JS runtime version configurable via `KSlidesConfig.letsPlotJsVersion`, default `4.10.1`)
 - Playwright Java (kslides-export only) for driving headless Chromium during PDF export

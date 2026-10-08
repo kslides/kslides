@@ -1,6 +1,6 @@
 .PHONY: default help build-all stop clean clean-cache clean-docs build local-build lint detekt refresh tests \
         fatjar uber dist stage deps process-resources versions dev-server kroki-start kroki-stop \
-        pdf clean-pdf kdocs check-site upgrade-site clean-site site \
+        pdf clean-pdf kdocs zizmor check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _require-version _require-gradle-version
 
@@ -94,6 +94,10 @@ clean-pdf:  ## Remove the exported PDFs
 
 kdocs:  ## Generate Dokka HTML API docs
 	./gradlew :dokkaGenerate
+
+zizmor:  ## Audit the GitHub Actions workflows with zizmor
+	@command -v zizmor >/dev/null 2>&1 || { echo "ERROR: zizmor not found (brew install zizmor, or uv tool install zizmor)" >&2; exit 1; }
+	zizmor .
 
 check-site:  ## Check for outdated website dependencies
 	cd $(WEBSITE_DIR) && env -u VIRTUAL_ENV uv lock --upgrade --dry-run
