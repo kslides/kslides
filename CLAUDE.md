@@ -75,7 +75,7 @@ Two POSIX-ish bash scripts live at the repo root (both target macOS's default ba
 
 `.github/workflows/zizmor.yml` audits the workflows with [zizmor](https://docs.zizmor.sh) on the same triggers. It uploads SARIF to the repository's code-scanning tab rather than failing the job, so findings show up under Security, not as a red check. Pin new actions to a full commit SHA with a `# vX.Y.Z` comment, set `persist-credentials: false` on checkout, and give each workflow an explicit `permissions:` block.
 
-`.github/dependabot.yml` opens weekly grouped version-update PRs (7-day cooldown) for the GitHub Actions pins and the docs site's `website/uv.lock`. Gradle dependencies are deliberately not covered — they are bumped by hand via `make versions`.
+`.github/dependabot.yml` opens weekly grouped version-update PRs (7-day cooldown) for the GitHub Actions pins and the docs site's `website/uv.lock`. Gradle dependencies are deliberately not covered — they are bumped by hand via `make versions`. `gradle/actions` is on v6, whose caching is a proprietary component governed by [Gradle's Terms of Use](https://gradle.com/legal/terms-of-use/) rather than the MIT license.
 
 `.github/workflows/docs.yml` builds the Zensical docs site under `website/kslides/` plus the Dokka HTML and publishes them to GitHub Pages, split into a `build` job and a `deploy` job behind a `pages` concurrency group that queues rather than cancels an in-progress deployment. The published layout is: root → Zensical site, `/api-docs/` → Dokka HTML, `/docs/` → example slides.
 

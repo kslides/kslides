@@ -5,6 +5,8 @@ on:
     branches: [master]
   pull_request:
 
+permissions: {}
+
 concurrency:
   group: dokka-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -13,25 +15,29 @@ jobs:
   docs:
     name: Build Dokka docs
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # check out the repository
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
 
       - name: Generate Dokka HTML
         run: ./gradlew :dokkaGenerate
 
       - name: Upload Dokka HTML
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dokka-html
           path: build/dokka/html/
