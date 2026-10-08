@@ -11,12 +11,6 @@ updates:
     groups:
       github-actions:
         patterns: ["*"]
-    ignore:
-      # gradle/actions v6 moved its caching into a proprietary component, and adopting it
-      # means accepting Gradle's Terms of Use (https://blog.gradle.org/github-actions-for-gradle-v6).
-      # Stay on v5 until that is a deliberate decision; minor and patch updates still flow.
-      - dependency-name: gradle/actions
-        update-types: ["version-update:semver-major"]
 
   # The Zensical docs site under website/.
   - package-ecosystem: uv
