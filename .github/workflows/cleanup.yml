@@ -1,0 +1,70 @@
+name: Cleanup
+
+# Deletes old workflow runs, and with them their logs and artifacts. Caches need no cleanup
+# here: GitHub evicts any cache that goes unused for 7 days.
+on:
+  schedule:
+    - cron: '23 6 * * 1' # Mondays, 06:23 UTC
+  workflow_dispatch:
+    inputs:
+      days:
+        description: Delete completed runs created more than this many days ago
+        default: '30'
+      keep:
+        description: Always keep this many of each workflow's newest runs, however old
+        default: '5'
+      dry-run:
+        description: List what would be deleted without deleting it
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: cleanup
+  cancel-in-progress: false
+
+jobs:
+  delete-runs:
+    name: Delete old workflow runs
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write # list and delete workflow runs
+
+    steps:
+      - name: Delete runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # A scheduled run has no inputs, so it takes these defaults.
+          DAYS: ${{ inputs.days || '30' }}
+          KEEP: ${{ inputs.keep || '5' }}
+          DRY_RUN: ${{ inputs.dry-run || false }}
+        run: |
+          set -euo pipefail
+          for value in "$DAYS" "$KEEP"; do
+            case "$value" in
+              '' | *[!0-9]*) echo "::error::days and keep must be whole numbers, got '$value'"; exit 1 ;;
+            esac
+          done
+          cutoff=$(date -u -d "$DAYS days ago" +%Y-%m-%dT%H:%M:%SZ)
+
+          # Collect every completed run before deleting any, since deleting while paging
+          # would shift later pages. A workflow's KEEP newest runs are spared so a status
+          # badge never loses its latest run; the rest go once they are older than the cutoff.
+          gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs?per_page=100" \
+            --jq '.workflow_runs[] | select(.status == "completed") | [.workflow_id, .created_at, .id] | @tsv' \
+            | sort -t$'\t' -k1,1n -k2,2r \
+            | awk -F'\t' -v keep="$KEEP" -v cutoff="$cutoff" '++seen[$1] > keep && $2 < cutoff { print $3 }' \
+            > delete-ids.txt
+          count=$(($(wc -l < delete-ids.txt)))
+
+          if [ "$DRY_RUN" = "true" ]; then
+            summary="Dry run: would delete $count runs created before $cutoff, keeping each workflow's $KEEP newest."
+          else
+            while read -r id; do
+              gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/runs/$id" --silent
+            done < delete-ids.txt
+            summary="Deleted $count runs created before $cutoff, keeping each workflow's $KEEP newest."
+          fi
+          echo "$summary"
+          echo "$summary" >> "$GITHUB_STEP_SUMMARY"

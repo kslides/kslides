@@ -2,17 +2,17 @@
 # Build toolchain
 gradle-wrapper = "9.8.1"
 jvm = "17"
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 
 # Gradle plugins / build tooling
 detekt = "2.0.0-alpha.6"
 dokka = "2.2.0"
 gradle-plugins = "1.0.14"
 maven-publish = "0.37.0"
-versions = "0.65.0"
+versions = "0.66.0"
 
 # Kotlin / kotlinx libraries
-css = "2026.9.0"
+css = "2026.10.0"
 kotlinx-html = "0.12.0"
 serialization = "1.11.0"
 
@@ -28,11 +28,11 @@ junit4 = "4.13.2"
 kotest = "6.2.5"
 
 # Domain libraries
-common-utils = "3.2.3"
+common-utils = "5.1.1"
 commons-text = "1.15.0"
 letsplot = "4.15.0"
 playwright = "1.63.0"
-srcref = "2.2.0"
+srcref = "2.3.0"
 
 [libraries]
 # Kotlin / kotlinx libraries
