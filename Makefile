@@ -1,5 +1,5 @@
 .PHONY: default help build-all stop clean clean-cache clean-docs build local-build lint detekt refresh tests \
-        fatjar uber dist stage deps process-resources versions dev-server kroki-start kroki-stop \
+        fatjar uber dist stage deps process-resources versions versions-all dev-server kroki-start kroki-stop \
         pdf clean-pdf kdocs zizmor check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _require-version _require-gradle-version
@@ -73,8 +73,16 @@ deps:  ## Print the Gradle dependency tree
 process-resources:  ## Run kslides-core processResources (grafts reveal.js assets)
 	./gradlew :kslides-core:processResources
 
-versions:  ## Check for dependency updates
-	./gradlew dependencyUpdates --no-configuration-cache --no-parallel
+# dependencyUpdates is marked incompatible with the configuration cache (kslides.stable-versions), so a run with the
+# cache on builds an entry only to discard it, and says so. --no-configuration-cache skips the cache for this run
+# instead. Only the root task runs: it merges every module's report, where the unqualified name would also print each
+# module's own. kslides.stable-versions gives the task a formatter that lists only what is behind; versions-all names
+# the plugin's own plain report, which also lists everything up to date.
+versions:  ## List the dependencies with newer versions, and any that could not be checked
+	./gradlew :dependencyUpdates --no-configuration-cache --no-parallel
+
+versions-all:  ## The plugin's full dependency report, up-to-date dependencies included
+	./gradlew :dependencyUpdates --no-configuration-cache --no-parallel --output-formatter=plain
 
 dev-server:  ## Run the live-reload dev loop (watch sources, rebuild, reload the browser)
 	./kslides-dev.sh --task :kslides-examples:run --watch kslides-examples/src

@@ -18,7 +18,7 @@ kslides is a Kotlin DSL for the [reveal.js](https://revealjs.com) presentation f
 ./gradlew lintKotlin        # Lint with Kotlinter
 ./gradlew formatKotlin      # Auto-format with Kotlinter
 ./gradlew detekt            # Static analysis with Detekt
-./gradlew dependencyUpdates # Check for dependency updates
+./gradlew :dependencyUpdates # Outdated dependencies, merged across all modules
 ```
 
 Run a single test class:
@@ -42,7 +42,8 @@ make lint                  # lintKotlinMain + lintKotlinTest
 make detekt                # Detekt static analysis (fails on findings)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
-make versions              # dependencyUpdates
+make versions              # only the outdated (or uncheckable) dependencies, merged across modules
+make versions-all          # the plugin's full plain report, up-to-date dependencies included
 make dev-server            # live-reload dev loop (kslides-dev.sh: watch, rebuild, restart)
 make kroki-start           # start the local Kroki diagram server (docker-compose, port 8000)
 make kroki-stop            # stop the local Kroki diagram server
@@ -77,6 +78,8 @@ Two POSIX-ish bash scripts live at the repo root (both target macOS's default ba
 
 `.github/dependabot.yml` opens weekly grouped version-update PRs (7-day cooldown) for the GitHub Actions pins and the docs site's `website/uv.lock`. Gradle dependencies are deliberately not covered — they are bumped by hand via `make versions`. `gradle/actions` is on v6, whose caching is a proprietary component governed by [Gradle's Terms of Use](https://gradle.com/legal/terms-of-use/) rather than the MIT license.
 
+`.github/workflows/cleanup.yml` runs weekly (Mondays 06:23 UTC) and deletes completed workflow runs, with their logs and artifacts, created more than 30 days ago, always sparing each workflow's 5 newest runs so the README status badges keep a result. Run it by hand with `gh workflow run cleanup.yml -f days=N -f keep=N -f dry-run=true`. Caches are left to GitHub, which evicts any cache unused for 7 days.
+
 `.github/workflows/docs.yml` builds the Zensical docs site under `website/kslides/` plus the Dokka HTML and publishes them to GitHub Pages, split into a `build` job and a `deploy` job behind a `pages` concurrency group that queues rather than cancels an in-progress deployment. The published layout is: root → Zensical site, `/api-docs/` → Dokka HTML, `/docs/` → example slides.
 
 ### Releasing
@@ -96,7 +99,7 @@ Four Gradle modules defined in `settings.gradle.kts`:
 
 Shared build logic lives in `buildSrc/` as two precompiled-script convention plugins:
 
-- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, [Detekt](https://detekt.dev) (group `dev.detekt`, plugin id `dev.detekt`), the `kslides.stable-versions` convention plugin (which applies [Ben-Manes versions](https://github.com/ben-manes/gradle-versions-plugin) and rejects non-stable `dependencyUpdates` candidates), and the kotest/logback test dependencies. Detekt fails the build on findings by default (the config is valid and the tree is violation-free); pass `-Pdetekt.ignoreFailures=true` to downgrade to report-only while iterating. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
+- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, [Detekt](https://detekt.dev) (group `dev.detekt`, plugin id `dev.detekt`), the `kslides.stable-versions` convention plugin (which applies [Ben-Manes versions](https://github.com/ben-manes/gradle-versions-plugin), turns on its built-in `rejectPreReleases` check — a pre-release is offered only to a dependency already on one, like the Detekt alpha — and installs the concise `outputFormatter` behind `make versions`), and the kotest/logback test dependencies. Detekt fails the build on findings by default (the config is valid and the tree is violation-free); pass `-Pdetekt.ignoreFailures=true` to downgrade to report-only while iterating. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
 - `kslides.published-module` — extends `kslides.kotlin-module` with `java-library`, Dokka, and `com.vanniktech.maven.publish`. Sets up the POM, `KotlinJvm` artifact (sources + Dokka HTML javadoc jar), Maven Central publication, and conditional `signAllPublications()`.
 
 `kslides-core` and `kslides-letsplot` apply `kslides.published-module`; `kslides-examples` applies `kslides.kotlin-module` plus the Ktor plugin (which provides `application{}` and `buildFatJar`). The Heroku `stage` task lives in the root build (`build.gradle.kts`) and depends on `:kslides-examples:build` and `:kslides-examples:buildFatJar`.
@@ -162,7 +165,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 
 ## Tech Stack
 
-- Kotlin 2.4.20, JVM 17 toolchain
+- Kotlin 2.4.21, JVM 17 toolchain
 - Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.8.1
 - Ktor 3.6.0 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
