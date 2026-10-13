@@ -33,13 +33,13 @@ repositories {
 }
 
 dependencies {
-  implementation("com.kslides:kslides-core:1.5.0")
+  implementation("com.kslides:kslides-core:1.5.1")
 
   // Optional: Lets-Plot integration
-  implementation("com.kslides:kslides-letsplot:1.5.0")
+  implementation("com.kslides:kslides-letsplot:1.5.1")
 
   // Optional: PDF export via headless Chromium (see the PDF export page)
-  implementation("com.kslides:kslides-export:1.5.0")
+  implementation("com.kslides:kslides-export:1.5.1")
 }
 
 kotlin {
@@ -53,7 +53,7 @@ If you use `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-kslides = "1.5.0"
+kslides = "1.5.1"
 
 [libraries]
 kslides-core     = { module = "com.kslides:kslides-core",     version.ref = "kslides" }

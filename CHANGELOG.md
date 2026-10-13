@@ -9,6 +9,67 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+## [1.5.1] — 2026-10-13
+
+A maintenance release. kslides' own code is unchanged apart from KDoc, so there
+are no API changes. The release documents how `fontSize` and `codeFontSize`
+combine, moves the published modules onto current dependencies, and hardens the
+project's CI.
+
+### Changed
+
+- Dependencies refreshed. On consumers' compile classpath (`api`): Ktor
+  3.5.2 → 3.6.0 (through `ktor-server-html-builder`), kotlin-css 2026.8.0 →
+  2026.10.0, and srcref 2.2.0 → 2.3.0. At runtime only: common-utils 3.2.2 →
+  5.1.1. The modules are built with Kotlin 2.4.21 (was 2.4.10), so their POMs
+  now declare kotlin-stdlib 2.4.21. kotlinx.html, kotlinx.serialization and
+  Lets-Plot Kotlin are unchanged.
+- `kslides-export` moves to Playwright 1.63.0 (was 1.62.0). Playwright pins its
+  browser builds per release, so the first export after upgrading downloads a
+  new Chromium, once. A CI image that pre-installs Chromium needs its install
+  step rerun.
+
+### Documentation
+
+- `fontSize` and `codeFontSize` compound, and that is now documented. `fontSize`
+  renders as an inline `font-size` on the slide's `<section>`, so an `em`
+  `codeFontSize`, and reveal.js's own `0.55em` default, resolve against the
+  scaled section and the two multiply: `fontSize = "0.65em"` with
+  `codeFontSize = "0.60em"` renders code at `0.60 × 0.65` of the theme base.
+  To size code independently, use an absolute unit (`codeFontSize = "23px"`).
+  The KDoc for both properties, the README and the docs site's Styling page,
+  which has a worked table, all cover it. This is how it always behaved; only
+  the documentation is new.
+- The Lets-Plot page on the docs site showed a 1.3.0 dependency snippet; it now
+  shows the current release.
+
+### Build / tooling
+
+- Gradle wrapper 9.7.0 → 9.8.1, and the Ben-Manes versions plugin 0.60.0 →
+  0.66.0. Kotest 6.2.3 → 6.2.5 and Logback 1.6.1 → 1.6.5, which are test and
+  example-app dependencies only.
+- `make versions` lists only the dependencies that are behind, plus any that
+  could not be checked, merged across modules from the root
+  `:dependencyUpdates` task. `make versions-all` prints the plugin's full
+  report. The pre-release filter is now the plugin's built-in
+  `rejectPreReleases` instead of a hand-written regex, and a dependency already
+  on a pre-release line, like Detekt's alpha, is still offered newer
+  pre-releases.
+- GitHub Actions hardening: every action is pinned to a full commit SHA, each
+  workflow defaults to `permissions: {}` and grants scopes per job, and checkout
+  sets `persist-credentials: false`. `gradle/actions/setup-gradle` moves to v6.
+  A new `zizmor` workflow audits the workflows on every PR and push and reports
+  to code scanning. `make zizmor` runs the same audit locally.
+- Dependabot opens weekly grouped version-update PRs for the action pins and the
+  docs site's `uv.lock`, with a 7-day cooldown.
+- A weekly `Cleanup` workflow deletes completed workflow runs older than 30
+  days and always keeps each workflow's 5 newest, so the README status badges
+  keep a result.
+- `.gitattributes`: the `gradlew` and `*.bat` rules dropped a `binary` keyword
+  that cancelled their line-ending normalization. `gradlew.bat` is now stored
+  with LF and checked out with CRLF.
+- Docs site: Zensical 0.0.53 → 0.0.68.
+
 ## [1.5.0] — 2026-08-09
 
 A correctness release about one thing: text kslides emits on your behalf now
@@ -1216,7 +1277,8 @@ chart-embedding integration, and the test/CI story
   filesystem and Ktor-server output modes, and configurable
   per-slide / per-presentation overrides.
 
-[Unreleased]: https://github.com/kslides/kslides/compare/1.5.0...HEAD
+[Unreleased]: https://github.com/kslides/kslides/compare/1.5.1...HEAD
+[1.5.1]: https://github.com/kslides/kslides/releases/tag/1.5.1
 [1.5.0]: https://github.com/kslides/kslides/releases/tag/1.5.0
 [1.4.0]: https://github.com/kslides/kslides/releases/tag/1.4.0
 [1.3.0]: https://github.com/kslides/kslides/releases/tag/1.3.0
