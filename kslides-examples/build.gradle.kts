@@ -13,7 +13,7 @@ application {
 // "kslides-examples/src/..."), matching the documented `java -jar` invocation from the root.
 // Gradle otherwise defaults to this subproject's dir, which doubles those paths and throws
 // FileNotFoundException. Applies to every JavaExec task in this module — `run` (and the
-// kslides-dev.sh live-reload loop) plus the exportPdf task registered below.
+// kslides-dev.sh live-reload loop) plus the writeDocs and exportPdf tasks registered below.
 tasks.withType<JavaExec>().configureEach {
     workingDir = rootProject.projectDir
 }
@@ -53,6 +53,13 @@ dependencies {
     runtimeOnly(libs.logback.classic) // logging implementation lives with the application, not the libraries
 
     "exportImplementation"(projects.kslidesExport)
+}
+
+tasks.register<JavaExec>("writeDocs") {
+    group = "documentation"
+    description = "Write the example presentations to docs/ and exit, without starting the HTTP server"
+    mainClass = "DocsKt"
+    classpath = sourceSets.main.get().runtimeClasspath
 }
 
 tasks.register<JavaExec>("exportPdf") {

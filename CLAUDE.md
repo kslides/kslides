@@ -13,6 +13,7 @@ kslides is a Kotlin DSL for the [reveal.js](https://revealjs.com) presentation f
 ./gradlew test              # Run tests (Kotest + JUnit 5)
 ./gradlew buildFatJar       # Build executable fat JAR (kslides-examples)
 ./gradlew exportPdf         # Print the example decks to build/pdf (-Pdeck=<name> for one)
+./gradlew writeDocs         # Write the example decks to docs/ and exit (no HTTP server)
 ./gradlew clean             # Clean build artifacts
 ./gradlew stage             # Heroku deployment build
 ./gradlew lintKotlin        # Lint with Kotlinter
@@ -42,6 +43,7 @@ make lint                  # lintKotlinMain + lintKotlinTest
 make detekt                # Detekt static analysis (fails on findings)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
+make docs                  # regenerate the example output under docs/ and exit (needs kroki-start)
 make versions              # only the outdated (or uncheckable) dependencies, merged across modules
 make versions-all          # the plugin's full plain report, up-to-date dependencies included
 make dev-server            # live-reload dev loop (kslides-dev.sh: watch, rebuild, restart)
@@ -91,7 +93,7 @@ The current version is `1.5.1` (tag `1.5.1`, GitHub release `v1.5.1`, published 
 Four Gradle modules defined in `settings.gradle.kts`:
 
 - **kslides-core** — Core DSL library: slide types, configuration, page rendering, Ktor server, filesystem output. This is what consumers depend on.
-- **kslides-examples** — Example presentations with `main()` entry point in `Slides.kt` (the deck definition lives in `exampleSlides()` so the PDF-export entry point `Export.kt` — in its own `export` source set, keeping Playwright out of the fat JAR — can reuse it). Uses ShadowJar to build `kslides.jar`. Main class: `SlidesKt`; `./gradlew exportPdf [-Pdeck=<name>]` runs `ExportKt`.
+- **kslides-examples** — Example presentations with `main()` entry point in `Slides.kt` (the deck definition lives in `exampleSlides()` so the PDF-export entry point `Export.kt` — in its own `export` source set, keeping Playwright out of the fat JAR — can reuse it, as can `Docs.kt`, which writes `docs/` with HTTP turned off and exits). Uses ShadowJar to build `kslides.jar`. Main class: `SlidesKt`; `./gradlew exportPdf [-Pdeck=<name>]` runs `ExportKt`, and `./gradlew writeDocs` (`make docs`) runs `DocsKt`. `SlidesKt` also writes `docs/` but then serves over HTTP and never exits. Regenerating rewrites the `docs/letsPlot/` pages every time, since their sample data is random; every other generated file comes out byte-identical.
 - **kslides-export** — One-command PDF export (F2): `exportPdf()` serves the built presentations from an ephemeral-port Ktor server and prints each deck via headless Chromium (Playwright), waiting for reveal.js' `pdf-ready` event and Mermaid completion. Depends on kslides-core.
 - **kslides-letsplot** — Lets-Plot visualization integration (JetBrains Lets-Plot). Depends on kslides-core.
 

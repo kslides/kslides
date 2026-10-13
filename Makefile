@@ -1,8 +1,8 @@
-.PHONY: default help build-all stop clean clean-cache clean-docs build local-build lint detekt refresh tests \
+.PHONY: default help build-all stop clean clean-cache docs clean-docs build local-build lint detekt refresh tests \
         fatjar uber dist stage deps process-resources versions versions-all dev-server kroki-start kroki-stop \
         pdf clean-pdf kdocs zizmor check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
-        _check-gpg-env _require-version _require-gradle-version
+        _check-gpg-env _require-kroki _require-version _require-gradle-version
 
 VERSION := $(shell sed -n 's/^version=\(.*\)/\1/p' gradle.properties)
 GRADLE_VERSION := $(shell sed -n 's/^gradle-wrapper = "\(.*\)"/\1/p' gradle/libs.versions.toml)
@@ -33,6 +33,13 @@ clean:  ## Remove Gradle build artifacts
 
 clean-cache: clean  ## Clean and delete the Gradle configuration cache
 	rm -rf .gradle/configuration-cache
+
+# docs/ is also a directory, so this target relies on being .PHONY. clean-docs runs in the recipe
+# rather than as a prerequisite so it can only follow the Kroki check, even under make -j: a missing
+# server fails the target before anything is deleted.
+docs: _require-kroki  ## Regenerate the example output under docs/ (needs kroki-start)
+	@$(MAKE) --no-print-directory clean-docs
+	./gradlew :kslides-examples:writeDocs
 
 clean-docs:  ## Remove the generated example output under docs/
 	rm -rf docs/demo1 docs/kroki docs/letsPlot docs/playground docs/*.html
@@ -152,6 +159,9 @@ _check-gpg-env:
 	@if ! security find-generic-password -a "gpg-signing" -s "gradle-signing-password" -w >/dev/null 2>&1; then \
 		echo "ERROR: keychain entry 'gradle-signing-password' (account 'gpg-signing') not found" >&2; exit 1; \
 	fi
+
+_require-kroki:
+	@curl -s -o /dev/null --max-time 5 http://localhost:8000/ || { echo "ERROR: no Kroki server on localhost:8000 (make kroki-start)" >&2; exit 1; }
 
 _require-version:
 	@[ -n "$(VERSION)" ] || { echo "ERROR: Could not determine project version from gradle.properties" >&2; exit 1; }
