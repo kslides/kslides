@@ -7,7 +7,7 @@ kotlin = "2.4.21"
 # Gradle plugins / build tooling
 detekt = "2.0.0-alpha.6"
 dokka = "2.2.0"
-gradle-plugins = "1.0.14"
+gradle-plugins = "1.1.6"
 maven-publish = "0.37.0"
 versions = "0.66.0"
 
