@@ -12,6 +12,22 @@ updates:
       github-actions:
         patterns: ["*"]
 
+  # The Gradle build: every version in gradle/libs.versions.toml, which buildSrc reads
+  # too, so the convention plugins are covered. The wrapper is left to
+  # `make upgrade-wrapper`, which reads the catalog's `gradle-wrapper` key; Dependabot
+  # would bump gradle-wrapper.properties alone and leave that key behind.
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      gradle:
+        patterns: ["*"]
+    ignore:
+      - dependency-name: gradle-wrapper
+
   # The Zensical docs site under website/.
   - package-ecosystem: uv
     directory: /website

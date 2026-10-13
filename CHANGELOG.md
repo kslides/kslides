@@ -9,6 +9,16 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+### Build / tooling
+
+- Dependabot now opens weekly grouped version-update PRs for the Gradle build
+  too, covering every version in `gradle/libs.versions.toml` (and through it
+  buildSrc's plugins), with the same 7-day cooldown as the GitHub Actions and
+  docs-site updates. The Gradle wrapper is excluded and stays with
+  `make upgrade-wrapper`. The foojay toolchain plugin in `settings.gradle.kts`
+  now uses the infix `version` form so Dependabot can see it; nothing tracked it
+  before, since the versions plugin skips settings plugins.
+
 ## [1.5.1] — 2026-10-13
 
 A maintenance release. kslides' own code is unchanged apart from KDoc, so there

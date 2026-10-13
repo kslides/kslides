@@ -7,7 +7,10 @@ pluginManagement {
 }
 
 plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention").version("1.0.0")
+    // Infix `version`, not `.version(...)`: Dependabot only recognizes this form, and
+    // the versions plugin never checks settings plugins, so it is the only thing that
+    // would notice an update.
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 dependencyResolutionManagement {
