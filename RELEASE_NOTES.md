@@ -6,6 +6,58 @@ structured, category-grouped log.
 
 ---
 
+## 1.5.1 — 2026-10-13
+
+A maintenance release. kslides' own code is unchanged apart from KDoc, so
+upgrading is a version bump.
+
+### `fontSize` scales your code, too
+
+The one thing worth knowing came out of documentation, not code. `fontSize` and
+`codeFontSize` multiply. `fontSize` renders as an inline `font-size` on the
+slide's `<section>`, and code blocks sit inside that section, so an `em` code
+size resolves against the already-scaled section rather than the theme base:
+
+```kotlin
+slideConfig {
+  fontSize = "0.65em"
+  codeFontSize = "0.60em"   // code renders at 0.60 × 0.65 of the theme base
+}
+```
+
+Shrinking a dense slide with `fontSize` therefore shrinks its code as well, even
+with no `codeFontSize` set, because reveal.js's own `0.55em` default compounds
+the same way. Setting `codeFontSize = "0.55em"` to "restore the default" does
+nothing. To size code independently of `fontSize`, use an absolute unit:
+`codeFontSize = "23px"` matches reveal.js's default on a 42px theme and still
+scales with the deck, since reveal.js zooms the whole canvas with a transform.
+The [Styling](https://kslides.github.io/kslides/styling/#fontsize-and-codefontsize-compound)
+page has a worked table, and the KDoc on both properties says the same.
+
+### Dependencies
+
+The published modules move to Ktor 3.6.0, kotlin-css 2026.10.0, srcref 2.3.0
+and common-utils 5.1.1, built with Kotlin 2.4.21. Ktor, kotlin-css and srcref
+are `api` dependencies, so a project that declares an older Ktor will have it
+resolved up to 3.6.0.
+
+`kslides-export` moves to Playwright 1.63.0. Each Playwright release pins its
+own browser builds, so the first `exportPdf()` after upgrading downloads a new
+Chromium (once; it is cached per user after that). If your CI image bakes in
+Chromium, rerun its install step.
+
+### Under the hood
+
+The rest is project infrastructure. The GitHub Actions workflows now pin every
+action to a commit SHA, run with least-privilege permissions, and are audited by
+[zizmor](https://docs.zizmor.sh) on every PR. Dependabot keeps those pins and
+the docs site's Python lockfile current, and a weekly job prunes workflow runs
+older than 30 days. The build is on Gradle 9.8.1, and `make versions` now prints
+a single merged list of what is out of date, with `make versions-all` for the
+full report.
+
+---
+
 ## 1.5.0 — 2026-08-09
 
 One theme: text you write reaches the browser as you wrote it.

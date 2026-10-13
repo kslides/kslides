@@ -84,7 +84,7 @@ Two POSIX-ish bash scripts live at the repo root (both target macOS's default ba
 
 ### Releasing
 
-The current version is `1.5.0` (tag `1.5.0`, GitHub release `v1.5.0`, published to Maven Central as `com.kslides:kslides-core`, `com.kslides:kslides-letsplot`, and — added in 1.3.0 — `com.kslides:kslides-export`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site (`website/kslides/docs/installation.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
+The current version is `1.5.1` (tag `1.5.1`, GitHub release `v1.5.1`, published to Maven Central as `com.kslides:kslides-core`, `com.kslides:kslides-letsplot`, and — added in 1.3.0 — `com.kslides:kslides-export`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site's dependency snippets (`website/kslides/docs/installation.md` and `website/kslides/docs/extensions/letsplot.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
 
 ## Module Structure
 
