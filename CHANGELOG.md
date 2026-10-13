@@ -18,6 +18,11 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   `make upgrade-wrapper`. The foojay toolchain plugin in `settings.gradle.kts`
   now uses the infix `version` form so Dependabot can see it; nothing tracked it
   before, since the versions plugin skips settings plugins.
+- `make docs` (`./gradlew :kslides-examples:writeDocs`) regenerates the
+  example output under `docs/` and exits. Running the example app writes the
+  same files but then starts the HTTP server and never exits. The target
+  checks for the local Kroki server first and stops before deleting anything if
+  it is down.
 
 ## [1.5.1] — 2026-10-13
 
