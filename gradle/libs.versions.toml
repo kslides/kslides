@@ -7,7 +7,7 @@ kotlin = "2.4.21"
 # Gradle plugins / build tooling
 detekt = "2.0.0-alpha.6"
 dokka = "2.2.0"
-gradle-plugins = "1.1.6"
+gradle-plugins = "1.1.7"
 maven-publish = "0.37.0"
 versions = "0.66.0"
 
@@ -25,7 +25,7 @@ logging = "8.0.4"
 
 # Testing
 junit4 = "4.13.2"
-kotest = "6.2.5"
+kotest = "6.2.6"
 
 # Domain libraries
 common-utils = "5.1.1"
