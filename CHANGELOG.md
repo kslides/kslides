@@ -30,7 +30,7 @@ gains Dependabot coverage, a `make slides` target, and a warning-free compile.
 
 - Gradle wrapper 9.8.1 → 9.8.2, and the `com.pambrose.kotlinter` /
   `com.pambrose.testing` convention plugins that buildSrc applies 1.0.14 →
-  1.1.6. Kotest 6.2.5 → 6.2.6, a test dependency only.
+  1.1.7. Kotest 6.2.5 → 6.2.6, a test dependency only.
 - The Gradle wrapper pins the distribution's SHA-256 (`distributionSha256Sum`),
   so a download that does not match the checksum services.gradle.org publishes
   fails instead of running. `make upgrade-wrapper` fetches that checksum and
