@@ -722,10 +722,13 @@ private fun SECTION.processMarkdown(
       .private_markdownBlock()
       .also { markdown ->
         if (markdown.isNotBlank())
+          @Suppress("DEPRECATION")
           script("text/template") {
             // A text node, not rawHtml: reveal.js reads this template with .textContent, so the
             // Markdown must arrive exactly as typed -- not pre-escaped (see MarkdownSlide.include),
-            // and not filtered by the XML parse, which vetoes the bare '<' in "List<String>".
+            // and not filtered by the XML parse, which vetoes the bare '<' in "List<String>". That
+            // is also why kotlinx.html's deprecation of <script> text, which points at unsafe {},
+            // is suppressed here.
             //
             // The one sequence a raw-text element still forbids is its own end tag: the browser's
             // tokenizer would close the template early and spill the rest of the slide into the

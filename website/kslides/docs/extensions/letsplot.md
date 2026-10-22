@@ -12,8 +12,8 @@ Add the module to your dependencies (see [Installation](../installation.md)):
 
 ```kotlin
 dependencies {
-  implementation("com.kslides:kslides-core:1.5.1")
-  implementation("com.kslides:kslides-letsplot:1.5.1")
+  implementation("com.kslides:kslides-core:1.5.2")
+  implementation("com.kslides:kslides-letsplot:1.5.2")
 }
 ```
 

@@ -1,4 +1,4 @@
-.PHONY: default help build-all stop clean clean-cache docs clean-docs build local-build lint detekt refresh tests \
+.PHONY: default help build-all stop clean clean-cache slides clean-slides build local-build lint detekt refresh tests \
         fatjar uber dist stage deps process-resources versions versions-all dev-server kroki-start kroki-stop \
         pdf clean-pdf kdocs zizmor check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
@@ -6,6 +6,7 @@
 
 VERSION := $(shell sed -n 's/^version=\(.*\)/\1/p' gradle.properties)
 GRADLE_VERSION := $(shell sed -n 's/^gradle-wrapper = "\(.*\)"/\1/p' gradle/libs.versions.toml)
+GRADLE_SHA256_URL = https://services.gradle.org/distributions/gradle-$(GRADLE_VERSION)-bin.zip.sha256
 
 WEBSITE_DIR := website
 SITE_DIR    := $(WEBSITE_DIR)/kslides
@@ -34,14 +35,13 @@ clean:  ## Remove Gradle build artifacts
 clean-cache: clean  ## Clean and delete the Gradle configuration cache
 	rm -rf .gradle/configuration-cache
 
-# docs/ is also a directory, so this target relies on being .PHONY. clean-docs runs in the recipe
-# rather than as a prerequisite so it can only follow the Kroki check, even under make -j: a missing
-# server fails the target before anything is deleted.
-docs: _require-kroki  ## Regenerate the example output under docs/ (needs kroki-start)
-	@$(MAKE) --no-print-directory clean-docs
+# clean-slides runs in the recipe rather than as a prerequisite so it can only follow the Kroki
+# check, even under make -j: a missing server fails the target before anything is deleted.
+slides: _require-kroki  ## Regenerate the example slides under docs/ (needs kroki-start)
+	@$(MAKE) --no-print-directory clean-slides
 	./gradlew :kslides-examples:writeDocs
 
-clean-docs:  ## Remove the generated example output under docs/
+clean-slides:  ## Remove the generated example slides under docs/
 	rm -rf docs/demo1 docs/kroki docs/letsPlot docs/playground docs/*.html
 
 build: clean  ## Clean and build (skips tests)
@@ -145,9 +145,18 @@ publish-maven-central: _require-version _check-gpg-env ## Stage and release a si
 # Gradle's documented upgrade procedure: the first run rewrites
 # gradle-wrapper.properties using the *old* wrapper jar; the second run
 # regenerates the wrapper itself with the new version.
+#
+# Both runs pass the distribution's published SHA-256, which the wrapper records
+# as distributionSha256Sum and checks every download against. Once it is pinned,
+# Gradle refuses to change the version without a new one. One shell line, so
+# both runs see the same checksum.
 upgrade-wrapper: _require-gradle-version  ## Upgrade the Gradle wrapper to the version pinned in libs.versions.toml
-	./gradlew wrapper --gradle-version=$(GRADLE_VERSION) --distribution-type=bin
-	./gradlew wrapper --gradle-version=$(GRADLE_VERSION) --distribution-type=bin
+	@sha=$$(curl -fsSL --max-time 30 $(GRADLE_SHA256_URL)) && echo "$$sha" | grep -Eq '^[0-9a-f]{64}$$' \
+		|| { echo "ERROR: could not fetch the SHA-256 for Gradle $(GRADLE_VERSION) from $(GRADLE_SHA256_URL)" >&2; exit 1; }; \
+	for run in first second; do \
+		echo "./gradlew wrapper --gradle-version=$(GRADLE_VERSION) --distribution-type=bin --gradle-distribution-sha256-sum=$$sha"; \
+		./gradlew wrapper --gradle-version=$(GRADLE_VERSION) --distribution-type=bin --gradle-distribution-sha256-sum=$$sha || exit 1; \
+	done
 
 _check-gpg-env:
 	@if [ -z "$$GPG_SIGNING_KEY_ID" ]; then \

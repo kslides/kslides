@@ -9,8 +9,48 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+## [1.5.2] — TBD
+
+A maintenance release. kslides' behavior is unchanged and there are no API
+changes. The published modules move onto current dependencies, and the build
+gains Dependabot coverage, a `make slides` target, and a warning-free compile.
+
+### Changed
+
+- Dependencies refreshed. On consumers' compile classpath (`api`): kotlin-css
+  2026.10.0 → 2026.10.1. At runtime only: kotlinx.serialization 1.11.0 →
+  1.12.0. Kotlin (2.4.21), Ktor (3.6.0), kotlinx.html, srcref, common-utils and
+  Lets-Plot Kotlin are unchanged.
+- `kslides-export` moves to Playwright 1.64.0 (was 1.63.0). Playwright pins its
+  browser builds per release, so the first export after upgrading downloads a
+  new Chromium, once. A CI image that pre-installs Chromium needs its install
+  step rerun.
+
 ### Build / tooling
 
+- Gradle wrapper 9.8.1 → 9.8.2, and the `com.pambrose.kotlinter` /
+  `com.pambrose.testing` convention plugins that buildSrc applies 1.0.14 →
+  1.1.7. Kotest 6.2.5 → 6.2.6, a test dependency only.
+- The Gradle wrapper pins the distribution's SHA-256 (`distributionSha256Sum`),
+  so a download that does not match the checksum services.gradle.org publishes
+  fails instead of running. `make upgrade-wrapper` fetches that checksum and
+  passes it to both wrapper runs, which Gradle now requires: it will not change
+  the version of a checksum-pinned wrapper without a new checksum.
+- Test dependencies are declared once. `com.pambrose.testing` already adds
+  Kotest and Logback to every module's tests, and the build also declared them
+  from the version catalog, so the higher of two versions won. The convention
+  plugin now passes the catalog's versions to `pambroseTesting {}` instead, and
+  turns off the unused `kotlin-test` dependency the plugin added alongside them.
+- The published-module convention no longer sets `isPreserveFileTimestamps` and
+  `isReproducibleFileOrder` on archive tasks. Gradle 9 makes those the defaults,
+  and the published jars come out byte-identical without the override.
+- kslides-core compiles without warnings. kotlinx.html deprecates text inside
+  `<script>` and `<style>` in favor of `unsafe {}`, but kslides writes those
+  bodies as text nodes on purpose: `unsafe {}` would send them back through the
+  XML parse that 1.5.0 moved them off. The seven `script {}` / `style {}`
+  blocks behind the nine warnings now suppress the deprecation, each with a
+  comment saying why. The warnings only showed on a
+  fresh compile, since a build-cache hit does not replay them.
 - Dependabot now opens weekly grouped version-update PRs for the Gradle build
   too, covering every version in `gradle/libs.versions.toml` (and through it
   buildSrc's plugins), with the same 7-day cooldown as the GitHub Actions and
@@ -18,11 +58,14 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
   `make upgrade-wrapper`. The foojay toolchain plugin in `settings.gradle.kts`
   now uses the infix `version` form so Dependabot can see it; nothing tracked it
   before, since the versions plugin skips settings plugins.
-- `make docs` (`./gradlew :kslides-examples:writeDocs`) regenerates the
+- `make slides` (`./gradlew :kslides-examples:writeDocs`) regenerates the
   example output under `docs/` and exits. Running the example app writes the
   same files but then starts the HTTP server and never exits. The target
   checks for the local Kroki server first and stops before deleting anything if
-  it is down.
+  it is down. `make clean-docs`, which deletes that output, is renamed
+  `make clean-slides` to match.
+- Docs site: Zensical 0.0.68 → 0.0.71, with Python-Markdown 3.11 → 3.11.2 and
+  pymdown-extensions 12.1 → 12.3.
 
 ## [1.5.1] — 2026-10-13
 
@@ -1292,7 +1335,8 @@ chart-embedding integration, and the test/CI story
   filesystem and Ktor-server output modes, and configurable
   per-slide / per-presentation overrides.
 
-[Unreleased]: https://github.com/kslides/kslides/compare/1.5.1...HEAD
+[Unreleased]: https://github.com/kslides/kslides/compare/1.5.2...HEAD
+[1.5.2]: https://github.com/kslides/kslides/releases/tag/1.5.2
 [1.5.1]: https://github.com/kslides/kslides/releases/tag/1.5.1
 [1.5.0]: https://github.com/kslides/kslides/releases/tag/1.5.0
 [1.4.0]: https://github.com/kslides/kslides/releases/tag/1.4.0

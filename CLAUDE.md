@@ -43,7 +43,7 @@ make lint                  # lintKotlinMain + lintKotlinTest
 make detekt                # Detekt static analysis (fails on findings)
 make tests                 # cleanTest test
 make uber                  # fatjar + run the example jar
-make docs                  # regenerate the example output under docs/ and exit (needs kroki-start)
+make slides                # regenerate the example slides under docs/ and exit (needs kroki-start)
 make versions              # only the outdated (or uncheckable) dependencies, merged across modules
 make versions-all          # the plugin's full plain report, up-to-date dependencies included
 make dev-server            # live-reload dev loop (kslides-dev.sh: watch, rebuild, restart)
@@ -55,7 +55,7 @@ make zizmor                # audit the GitHub Actions workflows with zizmor (fai
 make check-site            # uv lock --upgrade --dry-run for the docs site
 make upgrade-site          # uv lock --upgrade for the docs site
 make site                  # clean-site + serve the Zensical docs site
-make upgrade-wrapper       # upgrade the Gradle wrapper to the libs.versions.toml version
+make upgrade-wrapper       # upgrade the Gradle wrapper to the libs.versions.toml version, pinning its SHA-256
 make publish-local         # publishToMavenLocal
 make publish-snapshot      # publish -SNAPSHOT to Maven Central (signed)
 make publish-maven-central # release to Maven Central (signed)
@@ -86,14 +86,14 @@ Two POSIX-ish bash scripts live at the repo root (both target macOS's default ba
 
 ### Releasing
 
-The current version is `1.5.1` (tag `1.5.1`, GitHub release `v1.5.1`, published to Maven Central as `com.kslides:kslides-core`, `com.kslides:kslides-letsplot`, and — added in 1.3.0 — `com.kslides:kslides-export`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site's dependency snippets (`website/kslides/docs/installation.md` and `website/kslides/docs/extensions/letsplot.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
+The current version is `1.5.2` (tag `1.5.2`, GitHub release `v1.5.2`, published to Maven Central as `com.kslides:kslides-core`, `com.kslides:kslides-letsplot`, and — added in 1.3.0 — `com.kslides:kslides-export`); `1.0.0` was the first stable tag. To cut a new release: bump `version` in `gradle.properties`, update `CHANGELOG.md`, `RELEASE_NOTES.md`, `README.md`, `llms.txt`, and the docs site's dependency snippets (`website/kslides/docs/installation.md` and `website/kslides/docs/extensions/letsplot.md`), run `make publish-maven-central`, then create a GitHub release whose tag matches the version (no `v` prefix on the tag, `v` prefix on the title).
 
 ## Module Structure
 
 Four Gradle modules defined in `settings.gradle.kts`:
 
 - **kslides-core** — Core DSL library: slide types, configuration, page rendering, Ktor server, filesystem output. This is what consumers depend on.
-- **kslides-examples** — Example presentations with `main()` entry point in `Slides.kt` (the deck definition lives in `exampleSlides()` so the PDF-export entry point `Export.kt` — in its own `export` source set, keeping Playwright out of the fat JAR — can reuse it, as can `Docs.kt`, which writes `docs/` with HTTP turned off and exits). Uses ShadowJar to build `kslides.jar`. Main class: `SlidesKt`; `./gradlew exportPdf [-Pdeck=<name>]` runs `ExportKt`, and `./gradlew writeDocs` (`make docs`) runs `DocsKt`. `SlidesKt` also writes `docs/` but then serves over HTTP and never exits. Regenerating rewrites the `docs/letsPlot/` pages every time, since their sample data is random; every other generated file comes out byte-identical.
+- **kslides-examples** — Example presentations with `main()` entry point in `Slides.kt` (the deck definition lives in `exampleSlides()` so the PDF-export entry point `Export.kt` — in its own `export` source set, keeping Playwright out of the fat JAR — can reuse it, as can `Docs.kt`, which writes `docs/` with HTTP turned off and exits). Uses ShadowJar to build `kslides.jar`. Main class: `SlidesKt`; `./gradlew exportPdf [-Pdeck=<name>]` runs `ExportKt`, and `./gradlew writeDocs` (`make slides`) runs `DocsKt`. `SlidesKt` also writes `docs/` but then serves over HTTP and never exits. Regenerating rewrites the `docs/letsPlot/` pages every time, since their sample data is random; every other generated file comes out byte-identical.
 - **kslides-export** — One-command PDF export (F2): `exportPdf()` serves the built presentations from an ephemeral-port Ktor server and prints each deck via headless Chromium (Playwright), waiting for reveal.js' `pdf-ready` event and Mermaid completion. Depends on kslides-core.
 - **kslides-letsplot** — Lets-Plot visualization integration (JetBrains Lets-Plot). Depends on kslides-core.
 
@@ -101,7 +101,7 @@ Four Gradle modules defined in `settings.gradle.kts`:
 
 Shared build logic lives in `buildSrc/` as two precompiled-script convention plugins:
 
-- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, [Detekt](https://detekt.dev) (group `dev.detekt`, plugin id `dev.detekt`), the `kslides.stable-versions` convention plugin (which applies [Ben-Manes versions](https://github.com/ben-manes/gradle-versions-plugin), turns on its built-in `rejectPreReleases` check — a pre-release is offered only to a dependency already on one, like the Detekt alpha — and installs the concise `outputFormatter` behind `make versions`), and the kotest/logback test dependencies. Detekt fails the build on findings by default (the config is valid and the tree is violation-free); pass `-Pdetekt.ignoreFailures=true` to downgrade to report-only while iterating. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
+- `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, [Detekt](https://detekt.dev) (group `dev.detekt`, plugin id `dev.detekt`), the `kslides.stable-versions` convention plugin (which applies [Ben-Manes versions](https://github.com/ben-manes/gradle-versions-plugin), turns on its built-in `rejectPreReleases` check — a pre-release is offered only to a dependency already on one, like the Detekt alpha — and installs the concise `outputFormatter` behind `make versions`), and `com.pambrose.testing`, which it hands the catalog's `kotest` and `logback` versions through `pambroseTesting {}` (with `addKotlinTest` off) instead of declaring those test dependencies itself — a second declaration would resolve to whichever version is higher. Detekt fails the build on findings by default (the config is valid and the tree is violation-free); pass `-Pdetekt.ignoreFailures=true` to downgrade to report-only while iterating. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
 - `kslides.published-module` — extends `kslides.kotlin-module` with `java-library`, Dokka, and `com.vanniktech.maven.publish`. Sets up the POM, `KotlinJvm` artifact (sources + Dokka HTML javadoc jar), Maven Central publication, and conditional `signAllPublications()`.
 
 `kslides-core` and `kslides-letsplot` apply `kslides.published-module`; `kslides-examples` applies `kslides.kotlin-module` plus the Ktor plugin (which provides `application{}` and `buildFatJar`). The Heroku `stage` task lives in the root build (`build.gradle.kts`) and depends on `:kslides-examples:build` and `:kslides-examples:buildFatJar`.
@@ -168,7 +168,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 ## Tech Stack
 
 - Kotlin 2.4.21, JVM 17 toolchain
-- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.8.1
+- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.8.2. `gradle-wrapper.properties` pins `distributionSha256Sum`, so the wrapper refuses a distribution whose checksum differs. Upgrade with `make upgrade-wrapper`, which fetches the published checksum: hand-editing `distributionUrl` leaves the old checksum behind and the next download fails, and a bare `./gradlew wrapper --gradle-version=X` is refused, since Gradle will not change the version of a checksum-pinned wrapper without a new checksum.
 - Ktor 3.6.0 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
 - Lets-Plot Kotlin 4.15.0 for the `letsPlot{}` DSL (JS runtime version configurable via `KSlidesConfig.letsPlotJsVersion`, default `4.10.1`)
