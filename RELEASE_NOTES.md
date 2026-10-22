@@ -6,6 +6,36 @@ structured, category-grouped log.
 
 ---
 
+## 1.5.2 — TBD
+
+A maintenance release. kslides' behavior is unchanged, so upgrading is a
+version bump.
+
+### Dependencies
+
+The published modules move to kotlin-css 2026.10.1 and kotlinx.serialization
+1.12.0. kotlin-css is an `api` dependency, so the newer version reaches your
+compile classpath; serialization is used internally and only changes at runtime.
+Kotlin 2.4.21, Ktor 3.6.0, kotlinx.html, srcref, common-utils and Lets-Plot
+Kotlin are unchanged.
+
+`kslides-export` moves to Playwright 1.64.0. Each Playwright release pins its
+own browser builds, so the first `exportPdf()` after upgrading downloads a new
+Chromium (once; it is cached per user after that). If your CI image bakes in
+Chromium, rerun its install step.
+
+### Under the hood
+
+Dependabot now watches the Gradle version catalog too, alongside the action
+pins and the docs site's lockfile, with the same weekly grouped PRs and 7-day
+cooldown. A new `make slides` target regenerates the example decks under
+`docs/` and exits, where running the example app writes the same files and then
+keeps serving them over HTTP; it checks for the local Kroki server before
+deleting anything. The build is on Gradle 9.8.2, and the docs site on Zensical
+0.0.71.
+
+---
+
 ## 1.5.1 — 2026-10-13
 
 A maintenance release. kslides' own code is unchanged apart from KDoc, so

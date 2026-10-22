@@ -233,6 +233,8 @@ internal object Page {
           src = "https://www.googletagmanager.com/gtag/js?id=${config.gaPropertyId}"
         }
         rawHtml("\n\n\t\t")
+        // Deliberate text node: kotlinx.html's suggested unsafe {} would route it through the XML parse.
+        @Suppress("DEPRECATION")
         script {
           +"\n"
           +"""
@@ -275,6 +277,8 @@ internal object Page {
       rawHtml("\n")
       // No media="screen" scoping: author styles must also apply when printing (?print-pdf /
       // kslides-export), where screen-only styles would silently vanish from the PDF.
+      // Deliberate text node: kotlinx.html's suggested unsafe {} would route it through the XML parse.
+      @Suppress("DEPRECATION")
       style {
         val slidesCss =
           Page::class.java.classLoader
@@ -355,6 +359,8 @@ internal object Page {
       }
 
       rawHtml("\n\t")
+      // Deliberate text node: kotlinx.html's suggested unsafe {} would route it through the XML parse.
+      @Suppress("DEPRECATION")
       script {
         +"\n\t\tReveal.initialize({\n${p.toJs(config)}\t\t});\n\n"
       }
@@ -365,6 +371,8 @@ internal object Page {
         rawHtml("\n\t")
         script { src = Mermaid.MERMAID_JS_PATH.resolveAgainst(srcPrefix) }
         rawHtml("\n\t")
+        // Deliberate text node: kotlinx.html's suggested unsafe {} would route it through the XML parse.
+        @Suppress("DEPRECATION")
         script {
           +"\n${Mermaid.initScript(config.effectiveTheme).prependIndent("\t\t")}\n\t"
         }
@@ -387,6 +395,8 @@ internal object Page {
     // Pre-indented once per JVM: this runs per HTTP request under the render lock.
     fun emit(indentedClientScript: String) {
       rawHtml("\n\t")
+      // Deliberate text node: kotlinx.html's suggested unsafe {} would route it through the XML parse.
+      @Suppress("DEPRECATION")
       script { +"\n$indentedClientScript\n\t" }
       rawHtml("\n")
     }

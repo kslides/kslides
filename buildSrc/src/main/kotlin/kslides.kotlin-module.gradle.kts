@@ -36,7 +36,12 @@ detekt {
 
 providers.gradleProperty("overrideVersion").orNull?.let { project.version = it }
 
-dependencies {
-    testImplementation(libs.findLibrary("kotest").get())
-    testRuntimeOnly(libs.findLibrary("logback-classic").get())
+// com.pambrose.testing adds kotest-runner-junit5 and logback-classic to every module's tests. Hand it
+// the catalog's versions rather than declaring the same dependencies again: two declarations resolve
+// to the higher version, so the catalog would stop deciding whenever the plugin's default ran ahead.
+// kotlin-test, which the plugin also adds by default, is unused: the tests are all Kotest.
+pambroseTesting {
+    kotestVersion.set(libs.findVersion("kotest").get().requiredVersion)
+    logbackVersion.set(libs.findVersion("logback").get().requiredVersion)
+    addKotlinTest.set(false)
 }

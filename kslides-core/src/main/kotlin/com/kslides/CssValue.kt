@@ -87,6 +87,8 @@ class CssValue(
       if (indentedCss.isNotBlank()) {
         rawHtml("\n")
         // No media="screen" scoping: css{} rules must also apply when printing to PDF.
+        // Deliberate text node: kotlinx.html's suggested unsafe {} would route it through the XML parse.
+        @Suppress("DEPRECATION")
         style {
           if (styleId.isNotBlank())
             id = styleId
