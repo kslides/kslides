@@ -1,38 +1,38 @@
 [versions]
 # Build toolchain
-gradle-wrapper = "9.8.2"
+gradle-wrapper = "9.9.0"
 jvm = "17"
 kotlin = "2.4.21"
 
 # Gradle plugins / build tooling
 detekt = "2.0.0-alpha.6"
-dokka = "2.2.0"
+dokka = "2.3.0"
 gradle-plugins = "1.1.7"
 maven-publish = "0.37.0"
-versions = "0.66.0"
+versions = "0.67.0"
 
 # Kotlin / kotlinx libraries
-css = "2026.10.1"
+css = "2026.11.0"
 kotlinx-html = "0.12.0"
 serialization = "1.12.0"
 
 # Ktor
-ktor = "3.6.0"
+ktor = "3.6.1"
 
 # Logging
-logback = "1.6.5"
-logging = "8.0.4"
+logback = "1.6.6"
+logging = "8.0.6"
 
 # Testing
 junit4 = "4.13.2"
 kotest = "6.2.6"
 
 # Domain libraries
-common-utils = "5.1.1"
+common-utils = "5.2.0"
 commons-text = "1.15.0"
 letsplot = "4.15.0"
 playwright = "1.64.0"
-srcref = "2.3.0"
+srcref = "2.4.0"
 
 [libraries]
 # Kotlin / kotlinx libraries
