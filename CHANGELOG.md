@@ -9,7 +9,7 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
-## [1.5.2] — TBD
+## [1.5.2] — 2026-11-10
 
 A maintenance release. kslides' behavior is unchanged and there are no API
 changes. The published modules move onto current dependencies, and the build
@@ -18,9 +18,11 @@ gains Dependabot coverage, a `make slides` target, and a warning-free compile.
 ### Changed
 
 - Dependencies refreshed. On consumers' compile classpath (`api`): kotlin-css
-  2026.10.0 → 2026.10.1. At runtime only: kotlinx.serialization 1.11.0 →
-  1.12.0. Kotlin (2.4.21), Ktor (3.6.0), kotlinx.html, srcref, common-utils and
-  Lets-Plot Kotlin are unchanged.
+  2026.10.0 → 2026.11.1, srcref 2.3.0 → 2.4.0, and Ktor's
+  `ktor-server-html-builder` 3.6.0 → 3.6.1. At runtime only: the rest of Ktor
+  (server and client) 3.6.0 → 3.6.1, kotlinx.serialization 1.11.0 → 1.12.0,
+  common-utils 5.1.1 → 5.2.0, and kotlin-logging 8.0.4 → 8.0.7. Kotlin
+  (2.4.21), kotlinx.html and Lets-Plot Kotlin are unchanged.
 - `kslides-export` moves to Playwright 1.64.0 (was 1.63.0). Playwright pins its
   browser builds per release, so the first export after upgrading downloads a
   new Chromium, once. A CI image that pre-installs Chromium needs its install
@@ -28,9 +30,11 @@ gains Dependabot coverage, a `make slides` target, and a warning-free compile.
 
 ### Build / tooling
 
-- Gradle wrapper 9.8.1 → 9.8.2, and the `com.pambrose.kotlinter` /
+- Gradle wrapper 9.8.1 → 9.9.1, and the `com.pambrose.kotlinter` /
   `com.pambrose.testing` convention plugins that buildSrc applies 1.0.14 →
-  1.1.7. Kotest 6.2.5 → 6.2.6, a test dependency only.
+  1.1.9. Dokka 2.2.0 → 2.3.0 and the Ben-Manes versions plugin 0.66.0 →
+  0.67.0. Kotest 6.2.5 → 6.2.6 and Logback 1.6.5 → 1.6.6, used only by the
+  tests and the example app.
 - The Gradle wrapper pins the distribution's SHA-256 (`distributionSha256Sum`),
   so a download that does not match the checksum services.gradle.org publishes
   fails instead of running. `make upgrade-wrapper` fetches that checksum and
@@ -64,8 +68,15 @@ gains Dependabot coverage, a `make slides` target, and a warning-free compile.
   checks for the local Kroki server first and stops before deleting anything if
   it is down. `make clean-docs`, which deletes that output, is renamed
   `make clean-slides` to match.
-- Docs site: Zensical 0.0.68 → 0.0.71, with Python-Markdown 3.11 → 3.11.2 and
-  pymdown-extensions 12.1 → 12.3.
+- Docs site: Zensical 0.0.68 → 0.1.1 (which adds zensical-ui 0.0.42), with
+  Python-Markdown 3.11 → 3.11.3 and pymdown-extensions 12.1 → 13.0. Every page
+  now loads the Context7 chat widget, added through a Zensical theme override
+  (`website/kslides/overrides/main.html`).
+- Heroku deployment support is removed from the repository: `Procfile`,
+  `system.properties`, the root `stage` Gradle task, the `make stage` /
+  `make build-all` targets, and the README's Heroku section. The library is
+  unaffected. `OutputConfig` still honors the `PORT` environment variable, which
+  other hosts use too.
 
 ## [1.5.1] — 2026-10-13
 

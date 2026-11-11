@@ -6,18 +6,19 @@ structured, category-grouped log.
 
 ---
 
-## 1.5.2 — TBD
+## 1.5.2 — 2026-11-10
 
 A maintenance release. kslides' behavior is unchanged, so upgrading is a
 version bump.
 
 ### Dependencies
 
-The published modules move to kotlin-css 2026.10.1 and kotlinx.serialization
-1.12.0. kotlin-css is an `api` dependency, so the newer version reaches your
-compile classpath; serialization is used internally and only changes at runtime.
-Kotlin 2.4.21, Ktor 3.6.0, kotlinx.html, srcref, common-utils and Lets-Plot
-Kotlin are unchanged.
+The published modules move to kotlin-css 2026.11.1, srcref 2.4.0, Ktor 3.6.1,
+kotlinx.serialization 1.12.0, common-utils 5.2.0 and kotlin-logging 8.0.7.
+kotlin-css, srcref and Ktor's HTML builder are `api` dependencies, so their
+newer versions reach your compile classpath; the rest are used internally and
+only change at runtime. Kotlin 2.4.21, kotlinx.html and Lets-Plot Kotlin are
+unchanged.
 
 `kslides-export` moves to Playwright 1.64.0. Each Playwright release pins its
 own browser builds, so the first `exportPdf()` after upgrading downloads a new
@@ -31,8 +32,10 @@ pins and the docs site's lockfile, with the same weekly grouped PRs and 7-day
 cooldown. A new `make slides` target regenerates the example decks under
 `docs/` and exits, where running the example app writes the same files and then
 keeps serving them over HTTP; it checks for the local Kroki server before
-deleting anything. The build is on Gradle 9.8.2, and the docs site on Zensical
-0.0.71.
+deleting anything. The build is on Gradle 9.9.1, and the docs site on Zensical
+0.1.1, with a Context7 chat assistant on every page. The repository's Heroku
+deployment files and `stage` task are gone. The library never depended on them,
+and the `PORT` override still works on any host that sets it.
 
 ---
 
