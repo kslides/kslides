@@ -1,5 +1,5 @@
-.PHONY: default help build-all stop clean clean-cache slides clean-slides build local-build lint detekt refresh tests \
-        fatjar uber dist stage deps process-resources versions versions-all dev-server kroki-start kroki-stop \
+.PHONY: default help stop clean clean-cache slides clean-slides build local-build lint detekt refresh tests \
+        fatjar uber dist deps process-resources versions versions-all dev-server kroki-start kroki-stop \
         pdf clean-pdf kdocs zizmor check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _require-kroki _require-version _require-gradle-version
@@ -23,8 +23,6 @@ help:  ## Show this help (list of targets)
 	@awk 'BEGIN {FS = ":.*?## "; printf "Usage: make <target>\n\nTargets:\n"} \
 		/^[a-zA-Z0-9_-]+:.*?## / {printf "  \033[36m%-24s\033[0m %s\n", $$1, $$2}' \
 		$(MAKEFILE_LIST)
-
-build-all: clean stage  ## Clean and run a full Heroku stage build
 
 stop:  ## Stop the Gradle daemon
 	./gradlew --stop
@@ -70,9 +68,6 @@ uber: fatjar  ## Build the fat JAR and run the example presentation
 
 dist:  ## Assemble the distribution via installDist
 	./gradlew installDist
-
-stage:  ## Heroku deployment build
-	./gradlew stage
 
 deps:  ## Print the Gradle dependency tree
 	./gradlew -q dependencies

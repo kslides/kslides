@@ -1,0 +1,12 @@
+{#-
+  Theme override for the Zensical docs site (enabled by custom_dir in
+  zensical.toml). Every page renders through main.html, so blocks extended
+  here apply site-wide.
+-#}
+{% extends "base.html" %}
+
+{% block scripts %}
+  {{ super() }}
+  <!-- Context7 chat widget: floating AI assistant for the kslides docs -->
+  <script src="https://context7.com/widget.js" data-library="/kslides/kslides"></script>
+{% endblock %}
