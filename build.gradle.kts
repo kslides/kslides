@@ -22,10 +22,3 @@ dokka {
         footerMessage.set("kslides")
     }
 }
-
-tasks.register("stage") {
-    val examples = ":kslides-examples"
-    group = "build"
-    description = "Builds the project and the examples fat jar for Heroku deployment."
-    dependsOn("$examples:build", "$examples:buildFatJar")
-}

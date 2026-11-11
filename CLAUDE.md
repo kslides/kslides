@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-kslides is a Kotlin DSL for the [reveal.js](https://revealjs.com) presentation framework. Presentations are authored in Markdown, HTML, or the Kotlin HTML DSL (kotlinx.html). Output can be static HTML files (for Netlify/GitHub Pages) or a dynamic HTTP server (Ktor, for Heroku).
+kslides is a Kotlin DSL for the [reveal.js](https://revealjs.com) presentation framework. Presentations are authored in Markdown, HTML, or the Kotlin HTML DSL (kotlinx.html). Output can be static HTML files (for Netlify/GitHub Pages) or a dynamic HTTP server (Ktor).
 
 ## Build Commands
 
@@ -15,7 +15,6 @@ kslides is a Kotlin DSL for the [reveal.js](https://revealjs.com) presentation f
 ./gradlew exportPdf         # Print the example decks to build/pdf (-Pdeck=<name> for one)
 ./gradlew writeDocs         # Write the example decks to docs/ and exit (no HTTP server)
 ./gradlew clean             # Clean build artifacts
-./gradlew stage             # Heroku deployment build
 ./gradlew lintKotlin        # Lint with Kotlinter
 ./gradlew formatKotlin      # Auto-format with Kotlinter
 ./gradlew detekt            # Static analysis with Detekt
@@ -104,7 +103,7 @@ Shared build logic lives in `buildSrc/` as two precompiled-script convention plu
 - `kslides.kotlin-module` — applies `kotlin("jvm")`, the JVM toolchain (read from `libs.versions.toml` via the `jvm` version key), Kotlinter, [Detekt](https://detekt.dev) (group `dev.detekt`, plugin id `dev.detekt`), the `kslides.stable-versions` convention plugin (which applies [Ben-Manes versions](https://github.com/ben-manes/gradle-versions-plugin), turns on its built-in `rejectPreReleases` check — a pre-release is offered only to a dependency already on one, like the Detekt alpha — and installs the concise `outputFormatter` behind `make versions`), and `com.pambrose.testing`, which it hands the catalog's `kotest` and `logback` versions through `pambroseTesting {}` (with `addKotlinTest` off) instead of declaring those test dependencies itself — a second declaration would resolve to whichever version is higher. Detekt fails the build on findings by default (the config is valid and the tree is violation-free); pass `-Pdetekt.ignoreFailures=true` to downgrade to report-only while iterating. Honors `-PoverrideVersion=...` so snapshot builds can override the gradle.properties version.
 - `kslides.published-module` — extends `kslides.kotlin-module` with `java-library`, Dokka, and `com.vanniktech.maven.publish`. Sets up the POM, `KotlinJvm` artifact (sources + Dokka HTML javadoc jar), Maven Central publication, and conditional `signAllPublications()`.
 
-`kslides-core` and `kslides-letsplot` apply `kslides.published-module`; `kslides-examples` applies `kslides.kotlin-module` plus the Ktor plugin (which provides `application{}` and `buildFatJar`). The Heroku `stage` task lives in the root build (`build.gradle.kts`) and depends on `:kslides-examples:build` and `:kslides-examples:buildFatJar`.
+`kslides-core` and `kslides-letsplot` apply `kslides.published-module`; `kslides-examples` applies `kslides.kotlin-module` plus the Ktor plugin (which provides `application{}` and `buildFatJar`).
 
 ## Architecture
 
