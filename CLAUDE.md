@@ -168,7 +168,7 @@ For testing, use `kslidesTest{}` instead of `kslides{}` — it suppresses filesy
 ## Tech Stack
 
 - Kotlin 2.4.21, JVM 17 toolchain
-- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.9.0. `gradle-wrapper.properties` pins `distributionSha256Sum`, so the wrapper refuses a distribution whose checksum differs. Upgrade with `make upgrade-wrapper`, which fetches the published checksum: hand-editing `distributionUrl` leaves the old checksum behind and the next download fails, and a bare `./gradlew wrapper --gradle-version=X` is refused, since Gradle will not change the version of a checksum-pinned wrapper without a new checksum.
+- Gradle Kotlin DSL (`*.gradle.kts`), wrapper 9.9.1. `gradle-wrapper.properties` pins `distributionSha256Sum`, so the wrapper refuses a distribution whose checksum differs. Upgrade with `make upgrade-wrapper`, which fetches the published checksum: hand-editing `distributionUrl` leaves the old checksum behind and the next download fails, and a bare `./gradlew wrapper --gradle-version=X` is refused, since Gradle will not change the version of a checksum-pinned wrapper without a new checksum.
 - Ktor 3.6.1 (server + client)
 - kotlinx.html / kotlinx.css for HTML/CSS DSL
 - Lets-Plot Kotlin 4.15.0 for the `letsPlot{}` DSL (JS runtime version configurable via `KSlidesConfig.letsPlotJsVersion`, default `4.10.1`)
