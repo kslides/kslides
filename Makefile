@@ -2,7 +2,7 @@
         fatjar uber dist deps process-resources versions versions-all dev-server kroki-start kroki-stop \
         pdf clean-pdf kdocs zizmor check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
-        _check-gpg-env _require-kroki _require-version _require-gradle-version
+        _check-gpg-env _check-maven-central-env _require-kroki _require-version _require-gradle-version
 
 VERSION := $(shell sed -n 's/^version=\(.*\)/\1/p' gradle.properties)
 GRADLE_VERSION := $(shell sed -n 's/^gradle-wrapper = "\(.*\)"/\1/p' gradle/libs.versions.toml)
@@ -16,6 +16,18 @@ GPG_ENV = \
 	ORG_GRADLE_PROJECT_signingInMemoryKey="$$(gpg --armor --export-secret-keys $$GPG_SIGNING_KEY_ID)" \
 	ORG_GRADLE_PROJECT_signingInMemoryKeyId="$$GPG_SIGNING_KEY_ID" \
 	ORG_GRADLE_PROJECT_signingInMemoryKeyPassword=$$(security find-generic-password -a "gpg-signing" -s "gradle-signing-password" -w)
+
+# Maven Central's credentials, a user token's name and password from central.sonatype.com, from the macOS keychain, as
+# the signing key's passphrase is: the maven-central-username and maven-central-password entries (account
+# maven-central), shared by every repository that publishes this way. They reach only the publishing commands, as the
+# vanniktech plugin's mavenCentralUsername and mavenCentralPassword, never ~/.gradle/gradle.properties, which every
+# Gradle build on the machine is given. Add them once with
+#   security add-generic-password -a maven-central -s maven-central-username -U -w
+#   security add-generic-password -a maven-central -s maven-central-password -U -w
+# each of which asks for the value, so it stays out of the shell's history.
+MAVEN_CENTRAL_ENV = \
+	ORG_GRADLE_PROJECT_mavenCentralUsername="$$(security find-generic-password -a "maven-central" -s "maven-central-username" -w)" \
+	ORG_GRADLE_PROJECT_mavenCentralPassword="$$(security find-generic-password -a "maven-central" -s "maven-central-password" -w)"
 
 default: help
 
@@ -131,11 +143,11 @@ publish-local-snapshot: _require-version ## Publish a -SNAPSHOT build to Maven L
 # publish-snapshot stages a -SNAPSHOT build to the Sonatype snapshots repo (vanniktech routes
 # -SNAPSHOT versions there automatically). publish-maven-central uses the *AndRelease* variant
 # to both stage and auto-release the version on the Central Portal — do not "fix" the asymmetry.
-publish-snapshot: _require-version _check-gpg-env ## Stage a signed -SNAPSHOT to Sonatype snapshots
-	$(GPG_ENV) ./gradlew -PoverrideVersion=$(VERSION)-SNAPSHOT publishToMavenCentral
+publish-snapshot: _require-version _check-gpg-env _check-maven-central-env ## Stage a signed -SNAPSHOT to Sonatype snapshots
+	$(GPG_ENV) $(MAVEN_CENTRAL_ENV) ./gradlew -PoverrideVersion=$(VERSION)-SNAPSHOT publishToMavenCentral
 
-publish-maven-central: _require-version _check-gpg-env ## Stage and release a signed build to Maven Central
-	$(GPG_ENV) ./gradlew publishAndReleaseToMavenCentral
+publish-maven-central: _require-version _check-gpg-env _check-maven-central-env ## Stage and release a signed build to Maven Central
+	$(GPG_ENV) $(MAVEN_CENTRAL_ENV) ./gradlew publishAndReleaseToMavenCentral
 
 # Gradle's documented upgrade procedure: the first run rewrites
 # gradle-wrapper.properties using the *old* wrapper jar; the second run
@@ -163,6 +175,15 @@ _check-gpg-env:
 	@if ! security find-generic-password -a "gpg-signing" -s "gradle-signing-password" -w >/dev/null 2>&1; then \
 		echo "ERROR: keychain entry 'gradle-signing-password' (account 'gpg-signing') not found" >&2; exit 1; \
 	fi
+
+# Fails, naming the keychain entry and never its value, when either of Maven Central's credentials is missing or empty
+_check-maven-central-env:
+	@for entry in maven-central-username maven-central-password; do \
+		if [ -z "$$(security find-generic-password -a 'maven-central' -s "$$entry" -w 2>/dev/null)" ]; then \
+			echo "ERROR: keychain entry '$$entry' (account 'maven-central') is missing or empty; add it with: security add-generic-password -a maven-central -s $$entry -U -w" >&2; \
+			exit 1; \
+		fi; \
+	done
 
 _require-kroki:
 	@curl -s -o /dev/null --max-time 5 http://localhost:8000/ || { echo "ERROR: no Kroki server on localhost:8000 (make kroki-start)" >&2; exit 1; }
