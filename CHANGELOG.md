@@ -9,6 +9,20 @@ Entries for releases prior to 1.0.0 are reconstructed from the git history.
 
 ## [Unreleased]
 
+### Build / tooling
+
+- `make publish-snapshot` and `make publish-maven-central` read the Central
+  Portal credentials (a central.sonatype.com user token's name and password)
+  from the macOS keychain, as they already did the signing key's passphrase:
+  the `maven-central-username` and `maven-central-password` entries, account
+  `maven-central`. They pass them to Gradle as `mavenCentralUsername` and
+  `mavenCentralPassword` for that command only, so the credentials no longer
+  need to sit in `~/.gradle/gradle.properties`, where every Gradle build on the
+  machine can read them. A new `_check-maven-central-env` prerequisite stops
+  either target before Gradle starts if an entry is missing or empty, naming
+  the entry (never its value) and the `security add-generic-password` command
+  that adds it.
+
 ## [1.5.2] — 2026-11-10
 
 A maintenance release. kslides' behavior is unchanged and there are no API
