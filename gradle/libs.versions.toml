@@ -14,7 +14,7 @@ versions = "0.67.0"
 # Kotlin / kotlinx libraries
 css = "2026.11.1"
 kotlinx-html = "0.12.0"
-serialization = "1.12.0"
+serialization = "1.13.0"
 
 # Ktor
 ktor = "3.6.1"
@@ -25,14 +25,14 @@ logging = "8.0.7"
 
 # Testing
 junit4 = "4.13.2"
-kotest = "6.2.6"
+kotest = "6.2.7"
 
 # Domain libraries
 common-utils = "5.2.0"
 commons-text = "1.15.0"
 letsplot = "4.15.0"
-playwright = "1.64.0"
-srcref = "2.4.0"
+playwright = "1.65.0"
+srcref = "2.4.1"
 
 [libraries]
 # Kotlin / kotlinx libraries
