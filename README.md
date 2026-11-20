@@ -12,7 +12,7 @@
 [![ktlint](https://img.shields.io/badge/ktlint%20code--style-%E2%9D%A4-FF4081)](https://pinterest.github.io/ktlint/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-**[kslides](https://www.kslides.com)** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com)
+**[kslides](https://kslides.com)** is a [Kotlin](https://kotlinlang.org) DSL for the awesome [reveal.js](https://revealjs.com)
 presentation framework. It is meant for people who prefer working with an IDE rather than PowerPoint.
 It works particularly well for presentations with code snippets and HTML animations. Slides are
 authored in [Markdown](https://www.markdownguide.org), [HTML](https://www.w3schools.com/html/),
