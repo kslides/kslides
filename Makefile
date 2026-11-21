@@ -1,5 +1,5 @@
 .PHONY: default help stop clean clean-cache slides clean-slides build local-build lint detekt refresh tests \
-        fatjar uber dist deps process-resources versions versions-all dev-server kroki-start kroki-stop \
+        fatjar uber dist docker-scan deps process-resources versions versions-all dev-server kroki-start kroki-stop \
         pdf clean-pdf kdocs zizmor check-site upgrade-site clean-site site \
         publish-local publish-local-snapshot publish-snapshot publish-maven-central upgrade-wrapper \
         _check-gpg-env _check-maven-central-env _require-kroki _require-version _require-gradle-version
@@ -80,6 +80,13 @@ uber: fatjar  ## Build the fat JAR and run the example presentation
 
 dist:  ## Assemble the distribution via installDist
 	./gradlew installDist
+
+# kslides ships no image, so this scans the example app's runtime dependencies, one JAR each, from installDist's lib/.
+# Not the fat JAR: buildFatJar merges the dependencies and drops the metadata that names them, leaving Docker Scout a
+# handful of the 150-odd packages. kslides-export (Playwright) is not on the example app's classpath, so not scanned.
+docker-scan: dist  ## List the CVEs in the example app's runtime dependencies with Docker Scout
+	@docker scout version >/dev/null 2>&1 || { echo "ERROR: Docker Scout not found (it ships with Docker Desktop)" >&2; exit 1; }
+	docker scout cves fs://kslides-examples/build/install/kslides-examples/lib
 
 deps:  ## Print the Gradle dependency tree
 	./gradlew -q dependencies
