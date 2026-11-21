@@ -51,6 +51,7 @@ make kroki-stop            # stop the local Kroki diagram server
 make pdf                   # export the example decks to build/pdf (DECK=<name> for one; kroki decks need kroki-start)
 make clean-pdf             # remove build/pdf
 make zizmor                # audit the GitHub Actions workflows with zizmor (fails on findings)
+make docker-scan           # Docker Scout CVE scan of the example app's runtime dependency JARs (installDist lib/)
 make check-site            # uv lock --upgrade --dry-run for the docs site
 make upgrade-site          # uv lock --upgrade for the docs site
 make site                  # clean-site + serve the Zensical docs site
